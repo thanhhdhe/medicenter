@@ -3,8 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/src/java/Database/ServiceDAO.java</file>
-            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/src/java/model/Service.java</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/resources/script/service-list-script.js</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/view/service-list.jsp</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/resources/style/service-list-style.css</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/src/java/controller/ServiceController.java</file>
         </group>
     </open-files>
 </project-private>

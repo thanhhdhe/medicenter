@@ -13,7 +13,6 @@ import java.sql.Date;
 public class Service {
     private int ServiceID;
     private String title;
-    private String description;
     private String thumbnail;
     private int categoryID;
     private double originalPrice;
@@ -24,10 +23,9 @@ public class Service {
     public Service() {
     }
 
-    public Service(int ServiceID, String title, String description, String thumbnail, int categoryID, double originalPrice, double salePrice, String serviceDetail, Date updateDate) {
+    public Service(int ServiceID, String title, String thumbnail, int categoryID, double originalPrice, double salePrice, String serviceDetail, Date updateDate) {
         this.ServiceID = ServiceID;
         this.title = title;
-        this.description = description;
         this.thumbnail = thumbnail;
         this.categoryID = categoryID;
         this.originalPrice = originalPrice;
@@ -36,9 +34,8 @@ public class Service {
         this.updateDate = updateDate;
     }
 
-    public Service(String title, String description, String thumbnail, int categoryID, double originalPrice, double salePrice, String serviceDetail, Date updateDate) {
+    public Service(String title, String thumbnail, int categoryID, double originalPrice, double salePrice, String serviceDetail, Date updateDate) {
         this.title = title;
-        this.description = description;
         this.thumbnail = thumbnail;
         this.categoryID = categoryID;
         this.originalPrice = originalPrice;
@@ -62,14 +59,6 @@ public class Service {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getThumbnail() {
