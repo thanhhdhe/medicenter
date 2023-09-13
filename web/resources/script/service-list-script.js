@@ -38,8 +38,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function loadServices(page = 1) {
         var serviceTitle = document.querySelector('input[name="serviceTitle"]').value;
         var serviceType = document.querySelector('select[name="serviceType"]').value;
-        var staff = document.querySelector('select[name="staff"]').value;
-
+        var staff = document.querySelector('select[name="staff"]').value.trim();
         // Gửi yêu cầu Ajax đến máy chủ để lấy danh sách dịch vụ
         var xhr = new XMLHttpRequest();
         xhr.open('GET', 'service?event=service-list-userchoose&serviceTitle=' + encodeURIComponent(serviceTitle) +

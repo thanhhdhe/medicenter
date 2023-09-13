@@ -124,9 +124,10 @@ public class ServiceDAO extends MyDAO {
             ps = con.prepareStatement(xSql);
             ps.setString(1, "%" + keyword + "%");
             ps.setString(2, categoryIDInput);
+            ps.setString(3, staffIDInput);
             ps.setInt(4, offSetPage);
             ps.setInt(5, numberOfPage);
-            ps.setString(3, staffIDInput);
+            
             rs = ps.executeQuery();
             while (rs.next()) {
                 int serviceID = rs.getInt("ServiceID");
@@ -155,7 +156,7 @@ public class ServiceDAO extends MyDAO {
         } else if (staffIDInput.isEmpty()) {
             serviceList = getSortedPagedServicesByType(offSetPage, numberOfPage, keyword, categoryIDInput);
         } else if (categoryIDInput.isEmpty()) {
-            System.out.println("3");
+            serviceList = getSortedPagedServicesByDoctor(offSetPage, numberOfPage, keyword, staffIDInput);
         } else {
             serviceList = getSortedPagedServicesByUserChoice(offSetPage, numberOfPage, keyword, categoryIDInput, staffIDInput);
         }
@@ -211,9 +212,9 @@ public class ServiceDAO extends MyDAO {
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, "%" + keyword + "%");
-            ps.setInt(2, offSetPage);
-            ps.setInt(3, numberOfPage);
-            ps.setString(4, staffIDInput);
+            ps.setInt(3, offSetPage);
+            ps.setInt(4, numberOfPage);
+            ps.setString(2, staffIDInput);
             rs = ps.executeQuery();
             while (rs.next()) {
                 int serviceID = rs.getInt("ServiceID");
@@ -378,12 +379,12 @@ public class ServiceDAO extends MyDAO {
     public static void main(String[] args) {
         ServiceDAO serviceDAO = new ServiceDAO();
         CategoryServiceDAO categoryServiceDAO = new CategoryServiceDAO();
-        List<Service> list = serviceDAO.getSortedPagedServicesByOption(10, 5, "", "", "");
+        List<Service> list = serviceDAO.getSortedPagedServicesByOption(0, 10, "", "", "1");
 //        List<Service> list = serviceDAO.getSortedPagedServicesBySearch(5, 5, "");
-//        for (Service service : list) {
-//            System.out.println(service.getTitle());
-//        }
-        System.out.println(serviceDAO.getCountOfServicesUserChoose("", "", ""));
+        for (Service service : list) {
+            System.out.println(service.getTitle());
+        }
+//        System.out.println(serviceDAO.getCountOfServicesUserChoose("", "", ""));
 //        System.out.println((serviceDAO.getServiceCount()/5+1)*2/2);
 //        for (int i = 0; i < serviceDAO.getServiceCount(); i++) {
 //            

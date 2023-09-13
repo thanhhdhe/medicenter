@@ -41,7 +41,7 @@
                         <select class="form-select text-primary mt-3" name="staff">
                             <option selected value="">Doctor</option>
                             <%List<Staff> staffList = staffDAO.getStaffsByRole("doctor");
-            for (Staff staff : staffList) {%>
+                            for (Staff staff : staffList) {%>
                             <option value="<%=staff.getStaffID()%>"><%=staff.getFullName()%></option>
                             <%}%>
                         </select>
