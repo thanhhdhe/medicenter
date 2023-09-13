@@ -11,40 +11,49 @@ import java.sql.Date;
  * @author quanh
  */
 public class Post {
-//    PostID INT  IDENTITY(1,1) PRIMARY KEY,
-    private int identity;
-//    Title VARCHAR(100) NOT NULL,
+
+    private int postID;
     private String title;
-//    Content TEXT NOT NULL,
-    private String text;
-//    AuthorID INT NOT NULL,
+    private String content;
     private int authorID;
-//	ServiceID INT NOT NULL,
     private int serviceID;
-//    CreatedDate DATETIME NOT NULL,
     private Date createdDate;
-//    CategoryPostID INT NOT NULL,
     private int categoryPostID;
+    private String briefInfo;
+    private String thumbnail;
 
     public Post() {
     }
 
-    public Post(int identity, String title, String text, int authorID, int serviceID, Date createdDate, int categoryPostID) {
-        this.identity = identity;
+    public Post(int postID, String title, String content, int authorID, int serviceID, Date createdDate, int categoryPostID, String briefInfo, String thumbnail) {
+        this.postID = postID;
         this.title = title;
-        this.text = text;
+        this.content = content;
         this.authorID = authorID;
         this.serviceID = serviceID;
         this.createdDate = createdDate;
         this.categoryPostID = categoryPostID;
+        this.briefInfo = briefInfo;
+        this.thumbnail = thumbnail;
     }
 
-    public int getIdentity() {
-        return identity;
+    public Post(String title, String content, int authorID, int serviceID, Date createdDate, int categoryPostID, String briefInfo, String thumbnail) {
+        this.title = title;
+        this.content = content;
+        this.authorID = authorID;
+        this.serviceID = serviceID;
+        this.createdDate = createdDate;
+        this.categoryPostID = categoryPostID;
+        this.briefInfo = briefInfo;
+        this.thumbnail = thumbnail;
     }
 
-    public void setIdentity(int identity) {
-        this.identity = identity;
+    public int getPostID() {
+        return postID;
+    }
+
+    public void setPostID(int postID) {
+        this.postID = postID;
     }
 
     public String getTitle() {
@@ -55,12 +64,12 @@ public class Post {
         this.title = title;
     }
 
-    public String getText() {
-        return text;
+    public String getContent() {
+        return content;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public int getAuthorID() {
@@ -94,5 +103,21 @@ public class Post {
     public void setCategoryPostID(int categoryPostID) {
         this.categoryPostID = categoryPostID;
     }
-    
+
+    public String getBriefInfo() {
+        return briefInfo;
+    }
+
+    public void setBriefInfo(String briefInfo) {
+        this.briefInfo = briefInfo;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
 }
