@@ -11,7 +11,7 @@
                 width: 100%;
                 height: 100%;
                 background-color: rgba(0, 0, 0, 0.7);
-                z-index: 1;
+                z-index: 101;
                 justify-content: center;
                 align-items: center;
             }
@@ -28,7 +28,7 @@
             .login-form input[type="text"],
             .login-form input[type="password"] {
                 padding: 16px;
-                width: calc(90% + 2px);
+                width: 100%;
             }
             
             .login-form input[type="submit"]{
@@ -55,13 +55,19 @@
                     <input placeholder="Password" type="password" id="password" name="password" required><br><br>
                     <a href="forgetpassword">Forgot password?</a><br><br>
                     <input type="submit" value="Login"> <br><br>
-                    Not a member, <a href="register">register here!</a><br><br><br>
+                    Not a member, <a href="#" onclick="showRegisterPopup()">register here!</a><br><br><br>
+                    <% String error = request.getAttribute("error");
+                    if (error != null) { %>
+                    <p> <%= error %> </p>
+                    <% } %>
+    }%
                 </form>
             </div>
         </div>
 
         <script>
             function showLoginPopup() {
+                document.getElementById('registerPopup').style.display = 'none';
                 var loginPopup = document.getElementById('loginPopup');
                 loginPopup.style.display = 'flex';
 
