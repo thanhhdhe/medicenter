@@ -8,6 +8,14 @@
         <servlet-name>LoginController</servlet-name>
         <servlet-class>controller.LoginController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CPasswordController</servlet-name>
+        <servlet-class>controller.CPasswordController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ResetPassController</servlet-name>
+        <servlet-class>controller.ResetPassController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServiceController</servlet-name>
         <url-pattern>/service</url-pattern>
@@ -15,6 +23,14 @@
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CPasswordController</servlet-name>
+        <url-pattern>/changepassword</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResetPassController</servlet-name>
+        <url-pattern>/resetpassword</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -10,33 +10,51 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous"
+            />
+        <link rel="stylesheet" href="./resources/style/resetpassword-list-style.css">
         <title>JSP Page</title>
     </head>
     <body>
-        <form action="" method="POST">
-            <div class="container"> 
-            <div><h1>RESET PASSWORD</h1></div> 
-            <p>
-            <div>
-                New Password:<input type="text" name="newPassword" value="" />
-            </div>     
-            <p>
-            <div>
-                Confirm password:<input type="text" name="conPassword" value=""/>
+
+        <div class="container">
+            <div class="Khoi">
+               <form action="resetpassword" method="POST">
+                <div class="d-flex justify-content-center"><h1>RESET PASSWORD</h1></div> 
+                <p>
+                <div class="d-flex justify-content-center email">
+                    <input type="text" name="Email" value="" placeholder="Email"/>
+                </div> 
+                <p>
+                <div class="d-flex justify-content-center password">
+                    <input type="text" name="newPassword" value="" placeholder="New Password"/>
+                </div>     
+                <p>
+                <div class="d-flex justify-content-center password">
+                    <input type="text" name="conPassword" value="" placeholder="Confirm password" />
+                </div>
+                <p>
+                <div class="d-flex justify-content-center button">
+                    <input type="submit" value="Enter" />
+                </div>  
+                <p>
+                <div class="d-flex justify-content-center button">
+                    <button onclick="window.location.href = 'index.html'">
+                        Cancel
+                    </button>
+                </div>
+                <p>
+            </form>       
             </div>
-            <p>
-            <div>
-                <input type="submit" value="RESET" />
-            </div>  
-            <p>
-            <div>
-                <button onclick="window.location.href='index.html'">
-                    Back to login
-                </button>
-            </div>
+              
         </div>
-        </form>
-        
+
+
     </body>
 </html>
