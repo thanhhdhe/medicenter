@@ -75,7 +75,7 @@
                     <input placeholder="Repeat Password" type="password" id="repeat_password" name="repeat_password" required>
                     <input type="submit" value="Register"> <br><br>
                     Already have an account, <a onclick="showLoginPopup()" href="#">login now!</a><br>
-                    <% String error = request.getAttribute("error");
+                    <% String error = I(String) request.getAttribute("error");
                     if (error != null) { %>
                     <p> <%= error %> </p>
                     <% } %>
