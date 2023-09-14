@@ -56,7 +56,7 @@
                     <a href="forgetpassword">Forgot password?</a><br><br>
                     <input type="submit" value="Login"> <br><br>
                     Not a member, <a href="#" onclick="showRegisterPopup()">register here!</a><br><br><br>
-                    <% String error = request.getAttribute("error");
+                    <% String error = (String) request.getAttribute("error");
                     if (error != null) { %>
                     <p> <%= error %> </p>
                     <% } %>
