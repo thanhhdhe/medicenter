@@ -19,7 +19,7 @@ import model.User;
  *
  * @author pc
  */
-public class ChangePassController extends HttpServlet {
+public class CPasswordController extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -35,7 +35,7 @@ public class ChangePassController extends HttpServlet {
             //change password by User ID 
             // Get session from login
             HttpSession session= request.getSession();
-            //User user = (User) request.getSession("account");
+            User user = (User) request.getAttribute("email");
             // change database pass word
             // get new password 
             String newPassword = request.getParameter("newPassword");
@@ -43,7 +43,7 @@ public class ChangePassController extends HttpServlet {
             //check if newPassword == confirm password so change pass, error
             if(newPassword.equals(conPassword)){
                 UserDAO userdao= new UserDAO();
-                //userdao.resetPassword(newPassword, user.getUserID());
+                userdao.resetPassword(newPassword, user.getEmail());
                 request.setAttribute("success", "Change password successful");
                 response.sendRedirect("changePassword.jsp");
             } else {
