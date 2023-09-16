@@ -53,7 +53,7 @@
                 <form action="login" method="post">
                     <input placeholder="Your email address" type="text" id="email" name="email" required><br><br>
                     <input placeholder="Password" type="password" id="password" name="password" required><br><br>
-                    <a href="forgetpassword">Forgot password?</a><br><br>
+                    <a href="resetpassword?action=forgetpassword">Forgot password?</a><br><br>
                     <input type="submit" value="Login"> <br><br>
                     Not a member, <a href="#" onclick="showRegisterPopup()">register here!</a><br><br><br>
                     <% String error = (String) request.getAttribute("error");
