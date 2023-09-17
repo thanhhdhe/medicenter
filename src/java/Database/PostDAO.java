@@ -6,6 +6,7 @@ package Database;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 import model.Post;
@@ -16,23 +17,26 @@ import model.Post;
  */
 public class PostDAO extends MyDAO {
 
-    //sort post by updated date
-    public List<Post> sortPost() {
+    public List<Post> getAllPosts() {
         List<Post> postList = new ArrayList<>();
-        xSql = "select * from Posts order by CreatedDate";
+        xSql = "SELECT *  FROM [dbo].[Posts]";
         try {
+            System.out.println("method");
             ps = con.prepareStatement(xSql);
             rs = ps.executeQuery();
             while (rs.next()) {
-                String title = rs.getString("Title");
-                String content = rs.getString("Content");
-                int authorID = rs.getInt("AuthorID");
-                int serviceID = rs.getInt("ServiceID");
-                Date createDate = rs.getDate("CreatedDate");
-                int categoryPostID = rs.getInt("CategoryPostID");
-                String briefInfo = rs.getString("BriefInfo");
-                String thumbnail = rs.getString("thumbnail");
-                Post post = new Post(title, content, authorID, serviceID, createDate, categoryPostID, briefInfo, thumbnail);
+//                System.out.println("method");
+                int postID = rs.getInt(1);
+                String title = rs.getString(2);
+                String content = rs.getString(3);
+                String briefInfo = rs.getString(4);
+                String thumbnail = rs.getString(5);
+                int authorID = rs.getInt(6);
+                int serviceID = rs.getInt(7);
+                Date createdDate = rs.getDate(8);
+                String categoryPost = rs.getString(9);
+//                System.out.println("method");
+                Post post = new Post(postID, title, content, briefInfo, thumbnail, authorID, serviceID, createdDate, categoryPost);
                 postList.add(post);
             }
             rs.close();
@@ -41,91 +45,89 @@ public class PostDAO extends MyDAO {
             e.printStackTrace();
         }
         return postList;
-
     }
 
-    public void insert(Post post) {
-        xSql = "INSERT INTO [dbo].[Post] ([Title] ,[Content] ,[BriefInfo], [thumbnail], [AuthorID] ,[ServiceID] ,"
-                + "[CreatedDate] ,[CategoryPostID] \n"
-                + "VALUES (? ,? ,? ,? ,? ,?,?,?)";
-        try {
-            ps = con.prepareStatement(xSql);
-            ps.setString(1, post.getTitle());
-            ps.setString(2, post.getContent());
-            ps.setString(3, post.getBriefInfo());
-            ps.setString(4, post.getThumbnail());
-            ps.setInt(5, post.getAuthorID());
-            ps.setInt(6, post.getServiceID());
-            ps.setDate(7, post.getCreatedDate());
-            ps.setDouble(8, post.getCategoryPostID());
-            ps.executeUpdate();
-            ps.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void deleteByID(String ID) {
-        xSql = "delete from Services where [PostID]=?";
-        try {
-            ps = con.prepareStatement(xSql);
-            ps.setString(1, ID);
-            ps.executeUpdate();
-            //con.commit();
-            ps.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void update(Post post) {
-        xSql = "UPDATE [dbo].[Post]\n"
-                + "SET [Title] = ? ,[Content] = ? , [BriefInfo] = ? , [thumbnail] = ?, [AuthorID] = ? ,[ServiceID] = ? ,[CreatedDate] = ? ,[CategoryPostID] = ? "
-                + "WHERE [PostID] = ?";
-
-        try {
-            ps = con.prepareStatement(xSql);
-            ps.setString(1, post.getTitle());
-            ps.setString(2, post.getContent());
-            ps.setString(3, post.getBriefInfo());
-            ps.setString(4, post.getThumbnail());
-            ps.setInt(5, post.getAuthorID());
-            ps.setInt(6, post.getServiceID());
-            ps.setDate(7, post.getCreatedDate());
-            ps.setDouble(8, post.getCategoryPostID());
-            ps.executeUpdate();
-            ps.close();
-        } catch (SQLException e) {
-            // Handle exception appropriately
-            System.out.println(e);
-        }
-    }
-
-    // search by titlte
-    public List<Post> searchByTitle(String a) {
+    public List<Post> searchPost(String txtSearch) {
         List<Post> postList = new ArrayList<>();
-        xSql = "SELECT * FROM [dbo].[Post]"
-                + "WHERE [Title] LIKE '?'"
-                + "ORDER BY [CreatedDate]";
+        xSql = "SELECT *  FROM [dbo].[Posts] where [Title] like ?";
         try {
             ps = con.prepareStatement(xSql);
-            ps.setString(1, a);
-            rs = ps.executeQuery();
+            ps.setString(1, "%" + txtSearch + "%");
+            rs=ps.executeQuery();
             while (rs.next()) {
-                String title = rs.getString("Title");
-                String content = rs.getString("Content");
-                String briefInfo = rs.getString("BriefInfo");
-                String thumbnail= rs.getString("thumbnail");
-                int authorID = rs.getInt("AuthorID");
-                int serviceID = rs.getInt("ServiceID");
-                Date createDate = rs.getDate("CreatedDate");
-                int categoryPostID = rs.getInt("CategoryPostID");
-                Post post = new Post(title, content, authorID, serviceID, createDate, categoryPostID, briefInfo, thumbnail);
+                int postID = rs.getInt(1);
+                String title = rs.getString(2);
+                String content = rs.getString(3);
+                String briefInfo = rs.getString(4);
+                String thumbnail = rs.getString(5);
+                int authorID = rs.getInt(6);
+                int serviceID = rs.getInt(7);
+                Date createdDate = rs.getDate(8);
+                String categoryPost = rs.getString(9);
+                Post post = new Post(postID, title, content, briefInfo, thumbnail, authorID, serviceID, createdDate, categoryPost);
                 postList.add(post);
             }
+            rs.close();
+            ps.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return postList;
     }
+
+    public List<Post> searchPostByCategory(String Category) {
+        List<Post> postList = new ArrayList<>();
+        xSql = "SELECT *  FROM [dbo].[Posts] where [CategoryPost] like ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, "%" + Category + "%");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int postID = rs.getInt(1);
+                String title = rs.getString(2);
+                String content = rs.getString(3);
+                String briefInfo = rs.getString(4);
+                String thumbnail = rs.getString(5);
+                int authorID = rs.getInt(6);
+                int serviceID = rs.getInt(7);
+                Date createdDate = rs.getDate(8);
+                String categoryPost = rs.getString(9);
+                Post post = new Post(postID, title, content, briefInfo, thumbnail, authorID, serviceID, createdDate, categoryPost);
+                postList.add(post);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return postList;
+    }
+
+    public List<String> allCategoryPost() {
+        xSql = "SELECT DISTINCT CategoryPost FROM Posts";
+        List<String> categoryList = new ArrayList<>();
+        try {
+            ps = con.prepareStatement(xSql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                categoryList.add(rs.getString(1));
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return categoryList;
+    }
+
+    public static void main(String[] args) {
+        PostDAO dao = new PostDAO();
+        List<String> list= dao.allCategoryPost();
+        for (String string : list) {
+            System.out.println(string);
+        }
+        
+
+    }
+
 }

@@ -18,41 +18,71 @@
             integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
             crossorigin="anonymous"
             />
-        <link rel="stylesheet" href="./resources/style/resetpassword-list-style.css">
+        <style>
+            .khoi {
+                width: 500px;
+                border-radius: 5px;
+                box-shadow: 0px 0px 10px 0px #000;
+                position: absolute;
+                padding: 40px;
+                margin-top: 150px;
+                margin-left: 370px;
+            }
+            .pass1 input{
+                padding: 16px;
+                width: 100%;
+            }
+            .button1 input{
+                width: 50%;
+                background-color: #f2f2f2;
+                box-shadow: 0px 0px 10px 0px #000;
+            }
+            .button1 button{
+                width: 50%;
+                background-color: #f2f2f2;
+                box-shadow: 0px 0px 10px 0px #000;
+            }
+        </style>
         <title>JSP Page</title>
     </head>
     <body>
 
         <div class="container">
-            <div class="Khoi">
-               <form action="resetpassword" method="POST">
-                <div class="d-flex justify-content-center"><h1>RESET PASSWORD</h1></div> 
-                <p>
-                <div class="d-flex justify-content-center email">
-                    <input type="text" name="Email" value="" placeholder="Email"/>
-                </div> 
-                <p>
-                <div class="d-flex justify-content-center password">
-                    <input type="text" name="newPassword" value="" placeholder="New Password"/>
-                </div>     
-                <p>
-                <div class="d-flex justify-content-center password">
-                    <input type="text" name="conPassword" value="" placeholder="Confirm password" />
+
+            <form action="resetpassword?action=confirmpassword&phu2=${requestScope.phu1}" method="POST">
+                <div class=" khoi">
+                    <div class="d-flex justify-content-center"><h1>RESET PASSWORD</h1></div> 
+
+                    <p>
+                    <div class="d-flex justify-content-center password pass1">
+                        <input type="text" name="Mail" value="" placeholder="Mail"/>
+                    </div>     
+                    <p>
+                    <div class="d-flex justify-content-center password pass1">
+                        <input type="password" name="newPassword" value="" placeholder="New Password"/>
+                    </div>     
+                    <p>
+                    <div class="d-flex justify-content-center password pass1">
+                        <input type="password" name="conPassword" value="" placeholder="Confirm password" />
+                    </div>
+
+                    <p>
+
+                    <div class="d-flex justify-content-center button1">
+                        <input type="submit" value="Enter" />
+                    </div>  
+                    <p>
+                    <div class="d-flex justify-content-center button1">
+                        <button onclick="window.location.href = 'index.html'">
+                            Cancel
+                        </button>
+                    </div>
+                    ${requestScope.success}
+                    <p>
                 </div>
-                <p>
-                <div class="d-flex justify-content-center button">
-                    <input type="submit" value="Enter" />
-                </div>  
-                <p>
-                <div class="d-flex justify-content-center button">
-                    <button onclick="window.location.href = 'index.html'">
-                        Cancel
-                    </button>
-                </div>
-                <p>
             </form>       
-            </div>
-              
+
+
         </div>
 
 

@@ -11,113 +11,102 @@ import java.sql.Date;
  * @author quanh
  */
 public class Post {
-
     private int postID;
     private String title;
     private String content;
+    private String briefInfo;
+    private String thumbnail;
     private int authorID;
     private int serviceID;
     private Date createdDate;
-    private int categoryPostID;
-    private String briefInfo;
-    private String thumbnail;
+    private String categoryPost;
 
     public Post() {
     }
+    
 
-    public Post(int postID, String title, String content, int authorID, int serviceID, Date createdDate, int categoryPostID, String briefInfo, String thumbnail) {
+    public Post(String title, String content, String briefInfo, String thumbnail,Date createdDate, String categoryPost) {
+        this.title = title;
+        this.content = content;
+        this.briefInfo = briefInfo;
+        this.thumbnail = thumbnail;
+        this.createdDate = createdDate;
+        this.categoryPost = categoryPost;
+    }
+
+    public Post(int postID, String title, String content, String briefInfo, String thumbnail, int authorID, int serviceID, Date createdDate, String categoryPost) {
         this.postID = postID;
         this.title = title;
         this.content = content;
+        this.briefInfo = briefInfo;
+        this.thumbnail = thumbnail;
         this.authorID = authorID;
         this.serviceID = serviceID;
         this.createdDate = createdDate;
-        this.categoryPostID = categoryPostID;
-        this.briefInfo = briefInfo;
-        this.thumbnail = thumbnail;
-    }
-
-    public Post(String title, String content, int authorID, int serviceID, Date createdDate, int categoryPostID, String briefInfo, String thumbnail) {
-        this.title = title;
-        this.content = content;
-        this.authorID = authorID;
-        this.serviceID = serviceID;
-        this.createdDate = createdDate;
-        this.categoryPostID = categoryPostID;
-        this.briefInfo = briefInfo;
-        this.thumbnail = thumbnail;
+        this.categoryPost = categoryPost;
     }
 
     public int getPostID() {
         return postID;
     }
 
-    public void setPostID(int postID) {
-        this.postID = postID;
-    }
-
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getContent() {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public int getAuthorID() {
-        return authorID;
-    }
-
-    public void setAuthorID(int authorID) {
-        this.authorID = authorID;
-    }
-
-    public int getServiceID() {
-        return serviceID;
-    }
-
-    public void setServiceID(int serviceID) {
-        this.serviceID = serviceID;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public int getCategoryPostID() {
-        return categoryPostID;
-    }
-
-    public void setCategoryPostID(int categoryPostID) {
-        this.categoryPostID = categoryPostID;
-    }
-
     public String getBriefInfo() {
         return briefInfo;
-    }
-
-    public void setBriefInfo(String briefInfo) {
-        this.briefInfo = briefInfo;
     }
 
     public String getThumbnail() {
         return thumbnail;
     }
 
+    public int getAuthorID() {
+        return authorID;
+    }
+
+    public int getServiceID() {
+        return serviceID;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public String getCategoryPost() {
+        return categoryPost;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setBriefInfo(String briefInfo) {
+        this.briefInfo = briefInfo;
+    }
+
     public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
     }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public void setCategoryPost(String categoryPost) {
+        this.categoryPost = categoryPost;
+    }
+    
+    
+    
 
 }

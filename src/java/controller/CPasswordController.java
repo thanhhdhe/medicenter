@@ -35,20 +35,24 @@ public class CPasswordController extends HttpServlet {
             //change password by User ID 
             // Get session from login
             HttpSession session= request.getSession();
-            User user = (User) request.getAttribute("email");
+            String email = (String) session.getAttribute("email");
             // change database pass word
             // get new password 
+            String currentPassword = request.getParameter("currentpassword");
             String newPassword = request.getParameter("newPassword");
             String conPassword = request.getParameter("conPassword");
+            
+            UserDAO userdao= new UserDAO();
+            
             //check if newPassword == confirm password so change pass, error
-            if(newPassword.equals(conPassword)){
-                UserDAO userdao= new UserDAO();
-                userdao.resetPassword(newPassword, user.getEmail());
-                request.setAttribute("success", "Change password successful");
-                response.sendRedirect("changePassword.jsp");
+            if(newPassword.equals(conPassword) && userdao.loginAccount(email, currentPassword)){
+                
+                userdao.resetPassword(newPassword, email);
+                
+                response.sendRedirect("index.jsp");
             } else {
-                request.setAttribute("error", "Error: new password different to confirm password");
-                request.getRequestDispatcher("changePassword.jsp").forward(request, response);
+                
+                request.getRequestDispatcher("index.jsp").forward(request, response);
             }
             
         }

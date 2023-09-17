@@ -53,7 +53,7 @@
                 <form>
                     <input placeholder="Your email address" type="text" id="email" name="email" required><br><br>
                     <input placeholder="Password" type="password" id="password" name="password" required><br><br>
-                    <a href="forgetpassword">Forgot password?</a><br><br>
+                    <a href="resetpassword?action=forgetpassword">Forgot password?</a><br><br>
                     <button class="Login-button" onclick="attemptLogin()">Login</button>
                     <p style="color:red;" id="loginResult" value=""></p>
                     Not a member, <a href="#" onclick="showRegisterPopup()">register here!</a><br><br><br>
