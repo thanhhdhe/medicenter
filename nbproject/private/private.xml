@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
+        <file>
+            <url>web/view/postPage.jsp</url>
+            <bookmark id="1">
+                <name/>
+                <line>0</line>
+                <key/>
+            </bookmark>
+        </file>
+    </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/New%20folder/swp391-children-care/web/META-INF/context.xml</file>
+            <file>file:/D:/New%20folder/swp391-children-care/web/view/layout/Header.jsp</file>
             <file>file:/D:/New%20folder/swp391-children-care/src/java/Database/PostDAO.java</file>
+            <file>file:/D:/New%20folder/swp391-children-care/web/resources/js/service-list-script.js</file>
             <file>file:/D:/New%20folder/swp391-children-care/src/java/Database/ServiceDAO.java</file>
+            <file>file:/D:/New%20folder/swp391-children-care/web/view/service-list.jsp</file>
             <file>file:/D:/New%20folder/swp391-children-care/src/java/controller/PostController.java</file>
+            <file>file:/D:/New%20folder/swp391-children-care/web/resources/js/post-list-script_1.js</file>
             <file>file:/D:/New%20folder/swp391-children-care/web/view/postPage.jsp</file>
-            <file>file:/D:/New%20folder/swp391-children-care/web/WEB-INF/web.xml</file>
+            <file>file:/D:/New%20folder/swp391-children-care/web/view/layout/Head.jsp</file>
             <file>file:/D:/New%20folder/swp391-children-care/src/java/Database/MyDAO.java</file>
-            <file>file:/D:/New%20folder/swp391-children-care/src/java/Database/DBContext.java</file>
-            <file>file:/D:/New%20folder/swp391-children-care/src/java/model/Post.java</file>
         </group>
     </open-files>
 </project-private>
