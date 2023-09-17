@@ -36,7 +36,7 @@
                 width: 100%;
             }
 
-            .register-form input[type="submit"]{
+            .Register-button {
                 margin-top: 5px;
                 width: 100%;
             }
@@ -64,37 +64,52 @@
             <div class="register-form">
                 <span class="close-button" onclick="hideRegisterPopup()">&#x2716;</span>
                 <h2 style="text-align:center;color:gray;">Register</h2>
-                <form action="register" method="post">
+                <form>
                     <div class="name-input-container">
                         <input placeholder="First name" type="text" id="firstname" name="firstname" required>
                         <input placeholder="Last name" type="text" id="lastname" name="lastname" required>
                     </div>  
                     <input placeholder="Your email address" type="email" id="email" name="email" required>
-                    <input placeholder="Numberphone" type="text" id="numberphone" name="numberphone" required>
+                    <input placeholder="Phone number" type="text" id="phonenumber" name="phonenumber" required>
                     <input placeholder="Password" type="password" id="password" name="password" required>
                     <input placeholder="Repeat Password" type="password" id="repeat_password" name="repeat_password" required>
-                    <input type="submit" value="Register"> <br><br>
+                    <button class="Register-button" onclick="attemptRegister()">Register</button> <br><br>
+                    <p style="color:red;" id="registerResult" value=""></p>
                     Already have an account, <a onclick="showLoginPopup()" href="#">login now!</a><br>
-                    <% String error = request.getAttribute("error");
-                    if (error != null) { %>
-                    <p> <%= error %> </p>
-                    <% } %>
                 </form>
             </div>
         </div>
 
         <script>
+            function attemptRegister() {
+
+                var firstname = document.getElementById("firstname").value;
+                var lastname = document.getElementById("lastname").value;
+                var email = document.getElementById("email").value;
+                var phonenumber = document.getElementById("phonenumber").value;
+                var password = document.getElementById("password").value;
+                var repeat_password = document.getElementById("repeat_password").value;
+
+                // Create an AJAX request to check login
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var result = xhr.responseText;
+                        document.getElementById("registerResult").textContent = result;
+                    }
+                };
+
+                xhr.open("POST", "register", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.send("firstname=" + firstname + "&lastname=" + lastname + "&email=" + email + "&phonenumber=" + phonenumber + "&password=" + password + "&repeat_password=" + repeat_password);
+            }
+
             function showRegisterPopup() {
-                document.getElementById('loginPopup').style.display = 'none';
+                // Close login pop-up by default
+                hideLoginPopup();
+                // Open the register pop-up
                 var registerPopup = document.getElementById('registerPopup');
                 registerPopup.style.display = 'flex';
-
-                var overlay = document.querySelector('.register-popup');
-                overlay.addEventListener('click', function (event) {
-                    if (event.target === overlay) {
-                        hideRegisterPopup();
-                    }
-                });
             }
 
             function hideRegisterPopup() {
