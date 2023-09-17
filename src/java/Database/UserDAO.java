@@ -25,7 +25,7 @@ public class UserDAO extends MyDAO {
     }
     
     public boolean loginAccount(String email, String password) {
-        xSql = "select * from Users where email = ? and password = ?";
+        xSql = "select * from [dbo].[Users] where email = ? and password = ?";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, email);

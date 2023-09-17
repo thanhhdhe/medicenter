@@ -30,8 +30,8 @@
                 padding: 16px;
                 width: 100%;
             }
-            
-            .login-form input[type="submit"]{
+
+            .Login-button {
                 width: 100%;
             }
 
@@ -50,36 +50,51 @@
                 <span class="close-button" onclick="hideLoginPopup()">&#x2716;</span>
                 <h2 style="text-align:center;color:gray;">Login</h2>
                 <br>
-                <form action="login" method="post">
+                <form>
                     <input placeholder="Your email address" type="text" id="email" name="email" required><br><br>
                     <input placeholder="Password" type="password" id="password" name="password" required><br><br>
-                    <a href="forgetpassword">Forgot password?</a><br><br>
-                    <input type="submit" value="Login"> <br><br>
+                    <a href="resetpassword?action=forgetpassword">Forgot password?</a><br><br>
+                    <button class="Login-button" onclick="attemptLogin()">Login</button>
+                    <p style="color:red;" id="loginResult" value=""></p>
                     Not a member, <a href="#" onclick="showRegisterPopup()">register here!</a><br><br><br>
-                    <% String error = (String) request.getAttribute("error");
-                    if (error != null) { %>
-                    <p> <%= error %> </p>
-                    <% } %>
-    }%
                 </form>
             </div>
         </div>
 
         <script>
-            function showLoginPopup() {
-                document.getElementById('registerPopup').style.display = 'none';
-                var loginPopup = document.getElementById('loginPopup');
-                loginPopup.style.display = 'flex';
+            function attemptLogin() {
+                var email = document.getElementById("email").value;
+                var password = document.getElementById("password").value;
 
-                var overlay = document.querySelector('.login-popup');
-                overlay.addEventListener('click', function (event) {
-                    if (event.target === overlay) {
-                        hideLoginPopup();
+                // Create an AJAX request to check login
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var result = xhr.responseText;
+                        document.getElementById("loginResult").textContent = result;
+
+                        if (result === "Login successful!") {
+                            popupTimeout = setTimeout(hideLoginPopup, 8000);
+                        }
+
                     }
-                });
+                };
+
+                xhr.open("POST", "login", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                xhr.send("email=" + email + "&password=" + password);
+            }
+
+            function showLoginPopup() {
+                // Close resgister pop-up by default
+                hideRegisterPopup();
+                // Open the login pop-up
+                var loginPopup = document.getElementById('loginPopup');
+                loginPopup.style.display = 'flex ';
             }
 
             function hideLoginPopup() {
+                document.getElementById("loginResult").textContent = "";
                 document.getElementById('loginPopup').style.display = 'none';
             }
         </script>

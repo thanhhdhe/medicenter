@@ -17,6 +17,10 @@
         <servlet-class>controller.ResetPassController</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>RegisterController</servlet-name>
+        <servlet-class>controller.RegisterController</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>PostController</servlet-name>
         <servlet-class>controller.PostController</servlet-class>
     </servlet>
@@ -35,10 +39,6 @@
     <servlet-mapping>
         <servlet-name>ResetPassController</servlet-name>
         <url-pattern>/resetpassword</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>PostController</servlet-name>
-        <url-pattern>/postPage</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

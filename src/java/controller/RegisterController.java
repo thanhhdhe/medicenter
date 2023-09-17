@@ -13,11 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
-/**
- *
- * @author hbich
- */
-public class LoginController extends HttpServlet {
+public class RegisterController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -32,20 +28,22 @@ public class LoginController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         String email = request.getParameter("email");
+        String firstname = request.getParameter("firstname");
+        String lastname = request.getParameter("lastname");
+        String phonenumber = request.getParameter("phonenumber");
         String password = request.getParameter("password");
+        String repeat_password = request.getParameter("repeat_password");
         UserDAO u = new UserDAO();
-        if (u.loginAccount(email, password)) {
-            HttpSession session = request.getSession(true);
-            session.setAttribute("email", email);
-            response.getWriter().write("Login successful!");
-        } if (!email.isEmpty() && !password.isEmpty()) {
-            response.getWriter().write("Wrong email or password");
+        if (!email.isEmpty() && !firstname.isEmpty() && !lastname.isEmpty() && !phonenumber.isEmpty()) {
+            if (!password.matches(repeat_password)) {
+                response.getWriter().write("Your re-enter password is not match with your password");
+            }
         }
+
     }
 
     @Override
     public String getServletInfo() {
         return "Short description";
     }
-
 }
