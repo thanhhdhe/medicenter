@@ -1,9 +1,9 @@
+package controller;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller;
-
 import Database.PostDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,7 +16,7 @@ import model.Post;
 
 /**
  *
- * @author quanh
+ * @author Admin
  */
 public class PostController extends HttpServlet {
 
@@ -46,27 +46,23 @@ public class PostController extends HttpServlet {
         }
     }
 
-    protected int countPage(List<Post> list) {
-        int numPage = list.size() / 5;
-        if (list.size() % 5 != 0) {
-            numPage += 1;
-        }
-        return numPage;
-    }
-
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try ( PrintWriter out = response.getWriter()) {
-            PostDAO postDao = new PostDAO();
-            List<Post> list = postDao.getAllPosts();
-            int endPage = countPage(list);
-            List<String> categoryList = postDao.allCategoryPost();
-
-            request.setAttribute("list", list);
-            request.setAttribute("endPage", endPage);
-            request.setAttribute("categoryList", categoryList);
-            request.getRequestDispatcher("./view/postPage.jsp").forward(request, response);
+        String event = request.getParameter("event");
+        if (event.equals("post-list")) {
+            request.getRequestDispatcher("./view/post-list.jsp").forward(request, response);
+        } else if (event.equals("post-list-userchoose")) {
+            renderPostListByOption(request, response);
         }
     }
 
@@ -81,17 +77,49 @@ public class PostController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try ( PrintWriter out = response.getWriter()) {
-            String txtSearch = request.getParameter("search");
-            PostDAO postDao = new PostDAO();
-            List<Post> list = postDao.searchPost(txtSearch);
-            int endPage = countPage(list);
-            List<String> categoryList = postDao.allCategoryPost();
-            request.setAttribute("list", list);
-            request.setAttribute("endPage", endPage);
-            request.setAttribute("categoryList", categoryList);
-            request.getRequestDispatcher("./view/postPage.jsp").forward(request, response);
+        processRequest(request, response);
+    }
+
+    protected void renderPostListByOption(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        PostDAO postDAO = new PostDAO();
+        String postTitle = (request.getParameter("postTitle") + "").equals("null") ? "" : (request.getParameter("postTitle") + "");
+        String postCategory = (request.getParameter("postCategory") + "").equals("null") ? "" : (request.getParameter("postCategory") + "");
+        int page = (request.getParameter("page") + "").equals("page") ? 1 : Integer.parseInt(request.getParameter("page") + "");
+        List<Post> postList = postDAO.getSortedPagedPostsByUserChoice((page - 1) * 5, 5, postTitle, postCategory);
+
+        String paginationHtml = "";
+        for (int i = 1; i <= (postList.size() / 5 + 1) * 2 / 2; i++) {
+            paginationHtml += "<button class=\"pagination-btn ms-2 " + (i == page ? "active" : "inactive")
+                    + "\" data-page=\"" + i + "\" onclick=\"loadPagePosts(" + i + ")\">" + i + "</button>";
         }
+        // Thêm giá trị phân trang vào header của phản hồi
+        response.addHeader("pagination", paginationHtml);
+
+        for (Post post : postList) {
+            out.print("<div class=\"row p-3 mb-2\">\n"
+                    + "                        <div class=\"col-md-3\">\n"
+                    + "                            <img src=\"" + post.getThumbnail() + "\" alt=\"ìmg\" class=\"w-100 h-100 object-contain\" />\n"
+                    + "                        </div>\n"
+                    + "                        <div class=\"col-md-6\">\n"
+                    + "                            <h3>" + post.getTitle() + "</h3>\n"
+                    + "                            <p class=\"truncate\">\n"
+                    + "                                " + post.getBriefInfo() + "\n"
+                    + "                            </p>\n"
+                    + "                        </div>\n"
+                    + "                        <div class=\"info-aside col-md-3\">\n"
+                    + "                            <div class=\"price-wrap\">");
+            out.print("</div>\n"
+                    + "                            <br />\n"
+                    + "                            <p>\n"
+                    + "                                <a href=\"#\" class=\"btn btn-primary btn-block\"> Details </a>\n"
+                    + "                            </p>\n"
+                    + "                        </div>\n"
+                    + "                    </div>");
+        }
+        out.flush();
+        out.close();
     }
 
     /**
@@ -103,13 +131,7 @@ public class PostController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
     public static void main(String[] args) {
-        PostController p= new PostController();
-        PostDAO postDao = new PostDAO();
-        List<String> categoryList = postDao.allCategoryPost();
-        for (String string : categoryList) {
-            System.out.println(string);
-        }
+        
     }
 }
