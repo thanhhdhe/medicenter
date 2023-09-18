@@ -44,6 +44,10 @@
         <servlet-name>PostController</servlet-name>
         <url-pattern>/postPage</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RegisterController</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
