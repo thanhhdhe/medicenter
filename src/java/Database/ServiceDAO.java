@@ -387,8 +387,8 @@ public class ServiceDAO extends MyDAO {
     public static void main(String[] args) {
         ServiceDAO serviceDAO = new ServiceDAO();
         CategoryServiceDAO categoryServiceDAO = new CategoryServiceDAO();
-        List<Service> list = serviceDAO.getSortedPagedServicesByOption(0, 10, "s", "1", "1");
-//List<Service> list = serviceDAO.getAllServices();
+//        List<Service> list = serviceDAO.getSortedPagedServicesByOption(0, 10, "s", "1", "1");
+List<Service> list = serviceDAO.getAllServices();
 //        List<Service> list = serviceDAO.getSortedPagedServicesBySearch(5, 5, "");
         for (Service service : list) {
             System.out.println(service.getTitle());
