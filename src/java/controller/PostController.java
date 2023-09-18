@@ -84,13 +84,25 @@ public class PostController extends HttpServlet {
             throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         PostDAO postDAO = new PostDAO();
-        String postTitle = (request.getParameter("postTitle") + "").equals("null") ? "" : (request.getParameter("postTitle") + "");
-        String postCategory = (request.getParameter("postCategory") + "").equals("null") ? "" : (request.getParameter("postCategory") + "");
-        int page = (request.getParameter("page") + "").equals("page") ? 1 : Integer.parseInt(request.getParameter("page") + "");
-        List<Post> postList = postDAO.getSortedPagedPostsByUserChoice((page - 1) * 5, 5, postTitle, postCategory);
+//        String postTitle = (request.getParameter("postTitle") + "").equals("null") ? "" : (request.getParameter("postTitle") + "");
+//        String postCategory = (request.getParameter("postCategory") + "").equals("null") ? "" : (request.getParameter("postCategory") + "");
+//        int page = (request.getParameter("page") + "").equals("page") ? 1 : Integer.parseInt(request.getParameter("page") + "");
+        String postTitle = request.getParameter("postTitle");
+        String postCategory = request.getParameter("postCategory");
+        int page = Integer.parseInt(request.getParameter("page"));
+        List<Post> postList;
+        if (postCategory.isEmpty()) {
+            postList = postDAO.getPostedPagedPostsBySearch((page - 1) * 5, 5, postTitle);
 
+        } else {
+            postList = postDAO.getSortedPagedPostsByUserChoice((page - 1) * 5, 5, postTitle, postCategory);
+        }
         String paginationHtml = "";
-        for (int i = 1; i <= (postList.size() / 5 + 1) * 2 / 2; i++) {
+        int numOfPage = postDAO.getCountOfPostsUserChoose(postTitle, postCategory) / 5;
+        if (postDAO.getCountOfPostsUserChoose(postTitle, postCategory) % 5 != 0) {
+            numOfPage += 1;
+        }
+        for (int i = 1; i <= numOfPage; i++) {
             paginationHtml += "<button class=\"pagination-btn ms-2 " + (i == page ? "active" : "inactive")
                     + "\" data-page=\"" + i + "\" onclick=\"loadPagePosts(" + i + ")\">" + i + "</button>";
         }
@@ -100,7 +112,10 @@ public class PostController extends HttpServlet {
         for (Post post : postList) {
             out.print("<div class=\"row p-3 mb-2\">\n"
                     + "                        <div class=\"col-md-3\">\n"
-                    + "                            <img src=\"" + post.getThumbnail() + "\" alt=\"ìmg\" class=\"w-100 h-100 object-contain\" />\n"
+                    + "                            <img src=\"" + post.getAuthorID() + "\" alt=\"img\" class=\"w-100 h-100 object-contain\" />\n"
+                    + "                        </div>\n"
+                    + "                        <div class=\"col-md-3\">\n"
+                    + "                            <img src=\"" + post.getThumbnail() + "\" alt=\"img\" class=\"w-100 h-100 object-contain\" />\n"
                     + "                        </div>\n"
                     + "                        <div class=\"col-md-6\">\n"
                     + "                            <h3>" + post.getTitle() + "</h3>\n"
@@ -109,8 +124,6 @@ public class PostController extends HttpServlet {
                     + "                            </p>\n"
                     + "                        </div>\n"
                     + "                        <div class=\"info-aside col-md-3\">\n"
-                    + "                            <div class=\"price-wrap\">");
-            out.print("</div>\n"
                     + "                            <br />\n"
                     + "                            <p>\n"
                     + "                                <a href=\"#\" class=\"btn btn-primary btn-block\"> Details </a>\n"
@@ -131,7 +144,7 @@ public class PostController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
     public static void main(String[] args) {
-        
     }
 }

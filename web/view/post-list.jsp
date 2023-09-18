@@ -12,18 +12,14 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
         <!-- Google Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
-
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
             rel="stylesheet"
             integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
             crossorigin="anonymous"
             />
-
         <link rel="stylesheet" href="./resources/css/posts-list-style.css">
         <title>Post Page</title>
     </head>
@@ -41,16 +37,18 @@
             for (String categoryPost : categoryPostList) {%>
                             <option value="<%=categoryPost%>"><%=categoryPost%></option>
                             <%}%>
-
                         </select>
                     </div>
                 </div>
                 <div class="col-md-9" id="post-list">
 
-                     Posts List 
+                    Posts List 
                     <%List<Post> list = postDAO.getPostedPaged(0, 5);
                 for (Post post : list) {%>
                     <div class="row p-3 mb-2">
+                        <div class="col-md-3">
+                            <img src="<%=post.getAuthorID()%>" alt="img" class="w-100 h-100 object-contain" />
+                        </div>
                         <div class="col-md-3">
                             <img src="<%=post.getThumbnail()%>" alt="img" class="w-100 h-100 object-contain" />
                         </div>
@@ -61,7 +59,6 @@
                             </p>
                         </div>
                         <div class="info-aside col-md-3">
-                            
                             <br />
                             <p>
                                 <a href="#" class="btn btn-primary btn-block"> Details </a>
@@ -69,18 +66,16 @@
                         </div>
                     </div>
                     <%}%>
-
-
                 </div>
             </div>
         </div>
         <div class="d-flex justify-content-center" id="pagination-container">
-            <button class="pagination-btn ms-2 active" data-page="1">1</button>
-            <%for (int i = 2; i <=(postDAO.getPostCount()/5+1)*2/2; i++) {%>
-            <button class="pagination-btn ms-2 inactive" data-page="<%=i%>"><%=i%></button>
+            <% int numOfPage= postDAO.getPostCount()/5;
+            if(postDAO.getPostCount()%5 != 0) numOfPage+= 1;
+            for (int i = 1; i <=numOfPage; i++) {%>
+            <button class="pagination-btn ms-2 inactive" data-page="<%=i%>" onclick="loadPagePosts(<%=i%>)"> <%=i%></button>
             <%}%>
         </div>
-
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="./resources/js/post-list-script.js"></script>
         <script

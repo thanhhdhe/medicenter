@@ -247,47 +247,38 @@ public class PostDAO extends MyDAO {
         return total;
     }
 
-//    public int getCountOfPostsUserChoose(String keyword, String categoryIDInput, String staffIDInput) {
-//        int count = 0;
-//        String sql = "SELECT COUNT(*) AS count "
-//                + "FROM [dbo].[Posts] AS s "
-//                + "JOIN PostStaff ss ON s.PostID = ss.PostID "
-//                + "WHERE s.Title LIKE ? ";
-//
-//        if (!categoryIDInput.isEmpty()) {
-//            sql += "AND s.CategoryID = ? ";
-//        }
-//
-//        if (!staffIDInput.isEmpty()) {
-//            sql += "AND ss.StaffID = ? ";
-//        }
-//
-//        try {
-//            ps = con.prepareStatement(sql);
-//            ps.setString(1, "%" + keyword + "%");
-//
-//            int parameterIndex = 2;
-//            if (!categoryIDInput.isEmpty()) {
-//                ps.setString(parameterIndex++, categoryIDInput);
-//            }
-//
-//            if (!staffIDInput.isEmpty()) {
-//                ps.setString(parameterIndex++, staffIDInput);
-//            }
-//
-//            rs = ps.executeQuery();
-//            if (rs.next()) {
-//                count = rs.getInt("count");
-//            }
-//
-//            rs.close();
-//            ps.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        return count;
-//    }
+    public int getCountOfPostsUserChoose(String keyword, String categoryPost) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) AS count "
+                + "FROM [dbo].[Posts]"
+                + "WHERE Title LIKE ? ";
+
+        if (!categoryPost.isEmpty()) {
+            sql += "AND CategoryPost = ? ";
+        }
+
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setString(1, "%" + keyword + "%");
+
+            if (!categoryPost.isEmpty()) {
+                ps.setString(2, categoryPost);
+            }
+
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+
     public List<String> allCategoryPost() {
         xSql = "SELECT DISTINCT CategoryPost FROM Posts ";
         List<String> categoryList = new ArrayList<>();
@@ -307,15 +298,17 @@ public class PostDAO extends MyDAO {
 
     public static void main(String[] args) {
         PostDAO postDAO = new PostDAO();
-        //        List<Post> list = postDAO.getSortedPagedPostsByUserChoice(0, 2, "titl", "category");
-        //        for (Post post : list) {
-        //            System.out.println(post.getPostID());
-        //        }
-        //        List<Post> list = postDAO.getPostedPagedPostsBySearch(5, 5, "");
-        List<String> list = postDAO.allCategoryPost();
-        for (String string : list) {
-            System.out.println(string);
+//        List<Post> list = postDAO.getSortedPagedPostsByUserChoice(4, 4, "", "c");
+        List<Post> list = postDAO.getPostedPagedPostsBySearch(3, 3, "t");
+        for (Post post : list) {
+            System.out.println(post.getPostID());
         }
+//        System.out.println(postDAO.getCountOfPostsUserChoose("t", "category"));
+//                List<Post> list = postDAO.getPostedPagedPostsBySearch(5, 5, "");
+//        List<String> list = postDAO.allCategoryPost();
+//        for (String string : list) {
+//            System.out.println(string);
+//        }
 
     }
 }
