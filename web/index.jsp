@@ -7,6 +7,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 
+    <jsp:include page="view/login.jsp"/>
+    <jsp:include page="view/register.jsp"/>
     <jsp:include page="view/layout/Head.jsp"/>
     <body>
         <jsp:include page="view/layout/Header.jsp"/>

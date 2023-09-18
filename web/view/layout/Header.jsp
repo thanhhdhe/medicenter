@@ -60,8 +60,8 @@
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav><!-- .navbar -->
 
-            <a href="#appointment" class="appointment-btn scrollto"><span class="d-none d-md-inline">Register Now</a>
-            <a href="#appointment" class="appointment-btn scrollto"><span class="d-none d-md-inline">Login</a>
+            <a onclick="showRegisterPopup()" class="appointment-btn scrollto"><span class="d-none d-md-inline">Register Now</a>
+            <a onclick="showLoginPopup()" class="appointment-btn scrollto"><span class="d-none d-md-inline">Login</a>
 
         </div>
     </header>

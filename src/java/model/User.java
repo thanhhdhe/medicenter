@@ -22,11 +22,12 @@ public class User {
     private String phoneNumber;
     private String profileImage;
     private String role;
+    private String address;
 
     public User() {
     }
 
-    public User(int userID, String userName, String password, String Email, String firstName, String lastName, String gender, Date birthday, String phoneNumber, String profileImage, String role) {
+    public User(int userID, String userName, String password, String Email, String firstName, String lastName, String gender, Date birthday, String phoneNumber, String profileImage, String role, String address) {
         this.userID = userID;
         this.userName = userName;
         this.password = password;
@@ -38,6 +39,7 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.profileImage = profileImage;
         this.role = role;
+        this.address = address;
     }
 
     public int getUserID() {
@@ -127,5 +129,15 @@ public class User {
     public void setRole(String role) {
         this.role = role;
     }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+    
+    
     
 }

@@ -20,31 +20,45 @@ import org.apache.commons.codec.digest.DigestUtils;
  */
 public class ActivateAccount extends HttpServlet {
 
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try ( PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            String email = request.getParameter("key1");
+            String firstname = request.getParameter("key2");
+            String lastname = request.getParameter("key3");
+            String phonenumber = request.getParameter("key4");
+            String password = request.getParameter("key5");
+            String hashCode = request.getParameter("key6");
+            String address = request.getParameter("key7");
+            String gender = request.getParameter("key8");
+            if (hashCode.equals(DigestUtils.md5Hex(email))) {
+                UserDAO u = new UserDAO();
+                User user = new User();
+                user.setEmail(email);
+                user.setFirstName(firstname);
+                user.setLastName(lastname);
+                user.setPhoneNumber(phonenumber);
+                user.setPassword(password);
+                user.setAddress(address);
+                user.setGender(gender);
+                u.insert(user);
+            }
+            response.sendRedirect("index.jsp");
+        }
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        String email = request.getParameter("key1");
-        String firstname = request.getParameter("key2");
-        String lastname = request.getParameter("key3");
-        String phonenumber = request.getParameter("key4");
-        String password = request.getParameter("key5");
-        String hashCode = request.getParameter("key6");
-        String address = request.getParameter("key7");
-        String gender = request.getParameter("key8");
-        if (hashCode.equals(DigestUtils.md5Hex(email))) {
-            UserDAO u = new UserDAO();
-            User user = new User();
-            user.setEmail(email);
-            user.setFirstName(firstname);
-            user.setLastName(lastname);
-            user.setPhoneNumber(phonenumber);
-            user.setPassword(password);
-            user.setAddress(address);
-            user.setGender(gender);
-            u.insert(user);
-        }
-        response.sendRedirect("index.jsp");
+        processRequest(request, response);
     }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
 }

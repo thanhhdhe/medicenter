@@ -37,7 +37,6 @@ public class RegisterController extends HttpServlet {
         String repeat_password = request.getParameter("rrepeat_password");
         String gender = request.getParameter("rgender");
         String address = request.getParameter("raddress");
-        UserDAO u = new UserDAO();
         if (firstname.isEmpty()) {
             response.getWriter().write("You need to write your firstname!");
             return;
@@ -75,6 +74,7 @@ public class RegisterController extends HttpServlet {
             response.getWriter().write("Your re-enter password is not match with your password");
             return;
         }
+        UserDAO u = new UserDAO();
         if (u.selectUser(email) != null) {
             response.getWriter().write("Your email has been used");
             return;
@@ -82,7 +82,7 @@ public class RegisterController extends HttpServlet {
         String newPword = DigestUtils.md5Hex(password);
         String myHash = DigestUtils.md5Hex(email);
         response.getWriter().write("Your email should receive email for verification");
-        Mail.sendEmail(email, "Activate your account", "Your verification link :: " + "http://localhost:9999/ChildenCare/ActivateAccount?key1="
+        Mail.sendEmail(email, "Activate your account", "Your verification link : " + "http://localhost:9999/ChildenCare/ActivateAccount?key1="
                 + email + "&key2=" + firstname + "&key3=" + lastname + "&key4=" + phonenumber + "&key5="
                 + newPword + "&key6=" + myHash + "&key7=" + address + "&key8=" + gender);
     }

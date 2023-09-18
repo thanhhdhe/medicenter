@@ -24,6 +24,10 @@
         <servlet-name>PostController</servlet-name>
         <servlet-class>controller.PostController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ActivateAccount</servlet-name>
+        <servlet-class>controller.ActivateAccount</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServiceController</servlet-name>
         <url-pattern>/service</url-pattern>
@@ -47,6 +51,10 @@
     <servlet-mapping>
         <servlet-name>RegisterController</servlet-name>
         <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ActivateAccount</servlet-name>
+        <url-pattern>/ActivateAccount</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
