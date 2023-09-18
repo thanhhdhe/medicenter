@@ -8,6 +8,10 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 
+
+<jsp:include page="view/login.jsp"/>
+
+<jsp:include page="view/register.jsp"/>
 <jsp:include page="view/layout/Head.jsp"/>
 <body>
     <jsp:include page="view/layout/Header.jsp"/>
