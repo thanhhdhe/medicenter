@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.User;
-import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
@@ -37,6 +36,7 @@ public class ActivateAccount extends HttpServlet {
             user.setPassword(value[4]);
             user.setAddress(value[5]);
             user.setGender(value[6]);
+            user.setRole("user");
             u.insert(user);
             response.sendRedirect("index.jsp");
         }
