@@ -36,7 +36,7 @@ public class ActivateAccount extends HttpServlet {
             user.setPassword(value[4]);
             user.setAddress(value[5]);
             user.setGender(value[6]);
-            user.setRole("user");
+            user.setRole("user");   
             u.insert(user);
             response.sendRedirect("index.jsp");
         }
