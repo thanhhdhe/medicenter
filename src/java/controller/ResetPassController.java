@@ -21,6 +21,8 @@ import model.Mail;
  */
 public class ResetPassController extends HttpServlet {
 
+    private int counter = 0;
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -33,6 +35,7 @@ public class ResetPassController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
         // lay ve action de chia hanh dong
         String action = request.getParameter("action");
         // chia tung hang dong cua servlet theo action
@@ -46,9 +49,9 @@ public class ResetPassController extends HttpServlet {
 
             //gui phu1 toi reset .jsp
             request.setAttribute("phu1", strphu1);
-            request.getRequestDispatcher("resetPassword.jsp").forward(request, response);
+            request.getRequestDispatcher("/view/resetPassword.jsp").forward(request, response);
             // gui user toi trang reset
-            response.sendRedirect("resetPassword.jsp");
+            
         } else if (action.equals("confirmpassword")) {
             //lay password new va confirm
             String newpassword = request.getParameter("newPassword");
@@ -57,44 +60,154 @@ public class ResetPassController extends HttpServlet {
             String phu2 = request.getParameter("phu2");
             //lay ve mail de gui di
             String email = request.getParameter("Mail");
-            //tao 1 session nham viec tinh toan thoi gian ton tai cua link
-            HttpSession session = request.getSession();
-            session.setMaxInactiveInterval(10);
-            session.setAttribute("thoigian", "thoigian");
-            // ma hoa phu2 va bien OTP de bao mat cho khach hang bien phu 2 se cong doan string la thoi gian roi ma hoa
-            String OTP = MaHoa.toSHA1(request.getParameter("phu2") + "thoigian");
 
+            // ma hoa phu2 va bien OTP de bao mat cho khach hang bien phu 2 se cong doan string la thoi gian roi ma hoa
+            String OTP = MaHoa.toSHA1(request.getParameter("phu2") + "thoigian");           
+            
             //kiem tra xem pass co hop le khong
             if (newpassword.equals(confirmpassword)) {
                 Mail.sendEmail(email, System.currentTimeMillis() + "",
                         "http://localhost:9999/ChildrenCare/resetpassword?phu3=" + phu2
                         + "&OTP=" + OTP + "&action=resetpass");
-                response.sendRedirect("resetPassword.jsp");
+                request.getRequestDispatcher("/view/resetPassword.jsp").forward(request, response);
+                
             } else {
-                response.sendRedirect("resetPassword.jsp");
+                //neu nhu nguoi dung nhap sai se tao ra bien token khac
+                // tao ra bien phu random 
+                Random ra = new Random();
+                int phu1 = ra.nextInt(100);
+                //ma hoa bien phu1 nham muc dich bao mat
+                //chuyen phu thanh chuoi
+                String strphu1 = MaHoa.toSHA1(phu1 + "");
+
+                //kiem tra mail co hop le hay khong
+                
+                request.setAttribute("phu1", strphu1);
+                if(email.equals("")||email==null){
+                    request.setAttribute("notify", "Ban phai dien email chinh xac");
+                } else if(newpassword.equals("")||newpassword==null){
+                    request.setAttribute("notify", "ban phai dien day du thong tin");
+                } else if(confirmpassword.equals("")||confirmpassword==null){
+                    request.setAttribute("notify", "ban phai dien day du thong tin");
+                } else{
+                    request.setAttribute("notify", "Mat khau khong hop le");
+                }
+                request.getRequestDispatcher("/view/resetPassword.jsp").forward(request, response);
+                
             }
         } else if (action.equals("resetpass")) {
-            //lay bien phu 3 va OTP ve de check
-            // xac nhan phu3 sao cho bang voi OTP 
-            // phu3 + thoigian dem di ma hoa
-            String strphu3 = MaHoa.toSHA1(request.getParameter("phu3") + "thoigian");
-//            String phu3 = request.getParameter("phu3");
-            String OTP = request.getParameter("OTP");
-            System.out.println(strphu3);
-            System.out.println(OTP);
-            //lay bien session de kiem tra neu qua 10s thi bien se bi huy cung nhu link khong hop lo
-            HttpSession session = request.getSession();
-            String thoigian = (String) session.getAttribute("thoigian");
+            //tao ra 1 bien toan cuc la counter de dem so lan goi toi servlet
+            //neu nhu chay action la lan dau tien se tao ra session
+            // tu lan 2 se bo di dieu nay giup chay duoc tren nhieu browser
+            // tao ra session o action nay khien no chay duoc tren nen tang browser bat ky do nguoi dung click
+            //lay bien session de kiem tra neu qua 1000s thi bien se bi huy cung nhu link khong hop lo
+            // y tuong la duong link chi ton tai trong 1000s va chi kha dung trong lan dau tien click
+            counter++;
+            System.out.println(counter);
+            if (counter == 1) {
+                HttpSession session = request.getSession();
+                session.setMaxInactiveInterval(1000);
+                session.setAttribute("thoigian", "thoigian");
+                //lay bien phu 3 va OTP ve de check
+                // xac nhan phu3 sao cho bang voi OTP 
+                // phu3 + thoigian dem di ma hoa
+                String strphu3 = MaHoa.toSHA1(request.getParameter("phu3") + "thoigian");
+                // String phu3 = request.getParameter("phu3");
+                String OTP = request.getParameter("OTP");
+                System.out.println(strphu3);
+                System.out.println(OTP);
 
-            if (!OTP.equals(strphu3) || thoigian == null) {
-                request.setAttribute("success", "that bai");
-                request.getRequestDispatcher("resetPassword.jsp").forward(request, response);
-                response.sendRedirect("resetPassword.jsp");
+                String thoigian = (String) session.getAttribute("thoigian");
+
+                if (!OTP.equals(strphu3) || thoigian == null) {
+                    // tao ra bien phu random
+                    Random ra = new Random();
+                    int phu1 = ra.nextInt(100);
+                    //ma hoa bien phu1 nham muc dich bao mat
+                    //chuyen phu thanh chuoi
+                    String strphu1 = MaHoa.toSHA1(phu1 + "");
+
+                    //gui phu1 toi reset .jsp
+                    request.setAttribute("phu1", strphu1);
+                    request.setAttribute("notify", "That bai");
+                    request.getRequestDispatcher("/view/resetPassword.jsp").forward(request, response);
+
+                } else {
+                    //xoa bo session neu nhu da thanh cong
+                    session.invalidate();
+                    //thong bao thanh cong
+                    out.println("<!DOCTYPE html>\n"
+                            + "<html>\n"
+                            + "<head>\n"
+                            + "    <meta charset=\"UTF-8\">\n"
+                            + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+                            + "    <style>\n"
+                            + "        body {\n"
+                            + "            background-color: #f2f2f2;\n"
+                            + "            font-family: Arial, sans-serif;\n"
+                            + "            display: flex;\n"
+                            + "            justify-content: center;\n"
+                            + "            align-items: center;\n"
+                            + "            height: 100vh;\n"
+                            + "            margin: 0;\n"
+                            + "        }\n"
+                            + "        \n"
+                            + "        .container {\n"
+                            + "            text-align: center;\n"
+                            + "            background-color: #ffffff;\n"
+                            + "            border-radius: 10px;\n"
+                            + "            padding: 20px;\n"
+                            + "            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n"
+                            + "        }\n"
+                            + "        \n"
+                            + "        h1 {\n"
+                            + "            font-size: 36px;\n"
+                            + "            color: #333;\n"
+                            + "        }\n"
+                            + "        \n"
+                            + "        p {\n"
+                            + "            font-size: 18px;\n"
+                            + "            color: #666;\n"
+                            + "        }\n"
+                            + "    </style>\n"
+                            + "</head>\n"
+                            + "<body>\n"
+                            + "    <div class=\"container\">\n"
+                            + "        <h1>Thành công</h1>\n"
+                            + "        <p>Congratulations! You've achieved success.</p>\n"
+                            + "    </div>\n"
+                            + "</body>\n"
+                            + "</html>");
+
+                }
             } else {
-                request.setAttribute("success", "thanh cong");
-                request.getRequestDispatcher("resetPassword.jsp").forward(request, response);
-                response.sendRedirect("resetPassword.jsp");
+                //counter > 1 thi link khong hieu luc
+                Random ra = new Random();
+                int phu1 = ra.nextInt(100);
+                //ma hoa bien phu1 nham muc dich bao mat
+                //chuyen phu thanh chuoi
+                String strphu1 = MaHoa.toSHA1(phu1 + "");
+
+                //gui phu1 toi reset .jsp
+                request.setAttribute("phu1", strphu1);
+                request.setAttribute("notify", "link da dung roi");
+                request.getRequestDispatcher("/view/resetPassword.jsp").forward(request, response);
             }
+
+        } else {
+            //counter > 1 thi link khong hieu luc
+            
+            //nguoi dung nhap sai link tao ra bien random moi
+            Random ra = new Random();
+            int phu1 = ra.nextInt(100);
+            //ma hoa bien phu1 nham muc dich bao mat
+            //chuyen phu thanh chuoi
+            String strphu1 = MaHoa.toSHA1(phu1 + "");
+
+            //gui phu1 toi reset .jsp
+            request.setAttribute("phu1", strphu1);
+            request.setAttribute("notify", "link khong dung");
+            request.getRequestDispatcher("/view/resetPassword.jsp").forward(request, response);
         }
     }
 

@@ -89,7 +89,7 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <form action="test" method="POST" onsubmit="return validateForm(this);">
+        <form action="changepassword" method="POST" >
             <input type="button" value="ChangePassword" onclick="myFunction()"/>
             <div class="d-flex justify-content-center">
                 <div class=" popup" > 
@@ -97,27 +97,31 @@
                         <div class="title1"><h1>CHANGE PASSWORD</h1></div> 
                         <p>
                         <div>
-                            <input type="password" name="currentpassword" value="" placeholder="Current Password" />
+                            <input type="password" name="currentpassword" 
+                                   value="" placeholder="Current Password" required/>
                         </div> 
                         <p>
                         <div>
-                            <input type="password" name="newPassword" value="" placeholder="New Password" />
+                            <input type="password" name="newPassword" 
+                                   value="" placeholder="New Password" required />
                         </div>     
                         <p>
                         <div>
-                            <input type="password" name="conPassword" value="" placeholder="Confirm password"/>
+                            <input type="password" name="conPassword" 
+                                   value="" placeholder="Confirm password" required/>
                         </div>
                         <p>
                         <div class="button1">
-                            <input type="submit" value="ENTER"  />
+                            <input type="button" value="ENTER" onclick="validatePassword();"/>
                         </div>
                         <p>
                         <div class="button1">
                             <input type="button" value="CANCEL" onclick="myFunction()" />
                         </div> 
                         <p>
-                        <div id="errorMessage" style="color: red; display: none;"></div>
-                        
+                        <div id="error" style="color: red;"></div>
+
+
                     </div>
                 </div>
             </div>
@@ -132,25 +136,37 @@
                 popup.classList.toggle("show");
 
             }
-            function validateForm(form) {
-                // Lấy giá trị của mật khẩu mới và mật khẩu xác nhận
-                var newPassword = form.newPassword.value;
-                var conPassword = form.conPassword.value;
+            function validatePassword() {
+                var currentPassword = document.getElementsByName("currentpassword")[0].value; // Lấy giá trị của trường currentpassword
+                var newPassword = document.getElementsByName("newPassword")[0].value; // Lấy giá trị của trường newPassword
+                var conPassword = document.getElementsByName("conPassword")[0].value;
 
-                // Lấy thẻ div chứa lỗi
-                var errorMessage = document.getElementById("errorMessage");
-                
-                // Kiểm tra xem mật khẩu mới và mật khẩu xác nhận có bằng nhau
-                if (newPassword === conPassword &&  newPassword !== "") {
-                    // Nếu bằng nhau, hiển thị nút "ENTER" và ẩn lỗi
-                    errorMessage.style.display = "none";
-                    return true; // Cho phép form submission
-                } else {
-                    // Nếu không bằng nhau, hiển thị lỗi và ẩn nút "ENTER"
-                    errorMessage.innerText = "Mật khẩu mới và mật khẩu xác nhận không khớp.";
-                    errorMessage.style.display = "block";
-                    return false; // Ngăn chặn form submission
-                }
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "changepassword", true);
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            // Xử lý phản hồi từ servlet (thông tin báo lỗi hoặc thành công)
+                            var responseText = xhr.responseText;
+                            var errorMessage = document.getElementById("error");
+                            errorMessage.style.color = "red";
+                            errorMessage.innerHTML = responseText;
+
+                            if (responseText.indexOf("notify:") === 1) {
+                                myFunction(); // Hiển thị pop-up
+                            }
+                        }
+                    }
+                };
+
+                // Gửi dữ liệu form bằng cách chuyển đổi nó thành chuỗi URL-encoded
+                var formData = "currentpassword=" + currentPassword +
+                        "&newPassword=" + newPassword +
+                        "&conPassword=" + conPassword;
+
+                xhr.send(formData);
             }
         </script>
     </body>

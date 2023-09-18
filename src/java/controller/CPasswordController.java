@@ -2,7 +2,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package controller;
 
 import Database.UserDAO;
@@ -20,47 +19,50 @@ import model.User;
  * @author pc
  */
 public class CPasswordController extends HttpServlet {
-   
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            //change password by User ID 
-            // Get session from login
-            HttpSession session= request.getSession();
-            String email = (String) session.getAttribute("email");
-            // change database pass word
-            // get new password 
-            String currentPassword = request.getParameter("currentpassword");
-            String newPassword = request.getParameter("newPassword");
-            String conPassword = request.getParameter("conPassword");
-            
-            UserDAO userdao= new UserDAO();
-            
-            //check if newPassword == confirm password so change pass, error
-            if(newPassword.equals(conPassword) && userdao.loginAccount(email, currentPassword)){
-                
-                userdao.resetPassword(newPassword, email);
-                
-                response.sendRedirect("index.jsp");
-            } else {
-                
-                request.getRequestDispatcher("index.jsp").forward(request, response);
-            }
-            
-        }
-    } 
+//        try (PrintWriter out = response.getWriter()) {
+//            //change password by User ID 
+//            // Get session from login
+//            HttpSession session= request.getSession();
+//            String email = (String) session.getAttribute("email");
+//            // change database pass word
+//            // get new password 
+//            String currentPassword = request.getParameter("currentpassword");
+//            String newPassword = request.getParameter("newPassword");
+//            String conPassword = request.getParameter("conPassword");
+//            
+//            UserDAO userdao= new UserDAO();
+//            
+//            //check if newPassword == confirm password so change pass, error
+//            if(newPassword.equals(conPassword) && userdao.loginAccount(email, currentPassword)){
+//                
+//                userdao.resetPassword(newPassword, email);
+//                
+//                response.sendRedirect("index.jsp");
+//            } else {
+//                
+//                request.getRequestDispatcher("index.jsp").forward(request, response);
+//            }
+//            
+//        }
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
+    /**
      * Handles the HTTP <code>GET</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -68,12 +70,13 @@ public class CPasswordController extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
-    } 
+    }
 
-    /** 
+    /**
      * Handles the HTTP <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -81,12 +84,35 @@ public class CPasswordController extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        processRequest(request, response);
+            throws ServletException, IOException {
+        response.setContentType("text/plain;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        String currentPassword = request.getParameter("currentpassword");
+        String newPassword = request.getParameter("newPassword");
+        String conPassword = request.getParameter("conPassword");
+
+        if (currentPassword == null || newPassword == null || conPassword == null
+                || currentPassword.equals("")
+                || newPassword.equals("") || conPassword.equals("")) {
+            // Xử lý lỗi khi một hoặc nhiều trường không tồn tại trong form
+
+            response.getWriter().write("notify: ban phai nhap du cac thong tin");
+        } else {
+            if (currentPassword.equals("1")) {
+                if (newPassword.equals(conPassword)) {
+                    response.getWriter().write("notify: thanh cong");
+                } else {
+                    response.getWriter().write("notify: hai mat khau phai giong nhau");
+                }
+            } else {
+                response.getWriter().write("notify: mat khau cu khong chinh xac");
+            }
+        }
     }
 
-    /** 
+    /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override
