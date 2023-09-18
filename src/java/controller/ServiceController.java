@@ -106,7 +106,7 @@ public class ServiceController extends HttpServlet {
                     + "                        <div class=\"col-md-6\">\n"
                     + "                            <h3>" + service.getTitle() + "</h3>\n"
                     + "                            <p class=\"truncate\">\n"
-                    + "                                " + service.getServiceDetail() + "\n"
+                    + "                                " + service.getBrief() + "\n"
                     + "                            </p>\n"
                     + "                        </div>\n"
                     + "                        <div class=\"info-aside col-md-3\">\n"

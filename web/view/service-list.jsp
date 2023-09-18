@@ -66,7 +66,7 @@
                         <div class="col-md-6">
                             <h3><%=service.getTitle()%></h3>
                             <p class="truncate">
-                                <%=service.getServiceDetail()%>
+                                <%=service.getBrief()%>
                             </p>
                         </div>
                         <div class="info-aside col-md-3">
