@@ -60,12 +60,11 @@ public class UserDAO extends MyDAO {
                 String firstName = rs.getString("firstName");
                 String lastName = rs.getString("lastName");
                 String gender = rs.getString("gender");
-                Date birthday = rs.getDate("birthday");
                 String phoneNumber = rs.getString("phoneNumber");
                 String profileImage = rs.getString("profileImage");
                 String role = rs.getString("role");
                 String address = rs.getString("address");
-                u = new User(userID, userName, password, Email, firstName, lastName, gender, birthday, phoneNumber, profileImage, role, address);
+                u = new User(userID, userName, password, Email, firstName, lastName, gender, phoneNumber, profileImage, role, address);
             }
             ps.close();
         } catch (Exception e) {
@@ -75,7 +74,7 @@ public class UserDAO extends MyDAO {
     }
 
     public void insert(User x) {
-        xSql = "INSERT INTO [dbo].[User]([email],[firstname],[lastname],[password],[gender],[address],[phonenumber])"
+        xSql = "INSERT INTO [dbo].[Users]([Email],[FirstName],[LastName],[Password],[Gender],[Address],[PhoneNumber],[Role])"
                 + "     VALUES(?,?,?,?,?,?,?)";
         try {
             ps = con.prepareStatement(xSql);
@@ -86,6 +85,7 @@ public class UserDAO extends MyDAO {
             ps.setString(5, x.getGender());
             ps.setString(6, x.getAddress());
             ps.setString(7, x.getPhoneNumber());
+            ps.setString(8, x.getRole());
             ps.executeUpdate();
             ps.close();
         } catch (Exception e) {
