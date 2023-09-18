@@ -15,7 +15,7 @@
         <div class="container d-flex align-items-center">
 
             <h1 class="logo me-auto"><a href="index.html">Medilab</a></h1>
-             <!--<a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+            <!--<a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
             <nav id="navbar" class="navbar order-last order-lg-0">
                 <ul>
@@ -24,10 +24,10 @@
                         <ul>
                             <c:forEach items="${requestScope.category}" var="cate">
                                 <li><a href="#">${cate.categoryName}</a>
-                                    
+
                                 </li>
                             </c:forEach>
-                            
+
                         </ul>
                     </li>
                     <li><a class="nav-link scrollto" href="#doctors">Doctors</a></li>
@@ -53,8 +53,9 @@
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav><!-- .navbar -->
 
-            <a href="login" class="appointment-btn scrollto"><span class="d-none d-md-inline">Register Now</a>
-            <a href="#appointment" class="appointment-btn scrollto"><span class="d-none d-md-inline">Login</a>
+            <a onclick="showRegisterPopup()" class="appointment-btn scrollto"><span class="d-none d-md-inline">Register Now</a>
+            <a onclick="showLoginPopup()" class="appointment-btn scrollto"><span class="d-none d-md-inline">Login</a>
+
 
         </div>
     </header>
