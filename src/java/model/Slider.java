@@ -9,13 +9,24 @@ package model;
  * @author Admin
  */
 public class Slider {
+
     private int sliderID;
     private String title;
     private String image;
     private String backlink;
     private String status;
+    private String brief;
 
     public Slider() {
+    }
+
+    public Slider(int sliderID, String title, String image, String backlink, String status, String brief) {
+        this.sliderID = sliderID;
+        this.title = title;
+        this.image = image;
+        this.backlink = backlink;
+        this.status = status;
+        this.brief = brief;
     }
 
     public Slider(int sliderID, String title, String image, String backlink, String status) {
@@ -72,8 +83,13 @@ public class Slider {
     public void setStatus(String status) {
         this.status = status;
     }
-    
-    
-    
-    
+
+    public String getBrief() {
+        return brief;
+    }
+
+    public void setBrief(String brief) {
+        this.brief = brief;
+    }
+
 }

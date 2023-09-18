@@ -13,7 +13,7 @@ import model.Slider;
  * @author Admin
  */
 public class SliderDAO extends MyDAO {
-    public List<Slider> getAllStaffs() {
+    public List<Slider> getAllSlide() {
         List<Slider> sliderList = new ArrayList<>();
         xSql = "SELECT *  FROM [dbo].[Slider]";
         try {
