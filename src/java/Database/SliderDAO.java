@@ -13,6 +13,7 @@ import model.Slider;
  * @author Admin
  */
 public class SliderDAO extends MyDAO {
+
     public List<Slider> getAllSlide() {
         List<Slider> sliderList = new ArrayList<>();
         xSql = "SELECT *  FROM [dbo].[Slider]";
@@ -22,11 +23,11 @@ public class SliderDAO extends MyDAO {
             while (rs.next()) {
                 int sliderId = rs.getInt("SliderId");
                 String title = rs.getString("Title");
+                String brief = rs.getString("Brief");
                 String image = rs.getString("Images");
                 String backlink = rs.getString("Backlink");
-                String status = rs.getString("status");
-                String Brief = rs.getString("Brief");
-                Slider slider = new Slider(sliderId, title, image, backlink, status);
+                String status = rs.getString("Status");
+                Slider slider = new Slider(sliderId, title, brief, image, backlink, status);
                 sliderList.add(slider);
             }
             rs.close();
