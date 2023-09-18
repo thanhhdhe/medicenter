@@ -25,26 +25,19 @@ public class ActivateAccount extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try ( PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            String email = request.getParameter("key1");
-            String firstname = request.getParameter("key2");
-            String lastname = request.getParameter("key3");
-            String phonenumber = request.getParameter("key4");
-            String password = request.getParameter("key5");
-            String hashCode = request.getParameter("key6");
-            String address = request.getParameter("key7");
-            String gender = request.getParameter("key8");
-            if (hashCode.equals(DigestUtils.md5Hex(email))) {
-                UserDAO u = new UserDAO();
-                User user = new User();
-                user.setEmail(email);
-                user.setFirstName(firstname);
-                user.setLastName(lastname);
-                user.setPhoneNumber(phonenumber);
-                user.setPassword(password);
-                user.setAddress(address);
-                user.setGender(gender);
-                u.insert(user);
-            }
+            String data = request.getParameter("data");
+            String decode_data = java.net.URLDecoder.decode(data, "UTF-8");
+            String[] value = decode_data.split("&");
+            UserDAO u = new UserDAO();
+            User user = new User();
+            user.setEmail(value[0]);
+            user.setFirstName(value[1]);
+            user.setLastName(value[2]);
+            user.setPhoneNumber(value[3]);
+            user.setPassword(value[4]);
+            user.setAddress(value[5]);
+            user.setGender(value[6]);
+            u.insert(user);
             response.sendRedirect("index.jsp");
         }
     }

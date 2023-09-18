@@ -70,8 +70,17 @@ public class RegisterController extends HttpServlet {
             response.getWriter().write("You need to re-write your password!");
             return;
         }
-        if (!password.matches(repeat_password)) {
+
+        if (!password.equals(repeat_password)) {
             response.getWriter().write("Your re-enter password is not match with your password");
+            return;
+        }
+        if (!email.matches("^[a-zA-Z0-9._%+-]+@gmail\\.com$")) {
+            response.getWriter().write("Your mail is not valid");
+            return;
+        }
+        if (!phonenumber.matches("^(03[2-9]|05[68]|07[06789]|08[1-9]|09[0-9])\\d{7}$")) {
+            response.getWriter().write("Your phone number is not valid");
             return;
         }
         UserDAO u = new UserDAO();
@@ -80,10 +89,13 @@ public class RegisterController extends HttpServlet {
             return;
         }
         String newPword = DigestUtils.md5Hex(password);
-        String myHash = DigestUtils.md5Hex(email);
+        String data = email + "&" + firstname + "&" + lastname + "&" + phonenumber + "&"
+                + newPword + "&" + address + "&" + gender;
+        data = java.net.URLEncoder.encode(data, "UTF-8");
         response.getWriter().write("Your email should receive email for verification");
-        Mail.sendEmail(email, "Activate your account", "Your verification link : " + "http://localhost:9999/ChildenCare/ActivateAccount?key1="
-                + email + "&key2=" + firstname + "&key3=" + lastname + "&key4=" + phonenumber + "&key5="
-                + newPword + "&key6=" + myHash + "&key7=" + address + "&key8=" + gender);
+//        Mail.sendEmail(email, "Activate your account", "Your verification link : " + "http://localhost:9999/ChildrenCare/ActivateAccount?key1="
+//                + email + "&key2=" + firstname + "&key3=" + lastname + "&key4=" + phonenumber + "&key5="
+//                + newPword + "&key6=" + myHash + "&key7=" + address + "&key8=" + gender);
+        Mail.sendEmail(email, "Activate your account", "Your verification link : " + "http://localhost:9999/ChildrenCare/ActivateAccount?data=" + data);
     }
 }
