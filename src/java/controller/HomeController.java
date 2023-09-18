@@ -4,24 +4,29 @@
  */
 package controller;
 
+import Database.CategoryServiceDAO;
+import Database.PostDAO;
 import Database.ServiceDAO;
 import Database.SliderDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import model.CategoryService;
+import model.Post;
+import model.Service;
 import model.Slider;
 
 /**
  *
  * @author Admin
  */
-@WebServlet(name = "SliderController", urlPatterns = {"/slider"})
-public class SliderController extends HttpServlet {
+public class HomeController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,14 +40,17 @@ public class SliderController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-
-        try {
-            SliderDAO sliderDAO = new SliderDAO();
-            List<Slider> sliderList = sliderDAO.getAllStaffs();
-            request.setAttribute("slider", sliderList);
-            request.getRequestDispatcher("homepage.jsp").forward(request, response);
-        } catch (IOException | ServletException e) {
-            System.out.println(e);
+        try ( PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet HomeController</title>");
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet HomeController at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
     }
 
@@ -58,7 +66,25 @@ public class SliderController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+//        processRequest(request, response);
+
+        SliderDAO sliderDAO = new SliderDAO();
+        List<Slider> listSlide = sliderDAO.getAllSlide();
+        request.setAttribute("slider", listSlide);
+
+        PostDAO postDAO = new PostDAO();
+        List<Post> listPost = postDAO.getAllPosts();
+        request.setAttribute("post", listPost);
+
+        CategoryServiceDAO categoryServiceDAO = new CategoryServiceDAO();
+        List<CategoryService> listCategoryService = categoryServiceDAO.getAllCategoryServices();
+        request.setAttribute("category", listCategoryService);
+
+        ServiceDAO serviceDAO = new ServiceDAO();
+        List<Service> listService = serviceDAO.getAllServices();
+        request.setAttribute("services", listService);
+                
+        request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 
     /**
@@ -84,5 +110,6 @@ public class SliderController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
 
 }
