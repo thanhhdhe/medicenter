@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.User;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
@@ -90,22 +91,28 @@ public class CPasswordController extends HttpServlet {
         String currentPassword = request.getParameter("currentpassword");
         String newPassword = request.getParameter("newPassword");
         String conPassword = request.getParameter("conPassword");
-
+        String oldpassword = DigestUtils.md5Hex(currentPassword);
+        //lay ve mail khach hang gui
+        HttpSession session = request.getSession();
+        String email= (String) session.getAttribute("email");
+        UserDAO dao= new UserDAO();
+        User user= dao.getUser(email);
         if (currentPassword == null || newPassword == null || conPassword == null
                 || currentPassword.equals("")
                 || newPassword.equals("") || conPassword.equals("")) {
             // Xử lý lỗi khi một hoặc nhiều trường không tồn tại trong form
 
-            response.getWriter().write("notify: ban phai nhap du cac thong tin");
+            response.getWriter().write("Notify: You must enter complete information.");
         } else {
-            if (currentPassword.equals("1")) {
+            if (oldpassword.equals(user.getPassword())) {
                 if (newPassword.equals(conPassword)) {
-                    response.getWriter().write("notify: thanh cong");
+                    dao.resetPassword(DigestUtils.md5Hex(newPassword), user.getEmail());
+                    response.getWriter().write("Notify: Success.");
                 } else {
-                    response.getWriter().write("notify: hai mat khau phai giong nhau");
+                    response.getWriter().write("Notify: Both passwords must be identical.");
                 }
             } else {
-                response.getWriter().write("notify: mat khau cu khong chinh xac");
+                response.getWriter().write("Notify: The current password is ineffective.");
             }
         }
     }

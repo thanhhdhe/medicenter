@@ -75,7 +75,7 @@ public class RegisterController extends HttpServlet {
             response.getWriter().write("Your re-enter password is not match with your password");
             return;
         }
-        if (!email.matches("^[a-zA-Z0-9._%+-]+@gmail\\.com$")) {
+        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             response.getWriter().write("Your mail is not valid");
             return;
         }

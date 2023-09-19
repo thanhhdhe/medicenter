@@ -154,7 +154,7 @@
                             errorMessage.style.color = "red";
                             errorMessage.innerHTML = responseText;
 
-                            if (responseText.indexOf("notify:") === 1) {
+                            if (responseText.indexOf("Notify:") === 1) {
                                 myFunction(); // Hiển thị pop-up
                             }
                         }

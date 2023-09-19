@@ -4,6 +4,7 @@
  */
 package controller;
 
+import Database.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,6 +15,8 @@ import jakarta.servlet.http.HttpSession;
 import java.util.Random;
 import model.MaHoa;
 import model.Mail;
+import model.User;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
@@ -49,28 +52,77 @@ public class ResetPassController extends HttpServlet {
 
             //gui phu1 toi reset .jsp
             request.setAttribute("phu1", strphu1);
-            request.getRequestDispatcher("/view/resetPassword.jsp").forward(request, response);
+            request.getRequestDispatcher("/view/SendMail.jsp").forward(request, response);
             // gui user toi trang reset
-            
+
         } else if (action.equals("confirmpassword")) {
-            //lay password new va confirm
-            String newpassword = request.getParameter("newPassword");
-            String confirmpassword = request.getParameter("conPassword");
+
             //lay ca bien phu2 de gui lai
             String phu2 = request.getParameter("phu2");
             //lay ve mail de gui di
             String email = request.getParameter("Mail");
 
             // ma hoa phu2 va bien OTP de bao mat cho khach hang bien phu 2 se cong doan string la thoi gian roi ma hoa
-            String OTP = MaHoa.toSHA1(request.getParameter("phu2") + "thoigian");           
+            String OTP = MaHoa.toSHA1(request.getParameter("phu2") + "thoigian");
+            // check email 
+            UserDAO dao = new UserDAO();
             
-            //kiem tra xem pass co hop le khong
-            if (newpassword.equals(confirmpassword)) {
-                Mail.sendEmail(email, System.currentTimeMillis() + "",
-                        "http://localhost:9999/ChildrenCare/resetpassword?phu3=" + phu2
-                        + "&OTP=" + OTP + "&action=resetpass");
-                request.getRequestDispatcher("/view/resetPassword.jsp").forward(request, response);
-                
+                User user = dao.getUser(email);
+            
+            
+            
+            if (user != null && email.equals(user.getEmail())) {
+                //reset counter
+                counter = 0;
+                Mail.sendEmail(email, "Verification Mail" + "",
+                        "http://localhost:9999/ChildrenCare/resetpassword?phu3=" + phu2 
+                        + "&ID=" + user.getUserID()
+                        + "&phoneNumber=" + user.getPhoneNumber()
+                        + "&OTP=" + OTP + "&action=resetpass"
+                        +" \n Do not Public this email for Safety account");
+                out.println("<!DOCTYPE html>\n"
+                        + "<html>\n"
+                        + "<head>\n"
+                        + "    <meta charset=\"UTF-8\">\n"
+                        + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+                        + "    <style>\n"
+                        + "        body {\n"
+                        + "            background-color: #f2f2f2;\n"
+                        + "            font-family: Arial, sans-serif;\n"
+                        + "            display: flex;\n"
+                        + "            justify-content: center;\n"
+                        + "            align-items: center;\n"
+                        + "            height: 100vh;\n"
+                        + "            margin: 0;\n"
+                        + "        }\n"
+                        + "        \n"
+                        + "        .container {\n"
+                        + "            text-align: center;\n"
+                        + "            background-color: #ffffff;\n"
+                        + "            border-radius: 10px;\n"
+                        + "            padding: 20px;\n"
+                        + "            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n"
+                        + "        }\n"
+                        + "        \n"
+                        + "        h1 {\n"
+                        + "            font-size: 36px;\n"
+                        + "            color: #333;\n"
+                        + "        }\n"
+                        + "        \n"
+                        + "        p {\n"
+                        + "            font-size: 18px;\n"
+                        + "            color: #666;\n"
+                        + "        }\n"
+                        + "    </style>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "    <div class=\"container\">\n"
+                        + "        <h1>Success</h1>\n"
+                        + "        <p>Mail has been sent.</p>\n"
+                        + "    </div>\n"
+                        + "</body>\n"
+                        + "</html>");
+
             } else {
                 //neu nhu nguoi dung nhap sai se tao ra bien token khac
                 // tao ra bien phu random 
@@ -81,21 +133,16 @@ public class ResetPassController extends HttpServlet {
                 String strphu1 = MaHoa.toSHA1(phu1 + "");
 
                 //kiem tra mail co hop le hay khong
-                
                 request.setAttribute("phu1", strphu1);
-                if(email.equals("")||email==null){
-                    request.setAttribute("notify", "Ban phai dien email chinh xac");
-                } else if(newpassword.equals("")||newpassword==null){
-                    request.setAttribute("notify", "ban phai dien day du thong tin");
-                } else if(confirmpassword.equals("")||confirmpassword==null){
-                    request.setAttribute("notify", "ban phai dien day du thong tin");
-                } else{
-                    request.setAttribute("notify", "Mat khau khong hop le");
-                }
-                request.getRequestDispatcher("/view/resetPassword.jsp").forward(request, response);
-                
+
+                request.setAttribute("notify", "You must enter the correct email address.");
+
+                request.getRequestDispatcher("/view/SendMail.jsp").forward(request, response);
             }
+
         } else if (action.equals("resetpass")) {
+            //lay new password 
+
             //tao ra 1 bien toan cuc la counter de dem so lan goi toi servlet
             //neu nhu chay action la lan dau tien se tao ra session
             // tu lan 2 se bo di dieu nay giup chay duoc tren nhieu browser
@@ -129,55 +176,18 @@ public class ResetPassController extends HttpServlet {
 
                     //gui phu1 toi reset .jsp
                     request.setAttribute("phu1", strphu1);
-                    request.setAttribute("notify", "That bai");
-                    request.getRequestDispatcher("/view/resetPassword.jsp").forward(request, response);
+                    request.setAttribute("notify", "Link has expired.");
+                    request.getRequestDispatcher("/view/SendMail.jsp").forward(request, response);
 
                 } else {
                     //xoa bo session neu nhu da thanh cong
                     session.invalidate();
-                    //thong bao thanh cong
-                    out.println("<!DOCTYPE html>\n"
-                            + "<html>\n"
-                            + "<head>\n"
-                            + "    <meta charset=\"UTF-8\">\n"
-                            + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
-                            + "    <style>\n"
-                            + "        body {\n"
-                            + "            background-color: #f2f2f2;\n"
-                            + "            font-family: Arial, sans-serif;\n"
-                            + "            display: flex;\n"
-                            + "            justify-content: center;\n"
-                            + "            align-items: center;\n"
-                            + "            height: 100vh;\n"
-                            + "            margin: 0;\n"
-                            + "        }\n"
-                            + "        \n"
-                            + "        .container {\n"
-                            + "            text-align: center;\n"
-                            + "            background-color: #ffffff;\n"
-                            + "            border-radius: 10px;\n"
-                            + "            padding: 20px;\n"
-                            + "            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n"
-                            + "        }\n"
-                            + "        \n"
-                            + "        h1 {\n"
-                            + "            font-size: 36px;\n"
-                            + "            color: #333;\n"
-                            + "        }\n"
-                            + "        \n"
-                            + "        p {\n"
-                            + "            font-size: 18px;\n"
-                            + "            color: #666;\n"
-                            + "        }\n"
-                            + "    </style>\n"
-                            + "</head>\n"
-                            + "<body>\n"
-                            + "    <div class=\"container\">\n"
-                            + "        <h1>Thành công</h1>\n"
-                            + "        <p>Congratulations! You've achieved success.</p>\n"
-                            + "    </div>\n"
-                            + "</body>\n"
-                            + "</html>");
+                    String ID = request.getParameter("ID");
+                    request.setAttribute("ID", ID);
+                    String phoneNumber = request.getParameter("phoneNumber");
+                    request.setAttribute("phoneNumber", phoneNumber);
+                    //di toi reset
+                    request.getRequestDispatcher("/view/resetPassword.jsp").forward(request, response);
 
                 }
             } else {
@@ -187,16 +197,76 @@ public class ResetPassController extends HttpServlet {
                 //ma hoa bien phu1 nham muc dich bao mat
                 //chuyen phu thanh chuoi
                 String strphu1 = MaHoa.toSHA1(phu1 + "");
-
+                
                 //gui phu1 toi reset .jsp
                 request.setAttribute("phu1", strphu1);
-                request.setAttribute("notify", "link da dung roi");
+                request.setAttribute("notify", "Link has been used.");
+                request.getRequestDispatcher("/view/SendMail.jsp").forward(request, response);
+            }
+
+        } else if (action.equals("change")) {
+            //lay mat khau moi de doi
+            String newpassword = request.getParameter("newPassword");
+            String confirmpassword = request.getParameter("conPassword");
+            // kiem tra mat khau da khop chua
+            String ID = request.getParameter("ID");
+            int id= Integer.parseInt(ID);
+            String phoneNumber = request.getParameter("phoneNumber");
+            UserDAO dao = new UserDAO();
+            
+            if (newpassword.equals(confirmpassword)) {
+                dao.resetPasswordByID(DigestUtils.md5Hex(newpassword), phoneNumber, id);
+                out.println("<!DOCTYPE html>\n"
+                        + "<html>\n"
+                        + "<head>\n"
+                        + "    <meta charset=\"UTF-8\">\n"
+                        + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+                        + "    <style>\n"
+                        + "        body {\n"
+                        + "            background-color: #f2f2f2;\n"
+                        + "            font-family: Arial, sans-serif;\n"
+                        + "            display: flex;\n"
+                        + "            justify-content: center;\n"
+                        + "            align-items: center;\n"
+                        + "            height: 100vh;\n"
+                        + "            margin: 0;\n"
+                        + "        }\n"
+                        + "        \n"
+                        + "        .container {\n"
+                        + "            text-align: center;\n"
+                        + "            background-color: #ffffff;\n"
+                        + "            border-radius: 10px;\n"
+                        + "            padding: 20px;\n"
+                        + "            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n"
+                        + "        }\n"
+                        + "        \n"
+                        + "        h1 {\n"
+                        + "            font-size: 36px;\n"
+                        + "            color: #333;\n"
+                        + "        }\n"
+                        + "        \n"
+                        + "        p {\n"
+                        + "            font-size: 18px;\n"
+                        + "            color: #666;\n"
+                        + "        }\n"
+                        + "    </style>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "    <div class=\"container\">\n"
+                        + "        <h1>Success</h1>\n"
+                        + "        <p>Password has been reset.</p>\n"
+                        + "    </div>\n"
+                        + "</body>\n"
+                        + "</html>");
+            } else {
+                request.setAttribute("ID", ID);
+                request.setAttribute("notify", "Passwords do not match.");
                 request.getRequestDispatcher("/view/resetPassword.jsp").forward(request, response);
             }
 
         } else {
             //counter > 1 thi link khong hieu luc
-            
+
             //nguoi dung nhap sai link tao ra bien random moi
             Random ra = new Random();
             int phu1 = ra.nextInt(100);
@@ -206,8 +276,8 @@ public class ResetPassController extends HttpServlet {
 
             //gui phu1 toi reset .jsp
             request.setAttribute("phu1", strphu1);
-            request.setAttribute("notify", "link khong dung");
-            request.getRequestDispatcher("/view/resetPassword.jsp").forward(request, response);
+            request.setAttribute("notify", "link is invaild");
+            request.getRequestDispatcher("/view/SendMail.jsp").forward(request, response);
         }
     }
 

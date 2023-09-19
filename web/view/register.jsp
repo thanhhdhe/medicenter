@@ -29,6 +29,7 @@
 
             .register-form input[type="text"],
             .register-form input[type="email"],
+            .genderBox,
             .register-form input[type="password"] {
                 padding: 16px;
                 margin-top: 5px;
@@ -69,7 +70,11 @@
                         <input placeholder="First name" type="text" id="rfirstname" name="rfirstname" required>
                         <input placeholder="Last name" type="text" id="rlastname" name="rlastname" required>
                     </div>  
-                    <input placeholder="Your gender" type="text" id="rgender" name="rgender" required>
+                    <select class="genderBox" id="rgender" name="rgender">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Others">Others</option>
+                    </select>
                     <input placeholder="Your email address" type="email" id="remail" name="remail" required>
                     <input placeholder="Your phone number" type="text" id="rphonenumber" name="rphonenumber" required>
                     <input placeholder="Your address" type="text" id="raddress" name="raddress" required>
@@ -87,9 +92,10 @@
 
                 var firstname = document.getElementById("rfirstname").value;
                 var lastname = document.getElementById("rlastname").value;
-                var email = document.getElementById("remail").value;;
-                var address = document.getElementById("raddress").value;;
-                var gender = document.getElementById("rgender").value;
+                var email = document.getElementById("remail").value;
+                var address = document.getElementById("raddress").value;
+                var genderBox = document.getElementById("rgender");
+                var gender = genderBox.options[genderBox.selectedIndex].value;
                 var phonenumber = document.getElementById("rphonenumber").value;
                 var password = document.getElementById("rpassword").value;
                 var repeat_password = document.getElementById("rrepeat_password").value;
@@ -100,13 +106,16 @@
                     if (xhr.readyState === 4 && xhr.status === 200) {
                         var result = xhr.responseText;
                         document.getElementById("registerResult").textContent = result;
+                        if (result === "Your email should receive email for verification") {
+                            document.getElementById("registerResult").style = "color:green;";
+                        }
                     }
                 };
 
                 xhr.open("POST", "register", true);
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.send("rfirstname=" + firstname + "&rlastname=" + lastname + "&remail=" + email 
-                        + "&rgender=" + gender + "&raddress="+ address + "&rphonenumber=" + phonenumber 
+                xhr.send("rfirstname=" + firstname + "&rlastname=" + lastname + "&remail=" + email
+                        + "&rgender=" + gender + "&raddress=" + address + "&rphonenumber=" + phonenumber
                         + "&rpassword=" + password + "&rrepeat_password=" + repeat_password);
             }
 
@@ -120,6 +129,15 @@
 
             function hideRegisterPopup() {
                 document.getElementById('registerPopup').style.display = 'none';
+                document.getElementById("registerResult").textContent = "";
+                document.getElementById("rfirstname").value = "";
+                document.getElementById("rlastname").value = "";
+                document.getElementById("remail").value = "";
+                document.getElementById("raddress").value = "";
+                document.querySelector(".genderBox").selectedIndex = 0;
+                document.getElementById("rphonenumber").value = "";
+                document.getElementById("rpassword").value = "";
+                document.getElementById("rrepeat_password").value = "";
             }
         </script>
 
