@@ -55,15 +55,15 @@
 
                     <p>
                     <div class="d-flex justify-content-center password pass1">
-                        <input type="text" name="Mail" value="" placeholder="Mail"/>
+                        <input type="text" name="Mail" value="" placeholder="Mail" required/>
                     </div>     
                     <p>
                     <div class="d-flex justify-content-center password pass1">
-                        <input type="password" name="newPassword" value="" placeholder="New Password"/>
+                        <input type="password" name="newPassword" value="" placeholder="New Password" required/>
                     </div>     
                     <p>
                     <div class="d-flex justify-content-center password pass1">
-                        <input type="password" name="conPassword" value="" placeholder="Confirm password" />
+                        <input type="password" name="conPassword" value="" placeholder="Confirm password" required/>
                     </div>
 
                     <p>
@@ -77,7 +77,11 @@
                             Cancel
                         </button>
                     </div>
-                    ${requestScope.success}
+                    <p>
+                    <div style="justify-content: center; color: red;">
+                        ${requestScope.notify}
+                    </div>
+                    
                     <p>
                 </div>
             </form>       

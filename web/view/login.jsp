@@ -11,7 +11,7 @@
                 width: 100%;
                 height: 100%;
                 background-color: rgba(0, 0, 0, 0.7);
-                z-index: 101;
+                z-index: 1000;
                 justify-content: center;
                 align-items: center;
             }
@@ -50,21 +50,22 @@
                 <span class="close-button" onclick="hideLoginPopup()">&#x2716;</span>
                 <h2 style="text-align:center;color:gray;">Login</h2>
                 <br>
-                <form>
-                    <input placeholder="Your email address" type="text" id="email" name="email" required><br><br>
-                    <input placeholder="Password" type="password" id="password" name="password" required><br><br>
+                <div>
+                    <input placeholder="Your email address" type="text" id="lemail" name="lemail" required><br><br>
+                    <input placeholder="Password" type="password" id="lpassword" name="lpassword" required><br><br>
                     <a href="resetpassword?action=forgetpassword">Forgot password?</a><br><br>
                     <button class="Login-button" onclick="attemptLogin()">Login</button>
+
                     <p style="color:red;" id="loginResult" value=""></p>
                     Not a member, <a href="#" onclick="showRegisterPopup()">register here!</a><br><br><br>
-                </form>
+                </div>
             </div>
         </div>
 
         <script>
             function attemptLogin() {
-                var email = document.getElementById("email").value;
-                var password = document.getElementById("password").value;
+                var email = document.getElementById("lemail").value;
+                var password = document.getElementById("lpassword").value;
 
                 // Create an AJAX request to check login
                 var xhr = new XMLHttpRequest();
@@ -82,7 +83,7 @@
 
                 xhr.open("POST", "login", true);
                 xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.send("email=" + email + "&password=" + password);
+                xhr.send("lemail=" + email + "&lpassword=" + password);
             }
 
             function showLoginPopup() {

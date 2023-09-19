@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
@@ -31,21 +32,23 @@ public class LoginController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+        String email = (String) request.getParameter("lemail");
+        String password = (String) request.getParameter("lpassword");
         UserDAO u = new UserDAO();
-        if (u.loginAccount(email, password)) {
+        if (email.isEmpty()) {
+            response.getWriter().write("You need to write your email!");
+            return;
+        }
+        if (password.isEmpty()) {
+            response.getWriter().write("You need to write your password!");
+            return;
+        }
+        if (u.loginAccount(email, DigestUtils.md5Hex(password))) {
             HttpSession session = request.getSession(true);
             session.setAttribute("email", email);
             response.getWriter().write("Login successful!");
-        } if (!email.isEmpty() && !password.isEmpty()) {
+        } else {
             response.getWriter().write("Wrong email or password");
         }
     }
-
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }
-
 }

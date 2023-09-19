@@ -4,6 +4,10 @@
  */
 package Database;
 
+import java.awt.BorderLayout;
+import java.sql.Date;
+import model.User;
+
 /**
  *
  * @author pc
@@ -23,7 +27,7 @@ public class UserDAO extends MyDAO {
             e.printStackTrace();
         }
     }
-    
+
     public boolean loginAccount(String email, String password) {
         xSql = "select * from [dbo].[Users] where email = ? and password = ?";
         try {
@@ -41,4 +45,59 @@ public class UserDAO extends MyDAO {
         return false;
     }
 
+    public User selectUser(String email) {
+        User u = null;
+        xSql = "select * from [dbo].[Users] where Email = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, email);
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int userID = rs.getInt("userID");
+                String password = rs.getString("password");
+                String Email = rs.getString("email");
+                String firstName = rs.getString("firstName");
+                String lastName = rs.getString("lastName");
+                String gender = rs.getString("gender");
+                String phoneNumber = rs.getString("phoneNumber");
+                String profileImage = rs.getString("profileImage");
+                String role = rs.getString("role");
+                String address = rs.getString("address");
+                u = new User(userID, password, Email, firstName, lastName, gender, phoneNumber, profileImage, role, address);
+            }
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return u;
+    }
+
+    public void insert(User x) {
+        xSql = "INSERT INTO [dbo].[Users]([Email],[FirstName],[LastName],[Password],[Gender],[Address],[PhoneNumber],[Role]) VALUES(N'"
+                + x.getEmail() + "',N'" + x.getFirstName() + "',N'" + x.getLastName() + "','" + x.getPassword() + "',N'"
+                + x.getGender() + "',N'" + x.getAddress() + "','" + x.getPhoneNumber() + "','" + x.getRole() + "')";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+//        UserDAO u = new UserDAO();
+//        User user = new User();
+//         user.setEmail("HieuBui");
+//            user.setFirstName("Hieu");
+//            user.setLastName("BUI");
+//            user.setPhoneNumber("0123123");
+//            user.setPassword("12312124");
+//            user.setAddress("HAHA");
+//            user.setGender("MALE");
+//            user.setRole("user");   
+//            System.out.println(user.getUserID());
+//        u.insert(user);
+    }
 }

@@ -66,7 +66,7 @@
                         <div class="col-md-6">
                             <h3><%=service.getTitle()%></h3>
                             <p class="truncate">
-                                <%=service.getServiceDetail()%>
+                                <%=service.getBrief()%>
                             </p>
                         </div>
                         <div class="info-aside col-md-3">
@@ -91,13 +91,13 @@
                 </div>
             </div>
         </div>
-        <div class="d-flex justify-content-center" id="pagination-container">
+        <div class="d-flex justify-content-center mb-5" id="pagination-container">
             <button class="pagination-btn ms-2 active" data-page="1">1</button>
             <%for (int i = 2; i <=(serviceDAO.getServiceCount()/5+1)*2/2; i++) {%>
             <button class="pagination-btn ms-2 inactive" data-page="<%=i%>"><%=i%></button>
             <%}%>
         </div>
-
+            <jsp:include page="layout/footer.jsp" />
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="./resources/js/service-list-script.js"></script>
         <script

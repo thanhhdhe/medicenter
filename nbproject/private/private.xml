@@ -12,8 +12,24 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
             <file>file:/D:/New%20folder/swp391-children-care/src/java/controller/PostController.java</file>
             <file>file:/D:/New%20folder/swp391-children-care/web/view/post-list.jsp</file>
+=======
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/resources/css/services-list-style.css</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/nbproject/private/private.xml</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/view/register.jsp</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/src/java/model/MaHoa.java</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/resources/css/style.css</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/src/java/Database/ServiceDAO.java</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/src/java/controller/ResetPassController.java</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/index.jsp</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/view/layout/Header.jsp</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/src/java/controller/ServiceController.java</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/resources/js/service-list-script.js</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/view/layout/Head.jsp</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/src/java/model/Service.java</file>
+>>>>>>> 4a0f9d3159b914fed6fd21b73f6e73cb1df5b0ad
         </group>
     </open-files>
 </project-private>
