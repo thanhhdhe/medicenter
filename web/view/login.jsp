@@ -75,7 +75,7 @@
                         document.getElementById("loginResult").textContent = result;
 
                         if (result === "Login successful!") {
-                            popupTimeout = setTimeout(hideLoginPopup, 8000);
+                            popupTimeout = setTimeout(hideLoginPopup, 5000);
                         }
 
                     }
@@ -96,6 +96,8 @@
 
             function hideLoginPopup() {
                 document.getElementById("loginResult").textContent = "";
+                document.getElementById("lemail").value = "";
+                document.getElementById("lpassword").value = "";
                 document.getElementById('loginPopup').style.display = 'none';
             }
         </script>
