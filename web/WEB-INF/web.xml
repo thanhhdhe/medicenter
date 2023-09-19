@@ -27,6 +27,8 @@
     <servlet>
         <servlet-name>PostDetailController</servlet-name>
         <servlet-class>controller.PostDetailController</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>ActivateAccount</servlet-name>
         <servlet-class>controller.ActivateAccount</servlet-class>
     </servlet>
@@ -65,6 +67,8 @@
     <servlet-mapping>
         <servlet-name>PostDetailController</servlet-name>
         <url-pattern>/postDetail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>RegisterController</servlet-name>
         <url-pattern>/register</url-pattern>
     </servlet-mapping>

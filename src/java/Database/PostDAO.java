@@ -332,10 +332,10 @@ public class PostDAO extends MyDAO {
 //        List<Post> list = postDAO.getPostedPagedPostsBySearch(3, 3, "t");
 ////List<Post> list= postDAO.getAllPosts();
 //        for (Post post : list) {
-        Post post = postDAO.getPostByID(2);
-        System.out.println(postDAO.getAvatarByUserID(3));
-        System.out.println(post.getAuthorID());
-//        }
+//        Post post = postDAO.getPostByID(2);
+//        System.out.println(postDAO.getAvatarByUserID(3));
+//        System.out.println(post.getAuthorID());
+////        }
 //    postDAO.getAvatarByUserID(1);
 //        System.out.println(postDAO.getCountOfPostsUserChoose("t", "category"));
 //                List<Post> list = postDAO.getPostedPagedPostsBySearch(5, 5, "");
@@ -343,6 +343,10 @@ public class PostDAO extends MyDAO {
 //        for (String string : list) {
 //            System.out.println(string);
 //        }
-
+        List<Post> list = postDAO.getAllPosts();
+        for (Post post : list) {
+            System.out.println(post.getCategoryPost());
+        }
+//        
     }
 }

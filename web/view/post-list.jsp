@@ -20,7 +20,7 @@
             integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
             crossorigin="anonymous"
             />
-        <link rel="stylesheet" href="./resources/css/posts-list-style.css">
+        <link rel="stylesheet" href="./resources/css/posts-style.css">
         <title>Post Page</title>
     </head>
     <body>
@@ -28,9 +28,8 @@
         <%PostDAO postDAO = new PostDAO();%>
         <div class="d-flex justify-content-center mt-5">
             <div class="container row mt-5 mb-4">
-                <div class="col-md-3">
-                    <div class="card p-3 mt-3">
-                        <input type="text" name="postTitle" placeholder="Search" />
+                    <div class="mb-5">
+                        <input type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3"/>
                         <select class="form-select text-primary mt-3" name="postCategory">
                             <option selected value="">Post Category</option>
                             <%List<String> categoryPostList = postDAO.allCategoryPost();
@@ -38,7 +37,9 @@
                             <option value="<%=categoryPost%>"><%=categoryPost%></option>
                             <%}%>
                         </select>
+
                     </div>
+                    <!-- Category End -->
                 </div>
                 <div class="col-md-9" id="post-list">
                     <div class="container py-5">
@@ -49,7 +50,7 @@
                                 <div class="bg-light rounded overflow-hidden">
                                     <img class="img-fluid w-100" src="<%=post.getThumbnail()%>" alt="">
                                     <div class="p-4">
-                                        <a class="h3 d-block mb-3" href=""><%=post.getTitle()%></a>
+                                        <a class="h3 d-block mb-3" href="/ChildrenCare/postDetail?ID=<%=post.getPostID()%>"><%=post.getTitle()%></a>
                                         <p class="m-0"><%=post.getBriefInfo()%></p>
                                     </div>
                                     <div class="d-flex justify-content-between border-top p-4">

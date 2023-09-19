@@ -60,18 +60,20 @@ public class PostDetailController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try ( PrintWriter out = response.getWriter()) {
-            int ID= Integer.parseInt(request.getParameter("ID"));
+            int ID = Integer.parseInt(request.getParameter("ID"));
             PostDAO postDAO = new PostDAO();
+
             Post post = postDAO.getPostByID(ID);
+
             request.setAttribute("title", post.getTitle());
-            request.setAttribute("author", post.getAuthorID());
+            request.setAttribute("author", postDAO.getNameByUserID(post.getAuthorID()));
+            request.setAttribute("avatar", postDAO.getAvatarByUserID(post.getAuthorID()));
             request.setAttribute("thumbnail", post.getThumbnail());
             request.setAttribute("update-date", post.getCreatedDate());
-            request.setAttribute("category", post.getCategoryPost());
-            request.setAttribute("post-detail", post.getContent());
-
+            request.setAttribute("categoryP", post.getCategoryPost());
+            request.setAttribute("postdetail", post.getContent());
             request.getRequestDispatcher("./view/post-detail.jsp").forward(request, response);
-//            out.print("dcm");s
+            out.print(post.getContent());
         }
     }
 
