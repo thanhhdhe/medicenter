@@ -244,7 +244,7 @@ public class ServiceDAO extends MyDAO {
 
     public Service getServiceByID(String ID) {
         Service service = null;
-        xSql = "select * from [dbo].[Service] where ServiceID = ?";
+        xSql = "select * from [dbo].[Services] where ServiceID = ?";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, ID);
@@ -392,7 +392,7 @@ List<Service> list = serviceDAO.getAllServices();
 //        List<Service> list = serviceDAO.getSortedPagedServicesBySearch(5, 5, "");
         for (Service service : list) {
             System.out.println(service.getTitle());
-        }
+        }        
 //        System.out.println(serviceDAO.getCountOfServicesUserChoose("", "", ""));
 //        System.out.println((serviceDAO.getServiceCount()/5+1)*2/2);
 //        for (int i = 0; i < serviceDAO.getServiceCount(); i++) {

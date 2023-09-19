@@ -68,6 +68,32 @@ public class StaffDAO extends MyDAO {
         }
         return staffList;
     }
+    
+    public Staff getStaffByStaffId(int staffID) {
+        Staff staff = null;
+        xSql = "SELECT *  FROM [dbo].[Staff] where StaffID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, staffID);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                String staffName = rs.getString("StaffName");
+                String password = rs.getString("Password");
+                String email = rs.getString("Email");
+                String fullName = rs.getString("FullName");
+                String gender = rs.getString("Gender");
+                String phoneNumber = rs.getString("PhoneNumber");
+                String profileImage = rs.getString("ProfileImage");
+                String role = rs.getString("StaffRole");
+                staff = new Staff(staffID, staffName, password, email, fullName, gender, phoneNumber, profileImage, role);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return staff;
+    }
 
     public static void main(String[] args) {
         StaffDAO staffDAO = new StaffDAO();

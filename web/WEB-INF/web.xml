@@ -32,6 +32,14 @@
         <servlet-name>HomeController</servlet-name>
         <servlet-class>controller.HomeController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ReservationDetail</servlet-name>
+        <servlet-class>controller.ReservationDetail</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SlotStatusServlet</servlet-name>
+        <servlet-class>controller.SlotStatusServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServiceController</servlet-name>
         <url-pattern>/service</url-pattern>
@@ -63,6 +71,14 @@
     <servlet-mapping>
         <servlet-name>HomeController</servlet-name>
         <url-pattern>/home</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ReservationDetail</servlet-name>
+        <url-pattern>/reservationdetail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SlotStatusServlet</servlet-name>
+        <url-pattern>/SlotStatusServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
