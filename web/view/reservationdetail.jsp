@@ -108,10 +108,10 @@
                 btnCheckOut.disabled = true;
                 generateTimeSlots();
             }
-            function fetchSlotStatus(timeSlotDiv, selectedDate, staffID) {
+            function fetchSlotStatus(timeSlotDiv, selectedDateValue, staffID) {
                 const xhr = new XMLHttpRequest();
-                const url = "SlotStatusServlet?selectedDate=" + selectedDate + "&staffID=" + staffID;
-//                const url = `SlotStatusServlet?selectedDate=` + selectedDate + `&staffID=` + staffID + `;
+                const serviceID = <%=service.getServiceID()%>;
+                const url = "SlotStatusServlet?day=" + selectedDate.textContent + "&selectedDate=" + selectedDateValue + "&staffID=" + staffID + "&serviceID=" + serviceID;
 
                 xhr.open("GET", url, true);
 
@@ -121,10 +121,6 @@
 
                         // split string into JavaScript array
                         const workSlots = responseText.split(",").map(slot => parseInt(slot, 10));
-
-//                        const test = document.createElement("p");
-//                        test.textContent = workSlots[0];
-//                        timeSlotDiv.appendChild(test);
 
                         // Check the received number sequence and change the class of the slots
                         for (let i = 0; i < timeSlots.length; i++) {
