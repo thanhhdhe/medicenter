@@ -37,6 +37,10 @@
         <servlet-class>controller.HomeController</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>FeedBackController</servlet-name>
+        <servlet-class>controller.FeedBackController</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>ReservationDetail</servlet-name>
         <servlet-class>controller.ReservationDetail</servlet-class>
     </servlet>
@@ -87,6 +91,10 @@
     <servlet-mapping>
         <servlet-name>SlotStatusServlet</servlet-name>
         <url-pattern>/SlotStatusServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FeedBackController</servlet-name>
+        <url-pattern>/view/feedback</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

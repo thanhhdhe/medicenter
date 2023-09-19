@@ -89,50 +89,56 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <form action="changepassword" method="POST" >
-            <input type="button" value="ChangePassword" onclick="myFunction()"/>
-            <div class="d-flex justify-content-center">
-                <div class=" popup" > 
-                    <div class="popuptext" id="myPopup"> 
-                        <div class="title1"><h1>CHANGE PASSWORD</h1></div> 
-                        <p>
-                        <div>
-                            <input type="password" name="currentpassword" 
-                                   value="" placeholder="Current Password" required/>
-                        </div> 
-                        <p>
-                        <div>
-                            <input type="password" name="newPassword" 
-                                   value="" placeholder="New Password" required />
-                        </div>     
-                        <p>
-                        <div>
-                            <input type="password" name="conPassword" 
-                                   value="" placeholder="Confirm password" required/>
-                        </div>
-                        <p>
-                        <div class="button1">
-                            <input type="button" value="ENTER" onclick="validatePassword();"/>
-                        </div>
-                        <p>
-                        <div class="button1">
-                            <input type="button" value="CANCEL" onclick="myFunction()" />
-                        </div> 
-                        <p>
-                        <div id="error" style="color: red;"></div>
+        <div id="modal" style="z-index: 199;position: fixed; width: 100%;height: 100%;background-color: rgba(0, 0, 0, 0.7); display: none">
+            <form style="z-index: 200;position: relative;" action="changepassword" method="POST" >
+
+                <div class="d-flex justify-content-center">
+                    <div class=" popup" > 
+                        <div class="popuptext" id="myPopup"> 
+                            <div class="title1"><h1>CHANGE PASSWORD</h1></div> 
+                            <p>
+                            <div>
+                                <input type="password" name="currentpassword" 
+                                       value="" placeholder="Current Password" required/>
+                            </div> 
+                            <p>
+                            <div>
+                                <input type="password" name="newPassword" 
+                                       value="" placeholder="New Password" required />
+                            </div>     
+                            <p>
+                            <div>
+                                <input type="password" name="conPassword" 
+                                       value="" placeholder="Confirm password" required/>
+                            </div>
+                            <p>
+                            <div class="button1">
+                                <input type="button" value="ENTER" onclick="validatePassword();"/>
+                            </div>
+                            <p>
+                            <div class="button1">
+                                <input type="button" value="CANCEL" onclick="myFunction()" />
+                            </div> 
+                            <p>
+                            <div id="error" style="color: red;"></div>
 
 
+                        </div>
                     </div>
                 </div>
-            </div>
 
 
-        </form>
+            </form>
+            
+        </div>
+        
+
         <script>
 // When the user clicks on div, open the popup
 
             function myFunction() {
                 var popup = document.getElementById("myPopup");
+                
                 popup.classList.toggle("show");
 
             }

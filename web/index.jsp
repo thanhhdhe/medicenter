@@ -10,7 +10,7 @@
 
 
 <jsp:include page="view/login.jsp"/>
-
+<jsp:include page="view/changePassword.jsp"/>
 <jsp:include page="view/register.jsp"/>
 <jsp:include page="view/layout/Head.jsp"/>
 <body>
