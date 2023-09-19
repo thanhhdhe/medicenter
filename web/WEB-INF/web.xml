@@ -25,10 +25,8 @@
         <servlet-class>controller.PostController</servlet-class>
     </servlet>
     <servlet>
-<<<<<<< HEAD
         <servlet-name>PostDetailController</servlet-name>
         <servlet-class>controller.PostDetailController</servlet-class>
-=======
         <servlet-name>ActivateAccount</servlet-name>
         <servlet-class>controller.ActivateAccount</servlet-class>
     </servlet>
@@ -43,7 +41,6 @@
     <servlet>
         <servlet-name>SlotStatusServlet</servlet-name>
         <servlet-class>controller.SlotStatusServlet</servlet-class>
->>>>>>> 4a0f9d3159b914fed6fd21b73f6e73cb1df5b0ad
     </servlet>
     <servlet-mapping>
         <servlet-name>ServiceController</servlet-name>
@@ -66,10 +63,8 @@
         <url-pattern>/postPage</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-<<<<<<< HEAD
         <servlet-name>PostDetailController</servlet-name>
         <url-pattern>/postDetail</url-pattern>
-=======
         <servlet-name>RegisterController</servlet-name>
         <url-pattern>/register</url-pattern>
     </servlet-mapping>
@@ -88,7 +83,6 @@
     <servlet-mapping>
         <servlet-name>SlotStatusServlet</servlet-name>
         <url-pattern>/SlotStatusServlet</url-pattern>
->>>>>>> 4a0f9d3159b914fed6fd21b73f6e73cb1df5b0ad
     </servlet-mapping>
     <session-config>
         <session-timeout>
