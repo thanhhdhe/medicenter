@@ -106,7 +106,7 @@ public class CPasswordController extends HttpServlet {
         } else {
             if (oldpassword.equals(user.getPassword())) {
                 if (newPassword.equals(conPassword)) {
-                    dao.resetPassword(DigestUtils.md5Hex(newPassword), user.getEmail());
+                    dao.resetPassword(DigestUtils.md5Hex(newPassword), user.getUserID());
                     response.getWriter().write("Notify: Success.");
                 } else {
                     response.getWriter().write("Notify: Both passwords must be identical.");

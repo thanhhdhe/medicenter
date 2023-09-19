@@ -3,8 +3,11 @@
     Created on : 18-Sep-2023, 15:40:23
     Author     : pc
 --%>
-
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import = "model.*" %>
+<%@page import = "Database.*" %>
+<%@page import = "java.util.*" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -102,8 +105,16 @@
     <body>
         <div class="container">
             <h1>Feedback Form</h1>
-            <form action="feedback" method="POST">
-                
+            <form action="feedback?action=sendfeedback" method="POST">
+                <div class="form-group">
+                    <label for="medical">medical</label>
+                    <select id="medical" name="medical">
+                        <c:forEach items="${requestScope.medical}" var="me">
+                            <option value="${me.getMedicalExaminationID()}">${me.getUsedServices()}</option>   
+                        </c:forEach>
+
+                    </select>
+                </div>
                 <div class="form-group">
                     <label>Rate Us</label>
                     <div class="rating">
@@ -131,8 +142,8 @@
                 <div class="form-group">
                     <p id="currentDate"></p>
                 </div>    
-                
-                
+
+
             </form>
         </div>
     </body>

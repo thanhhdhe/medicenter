@@ -89,9 +89,9 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <div id="modal" style="z-index: 199;position: fixed; width: 100%;height: 100%;background-color: rgba(0, 0, 0, 0.7); display: none">
+        
             <form style="z-index: 200;position: relative;" action="changepassword" method="POST" >
-
+                
                 <div class="d-flex justify-content-center">
                     <div class=" popup" > 
                         <div class="popuptext" id="myPopup"> 
@@ -130,15 +130,14 @@
 
             </form>
             
-        </div>
+       
         
 
         <script>
 // When the user clicks on div, open the popup
 
             function myFunction() {
-                var popup = document.getElementById("myPopup");
-                
+                var popup = document.getElementById("myPopup");  
                 popup.classList.toggle("show");
 
             }

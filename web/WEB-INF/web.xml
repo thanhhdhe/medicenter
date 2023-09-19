@@ -58,7 +58,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CPasswordController</servlet-name>
-        <url-pattern>/view/changepassword</url-pattern>
+        <url-pattern>/changepassword</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ResetPassController</servlet-name>
@@ -94,7 +94,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>FeedBackController</servlet-name>
-        <url-pattern>/view/feedback</url-pattern>
+        <url-pattern>/feedback</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
