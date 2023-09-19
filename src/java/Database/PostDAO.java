@@ -147,12 +147,12 @@ public class PostDAO extends MyDAO {
         return postList;
     }
 
-    public Post getPostByID(String ID) {
+    public Post getPostByID(int ID) {
         Post post = null;
-        xSql = "select * from [dbo].[Post] where PostID = ?";
+        xSql = "select * from [dbo].[Posts] where PostID = ?";
         try {
             ps = con.prepareStatement(xSql);
-            ps.setString(1, ID);
+            ps.setInt(1, ID);
             rs = ps.executeQuery();
             if (rs.next()) {
                 int postID = rs.getInt(1);
@@ -194,11 +194,11 @@ public class PostDAO extends MyDAO {
         }
     }
 
-    public void deleteByID(String ID) {
+    public void deleteByID(int ID) {
         xSql = "delete from Posts where [PostID]=?";
         try {
             ps = con.prepareStatement(xSql);
-            ps.setString(1, ID);
+            ps.setInt(1, ID);
             ps.executeUpdate();
             //con.commit();
             ps.close();
@@ -296,13 +296,47 @@ public class PostDAO extends MyDAO {
         return categoryList;
     }
 
+    public String getAvatarByUserID(int authourID) {
+        xSql = "select top 1 u.ProfileImage from Users as u join Posts as p on u.UserID = p.AuthorID where p.AuthorID=?";
+        String avatar = "";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, authourID);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                avatar = rs.getString(1);
+            }
+        } catch (Exception e) {
+        }
+        return avatar;
+    }
+
+    public String getNameByUserID(int authourID) {
+        xSql = "select top 1 u.FirstName from Users as u join Posts as p on u.UserID = p.AuthorID where p.AuthorID=?";
+        String avatar = "";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, authourID);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                avatar = rs.getString(1);
+            }
+        } catch (Exception e) {
+        }
+        return avatar;
+    }
+
     public static void main(String[] args) {
         PostDAO postDAO = new PostDAO();
 //        List<Post> list = postDAO.getSortedPagedPostsByUserChoice(4, 4, "", "c");
-        List<Post> list = postDAO.getPostedPagedPostsBySearch(3, 3, "t");
-        for (Post post : list) {
-            System.out.println(post.getPostID());
-        }
+//        List<Post> list = postDAO.getPostedPagedPostsBySearch(3, 3, "t");
+////List<Post> list= postDAO.getAllPosts();
+//        for (Post post : list) {
+        Post post = postDAO.getPostByID(2);
+        System.out.println(postDAO.getAvatarByUserID(3));
+        System.out.println(post.getAuthorID());
+//        }
+//    postDAO.getAvatarByUserID(1);
 //        System.out.println(postDAO.getCountOfPostsUserChoose("t", "category"));
 //                List<Post> list = postDAO.getPostedPagedPostsBySearch(5, 5, "");
 //        List<String> list = postDAO.allCategoryPost();

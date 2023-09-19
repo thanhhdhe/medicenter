@@ -41,37 +41,37 @@
                     </div>
                 </div>
                 <div class="col-md-9" id="post-list">
-
-                    Posts List 
-                    <%List<Post> list = postDAO.getPostedPaged(0, 5);
+                    <div class="container py-5">
+                        <div class="row g-5">
+                            <%List<Post> list = postDAO.getPostedPaged(0, 6);
                 for (Post post : list) {%>
-                    <div class="row p-3 mb-2">
-                        <div class="col-md-3">
-                            <img src="<%=post.getAuthorID()%>" alt="img" class="w-100 h-100 object-contain" />
-                        </div>
-                        <div class="col-md-3">
-                            <img src="<%=post.getThumbnail()%>" alt="img" class="w-100 h-100 object-contain" />
-                        </div>
-                        <div class="col-md-6">
-                            <h3><%=post.getTitle()%></h3>
-                            <p class="truncate">
-                                <%=post.getBriefInfo()%>
-                            </p>
-                        </div>
-                        <div class="info-aside col-md-3">
-                            <br />
-                            <p>
-                                <a href="#" class="btn btn-primary btn-block"> Details </a>
-                            </p>
+                            <div class="col-xl-4 col-lg-6">
+                                <div class="bg-light rounded overflow-hidden">
+                                    <img class="img-fluid w-100" src="<%=post.getThumbnail()%>" alt="">
+                                    <div class="p-4">
+                                        <a class="h3 d-block mb-3" href=""><%=post.getTitle()%></a>
+                                        <p class="m-0"><%=post.getBriefInfo()%></p>
+                                    </div>
+                                    <div class="d-flex justify-content-between border-top p-4">
+                                        <div class="d-flex align-items-center">
+                                            <img class="rounded-circle me-2" src="<%=postDAO.getAvatarByUserID(post.getAuthorID())%>" width="25" height="25" alt="">
+                                            <small><%=postDAO.getNameByUserID(post.getAuthorID())%></small>
+                                        </div>
+                                        <!-- <div class="d-flex align-items-center">
+                                                 luot xem
+                                         </div> -->
+                                    </div>
+                                </div>
+                            </div>
+                            <%}%>
                         </div>
                     </div>
-                    <%}%>
                 </div>
             </div>
         </div>
         <div class="d-flex justify-content-center" id="pagination-container">
-            <% int numOfPage= postDAO.getPostCount()/5;
-            if(postDAO.getPostCount()%5 != 0) numOfPage+= 1;
+            <% int numOfPage= postDAO.getPostCount()/6;
+            if(postDAO.getPostCount()%6 != 0) numOfPage+= 1;
             for (int i = 1; i <=numOfPage; i++) {%>
             <button class="pagination-btn ms-2 inactive" data-page="<%=i%>" onclick="loadPagePosts(<%=i%>)"> <%=i%></button>
             <%}%>
