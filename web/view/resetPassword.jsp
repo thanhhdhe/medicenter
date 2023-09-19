@@ -49,14 +49,11 @@
 
         <div class="container">
 
-            <form action="resetpassword?action=confirmpassword&phu2=${requestScope.phu1}" method="POST">
+            <form action="resetpassword?action=change&ID=${requestScope.ID}&phoneNumber=${requestScope.phoneNumber}" method="POST">
                 <div class=" khoi">
                     <div class="d-flex justify-content-center"><h1>RESET PASSWORD</h1></div> 
 
-                    <p>
-                    <div class="d-flex justify-content-center password pass1">
-                        <input type="text" name="Mail" value="" placeholder="Mail" required/>
-                    </div>     
+                         
                     <p>
                     <div class="d-flex justify-content-center password pass1">
                         <input type="password" name="newPassword" value="" placeholder="New Password" required/>

@@ -27,6 +27,41 @@ public class UserDAO extends MyDAO {
             e.printStackTrace();
         }
     }
+    
+     public void resetPasswordByID(String newPassword,String phoneNumber, int userID) {
+        xSql = "update Users set Password= ? where UserID= ? and PhoneNumber = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, newPassword);
+            ps.setInt(2, userID);
+            ps.setString(3, phoneNumber);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
+    public User getUser(String email){
+        
+        xSql = "select * from [dbo].[Users] where email = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, email);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                User user= new User(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4)
+                ,rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),rs.getString(9)
+                ,rs.getString(10));
+                return user;
+            }
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public boolean loginAccount(String email, String password) {
         xSql = "select * from [dbo].[Users] where email = ? and password = ?";

@@ -105,17 +105,18 @@ public class User {
         this.address = address;
     }
 
-    public User(int userID, String password, String Email, String firstName, String lastName, String gender, String phoneNumber, String profileImage, String role, String address) {
+    public User(int userID, String address, String Email, String password, String firstName, String lastName, String gender, String phoneNumber, String profileImage, String role) {
         this.userID = userID;
-        this.password = password;
+        this.address = address;
         this.Email = Email;
+        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.profileImage = profileImage;
         this.role = role;
-        this.address = address;
+        
     }
 
 }
