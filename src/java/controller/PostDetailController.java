@@ -18,7 +18,7 @@ import model.Post;
  *
  * @author Admin
  */
-public class PostController extends HttpServlet {
+public class PostDetailController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -58,11 +58,20 @@ public class PostController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String event = request.getParameter("event");
-        if (event.equals("post-list")) {
-            request.getRequestDispatcher("./view/post-list.jsp").forward(request, response);
-        } else if (event.equals("post-list-userchoose")) {
-            renderPostListByOption(request, response);
+        response.setContentType("text/html;charset=UTF-8");
+        try ( PrintWriter out = response.getWriter()) {
+            int ID= Integer.parseInt(request.getParameter("ID"));
+            PostDAO postDAO = new PostDAO();
+            Post post = postDAO.getPostByID(ID);
+            request.setAttribute("title", post.getTitle());
+            request.setAttribute("author", post.getAuthorID());
+            request.setAttribute("thumbnail", post.getThumbnail());
+            request.setAttribute("update-date", post.getCreatedDate());
+            request.setAttribute("category", post.getCategoryPost());
+            request.setAttribute("post-detail", post.getContent());
+
+            request.getRequestDispatcher("./view/post-detail.jsp").forward(request, response);
+//            out.print("dcm");s
         }
     }
 
@@ -79,55 +88,34 @@ public class PostController extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
-    
+
     protected void renderPostListByOption(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         PostDAO postDAO = new PostDAO();
-        String postTitle = request.getParameter("postTitle");
-        String postCategory = request.getParameter("postCategory");
-        int page = Integer.parseInt(request.getParameter("page"));
-        List<Post> postList;
-        if (postCategory.isEmpty()) {
-            postList = postDAO.getPostedPagedPostsBySearch((page - 1) * 6, 6, postTitle);
-            
-        } else {
-            postList = postDAO.getSortedPagedPostsByUserChoice((page - 1) * 6, 6, postTitle, postCategory);
-        }
-        String paginationHtml = "";
-        int numOfPage = postDAO.getCountOfPostsUserChoose(postTitle, postCategory) / 6;
-        if (postDAO.getCountOfPostsUserChoose(postTitle, postCategory) % 6 != 0) {
-            numOfPage += 1;
-        }
-        for (int i = 1; i <= numOfPage; i++) {
-            paginationHtml += "<button class=\"pagination-btn ms-2 " + (i == page ? "active" : "inactive")
-                    + "\" data-page=\"" + i + "\" onclick=\"loadPagePosts(" + i + ")\">" + i + "</button>";
-        }
-        // Thêm giá trị phân trang vào header của phản hồi
-        response.addHeader("pagination", paginationHtml);
-        out.print("<div class=\"container py-5\">\n"
-                + "                        <div class=\"row g-5\">");
-        for (Post post : postList) {
-            out.print("                     <div class=\"col-xl-4 col-lg-6\">\n"
-                    + "                        <div class=\"bg-light rounded overflow-hidden\">\n"
-                    + "                            <img class=\"img-fluid w-100\" src=\"" + post.getThumbnail() + "\" alt=\"\">\n"
-                    + "                            <div class=\"p-4\">\n"
-                    + "                                <a class=\"h3 d-block mb-3\" href=\"\">" + post.getTitle() + "</a>\n"
-                    + "                                <p class=\"m-0\">" + post.getBriefInfo() + "</p>\n"
-                    + "                            </div>\n"
-                    + "                            <div class=\"d-flex justify-content-between border-top p-4\">\n"
-                    + "                                <div class=\"d-flex align-items-center\">\n"
-                    + "                                    <img class=\"rounded-circle me-2\" src=\"" + postDAO.getAvatarByUserID(post.getAuthorID()) + "\" width=\"25\" height=\"25\" alt=\"\">\n"
-                    + "                                    <small>" + postDAO.getNameByUserID(post.getAuthorID()) + "</small>\n"
-                    + "                                </div>\n"
-                    + "                            </div>\n"
-                    + "                        </div>\n"
-                    + "                    </div>");
-        }
-        out.print("</div>\n"
+        int ID = Integer.parseInt(request.getParameter("ID"));
+        Post post = postDAO.getPostByID(0);
+
+        out.print("<div class=\"row p-3 mb-2\">\n"
+                + "                        <div class=\"col-md-3\">\n"
+                + "                            <img src=\"" + postDAO.getAvatarByUserID(post.getAuthorID()) + "\" alt=\"img\" class=\"w-100 h-100 object-contain\" />\n"
+                + "                        </div>\n"
+                + "                        <div class=\"col-md-3\">\n"
+                + "                            <img src=\"" + post.getThumbnail() + "\" alt=\"img\" class=\"w-100 h-100 object-contain\" />\n"
+                + "                        </div>\n"
+                + "                        <div class=\"col-md-6\">\n"
+                + "                            <h3>" + post.getTitle() + "</h3>\n"
+                + "                            <p class=\"truncate\">\n"
+                + "                                " + post.getBriefInfo() + "\n"
+                + "                            </p>\n"
+                + "                        </div>\n"
+                + "                        <div class=\"info-aside col-md-3\">\n"
+                + "                            <br />\n"
+                + "                            <p>\n" + post.getContent()
+                + "                            </p>\n"
+                + "                        </div>\n"
                 + "                    </div>");
-        out.flush();
-        out.close();
+
     }
 
     /**
