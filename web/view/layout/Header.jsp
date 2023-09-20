@@ -49,7 +49,7 @@
                         </ul>
                     </li>
                     <li class="dropdown"><a href="/ChildrenCare/feedback?action=noaction"><span>Feedback</span> <i class="bi bi-chevron-down"></i></a>
-                        
+
                     </li>
                     <li><a onclick="myFunction()" class="nav-link scrollto" href="#contact">Contact</a></li>
                 </ul>
@@ -63,5 +63,9 @@
         </div>
     </header>
     <!-- End Header -->
-
+    <body>
+        <jsp:include page="../login.jsp"/>
+        <jsp:include page="../changePassword.jsp"/>
+        <jsp:include page="../register.jsp"/>
+    </body>
 </html>

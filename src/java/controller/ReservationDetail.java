@@ -40,7 +40,7 @@ public class ReservationDetail extends HttpServlet {
                 ServiceDAO quanlyService = new ServiceDAO();
                 Service service = quanlyService.getServiceByID(serviceID);
                 request.setAttribute("service", service);
-                // Xu ly staff schedule
+                // Xu ly staff sched    ule
                 List<Integer> WorkDay = new ArrayList<>();
                 for (StaffSchedule ss : staffScheduleList) {
                     WorkDay.add(ss.getDayOfWeek());
