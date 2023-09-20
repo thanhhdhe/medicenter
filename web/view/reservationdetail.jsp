@@ -2,52 +2,8 @@
 <html>
     <head>
         <title>Reservation Detail</title>
-        <style>
-            .schedule-table {
-                width: 100%;
-                table-layout: fixed;
-            }
-            .work {
-                padding: 2px;
-                margin: 5px;
-                background-color: transparent;
-                cursor: pointer;
-                font-size: 20px;
-                text-align: center;
-                border: 1px solid #000;
-                border-radius: 5px;
-            }
-            .work:hover {
-                background-color: #007BFF;
-                color: #fff;
-            }
-            .not_work{
-                padding: 2px;
-                margin: 5px;
-                font-size: 20px;
-                text-align: center;
-                border: 1px solid #000;
-                border-radius: 5px;
-                color: #ccc;
-                cursor: default;
-            }
-            .schedule-table th {
-                background-color: #f0f0f0;
-                font-size: 20px;
-                text-align: center;
-            }
-            td.empty {
-                background-color: #fff;
-            }
-            #btnCheckOut {
-                display: block;
-                margin: 0 auto;
-            }
-        </style>
-
+        <link rel="stylesheet" href="./resources/css/reservation-detail-style.css">
         <jsp:include page="layout/Head.jsp"/>
-        <jsp:include page="login.jsp"/>
-        <jsp:include page="register.jsp"/>
     </head>
     <body>
         <jsp:include page="layout/Header.jsp"/>
