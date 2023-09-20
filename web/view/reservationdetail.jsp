@@ -45,9 +45,9 @@
             }
         </style>
 
+        <jsp:include page="layout/Head.jsp"/>
         <jsp:include page="login.jsp"/>
         <jsp:include page="register.jsp"/>
-        <jsp:include page="layout/Head.jsp"/>
     </head>
     <body>
         <jsp:include page="layout/Header.jsp"/>

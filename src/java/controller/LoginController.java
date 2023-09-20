@@ -35,20 +35,12 @@ public class LoginController extends HttpServlet {
         String email = (String) request.getParameter("lemail");
         String password = (String) request.getParameter("lpassword");
         UserDAO u = new UserDAO();
-        if (email.isEmpty()) {
-            response.getWriter().write("You need to write your email!");
-            return;
-        }
-        if (password.isEmpty()) {
-            response.getWriter().write("You need to write your password!");
-            return;
-        }
         if (u.loginAccount(email, DigestUtils.md5Hex(password))) {
             HttpSession session = request.getSession(true);
             session.setAttribute("email", email);
-            response.getWriter().write("Login successful!");
+            response.getWriter().write("success");
         } else {
-            response.getWriter().write("Wrong email or password");
+            response.getWriter().write("fail");
         }
     }
 }

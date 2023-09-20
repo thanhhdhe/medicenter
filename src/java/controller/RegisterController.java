@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.Mail;
-import model.User;
 import org.apache.commons.codec.digest.DigestUtils;
 
 public class RegisterController extends HttpServlet {
@@ -34,68 +33,18 @@ public class RegisterController extends HttpServlet {
         String lastname = request.getParameter("rlastname");
         String phonenumber = request.getParameter("rphonenumber");
         String password = request.getParameter("rpassword");
-        String repeat_password = request.getParameter("rrepeat_password");
         String gender = request.getParameter("rgender");
         String address = request.getParameter("raddress");
-        if (firstname.isEmpty()) {
-            response.getWriter().write("You need to write your firstname!");
-            return;
-        }
-        if (lastname.isEmpty()) {
-            response.getWriter().write("You need to write your lastname!");
-            return;
-        }
-        if (gender.isEmpty()) {
-            response.getWriter().write("You need to write your gender!");
-            return;
-        }
-        if (email.isEmpty()) {
-            response.getWriter().write("You need to write your email!");
-            return;
-        }
-        if (phonenumber.isEmpty()) {
-            response.getWriter().write("You need to write your phonenumber!");
-            return;
-        }
-
-        if (address.isEmpty()) {
-            response.getWriter().write("You need to write your address!");
-            return;
-        }
-        if (password.isEmpty()) {
-            response.getWriter().write("You need to write your password!");
-            return;
-        }
-        if (repeat_password.isEmpty()) {
-            response.getWriter().write("You need to re-write your password!");
-            return;
-        }
-
-        if (!password.equals(repeat_password)) {
-            response.getWriter().write("Your re-enter password is not match with your password");
-            return;
-        }
-        if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-            response.getWriter().write("Your mail is not valid");
-            return;
-        }
-        if (!phonenumber.matches("^(03[2-9]|05[68]|07[06789]|08[1-9]|09[0-9])\\d{7}$")) {
-            response.getWriter().write("Your phone number is not valid");
-            return;
-        }
         UserDAO u = new UserDAO();
         if (u.selectUser(email) != null) {
-            response.getWriter().write("Your email has been used");
+            response.getWriter().write("email existed");
             return;
         }
         String newPword = DigestUtils.md5Hex(password);
         String data = email + "&" + firstname + "&" + lastname + "&" + phonenumber + "&"
                 + newPword + "&" + address + "&" + gender;
         data = java.net.URLEncoder.encode(data, "UTF-8");
-        response.getWriter().write("Your email should receive email for verification");
-//        Mail.sendEmail(email, "Activate your account", "Your verification link : " + "http://localhost:9999/ChildrenCare/ActivateAccount?key1="
-//                + email + "&key2=" + firstname + "&key3=" + lastname + "&key4=" + phonenumber + "&key5="
-//                + newPword + "&key6=" + myHash + "&key7=" + address + "&key8=" + gender);
+        response.getWriter().write("success");
         Mail.sendEmail(email, "Activate your account", "Your verification link : " + "http://localhost:9999/ChildrenCare/ActivateAccount?data=" + data);
     }
 }
