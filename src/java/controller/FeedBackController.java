@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import model.Mail;
 import model.MedicalExamination;
 import model.User;
 
@@ -36,69 +37,10 @@ public class FeedBackController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-
+        // lay bien action
         String action = request.getParameter("action");
-        if (action.equals("sendfeedback")) {
-            // lay du lieu tu jsp
-            HttpSession session = request.getSession();
-            String email = (String) session.getAttribute("email");
-            UserDAO userdao = new UserDAO();
-            User user = userdao.getUser(email);
-            System.out.println(user.getEmail());
-            // lay medical ID tra ve qua url
-            System.out.println(user.getUserID());
-            FeedBackDAO dao = new FeedBackDAO();
-            String ratestar = request.getParameter("rating");
-            int rate = Integer.parseInt(ratestar);
-            String content = request.getParameter("content");
-            String medicalID = request.getParameter("medical");
-            int medicalId = Integer.parseInt(medicalID);
-            dao.InsertFeedBack(user.getUserID(), medicalId, content, rate);
-            out.println("<!DOCTYPE html>\n"
-                    + "<html>\n"
-                    + "<head>\n"
-                    + "    <meta charset=\"UTF-8\">\n"
-                    + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
-                    + "    <style>\n"
-                    + "        body {\n"
-                    + "            background-color: #f2f2f2;\n"
-                    + "            font-family: Arial, sans-serif;\n"
-                    + "            display: flex;\n"
-                    + "            justify-content: center;\n"
-                    + "            align-items: center;\n"
-                    + "            height: 100vh;\n"
-                    + "            margin: 0;\n"
-                    + "        }\n"
-                    + "        \n"
-                    + "        .container {\n"
-                    + "            text-align: center;\n"
-                    + "            background-color: #ffffff;\n"
-                    + "            border-radius: 10px;\n"
-                    + "            padding: 20px;\n"
-                    + "            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n"
-                    + "        }\n"
-                    + "        \n"
-                    + "        h1 {\n"
-                    + "            font-size: 36px;\n"
-                    + "            color: #333;\n"
-                    + "        }\n"
-                    + "        \n"
-                    + "        p {\n"
-                    + "            font-size: 18px;\n"
-                    + "            color: #666;\n"
-                    + "        }\n"
-                    + "    </style>\n"
-                    + "</head>\n"
-                    + "<body>\n"
-                    + "    <div class=\"container\">\n"
-                    + "        <h1>Thank you</h1>\n"
-                    + "        <p>FeedBack have been sent.</p>\n"
-                    + " <button style=\" background-color: blue; border: 0px; border-radius: 5px;padding: 10px;\"> "
-                    + " <a style=\"color: white; padding: 10px;text-decoration: none;\" href=\"http://localhost:9999/ChildrenCare/\">HOME</a> </button>"
-                    + "    </div>\n"
-                    + "</body>\n"
-                    + "</html>");
-        } else {
+        //hanh dong cua servlet dua theo action
+        if (action.equals("accessfeedback")) {
             //insert vao database
             // lay ve UserID dang dang nhap
             HttpSession session = request.getSession();
@@ -158,8 +100,76 @@ public class FeedBackController extends HttpServlet {
                 List<MedicalExamination> medical = dao.getMedicalExamination(user.getUserID());
                 request.setAttribute("medical", medical);
                 request.getRequestDispatcher("/view/FeedBack.jsp").forward(request, response);
-                //lay hanh dong se lam trong servlet
+                
             }
+            
+        } else if (action.equals("sendfeedback")) {
+            // lay du lieu tu jsp
+            HttpSession session = request.getSession();
+            String email = (String) session.getAttribute("email");
+            UserDAO userdao = new UserDAO();
+            User user = userdao.getUser(email);
+            System.out.println(user.getEmail());
+            // lay medical ID tra ve qua url
+            System.out.println(user.getUserID());
+            FeedBackDAO dao = new FeedBackDAO();
+            String ratestar = request.getParameter("rate");
+            int rate = Integer.parseInt(ratestar);
+            String content = request.getParameter("content");
+            String medicalID = request.getParameter("medical");
+            int medicalId = Integer.parseInt(medicalID);
+            dao.InsertFeedBack(user.getUserID(), medicalId, content, rate);
+            out.println("<!DOCTYPE html>\n"
+                    + "<html>\n"
+                    + "<head>\n"
+                    + "    <meta charset=\"UTF-8\">\n"
+                    + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+                    + "    <style>\n"
+                    + "        body {\n"
+                    + "            background-color: #f2f2f2;\n"
+                    + "            font-family: Arial, sans-serif;\n"
+                    + "            display: flex;\n"
+                    + "            justify-content: center;\n"
+                    + "            align-items: center;\n"
+                    + "            height: 100vh;\n"
+                    + "            margin: 0;\n"
+                    + "        }\n"
+                    + "        \n"
+                    + "        .container {\n"
+                    + "            text-align: center;\n"
+                    + "            background-color: #ffffff;\n"
+                    + "            border-radius: 10px;\n"
+                    + "            padding: 20px;\n"
+                    + "            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n"
+                    + "        }\n"
+                    + "        \n"
+                    + "        h1 {\n"
+                    + "            font-size: 36px;\n"
+                    + "            color: #333;\n"
+                    + "        }\n"
+                    + "        \n"
+                    + "        p {\n"
+                    + "            font-size: 18px;\n"
+                    + "            color: #666;\n"
+                    + "        }\n"
+                    + "    </style>\n"
+                    + "</head>\n"
+                    + "<body>\n"
+                    + "    <div class=\"container\">\n"
+                    + "        <h1>Thank you</h1>\n"
+                    + "        <p>FeedBack have been sent.</p>\n"
+                    + " <button style=\" background-color: blue; border: 0px; border-radius: 5px;padding: 10px;\"> "
+                    + " <a style=\"color: white; padding: 10px;text-decoration: none;\" href=\"http://localhost:9999/ChildrenCare/\">HOME</a> </button>"
+                    + "    </div>\n"
+                    + "</body>\n"
+                    + "</html>");
+        } else {
+            HttpSession session = request.getSession();
+            String email = (String) session.getAttribute("email");
+            //kiem tra xem nguoi dung da dang nhap hay chua
+            Mail.sendEmail(email, "THANK TO USE SERVICE", "Thank you for using our service\n"
+                    + "Please give us feedback about the service by clicking on feedback in the header on the homepage on the website");
+            request.getRequestDispatcher("/view/FeedBack.jsp").forward(request, response);
 
         }
 
