@@ -139,10 +139,9 @@
 
                 <button type="submit" class="btn-submit">Submit Feedback</button>
                 <p>
-                <div class="form-group">
-                    <p id="currentDate"></p>
-                </div>    
-
+                   <a class="btn-submit" style="text-decoration: none" href="home">Home</a>
+                <p>
+                
 
             </form>
         </div>
