@@ -111,7 +111,7 @@ public class ServiceController extends HttpServlet {
 
         // Render the service list
         for (Service service : serviceList) {
-            out.print("<div class=\"row p-3 mb-2\">\n"
+            out.print("<div class=\"service row p-3\">\n"
                     + "                        <div class=\"col-md-3\">\n"
                     + "                            <img src=\"" + service.getThumbnail() + "\" alt=\"ìmg\" class=\"w-100 h-100 object-contain\" />\n"
                     + "                        </div>\n"
