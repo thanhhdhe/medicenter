@@ -64,7 +64,7 @@
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav><!-- .navbar -->
             <%if(curUser!=null){%>
-            <div class="appointment-btn scrollto d-flex align-items-center">
+            <div class="appointment-btn scrollto d-flex align-items-center p-1 pe-2">
                 <img class="object-contain rounded-circle" style="width: 40px" src="<%=curUser.getProfileImage()%>" alt="thangdz"/>
                 <p class="m-0 ms-1"><%=curUser.getFirstName()%></p>
             </div>
