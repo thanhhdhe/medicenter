@@ -50,9 +50,9 @@
             <!-- End  Slider  -->
             <!--Start sider -->
             <div class="sider col-4">
-                <h3>Lastest Post</h3>
-                <c:forEach items="${requestScope.post}" var="p" varStatus="loopPost"> 
-                    <a class="card article shadow" href="#">
+                <h3 class="badge bg-success "> <strong>Lastest Post</strong></h3>
+                <c:forEach items="${requestScope.last3post}" var="p" varStatus="loopPost"> 
+                    <a class="card article shadow-lg" href="#">
                         <div >
                             <div class="row no-gutters">
                                 <div class="col-md-4">
@@ -60,8 +60,12 @@
                                 </div>
                                 <div class="col-md-8">
                                     <div class="card-body">
-                                        <h5 class="card-title">${p.title}</h5>
+                                        <h4><strong>${p.title}</strong></h4>
+                                        <p>
+                                            <u class="small">${p.createdDate}</u>
+                                        </p>
                                         <p class="card-text">${p.briefInfo}</p>
+
                                     </div>
                                 </div>
                             </div>
@@ -78,7 +82,7 @@
                 <div class="container">
 
                     <div class="col-12 text-center">
-                        <h2 class="mb-4">Our Services</h2>
+                        <h2 class="mb-4 big-title">Our Services</h2>
                     </div>
 
                 </div>
@@ -111,7 +115,7 @@
                                                             <a href="topics-detail.html">
                                                                 <div class="d-flex">
                                                                     <div>
-                                                                        <h5 class="mb-2">${s.title}</h5>
+                                                                        <h4><strong>${s.title}</strong></h4>
 
                                                                         <p class="mb-0">${s.serviceDetail}</p>
                                                                     </div>
@@ -141,7 +145,7 @@
 
 
                 <div class="col-12 text-center">
-                    <h2 class="mb-4">Hot Post</h2>
+                    <h2 class="mb-4 big-title">Hot Post</h2>
                 </div>
 
 

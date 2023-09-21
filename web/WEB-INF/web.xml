@@ -48,6 +48,10 @@
         <servlet-name>SlotStatusServlet</servlet-name>
         <servlet-class>controller.SlotStatusServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UserController</servlet-name>
+        <servlet-class>controller.UserController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServiceController</servlet-name>
         <url-pattern>/service</url-pattern>
@@ -95,6 +99,10 @@
     <servlet-mapping>
         <servlet-name>FeedBackController</servlet-name>
         <url-pattern>/feedback</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserController</servlet-name>
+        <url-pattern>/user</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

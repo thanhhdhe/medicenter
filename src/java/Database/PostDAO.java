@@ -26,12 +26,12 @@ public class PostDAO extends MyDAO {
                 int postID = rs.getInt(1);
                 String title = rs.getString(2);
                 String content = rs.getString(3);
-                String briefInfo = rs.getString(4);
-                String thumbnail = rs.getString(5);
-                int authorID = rs.getInt(6);
-                int serviceID = rs.getInt(7);
-                Date createdDate = rs.getDate(8);
-                String categoryPost = rs.getString(9);
+                String briefInfo = rs.getString(3);
+                String thumbnail = rs.getString(4);
+                int authorID = rs.getInt(5);
+                int serviceID = rs.getInt(6);
+                Date createdDate = rs.getDate(7);
+                String categoryPost = rs.getString(8);
                 Post post = new Post(postID, title, content, briefInfo, thumbnail, authorID, serviceID, createdDate, categoryPost);
                 postList.add(post);
             }
@@ -345,7 +345,7 @@ public class PostDAO extends MyDAO {
 //        }
         List<Post> list = postDAO.getAllPosts();
         for (Post post : list) {
-            System.out.println(post.getCategoryPost());
+            System.out.println(post.getBriefInfo());
         }
 //        
     }

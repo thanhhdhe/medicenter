@@ -49,16 +49,15 @@
                         </ul>
                     </li>
                     <li class="dropdown"><a href="/ChildrenCare/feedback?action=noaction"><span>Feedback</span> <i class="bi bi-chevron-down"></i></a>
-                        
+
                     </li>
                     <li><a onclick="myFunction()" class="nav-link scrollto" href="#contact">Contact</a></li>
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav><!-- .navbar -->
 
-            <a onclick="showRegisterPopup()" class="appointment-btn scrollto"><span class="d-none d-md-inline">Register Now</a>
-            <a onclick="showLoginPopup()" class="appointment-btn scrollto"><span class="d-none d-md-inline">Login</a>
-
+            <a onclick="showRegisterPopup()" id="register"class="appointment-btn scrollto"><span class="d-none d-md-inline">Register Now</a>
+            <a onclick="showLoginPopup()" id="login"class="appointment-btn scrollto"><span class="d-none d-md-inline">Login</a>
 
         </div>
     </header>

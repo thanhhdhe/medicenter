@@ -63,7 +63,14 @@ public class ServiceController extends HttpServlet {
             request.getRequestDispatcher("./view/service-list.jsp").forward(request, response);
         } else if (event.equals("service-list-userchoose")) {
             renderServiceListByOption(request, response);
+        } else if (event.equals("detail")) {
+            String id = request.getParameter("id");
+            ServiceDAO serviceDAO = new ServiceDAO();
+            Service services = serviceDAO.getServiceByID(id);
+            request.setAttribute("service", services);
+            request.getRequestDispatcher("./view/servicedetail.jsp").forward(request, response);
         }
+
     }
 
     /**

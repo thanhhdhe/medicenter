@@ -81,7 +81,7 @@
                             <!-- info-price-detail // -->
                             <br />
                             <p>
-                                <a href="#" class="btn btn-primary btn-block"> Details </a>
+                                <a href="service?event=detail&id=<%=service.getServiceID()%>" class="btn btn-primary btn-block"> Details </a>
                             </p>
                         </div>
                     </div>
