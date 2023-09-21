@@ -125,7 +125,7 @@ public class PostController extends HttpServlet {
                     + "                            </div>\n"
                     + "                            <div class=\"d-flex justify-content-between border-top p-4\">\n"
                     + "                                <div class=\"d-flex align-items-center\">\n"
-                            + "                                           <small> <img class=\"rounded-circle me-2\" src=\""+postDAO.getAvatarByUserID(post.getAuthorID())+"\" id=\"avatar\" alt=\"\"></small>\n" 
+                            + "                                           <img class=\"rounded-circle me-2 avatar\" src=\""+postDAO.getAvatarByUserID(post.getAuthorID())+"\" id=\"avatar\" alt=\"\">\n" 
                     + "                                    <small>" + postDAO.getNameByUserID(post.getAuthorID()) + "</small>\n"
                     + "                                </div>\n"
                     + "                            </div>\n"

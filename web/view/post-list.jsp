@@ -20,7 +20,7 @@
             integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
             crossorigin="anonymous"
             />
-        <link rel="stylesheet" href="./resources/css/posts-style.css">
+        <link rel="stylesheet" href="./resources/css/post-style.css">
         <title>Post Page</title>
     </head>
     <body>
@@ -55,7 +55,7 @@
                                     </div>
                                     <div class="d-flex justify-content-between border-top p-4">
                                         <div class="d-flex align-items-center">
-                                           <small> <img class="rounded-circle me-2" src="<%=postDAO.getAvatarByUserID(post.getAuthorID())%>" id="avatar" alt=""></small>
+                                           <img class="rounded-circle me-2 avatar" src="<%=postDAO.getAvatarByUserID(post.getAuthorID())%>" alt="">
                                             <small><%=postDAO.getNameByUserID(post.getAuthorID())%></small>
                                         </div>
                                         <!-- <div class="d-flex align-items-center">

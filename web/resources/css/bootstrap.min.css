@@ -10601,4 +10601,9 @@ fieldset:disabled .btn {
     }
 }
 
+.avatar{
+    width: 10px;
+    height: 10px
+}
+
 /*# sourceMappingURL=bootstrap.min.css.map */
