@@ -20,7 +20,7 @@
             integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
             crossorigin="anonymous"
             />
-        <link rel="stylesheet" href="./resources/css/posts-style.css">
+        <link rel="stylesheet" href="./resources/css/post-style.css">
         <title>Post Page</title>
     </head>
     <body>
@@ -29,7 +29,7 @@
         <div class="d-flex justify-content-center mt-5">
             <div class="container row mt-5 mb-4">
                     <div class="mb-5">
-                        <input type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3" id="search" value="${postTitle}"/>
+                        <input type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3 search" value="${postTitle}"/>
                         <select class="form-select text-primary mt-3" name="postCategory">
                             <option selected value="">Post Category</option>
                             <%List<String> categoryPostList = postDAO.allCategoryPost();
@@ -55,10 +55,11 @@
                                     </div>
                                     <div class="d-flex justify-content-between border-top p-4">
                                         <div class="d-flex align-items-center">
-                                            <img class="rounded-circle me-2" src="<%=postDAO.getAvatarByUserID(post.getAuthorID())%>" width="25" height="25" alt="">
+                                           <img class="rounded-circle me-2 avatar" src="<%=postDAO.getAvatarByUserID(post.getAuthorID())%>" alt="">
                                             <small><%=postDAO.getNameByUserID(post.getAuthorID())%></small>
                                         </div>
                                         <!-- <div class="d-flex align-items-center">
+                                        
                                                  luot xem
                                          </div> -->
                                     </div>

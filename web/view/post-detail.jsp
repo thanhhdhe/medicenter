@@ -19,7 +19,7 @@
             integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
             crossorigin="anonymous"
             />
-        <link rel="stylesheet" href="./resources/css/posts-style.css">
+        <link rel="stylesheet" href="./resources/css/post-style.css">
         <title>Post Page</title>
     </head>
     <body>
@@ -37,7 +37,7 @@
                         </p>
                         <div class="d-flex justify-content-between bg-light rounded p-4 mt-4 mb-4">
                             <div class="d-flex align-items-center">
-                                <img class="rounded-circle me-2" src="${avatar}" width="40" height="40" alt="">
+                                <img class="rounded-circle me-2 avatar" src="${avatar}" alt="">
                                 <span>${author}</span>
                             </div>
                             <div class="d-flex align-items-center">
@@ -85,7 +85,7 @@
                     <div class="mb-5">
                         <%PostDAO postDAO = new PostDAO();%>
                         <form action="postDetail" method="POST">
-                            <input id="post-title" type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3"/>
+                            <input id="post-title" type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3 search"/>
 <!--                            <select class="form-select text-primary mt-3" name="postCategory">
                                 <option selected value="">Post Category</option>
                                 <%List<String> categoryPostList = postDAO.allCategoryPost();

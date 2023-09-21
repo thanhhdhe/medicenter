@@ -16,9 +16,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>JSP Page</title>
-        
+
         <style>
-            
+
             /* Đặt hình nền cho body */
             .sendmail {
                 background-color: #f2f2f2; /* Màu nền của trang */
@@ -41,15 +41,31 @@
             .sendmail input[type="text"] {
                 margin-bottom: 10px;
                 padding: 10px;
-                width: 94%;
+                margin-top: 10px;
+                width: 100%;
             }
             .sendmail input[type="submit"] {
-                margin-left: 80px;
-                
-                font-family: fantasy ;
+                font-family: fantasy;
                 background-color: #3399ff;
                 padding: 10px;
-                width: 50%;
+                width: 20%;
+                border: 0;
+                color: #f3e4df;
+                border-radius: 10px;
+            }
+            .sendmail a {
+                width: 100%;
+            }
+            .sendmail input[type="button"] {
+                margin-left: 20px;
+                font-family: fantasy;
+                color: #3399ff; 
+                background-color:#f3e4df;
+                padding: 10px;
+                width: 15%;
+                border: 1px solid #3399ff ;
+                
+                border-radius: 10px;
             }
 
             /* CSS cho tiêu đề */
@@ -63,7 +79,7 @@
             rel="stylesheet"
             integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
             crossorigin="anonymous"
-        />
+            />
         <link rel="stylesheet" href="../resources/css/style.css"/>
         <link rel="stylesheet" href="../resources/css/services-style.css">
     </head>
@@ -71,9 +87,14 @@
         <jsp:include page="./layout/Header.jsp" />
         <div class="sendmail">
             <form action="resetpassword?action=confirmpassword&phu2=${requestScope.phu1}" method="POST">
-                <h1 style="text-align: center;">Send Mail </h1>
-                <input type="text" name="Mail" value="" />
-                <input type="submit"  value="Send" />
+                <h1 style="text-align: left; margin-bottom: 2rem; border-bottom: solid 1px black">Find Your Account </h1>
+                <h5>Please enter your email address to search for your account.</h5>
+                <input type="text" name="Mail" value="" placeholder="Email"/>
+                <div style="display: flex;">
+                    <input type="submit"  value="Send" />
+                    <a href="home"><input type="button"  value="Cancel" /></a>
+                </div>
+                
                 <h2>${requestScope.notify}</h2>
             </form>
         </div>
