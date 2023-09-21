@@ -78,7 +78,7 @@ public class PostController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 //        processRequest(request, response);
-        String txtSearch=request.getParameter("postTitle");
+        String txtSearch = request.getParameter("postTitle");
         request.setAttribute("postTitle", txtSearch);
         String event = request.getParameter("event");
         if (event.equals("post-list")) {
@@ -120,12 +120,12 @@ public class PostController extends HttpServlet {
                     + "                        <div class=\"bg-light rounded overflow-hidden\">\n"
                     + "                            <img class=\"img-fluid w-100\" src=\"" + post.getThumbnail() + "\" alt=\"\">\n"
                     + "                            <div class=\"p-4\">\n"
-                    + "                                 <a class=\"h3 d-block mb-3\" href=\"/ChildrenCare/postDetail?ID="+post.getPostID()+"\">"+post.getTitle()+"</a>\n"
+                    + "                                 <a class=\"h3 d-block mb-3\" href=\"/ChildrenCare/postDetail?ID=" + post.getPostID() + "\">" + post.getTitle() + "</a>\n"
                     + "                                <p class=\"m-0\">" + post.getBriefInfo() + "</p>\n"
                     + "                            </div>\n"
                     + "                            <div class=\"d-flex justify-content-between border-top p-4\">\n"
                     + "                                <div class=\"d-flex align-items-center\">\n"
-                    + "                                    <img class=\"rounded-circle me-2\" src=\"" + postDAO.getAvatarByUserID(post.getAuthorID()) + "\" width=\"25\" height=\"25\" alt=\"\">\n"
+                            + "                                           <small> <img class=\"rounded-circle me-2\" src=\""+postDAO.getAvatarByUserID(post.getAuthorID())+"\" id=\"avatar\" alt=\"\"></small>\n" 
                     + "                                    <small>" + postDAO.getNameByUserID(post.getAuthorID()) + "</small>\n"
                     + "                                </div>\n"
                     + "                            </div>\n"

@@ -55,10 +55,11 @@
                                     </div>
                                     <div class="d-flex justify-content-between border-top p-4">
                                         <div class="d-flex align-items-center">
-                                            <img class="rounded-circle me-2" src="<%=postDAO.getAvatarByUserID(post.getAuthorID())%>" width="25" height="25" alt="">
+                                           <small> <img class="rounded-circle me-2" src="<%=postDAO.getAvatarByUserID(post.getAuthorID())%>" id="avatar" alt=""></small>
                                             <small><%=postDAO.getNameByUserID(post.getAuthorID())%></small>
                                         </div>
                                         <!-- <div class="d-flex align-items-center">
+                                        
                                                  luot xem
                                          </div> -->
                                     </div>
