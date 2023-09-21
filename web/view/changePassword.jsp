@@ -22,7 +22,7 @@
         <style>
             /* Popup container - can be anything you want */
             .popup {
-                position: relative;
+                position: fixed;
                 display: inline-block;
                 cursor: pointer;
                 -webkit-user-select: none;

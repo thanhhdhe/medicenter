@@ -66,20 +66,18 @@ public class ResetPassController extends HttpServlet {
             String OTP = MaHoa.toSHA1(request.getParameter("phu2") + "thoigian");
             // check email 
             UserDAO dao = new UserDAO();
-            
-                User user = dao.getUser(email);
-            
-            
-            
+
+            User user = dao.getUser(email);
+
             if (user != null && email.equals(user.getEmail())) {
                 //reset counter
                 counter = 0;
                 Mail.sendEmail(email, "Verification Mail" + "",
-                        "http://localhost:9999/ChildrenCare/resetpassword?phu3=" + phu2 
+                        "http://localhost:9999/ChildrenCare/resetpassword?phu3=" + phu2
                         + "&ID=" + user.getUserID()
                         + "&phoneNumber=" + user.getPhoneNumber()
                         + "&OTP=" + OTP + "&action=resetpass"
-                        +" \n Do not Public this email for Safety account");
+                        + " \n Do not Public this email for Safety account");
                 out.println("<!DOCTYPE html>\n"
                         + "<html>\n"
                         + "<head>\n"
@@ -119,6 +117,8 @@ public class ResetPassController extends HttpServlet {
                         + "    <div class=\"container\">\n"
                         + "        <h1>Success</h1>\n"
                         + "        <p>Mail has been sent.</p>\n"
+                        + " <button style=\" background-color: blue; border: 0px; border-radius: 5px;padding: 10px;\"> "
+                        + " <a style=\"color: white; padding: 10px;text-decoration: none;\" href=\"http://localhost:9999/ChildrenCare/\">HOME</a> </button>"
                         + "    </div>\n"
                         + "</body>\n"
                         + "</html>");
@@ -197,7 +197,7 @@ public class ResetPassController extends HttpServlet {
                 //ma hoa bien phu1 nham muc dich bao mat
                 //chuyen phu thanh chuoi
                 String strphu1 = MaHoa.toSHA1(phu1 + "");
-                
+
                 //gui phu1 toi reset .jsp
                 request.setAttribute("phu1", strphu1);
                 request.setAttribute("notify", "Link has been used.");
@@ -210,10 +210,10 @@ public class ResetPassController extends HttpServlet {
             String confirmpassword = request.getParameter("conPassword");
             // kiem tra mat khau da khop chua
             String ID = request.getParameter("ID");
-            int id= Integer.parseInt(ID);
+            int id = Integer.parseInt(ID);
             String phoneNumber = request.getParameter("phoneNumber");
             UserDAO dao = new UserDAO();
-            
+
             if (newpassword.equals(confirmpassword)) {
                 dao.resetPasswordByID(DigestUtils.md5Hex(newpassword), phoneNumber, id);
                 out.println("<!DOCTYPE html>\n"
@@ -255,6 +255,8 @@ public class ResetPassController extends HttpServlet {
                         + "    <div class=\"container\">\n"
                         + "        <h1>Success</h1>\n"
                         + "        <p>Password has been reset.</p>\n"
+                        + " <button style=\" background-color: blue; border: 0px; border-radius: 5px;padding: 10px;\"> "
+                        + " <a style=\"color: white; padding: 10px;text-decoration: none;\" href=\"http://localhost:9999/ChildrenCare/\">HOME</a> </button>"
                         + "    </div>\n"
                         + "</body>\n"
                         + "</html>");

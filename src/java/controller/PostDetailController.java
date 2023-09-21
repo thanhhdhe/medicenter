@@ -62,9 +62,7 @@ public class PostDetailController extends HttpServlet {
         try ( PrintWriter out = response.getWriter()) {
             int ID = Integer.parseInt(request.getParameter("ID"));
             PostDAO postDAO = new PostDAO();
-
             Post post = postDAO.getPostByID(ID);
-
             request.setAttribute("title", post.getTitle());
             request.setAttribute("author", postDAO.getNameByUserID(post.getAuthorID()));
             request.setAttribute("avatar", postDAO.getAvatarByUserID(post.getAuthorID()));
@@ -88,36 +86,14 @@ public class PostDetailController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    protected void renderPostListByOption(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        PrintWriter out = response.getWriter();
-        PostDAO postDAO = new PostDAO();
-        int ID = Integer.parseInt(request.getParameter("ID"));
-        Post post = postDAO.getPostByID(0);
-
-        out.print("<div class=\"row p-3 mb-2\">\n"
-                + "                        <div class=\"col-md-3\">\n"
-                + "                            <img src=\"" + postDAO.getAvatarByUserID(post.getAuthorID()) + "\" alt=\"img\" class=\"w-100 h-100 object-contain\" />\n"
-                + "                        </div>\n"
-                + "                        <div class=\"col-md-3\">\n"
-                + "                            <img src=\"" + post.getThumbnail() + "\" alt=\"img\" class=\"w-100 h-100 object-contain\" />\n"
-                + "                        </div>\n"
-                + "                        <div class=\"col-md-6\">\n"
-                + "                            <h3>" + post.getTitle() + "</h3>\n"
-                + "                            <p class=\"truncate\">\n"
-                + "                                " + post.getBriefInfo() + "\n"
-                + "                            </p>\n"
-                + "                        </div>\n"
-                + "                        <div class=\"info-aside col-md-3\">\n"
-                + "                            <br />\n"
-                + "                            <p>\n" + post.getContent()
-                + "                            </p>\n"
-                + "                        </div>\n"
-                + "                    </div>");
-
+        response.setContentType("text/html;charset=UTF-8");
+        try ( PrintWriter out = response.getWriter()) {
+            String txtSearch = request.getParameter("postTitle");
+//            String txtCategory= request.getParameter("postCategory");
+            request.setAttribute("postTitle", txtSearch);
+            //            request.setAttribute(, out);
+            request.getRequestDispatcher("/postPage?event=post-list").forward(request, response);
+        }
     }
 
     /**

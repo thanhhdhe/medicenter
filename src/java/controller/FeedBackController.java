@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import model.Mail;
 import model.MedicalExamination;
 import model.User;
 
@@ -36,9 +37,73 @@ public class FeedBackController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-
+        // lay bien action
         String action = request.getParameter("action");
-        if (action.equals("sendfeedback")) {
+        //hanh dong cua servlet dua theo action
+        if (action.equals("accessfeedback")) {
+            //insert vao database
+            // lay ve UserID dang dang nhap
+            HttpSession session = request.getSession();
+            String email = (String) session.getAttribute("email");
+            //kiem tra xem nguoi dung da dang nhap hay chua
+            if (email == null) {
+                out.println("<html><head><title>Login Required</title>");
+                out.println("<style>");
+                out.println("  .overlay {");
+                out.println("    position: fixed;");
+                out.println("    top: 0;");
+                out.println("    left: 0;");
+                out.println("    width: 100%;");
+                out.println("    height: 100%;");
+                out.println("    background-color: rgb(124 177 167 / 50%);");
+                out.println("    display: flex;");
+                out.println("    justify-content: center;");
+                out.println("    align-items: center;");
+                out.println("    z-index: 1;");
+                out.println("  }");
+                out.println("  .popup {");
+                out.println("    background-color: white;border-radius: 5px;");
+                out.println("    padding: 20px;");
+                out.println("    text-align: center;width: 300px;height: 150px;");
+                out.println("    z-index: 2;");
+                out.println("  }");
+                out.println("</style>");
+                out.println("</head><body>");
+                out.println("<div class='overlay'>");
+                out.println("  <div class='popup'>");
+                out.println("    <h2 style=\"color: red\">Login Required</h2>");
+                out.println("    <p>You must log in to access this page.</p>");
+                out.println("    <button style=\"padding: 10px;"
+                        + "background: #0089ff;"
+                        + "color: white;"
+                        + "border: 0px;"
+                        + "border-radius: 5px;\" onclick='closePopup()'>Cancel</button>");
+                out.println("  </div>");
+                out.println("</div>");
+                out.println("<script>");
+                out.println("  function closePopup() {");
+                out.println("    var overlay = document.querySelector('.overlay');");
+                out.println("    overlay.style.display = 'none';");
+                out.println("    window.location.href = 'index.jsp';");
+                out.println("  }");
+                out.println("</script>");
+                out.println("</body></html>");
+            } else {
+                // lay user account da dang nhap
+                UserDAO userdao = new UserDAO();
+                User user = userdao.getUser(email);
+                System.out.println(user.getEmail());
+                // lay medical ID tra ve qua url
+                System.out.println(user.getUserID());
+                FeedBackDAO dao = new FeedBackDAO();
+                // lay nhung medical chua duoc feedback
+                List<MedicalExamination> medical = dao.getMedicalExamination(user.getUserID());
+                request.setAttribute("medical", medical);
+                request.getRequestDispatcher("/view/FeedBack.jsp").forward(request, response);
+                
+            }
+            
+        } else if (action.equals("sendfeedback")) {
             // lay du lieu tu jsp
             HttpSession session = request.getSession();
             String email = (String) session.getAttribute("email");
@@ -48,7 +113,7 @@ public class FeedBackController extends HttpServlet {
             // lay medical ID tra ve qua url
             System.out.println(user.getUserID());
             FeedBackDAO dao = new FeedBackDAO();
-            String ratestar = request.getParameter("rating");
+            String ratestar = request.getParameter("rate");
             int rate = Integer.parseInt(ratestar);
             String content = request.getParameter("content");
             String medicalID = request.getParameter("medical");
@@ -99,21 +164,13 @@ public class FeedBackController extends HttpServlet {
                     + "</body>\n"
                     + "</html>");
         } else {
-            //insert vao database
-            // lay ve UserID dang dang nhap
             HttpSession session = request.getSession();
             String email = (String) session.getAttribute("email");
-            UserDAO userdao = new UserDAO();
-            User user = userdao.getUser(email);
-            System.out.println(user.getEmail());
-            // lay medical ID tra ve qua url
-            System.out.println(user.getUserID());
-            FeedBackDAO dao = new FeedBackDAO();
-            // lay nhung medical chua duoc feedback
-            List<MedicalExamination> medical = dao.getMedicalExamination(user.getUserID());
-            request.setAttribute("medical", medical);
+            //kiem tra xem nguoi dung da dang nhap hay chua
+            Mail.sendEmail(email, "THANK TO USE SERVICE", "Thank you for using our service\n"
+                    + "Please give us feedback about the service by clicking on feedback in the header on the homepage on the website");
             request.getRequestDispatcher("/view/FeedBack.jsp").forward(request, response);
-            //lay hanh dong se lam trong servlet
+
         }
 
     }

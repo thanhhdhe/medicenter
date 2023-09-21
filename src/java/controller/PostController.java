@@ -77,9 +77,17 @@ public class PostController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+//        processRequest(request, response);
+        String txtSearch=request.getParameter("postTitle");
+        request.setAttribute("postTitle", txtSearch);
+        String event = request.getParameter("event");
+        if (event.equals("post-list")) {
+            request.getRequestDispatcher("./view/post-list.jsp").forward(request, response);
+        } else if (event.equals("post-list-userchoose")) {
+            renderPostListByOption(request, response);
+        }
     }
-    
+
     protected void renderPostListByOption(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         PrintWriter out = response.getWriter();
@@ -90,7 +98,7 @@ public class PostController extends HttpServlet {
         List<Post> postList;
         if (postCategory.isEmpty()) {
             postList = postDAO.getPostedPagedPostsBySearch((page - 1) * 6, 6, postTitle);
-            
+
         } else {
             postList = postDAO.getSortedPagedPostsByUserChoice((page - 1) * 6, 6, postTitle, postCategory);
         }
@@ -112,7 +120,7 @@ public class PostController extends HttpServlet {
                     + "                        <div class=\"bg-light rounded overflow-hidden\">\n"
                     + "                            <img class=\"img-fluid w-100\" src=\"" + post.getThumbnail() + "\" alt=\"\">\n"
                     + "                            <div class=\"p-4\">\n"
-                    + "                                <a class=\"h3 d-block mb-3\" href=\"\">" + post.getTitle() + "</a>\n"
+                    + "                                 <a class=\"h3 d-block mb-3\" href=\"/ChildrenCare/postDetail?ID="+post.getPostID()+"\">"+post.getTitle()+"</a>\n"
                     + "                                <p class=\"m-0\">" + post.getBriefInfo() + "</p>\n"
                     + "                            </div>\n"
                     + "                            <div class=\"d-flex justify-content-between border-top p-4\">\n"
