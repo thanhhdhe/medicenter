@@ -52,15 +52,15 @@ function attemptLogin() {
 
                 if (result === "success") {
                     // Display the messasge
-                    document.getElementById("loginResult").textContent = "Login successful!\nThis popup will automatically close in 5 seconds!";
+                    document.getElementById("loginResult").textContent = "Login successful!";
                     document.getElementById("loginResult").style.color = "gold";
                     document.getElementById("loginResult").style.fontWeight = "normal";
 
                     // Reset login attempts if login is successful
                     resetLoginAttempts();
-
-                    // Close the login pop-up after 5 seconds
-                    popupTimeout = setTimeout(hideLoginPopup, 5000);
+                    // Reload the page
+                    location.reload();
+                    
                 } else {
                     // Variable times available
                     // Display the messasge

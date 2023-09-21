@@ -4,30 +4,24 @@
  */
 package controller;
 
-import Database.CategoryServiceDAO;
-import Database.PostDAO;
-import Database.ServiceDAO;
-import Database.SliderDAO;
+import Database.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import model.CategoryService;
-import model.Post;
-import model.Service;
-import model.Slider;
+import jakarta.servlet.http.HttpSession;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.User;
 
 /**
  *
  * @author Admin
  */
-public class HomeController extends HttpServlet {
+public class UserController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,18 +35,35 @@ public class HomeController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet HomeController</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet HomeController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        HttpSession session = request.getSession();
+        UserDAO userdao = new UserDAO();
+        String alert = null;
+        String message = null;
+        String action = request.getParameter("action");
+        User p = (User) session.getAttribute("user");
+
+        if (action.equals("profile")) {
+            session.setAttribute("user", p);
+            request.getRequestDispatcher("/view/profile.jsp").forward(request, response);
         }
+
+        if (action.equals("updateprofile")) {
+            int userId = Integer.parseInt(request.getParameter("userId"));
+            String lastname = request.getParameter("lastname");
+            String firstname = request.getParameter("firstname");
+            String phone = request.getParameter("phone");
+            String gender = request.getParameter("gender");
+            String address = request.getParameter("address");
+            String img = request.getParameter("img");
+
+            userdao.UpdateProfile(userId, firstname, lastname, phone, gender, img, address);
+            User a = new User(userId, address, p.getEmail(), p.getPassword(), firstname, lastname, gender, phone, img, p.getRole());
+            session.setAttribute("user", a);
+            request.setAttribute("updatesuccess", "Updated profile successfully");
+            request.getRequestDispatcher("/view/profile.jsp").forward(request, response);
+            response.sendRedirect("user?action=profile");
+        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -67,37 +78,7 @@ public class HomeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        processRequest(request, response);
-
-        SliderDAO sliderDAO = new SliderDAO();
-        List<Slider> listSlide = sliderDAO.getAllSlide();
-        request.setAttribute("slider", listSlide);
-
-        PostDAO postDAO = new PostDAO();
-        List<Post> listPost = postDAO.getAllPosts();
-
-        List<Post> latestPosts = new ArrayList<>();
-        if (listPost.size() < 3) {
-            for (int i = 0; i < latestPosts.size(); i++) {
-                latestPosts.add(listPost.get(i));
-            }
-        } else {
-            for (int i = 0; i < 3; i++) {
-                latestPosts.add(listPost.get(i));
-            }
-        }
-        request.setAttribute("last3post", latestPosts);
-
-        CategoryServiceDAO categoryServiceDAO = new CategoryServiceDAO();
-        List<CategoryService> listCategoryService = categoryServiceDAO.getAllCategoryServices();
-//        List<CategoryService> listCategoryServiceHasService = new ArrayList<>();
-        request.setAttribute("category", listCategoryService);
-
-        ServiceDAO serviceDAO = new ServiceDAO();
-        List<Service> listService = serviceDAO.getAllServices();
-        request.setAttribute("services", listService);
-
-        request.getRequestDispatcher("index.jsp").forward(request, response);
+        processRequest(request, response);
     }
 
     /**

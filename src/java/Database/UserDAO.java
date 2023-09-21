@@ -6,6 +6,7 @@ package Database;
 
 import java.awt.BorderLayout;
 import java.sql.Date;
+import java.sql.SQLException;
 import model.User;
 
 /**
@@ -27,8 +28,8 @@ public class UserDAO extends MyDAO {
             e.printStackTrace();
         }
     }
-    
-     public void resetPasswordByID(String newPassword,String phoneNumber, int userID) {
+
+    public void resetPasswordByID(String newPassword, String phoneNumber, int userID) {
         xSql = "update Users set Password= ? where UserID= ? and PhoneNumber = ?";
         try {
             ps = con.prepareStatement(xSql);
@@ -41,19 +42,18 @@ public class UserDAO extends MyDAO {
             e.printStackTrace();
         }
     }
-    
-    
-    public User getUser(String email){
-        
+
+    public User getUser(String email) {
+
         xSql = "select * from [dbo].[Users] where email = ?";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, email);
             rs = ps.executeQuery();
             if (rs.next()) {
-                User user= new User(rs.getInt(1),rs.getString(2),rs.getString(3),rs.getString(4)
-                ,rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8),rs.getString(9)
-                ,rs.getString(10));
+                User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                         rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9),
+                         rs.getString(10));
                 return user;
             }
             ps.close();
@@ -118,6 +118,31 @@ public class UserDAO extends MyDAO {
             ps.close();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void UpdateProfile(int UserID, String firstName,String lastName, String phone, String gender, String img, String address) {
+        String sql = "UPDATE [dbo].[Users]\n"
+                + "   SET [Address] = ?\n"
+                + "      ,[FirstName] = ?\n"
+                + "      ,[LastName] = ?\n"
+                + "      ,[Gender] = ?\n"
+                + "      ,[PhoneNumber] = ?\n"
+                + "      ,[ProfileImage] = ?\n"
+                + " WHERE UserID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, address);
+            ps.setString(2, firstName);
+            ps.setString(3, lastName);
+            ps.setString(4, gender);
+            ps.setString(5, phone);
+            ps.setString(6, img);
+            ps.setInt(7, UserID);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+              e.printStackTrace();
         }
     }
 

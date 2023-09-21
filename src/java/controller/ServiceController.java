@@ -68,7 +68,14 @@ public class ServiceController extends HttpServlet {
         } else if (event.equals("service-list-userchoose")) {
             // If 'event' is equal to "service-list-userchoose", call the renderServiceListByOption method
             renderServiceListByOption(request, response);
+        } else if (event.equals("detail")) {
+            String id = request.getParameter("id");
+            ServiceDAO serviceDAO = new ServiceDAO();
+            Service services = serviceDAO.getServiceByID(id);
+            request.setAttribute("service", services);
+            request.getRequestDispatcher("./view/servicedetail.jsp").forward(request, response);
         }
+
     }
 
     /**
@@ -134,7 +141,7 @@ public class ServiceController extends HttpServlet {
             out.print("</div>\n"
                     + "                            <br />\n"
                     + "                            <p>\n"
-                    + "                                <a href=\"#\" class=\"btn btn-primary btn-block\"> Details </a>\n"
+                    + "                                <a href=\"service?event=detail&id=" + service.getServiceID()+"\" class=\"btn btn-primary btn-block\"> Details </a>\n"
                     + "                            </p>\n"
                     + "                        </div>\n"
                     + "                    </div>");

@@ -3,6 +3,9 @@
     Created on : 13-Sep-2023, 08:44:54
     Author     : Admin
 --%>
+<%@page import = "model.*" %>
+<%@page import = "Database.*" %>
+<%@page import = "java.util.*" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -10,11 +13,16 @@
     <head>
         <link href="./resources/css/style.css" rel="stylesheet">
     </head>
+    <%
+        String email = (String) session.getAttribute("email");
+        UserDAO dao = new UserDAO();
+        User curUser = dao.getUser(email);
+    %>
     <!--Start Header-->
     <header id="header" class="fixed-top">
         <div class="container d-flex align-items-center">
 
-            <h1 class="logo me-auto"><a href="index.html">Medilab</a></h1>
+            <h1 class="logo me-auto"><a href="/ChildrenCare/home">Medilab</a></h1>
             <!--<a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
             <nav id="navbar" class="navbar order-last order-lg-0">
@@ -49,17 +57,34 @@
                         </ul>
                     </li>
                     <li class="dropdown"><a href="/ChildrenCare/feedback?action=accessfeedback"><span>Feedback</span> <i class="bi bi-chevron-down"></i></a>
-                        
+
                     </li>
-                    <li><a onclick="myFunction()" class="nav-link scrollto" href="#contact">Contact</a></li>
+                    <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav><!-- .navbar -->
+            <%if(curUser!=null){%>
+            <div class="dropdown">
+                <a href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="appointment-btn scrollto d-flex align-items-center p-1 pe-2">
+                        <img class="object-contain rounded-circle" style="width: 40px" src="<%=curUser.getProfileImage()%>" alt="thangdz"/>
+                        <p class="m-0 ms-1"><%=curUser.getFirstName()%></p>
 
-            <a onclick="showRegisterPopup()" class="appointment-btn scrollto"><span class="d-none d-md-inline">Register Now</a>
-            <a onclick="showLoginPopup()" class="appointment-btn scrollto"><span class="d-none d-md-inline">Login</a>
+                    </div>
+                </a>
 
-
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <li><a onclick="myFunction()" class="dropdown-item">Change Password</a></li>
+                    
+                    <li><a class="dropdown-item" href="logout">Logout</a></li>
+                    
+                </ul>
+            </div>
+           
+            <%}else{%>
+            <a onclick="showRegisterPopup()" id="register"class="appointment-btn scrollto"><span class="d-none d-md-inline">Register Now</a>
+            <a onclick="showLoginPopup()" id="login"class="appointment-btn scrollto"><span class="d-none d-md-inline">Login</a>
+            <%}%>
         </div>
     </header>
     <!-- End Header -->

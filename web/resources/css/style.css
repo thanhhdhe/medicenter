@@ -33,6 +33,10 @@ h6 {
     font-family: "Raleway", sans-serif;
 }
 
+.btn {
+    border-radius: 20px;
+}
+
 /*--------------------------------------------------------------
 # Header
 --------------------------------------------------------------*/
@@ -224,9 +228,6 @@ h6 {
 /*
     Slider 
 */
-/*.section-padding {
-    padding: 100px 0;
-}*/
 .carousel-item {
     height: 100vh;
     min-height: 300px;
@@ -266,6 +267,7 @@ h6 {
 }
 .first-row {
     margin-top: 50px;
+    height: 76vh;
 }
 
 .card.article {
@@ -327,20 +329,27 @@ img {
     border-right: 0;
     border-left: 0;
     font-size: 18px;
-    font-weight: bold;
+    font-weight: 600;
     padding: 15px 25px;
     transition: all 0.3s;
 }
 
 .nav-tabs .nav-link:first-child {
     margin-right: 20px;
-    
-}
 
+}
 .nav-link {
     color: #7e8082;
 }
 
+
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-link:focus,
+.nav-tabs .nav-link:hover {
+    border-bottom-color: #1977cc;
+    color: #1977cc;
+}
 
 .custom-block {
     border-radius:20px;
@@ -415,3 +424,15 @@ img {
 .custom-block-topics-listing .custom-block-image {
     width: 200px;
 }
+/*component*/
+.sider .badge {
+    border-radius: 20px;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+.big-title {
+    font-weight: 900;
+    color: #1977cc;
+}
+
+
