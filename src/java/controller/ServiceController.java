@@ -60,7 +60,7 @@ public class ServiceController extends HttpServlet {
             throws ServletException, IOException {
         // Get the 'event' parameter from the request
         String event = request.getParameter("event");
-        
+
         // Check the value of 'event'
         if (event.equals("service-list")) {
             // If 'event' is equal to "service-list", forward the request to the service-list.jsp page
@@ -90,13 +90,13 @@ public class ServiceController extends HttpServlet {
             throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         ServiceDAO serviceDAO = new ServiceDAO();
-        
+
         // Get the values of the parameters and handle null values
         String serviceTitle = (request.getParameter("serviceTitle") + "").equals("null") ? "" : (request.getParameter("serviceTitle") + "");
         String serviceType = (request.getParameter("serviceType") + "").equals("null") ? "" : (request.getParameter("serviceType") + "");
         String staff = (request.getParameter("staff") + "").equals("null") ? "" : (request.getParameter("staff") + "");
         int page = (request.getParameter("page") + "").equals("page") ? 1 : Integer.parseInt(request.getParameter("page") + "");
-        
+
         // Get the sorted and paged services based on the options
         List<Service> serviceList = serviceDAO.getSortedPagedServicesByOption((page - 1) * 5, 5, serviceTitle, serviceType, staff);
 
@@ -117,9 +117,11 @@ public class ServiceController extends HttpServlet {
                     + "                        </div>\n"
                     + "                        <div class=\"col-md-6\">\n"
                     + "                            <h3>" + service.getTitle() + "</h3>\n"
+                    + "                         <div class=\"text-container\">"
                     + "                            <p class=\"truncate\">\n"
                     + "                                " + service.getBrief() + "\n"
                     + "                            </p>\n"
+                    + "                         </div>\n"
                     + "                        </div>\n"
                     + "                        <div class=\"info-aside col-md-3\">\n"
                     + "                            <div class=\"price-wrap\">");
