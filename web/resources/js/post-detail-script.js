@@ -9,4 +9,4 @@ document.getElementById("post-title").addEventListener("change",()=> {
     form.appendChild(input);
     document.body.appendChild(form);
     form.submit();
-})
+});

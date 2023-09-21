@@ -86,13 +86,13 @@
                         <%PostDAO postDAO = new PostDAO();%>
                         <form action="postDetail" method="POST">
                             <input id="post-title" type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3"/>
-                            <select class="form-select text-primary mt-3" name="postCategory">
+<!--                            <select class="form-select text-primary mt-3" name="postCategory">
                                 <option selected value="">Post Category</option>
                                 <%List<String> categoryPostList = postDAO.allCategoryPost();
             for (String categoryPost : categoryPostList) {%>
                                 <option value="<%=categoryPost%>"><%=categoryPost%></option>
                                 <%}%>
-                            </select>
+                            </select>-->
                         </form>
                     </div>
                     <!-- Category End -->
