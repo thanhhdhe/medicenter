@@ -93,7 +93,7 @@
         </div>
         <div class="d-flex justify-content-center mb-5" id="pagination-container">
             <button class="pagination-btn ms-2 active" data-page="1">1</button>
-            <%for (int i = 2; i <=(serviceDAO.getServiceCount()/5+1)*2/2; i++) {%>
+            <%for (int i = 2; i <=(serviceDAO.getServiceCount()+4)/5; i++) {%>
             <button class="pagination-btn ms-2 inactive" data-page="<%=i%>"><%=i%></button>
             <%}%>
         </div>
