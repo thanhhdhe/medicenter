@@ -63,5 +63,9 @@
         </div>
     </header>
     <!-- End Header -->
-
+    <body>
+        <jsp:include page="../login.jsp"/>
+        <jsp:include page="../changePassword.jsp"/>
+        <jsp:include page="../register.jsp"/>
+    </body>
 </html>

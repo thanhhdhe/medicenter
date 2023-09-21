@@ -65,7 +65,7 @@
             crossorigin="anonymous"
         />
         <link rel="stylesheet" href="../resources/css/style.css"/>
-        <link rel="stylesheet" href="../resources/css/services-list-style.css">
+        <link rel="stylesheet" href="../resources/css/services-style.css">
     </head>
     <body>
         <jsp:include page="./layout/Header.jsp" />

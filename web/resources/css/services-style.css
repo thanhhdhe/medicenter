@@ -13,6 +13,26 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     text-overflow: ellipsis;
 }
 
+.text-container {
+  max-height: 140px; /* Giới hạn chiều cao của vùng chứa */
+  overflow: hidden; /* Ẩn nội dung vượt quá chiều cao */
+}
+
+.service{
+    border: 2px solid #f7f7f7;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+    margin-bottom: 1.5rem;
+}
+
+.service:hover {
+    background-color: #f0f5f9;
+    box-shadow: 7px 7px 10px #b2c3db;
+    transform: translateY(-5px);
+    border: 2px solid #ddebff;
+}
+
 #pagination-container .active {
     display: flex;
     background-color: #1687ff !important;
