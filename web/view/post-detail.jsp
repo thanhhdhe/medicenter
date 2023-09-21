@@ -85,7 +85,7 @@
                     <div class="mb-5">
                         <%PostDAO postDAO = new PostDAO();%>
                         <form action="postDetail" method="POST">
-                            <input id="post-title" type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3"/>
+                            <input id="post-title" type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3 search"/>
 <!--                            <select class="form-select text-primary mt-3" name="postCategory">
                                 <option selected value="">Post Category</option>
                                 <%List<String> categoryPostList = postDAO.allCategoryPost();

@@ -29,7 +29,7 @@
         <div class="d-flex justify-content-center mt-5">
             <div class="container row mt-5 mb-4">
                     <div class="mb-5">
-                        <input type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3" id="search" value="${postTitle}"/>
+                        <input type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3 search" value="${postTitle}"/>
                         <select class="form-select text-primary mt-3" name="postCategory">
                             <option selected value="">Post Category</option>
                             <%List<String> categoryPostList = postDAO.allCategoryPost();
