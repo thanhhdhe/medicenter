@@ -24,8 +24,7 @@ public class LogOutServlet extends HttpServlet {
         try ( PrintWriter out = response.getWriter()) {
             HttpSession session = request.getSession(true);
             session.removeAttribute("email");
-            
-            request.getRequestDispatcher("home").forward(request, response);
+            response.sendRedirect("home"); 
         }
     }
 
