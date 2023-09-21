@@ -1,5 +1,6 @@
 var loginAttempts = 0; // Track login attempts
 var loginTimeout; // Store login timeout reference
+var loginStatus = false; // Track login status
 
 function attemptLogin() {
     var email = document.getElementById("lemail").value;
@@ -55,14 +56,11 @@ function attemptLogin() {
                     document.getElementById("loginResult").textContent = "Login successful!";
                     document.getElementById("loginResult").style.color = "gold";
                     document.getElementById("loginResult").style.fontWeight = "normal";
-
+                    loginStatus = true;
                     // Reset login attempts if login is successful
                     resetLoginAttempts();
-                    // Reload the page
-                    location.reload();
-                    
+
                 } else {
-                    // Variable times available
                     // Display the messasge
                     document.getElementById("loginResult").textContent = "Wrong email or password. You have " + (3 - loginAttempts) + " times to wrong";
                     document.getElementById("loginResult").style.color = "red";
@@ -113,6 +111,9 @@ function hideLoginPopup() {
     document.getElementById("lpassword").value = "";
     // Hide the popup
     document.getElementById('loginPopup').style.display = 'none';
+    if (loginStatus === true) {
+        location.reload();
+    }
 }
 
 

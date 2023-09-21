@@ -10,6 +10,8 @@
 
 
 <jsp:include page="view/layout/Head.jsp"/>
+<jsp:include page="view/verification-popup.jsp"/>
+
 <body>
     <jsp:include page="view/layout/Header.jsp"/>
     <div class="container-md px-4">

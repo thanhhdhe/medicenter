@@ -109,9 +109,9 @@ public class UserDAO extends MyDAO {
     }
 
     public void insert(User x) {
-        xSql = "INSERT INTO [dbo].[Users]([Email],[FirstName],[LastName],[Password],[Gender],[Address],[PhoneNumber],[Role]) VALUES(N'"
+        xSql = "INSERT INTO [dbo].[Users]([Email],[FirstName],[LastName],[Password],[Gender],[Address],[PhoneNumber],[Role],[ProfileImage]) VALUES(N'"
                 + x.getEmail() + "',N'" + x.getFirstName() + "',N'" + x.getLastName() + "','" + x.getPassword() + "',N'"
-                + x.getGender() + "',N'" + x.getAddress() + "','" + x.getPhoneNumber() + "','" + x.getRole() + "')";
+                + x.getGender() + "',N'" + x.getAddress() + "','" + x.getPhoneNumber() + "','" + x.getRole() + "','" + x.getProfileImage() +"')";
         try {
             ps = con.prepareStatement(xSql);
             ps.executeUpdate();
