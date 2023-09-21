@@ -3,6 +3,9 @@
     Created on : 13-Sep-2023, 08:44:54
     Author     : Admin
 --%>
+<%@page import = "model.*" %>
+<%@page import = "Database.*" %>
+<%@page import = "java.util.*" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -10,6 +13,11 @@
     <head>
         <link href="./resources/css/style.css" rel="stylesheet">
     </head>
+    <%
+        String email = (String) session.getAttribute("email");
+        UserDAO dao = new UserDAO();
+        User curUser = dao.getUser(email);
+    %>
     <!--Start Header-->
     <header id="header" class="fixed-top">
         <div class="container d-flex align-items-center">
@@ -55,10 +63,15 @@
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav><!-- .navbar -->
-
-            <a onclick="showRegisterPopup()" id="register"class="appointment-btn scrollto"><span class="d-none d-md-inline">Register Now</a>
-            <a onclick="showLoginPopup()" id="login"class="appointment-btn scrollto"><span class="d-none d-md-inline">Login</a>
-
+            <%if(curUser!=null){%>
+            <div class="appointment-btn scrollto d-flex align-items-center">
+                <img class="object-contain rounded-circle" style="width: 40px" src="<%=curUser.getProfileImage()%>" alt="thangdz"/>
+                <p class="m-0 ms-1"><%=curUser.getFirstName()%></p>
+            </div>
+            <%}else{%>
+                <a onclick="showRegisterPopup()" id="register"class="appointment-btn scrollto"><span class="d-none d-md-inline">Register Now</a>
+                <a onclick="showLoginPopup()" id="login"class="appointment-btn scrollto"><span class="d-none d-md-inline">Login</a>
+            <%}%>
         </div>
     </header>
     <!-- End Header -->
