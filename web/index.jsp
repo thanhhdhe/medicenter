@@ -109,7 +109,7 @@
                                                 <c:if test="${s.categoryID == cate.categoryID}">
                                                     <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0">
                                                         <div class="custom-block bg-white shadow-lg">
-                                                            <a href="topics-detail.html">
+                                                            <a href="service?event=detail&id=s.ServiceID">
                                                                 <div class="d-flex">
                                                                     <div>
                                                                         <h4><strong>${s.title}</strong></h4>

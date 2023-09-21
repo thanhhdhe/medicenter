@@ -141,7 +141,7 @@ public class ServiceController extends HttpServlet {
             out.print("</div>\n"
                     + "                            <br />\n"
                     + "                            <p>\n"
-                    + "                                <a href=\"#\" class=\"btn btn-primary btn-block\"> Details </a>\n"
+                    + "                                <a href=\"service?event=detail&id=" + service.getServiceID()+"\" class=\"btn btn-primary btn-block\"> Details </a>\n"
                     + "                            </p>\n"
                     + "                        </div>\n"
                     + "                    </div>");

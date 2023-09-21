@@ -14,7 +14,7 @@
     <header id="header" class="fixed-top">
         <div class="container d-flex align-items-center">
 
-            <h1 class="logo me-auto"><a href="index.html">Medilab</a></h1>
+            <h1 class="logo me-auto"><a href="/ChildrenCare/home">Medilab</a></h1>
             <!--<a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
 
             <nav id="navbar" class="navbar order-last order-lg-0">
@@ -49,7 +49,7 @@
                         </ul>
                     </li>
                     <li class="dropdown"><a href="/ChildrenCare/feedback?action=accessfeedback"><span>Feedback</span> <i class="bi bi-chevron-down"></i></a>
-                        
+
                     </li>
                     <li><a onclick="myFunction()" class="nav-link scrollto" href="#contact">Contact</a></li>
                 </ul>
