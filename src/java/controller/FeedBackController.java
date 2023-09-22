@@ -37,15 +37,14 @@ public class FeedBackController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        // lay bien action
+        // Get the 'action' parameter from the request
         String action = request.getParameter("action");
-        //hanh dong cua servlet dua theo action
+        // Determine the servlet action based on the 'action' parameter
         if (action.equals("accessfeedback")) {
-            //insert vao database
-            // lay ve UserID dang dang nhap
+            // Check if the user is logged in
             HttpSession session = request.getSession();
             String email = (String) session.getAttribute("email");
-            //kiem tra xem nguoi dung da dang nhap hay chua
+             // Display a login required message as a popup overlay
             if (email == null) {
                 out.println("<html><head><title>Login Required</title>");
                 out.println("<style>");
@@ -89,14 +88,14 @@ public class FeedBackController extends HttpServlet {
                 out.println("</script>");
                 out.println("</body></html>");
             } else {
-                // lay user account da dang nhap
+                // Get user information
                 UserDAO userdao = new UserDAO();
                 User user = userdao.getUser(email);
                 System.out.println(user.getEmail());
-                // lay medical ID tra ve qua url
+                 // Get medical examinations awaiting feedback
                 System.out.println(user.getUserID());
                 FeedBackDAO dao = new FeedBackDAO();
-                // lay nhung medical chua duoc feedback
+                // Set the 'medical' attribute for rendering in FeedBack.jsp
                 List<MedicalExamination> medical = dao.getMedicalExamination(user.getUserID());
                 request.setAttribute("medical", medical);
                 request.getRequestDispatcher("/view/FeedBack.jsp").forward(request, response);
@@ -104,20 +103,23 @@ public class FeedBackController extends HttpServlet {
             }
             
         } else if (action.equals("sendfeedback")) {
-            // lay du lieu tu jsp
+              // Get user information
             HttpSession session = request.getSession();
             String email = (String) session.getAttribute("email");
             UserDAO userdao = new UserDAO();
             User user = userdao.getUser(email);
             System.out.println(user.getEmail());
-            // lay medical ID tra ve qua url
+            // Get feedback details from the request
             System.out.println(user.getUserID());
             FeedBackDAO dao = new FeedBackDAO();
             String ratestar = request.getParameter("rate");
             int rate = Integer.parseInt(ratestar);
+            
             String content = request.getParameter("content");
             String medicalID = request.getParameter("medical");
+            
             int medicalId = Integer.parseInt(medicalID);
+            // Insert the feedback into the database
             dao.InsertFeedBack(user.getUserID(), medicalId, content, rate);
             out.println("<!DOCTYPE html>\n"
                     + "<html>\n"
@@ -164,9 +166,10 @@ public class FeedBackController extends HttpServlet {
                     + "</body>\n"
                     + "</html>");
         } else {
+            // Get user's email from the session
             HttpSession session = request.getSession();
             String email = (String) session.getAttribute("email");
-            //kiem tra xem nguoi dung da dang nhap hay chua
+              // Send an email with a feedback request
             Mail.sendEmail(email, "THANK TO USE SERVICE", "Thank you for using our service\n"
                     + "Please give us feedback about the service by clicking on feedback in the header on the homepage on the website");
             request.getRequestDispatcher("/view/FeedBack.jsp").forward(request, response);

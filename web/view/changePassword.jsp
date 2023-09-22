@@ -41,6 +41,19 @@
                 margin-top: 100px;
                 margin-left: -225px;
             }
+
+            /* Add a layer beneath the popup using rgba for toggling */
+            .popup-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.7); /* Change opacity as needed */
+                z-index: 198;
+            }
+
             .popuptext input[type="password"]{
                 padding: 16px;
                 width: 100%;
@@ -83,56 +96,67 @@
         <title>JSP Page</title>
     </head>
     <body>
-        
-            <form style="z-index: 200;position: relative;" action="changepassword" method="POST" >
-                
-                <div class="d-flex justify-content-center">
-                    <div class=" popup" > 
-                        <div class="popuptext" id="myPopup"> 
-                            <div class="title1"><h1>CHANGE PASSWORD</h1></div> 
-                            <p>
-                            <div>
-                                <input type="password" name="currentpassword" 
-                                       value="" placeholder="Current Password" required/>
-                            </div> 
-                            <p>
-                            <div>
-                                <input type="password" name="newPassword" 
-                                       value="" placeholder="New Password" required />
-                            </div>     
-                            <p>
-                            <div>
-                                <input type="password" name="conPassword" 
-                                       value="" placeholder="Confirm password" required/>
-                            </div>
-                            <p>
-                            <div class="button1">
-                                <input type="button" value="ENTER" onclick="validatePassword();"/>
-                            </div>
-                            <p>
-                            <div class="button1">
-                                <input type="button" value="CANCEL" onclick="myFunction()" />
-                            </div> 
-                            <p>
-                            <div id="error" style="color: red;"></div>
+        <div class="popup-overlay" id="overlay"></div>
+        <form style="z-index: 200;position: relative;" action="changepassword" method="POST" >
+
+            <div class="d-flex justify-content-center">
 
 
+
+                <div class=" popup" > 
+                    <div class="popuptext" id="myPopup"> 
+                        <div class="title1"><h1>CHANGE PASSWORD</h1></div> 
+                        <p>
+                        <div>
+                            <input type="password" name="currentpassword" 
+                                   value="" placeholder="Current Password" required/>
+                        </div> 
+                        <p>
+                        <div>
+                            <input type="password" name="newPassword" 
+                                   value="" placeholder="New Password" required />
+                        </div>     
+                        <p>
+                        <div>
+                            <input type="password" name="conPassword" 
+                                   value="" placeholder="Confirm password" required/>
                         </div>
+                        <p>
+                        <div class="button1">
+                            <input type="button" value="ENTER" onclick="validatePassword();"/>
+                        </div>
+                        <p>
+                        <div class="button1">
+                            <input type="button" value="CANCEL" onclick="myFunction()" />
+                        </div> 
+                        <p>
+                        <div id="error" style="color: red;"></div>
+
+
                     </div>
                 </div>
+            </div>
 
 
-            </form>
-            
-       
-        
+        </form>
+
+
+
 
         <script>
 // When the user clicks on div, open the popup
 
             function myFunction() {
-                var popup = document.getElementById("myPopup");  
-                popup.classList.toggle("show");
+                var popup = document.getElementById("myPopup");
+                var overlay = document.getElementById("overlay"); // Get the overlay
+
+                if (popup.classList.contains("show")) {
+                    popup.classList.remove("show");
+                    overlay.style.display = "none"; // Hide the overlay
+                } else {
+                    popup.classList.add("show");
+                    overlay.style.display = "block"; // Show the overlay
+                }
 
             }
             function validatePassword() {

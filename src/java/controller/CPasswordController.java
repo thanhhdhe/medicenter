@@ -33,31 +33,7 @@ public class CPasswordController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-//        try (PrintWriter out = response.getWriter()) {
-//            //change password by User ID 
-//            // Get session from login
-//            HttpSession session= request.getSession();
-//            String email = (String) session.getAttribute("email");
-//            // change database pass word
-//            // get new password 
-//            String currentPassword = request.getParameter("currentpassword");
-//            String newPassword = request.getParameter("newPassword");
-//            String conPassword = request.getParameter("conPassword");
-//            
-//            UserDAO userdao= new UserDAO();
-//            
-//            //check if newPassword == confirm password so change pass, error
-//            if(newPassword.equals(conPassword) && userdao.loginAccount(email, currentPassword)){
-//                
-//                userdao.resetPassword(newPassword, email);
-//                
-//                response.sendRedirect("index.jsp");
-//            } else {
-//                
-//                request.getRequestDispatcher("index.jsp").forward(request, response);
-//            }
-//            
-//        }
+
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -88,31 +64,41 @@ public class CPasswordController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/plain;charset=UTF-8");
         PrintWriter out = response.getWriter();
+
+        // Get the current password, new password, and confirmation password from the request
         String currentPassword = request.getParameter("currentpassword");
         String newPassword = request.getParameter("newPassword");
         String conPassword = request.getParameter("conPassword");
+
+        // Hash the current password for comparison with the stored password
         String oldpassword = DigestUtils.md5Hex(currentPassword);
-        //lay ve mail khach hang gui
+
+        // Get the user's email from the session
         HttpSession session = request.getSession();
-        String email= (String) session.getAttribute("email");
-        UserDAO dao= new UserDAO();
-        User user= dao.getUser(email);
+        String email = (String) session.getAttribute("email");
+
+        // Create a UserDAO instance to interact with the user data
+        UserDAO dao = new UserDAO();
+
+        // Retrieve the user based on their email
+        User user = dao.getUser(email);
+
         if (currentPassword == null || newPassword == null || conPassword == null
                 || currentPassword.equals("")
                 || newPassword.equals("") || conPassword.equals("")) {
-            // Xử lý lỗi khi một hoặc nhiều trường không tồn tại trong form
-
+            // Handle the error when one or more fields are missing in the form
             response.getWriter().write("Notify: You must enter complete information.");
         } else {
             if (oldpassword.equals(user.getPassword())) {
                 if (newPassword.equals(conPassword)) {
+                    // Reset the password to the new hashed password
                     dao.resetPassword(DigestUtils.md5Hex(newPassword), user.getUserID());
                     response.getWriter().write("Notify: Success.");
                 } else {
-                    response.getWriter().write("Notify: Both passwords must be identical.");
+                    response.getWriter().write("Notify: Both passwords must be mismatched.");
                 }
             } else {
-                response.getWriter().write("Notify: The current password is ineffective.");
+                response.getWriter().write("Notify: The current password is  incorrect.");
             }
         }
     }
