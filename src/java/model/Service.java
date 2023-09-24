@@ -20,6 +20,7 @@ public class Service {
     private double  salePrice;
     private String serviceDetail;
     private Date updateDate;
+    private Boolean status;
 
     public Service() {
     }
@@ -36,7 +37,8 @@ public class Service {
         this.updateDate = updateDate;
     }
 
-    public Service( String title, String brief, String thumbnail, int categoryID, double originalPrice, double salePrice, String serviceDetail, Date updateDate) {
+    public Service(int ServiceID, String title, String brief, String thumbnail, int categoryID, double originalPrice, double salePrice, String serviceDetail, Date updateDate, Boolean status) {
+        this.ServiceID = ServiceID;
         this.title = title;
         this.brief = brief;
         this.thumbnail = thumbnail;
@@ -45,6 +47,15 @@ public class Service {
         this.salePrice = salePrice;
         this.serviceDetail = serviceDetail;
         this.updateDate = updateDate;
+        this.status = status;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 
     public String getBrief() {
