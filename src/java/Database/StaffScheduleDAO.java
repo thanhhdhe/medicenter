@@ -37,13 +37,14 @@ public class StaffScheduleDAO extends MyDAO {
         return staffScheduleList;
     }
     
-    public List<Integer> getWorkDay(String staffID, String month) {
+    public List<Integer> getWorkDay(String staffID, String month, String year) {
         List<Integer> day = new ArrayList<>();
-        xSql = "select DAY(Workday) as Work from [dbo].[StaffSchedules] where StaffID = ? and MONTH(Workday) = ? group by Workday";
+        xSql = "select DAY(Workday) as Work from [dbo].[StaffSchedules] where StaffID = ? and MONTH(Workday) = ? and YEAR(Workday) = ? group by Workday";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, staffID);
             ps.setString(2, month);
+            ps.setString(3, year);
             rs = ps.executeQuery();
             while (rs.next()) {
                 int temp = rs.getInt("Work");
@@ -57,14 +58,15 @@ public class StaffScheduleDAO extends MyDAO {
         return day;
     }
 
-    public List<Integer> getWorkSlots(String selectedDate, String selectedMonth, String staffID) {
+    public List<Integer> getWorkSlots(String selectedDate, String selectedMonth, String selectedYear, String staffID) {
         List<Integer> slot = new ArrayList<>();
-        xSql = "SELECT * FROM [dbo].[StaffSchedules] where StaffID = ? and DAY(Workday) = ? and MONTH(Workday) = ?";
+        xSql = "SELECT * FROM [dbo].[StaffSchedules] where StaffID = ? and DAY(Workday) = ? and MONTH(Workday) = ? and YEAR(Workday) = ?";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, staffID);
             ps.setString(2, selectedDate);
             ps.setString(3, selectedMonth);
+            ps.setString(4, selectedYear);
             rs = ps.executeQuery();
             while (rs.next()) {
                 int slotInt = rs.getInt("Slot");
@@ -78,11 +80,11 @@ public class StaffScheduleDAO extends MyDAO {
         return slot;
     }
 
-    public List<Integer> getListDayFullSlot(String staffID, String month) {
+    public List<Integer> getListDayFullSlot(String staffID, String month, String year) {
         List<Integer> day = new ArrayList<>();
         xSql = "SELECT DISTINCT DAY(ss.Workday) as fullDay"
                 + " FROM StaffSchedules ss"
-                + " WHERE ss.StaffID = ? AND MONTH(ss.Workday) = ?"
+                + " WHERE ss.StaffID = ? AND MONTH(ss.Workday) = ? AND YEAR(ss.Workday) = ?"
                 + " AND NOT EXISTS ("
                 + "    SELECT 1"
                 + "    FROM Reservations r"
@@ -107,6 +109,7 @@ public class StaffScheduleDAO extends MyDAO {
             ps = con.prepareStatement(xSql);
             ps.setString(1, staffID);
             ps.setString(2, month);
+            ps.setString(3, year);
             rs = ps.executeQuery();
             while (rs.next()) {
                 int dayInt = rs.getInt("fullDay");

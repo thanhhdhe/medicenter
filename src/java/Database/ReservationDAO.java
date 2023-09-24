@@ -4,7 +4,6 @@
  */
 package Database;
 
-import java.awt.BorderLayout;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,15 +15,16 @@ import model.Reservation;
  */
 public class ReservationDAO extends MyDAO {
 
-    public List<Reservation> getSpecificReservation(String staffID, String date, String month, String serviceID) {
+    public List<Reservation> getSpecificReservation(String staffID, String date, String month, String year, String serviceID) {
         List<Reservation> list = new ArrayList<>();
-        xSql = "SELECT * from [dbo].[Reservations] where StaffID = ? and DAY(ReservationDate) = ? and MONTH(ReservationDate) = ? and ServiceID = ?";
+        xSql = "SELECT * from [dbo].[Reservations] where StaffID = ? and DAY(ReservationDate) = ? and MONTH(ReservationDate) = ? and YEAR(ReservationDate) = ? and ServiceID = ?";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, staffID);
             ps.setString(2, date);
             ps.setString(3, month);
-            ps.setString(4, serviceID);
+            ps.setString(4, year);
+            ps.setString(5, serviceID);
             rs = ps.executeQuery();
             while (rs.next()) {
                 int ReservationID = rs.getInt("ReservationID");

@@ -121,7 +121,7 @@
                                 html += "<td><p title='This date is available for booking' class=" + work + " onclick='selectDate(this)'>" + dayCount + "</p></td>";
                             }
                         } else {
-                            html += "<td><p class=" + not_work + ">" + dayCount + "</p></td>";
+                            html += "<td><p title='This date is not available for booking' class=" + not_work + ">" + dayCount + "</p></td>";
                         }
                         dayCount++;
                     }
@@ -174,7 +174,7 @@
                 const xhr = new XMLHttpRequest();
                 const serviceID = <%=service.getServiceID()%>;
                 const staffID = <%=staffID%>;
-                const url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&staffID=" + staffID + "&serviceID=" + serviceID + "&action=checkSlot";
+                const url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&serviceID=" + serviceID + "&action=checkSlot";
 
                 xhr.open("GET", url, true);
 
@@ -197,26 +197,32 @@
                             if (parseInt(selectedDate.textContent, 10) === currentDate.getDate()) {
                                 if (currentDate.getHours() > 8 && i === 0) {
                                     slot.className = "not_work";
+                                    slot.title = "This slot is not available to book";
                                     timeSlotDiv.appendChild(slot);
                                     continue;
                                 } else if (currentDate.getHours() > 9 && i === 1) {
                                     slot.className = "not_work";
+                                    slot.title = "This slot is not available to book";
                                     timeSlotDiv.appendChild(slot);
                                     continue;
                                 } else if (currentDate.getHours() > 10 && i === 2) {
                                     slot.className = "not_work";
+                                    slot.title = "This slot is not available to book";
                                     timeSlotDiv.appendChild(slot);
                                     continue;
                                 } else if (currentDate.getHours() > 11 && i === 3) {
                                     slot.className = "not_work";
+                                    slot.title = "This slot is not available to book";
                                     timeSlotDiv.appendChild(slot);
                                     continue;
                                 } else if (currentDate.getHours() > 15 && i === 4) {
                                     slot.className = "not_work";
+                                    slot.title = "This slot is not available to book";
                                     timeSlotDiv.appendChild(slot);
                                     continue;
                                 } else if (currentDate.getHours() > 16 && i === 5) {
                                     slot.className = "not_work";
+                                    slot.title = "This slot is not available to book";
                                     timeSlotDiv.appendChild(slot);
                                     continue;
                                 }
@@ -225,12 +231,15 @@
                             // Check it condition to class slot
                             if (bookedSlots.includes(i + 1)) {
                                 slot.className = "full";
+                                slot.title = "This slot has been booked";
                             } else if (workSlots.includes(i + 1)) {
                                 slot.className = "work";
+                                slot.title = "You can book this slot";
                                 slot.addEventListener("click", function () {
                                     selectTimeSlot(slot, i + 1);
                                 });
                             } else {
+                                slot.title = "This slot is not available to book";
                                 slot.className = "not_work";
                             }
                             timeSlotDiv.appendChild(slot);
@@ -270,9 +279,8 @@
                     const selectedSlotValue = selectedSlot.textContent;
                     if (selectedSlotValue === null)
                         return;
-                    
                     // Check the right condition to send the signal to the servlet
-                    if (workSlots.includes(timeSlots.indexOf(selectedSlotValue)) && !bookedSlots.includes(timeSlots.indexOf(selectedSlotValue))
+                    if (workSlots.includes(timeSlots.indexOf(selectedSlotValue) + 1) && !bookedSlots.includes(timeSlots.indexOf(selectedSlotValue) + 1)
                             && Workday.includes(parseInt(selectedDateValue, 10)) && !fullDay.includes(parseInt(selectedDateValue, 10))) {
                         // Send date and time slot information to the servlet ...
                         const url = "ConservationContact?selectedDate=" + selectedDateValue + "&selectedSlot=" + (timeSlots.indexOf(selectedSlotValue) + 1);
@@ -286,6 +294,8 @@
                 // Reset value
                 selectedDate = null;
                 selectedSlot = null;
+                workSlots = null;
+                bookedSlots = null;
 
 
                 // Validate the month, the month only can be the current month or the next month
@@ -320,7 +330,7 @@
                 if (month === (currentDate.getMonth() + 1)) {
                     document.getElementById("previousMonth").disabled = true;
                     document.getElementById("nextMonth").disabled = false;
-                    
+
                     // remove the event listener
                     document.getElementById("previousMonth").removeEventListener("click", function () {
                         changeMonth(month + 1);
@@ -349,7 +359,7 @@
                 const xhr = new XMLHttpRequest();
                 const serviceID = <%=service.getServiceID()%>;
                 const staffID = <%=staffID%>;
-                const url = "reservationdetailcontroller?selectedDate=null&selectedMonth=" + (currentMonth + 1) + "&staffID=" + staffID + "&serviceID=" + serviceID + "&action=changeMonth";
+                const url = "reservationdetailcontroller?selectedDate=null&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&serviceID=" + serviceID + "&action=changeMonth";
 
                 xhr.open("GET", url, true);
 
@@ -372,6 +382,7 @@
                         // Reset the content of time slot and schedule table
                         document.getElementById("time-slot-div").textContent = "";
                         document.getElementById("schedule-table").textContent = "";
+
 
                         generateTimetable();
                     }

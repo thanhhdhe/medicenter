@@ -4,7 +4,6 @@
  */
 package controller;
 
-import Database.ReservationDAO;
 import Database.ServiceDAO;
 import Database.StaffDAO;
 import Database.StaffScheduleDAO;
@@ -15,7 +14,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
 import model.Service;
 import model.Staff;
@@ -37,11 +35,9 @@ public class ReservationDetail extends HttpServlet {
             // Get the current date
             LocalDate currentDate = LocalDate.now();
 
-            // Get the current month as a Month enum value
-            Month currentMonth = currentDate.getMonth();
-
             // Get the current month as an integer (1-12)
             int currentMonthValue = currentDate.getMonthValue();
+            int currentYearValue = currentDate.getYear();
 
             StaffDAO sd = new StaffDAO();
             StaffScheduleDAO ssd = new StaffScheduleDAO();
@@ -59,9 +55,9 @@ public class ReservationDetail extends HttpServlet {
                 request.setAttribute("Staff", staff);
 
                 // Process staff schedule
-                List<Integer> Workday = ssd.getWorkDay(staffID, Integer.toString(currentMonthValue)); // The variable will contain the number of workdays
+                List<Integer> Workday = ssd.getWorkDay(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue)); // The variable will contain the number of workdays
 
-                List<Integer> fullDay = ssd.getListDayFullSlot(staffID, Integer.toString(currentMonthValue)); // The variable will store a day that full
+                List<Integer> fullDay = ssd.getListDayFullSlot(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue)); // The variable will store a day that full
 
                 request.setAttribute("Workday", Workday);
                 request.setAttribute("fullDay", fullDay);

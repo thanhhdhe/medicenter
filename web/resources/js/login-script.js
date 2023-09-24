@@ -36,11 +36,11 @@ function attemptLogin() {
         document.getElementById("loginResult").style.fontWeight = "bold";
         document.getElementById("Login-button").disabled = true;
 
-        // Set a timeout to re-enable the login button after 5 minutes
-        loginTimeout = setTimeout(resetLoginAttempts, 10000); // 300,000 milliseconds = 5 minutes
+        // Set a timeout to re-enable the login button after 30 seconds
+        loginTimeout = setTimeout(resetLoginAttempts, 30000); // 30,000 milliseconds = 30 seconds
     } else if (loginAttempts > 3) {
         // Display a message and disable the login button
-        document.getElementById("loginResult").textContent = "Login attempts exceeded. Please try again later.";
+        document.getElementById("loginResult").textContent = "Login attempts exceeded. Please try again 30 seconds later.";
         document.getElementById("loginResult").style.color = "red";
         document.getElementById("loginResult").style.fontWeight = "bold";
         document.getElementById("Login-button").disabled = true;

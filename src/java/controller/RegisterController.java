@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Base64;
 import model.Mail;
 import org.apache.commons.codec.digest.DigestUtils;
 import java.util.UUID;
@@ -30,22 +31,28 @@ public class RegisterController extends HttpServlet {
         String gender = request.getParameter("rgender");
         String address = request.getParameter("raddress");
         UserDAO u = new UserDAO();
-        
+
         if (u.selectUser(email) != null) {
             response.getWriter().write("email existed");
             return;
         }
-        
-        // Generate a unique token
-        String token = UUID.randomUUID().toString();
-        activationLinks.put(token, System.currentTimeMillis());
-        
+
+        // Encoding the email
+        byte[] encodedBytes = Base64.getEncoder().encode(email.getBytes());
+        String encodedMessage = new String(encodedBytes);
+        // Make sure that in hash map activationLinks not having the same email
+        if (activationLinks.containsKey(encodedMessage)) {
+            activationLinks.replace(encodedMessage, System.currentTimeMillis());
+        } else {
+            activationLinks.put(encodedMessage, System.currentTimeMillis());
+        }
+
         String newPword = DigestUtils.md5Hex(password);
         String data = email + "&" + firstname + "&" + lastname + "&" + phonenumber + "&"
-                + newPword + "&" + address + "&" + gender + "&" + token;
+                + newPword + "&" + address + "&" + gender + "&" + encodedMessage;
         data = java.net.URLEncoder.encode(data, "UTF-8");
         response.getWriter().write("success");
-        
+
         String message = "Dear " + firstname + " " + lastname + ",<br>"
                 + "We are delighted to welcome you to Medilab. To ensure the security of your account and to provide you with the best possible experience, we kindly request your cooperation in verifying your email address.<br>"
                 + "Please click on the link below to complete the verification process: http://localhost:9999/ChildrenCare/ActivateAccount?data=" + data + "<br>"
@@ -55,7 +62,7 @@ public class RegisterController extends HttpServlet {
                 + "Thank you for choosing Medilab. We look forward to serving you, and if you have any questions or need assistance, please do not hesitate to contact our support team at 0373933128.<br>"
                 + "Sincerely,<br>"
                 + "Medilab";
-        
+
         Mail.sendEmail(email, "Activate your account", message);
     }
 }
