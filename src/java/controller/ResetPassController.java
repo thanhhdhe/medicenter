@@ -2,6 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
+ /*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+ */
 package controller;
 
 import Database.UserDAO;
@@ -20,6 +24,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
+ * Servlet to handle password reset functionality.
+ *
  * @author pc
  */
 public class ResetPassController extends HttpServlet {
@@ -35,49 +41,48 @@ public class ResetPassController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private String generatePhu1() {
+        Random ra = new Random();
+        int phu1 = ra.nextInt(100);
+        // Encrypt phu1 for security purposes
+        return MaHoa.toSHA1(String.valueOf(phu1));
+    }
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        // lay ve action de chia hanh dong
+        // Get the action parameter to determine the action to perform
         String action = request.getParameter("action");
-        // chia tung hang dong cua servlet theo action
+        // Perform different actions based on the 'action' parameter
         if (action.equals("forgetpassword")) {
-            // tao ra bien phu random
-            Random ra = new Random();
-            int phu1 = ra.nextInt(100);
-            //ma hoa bien phu1 nham muc dich bao mat
-            //chuyen phu thanh chuoi
-            String strphu1 = MaHoa.toSHA1(phu1 + "");
+            // Generate phu1 using the extracted function
+            String strphu1 = generatePhu1();
 
-            //gui phu1 toi reset .jsp
+            // Send 'strphu1' to the reset.jsp page
             request.setAttribute("phu1", strphu1);
             request.getRequestDispatcher("/view/SendMail.jsp").forward(request, response);
-            // gui user toi trang reset
-
         } else if (action.equals("confirmpassword")) {
-
-            //lay ca bien phu2 de gui lai
+            // Get 'phu2' and 'email' parameters
             String phu2 = request.getParameter("phu2");
-            //lay ve mail de gui di
             String email = request.getParameter("Mail");
 
-            // ma hoa phu2 va bien OTP de bao mat cho khach hang bien phu 2 se cong doan string la thoi gian roi ma hoa
-            String OTP = MaHoa.toSHA1(request.getParameter("phu2") + "thoigian");
-            // check email 
+            // Encrypt 'phu2' and create an OTP for security
+            String OTP = MaHoa.toSHA1(phu2 + "thoigian");
+            // Check if the provided email is valid
             UserDAO dao = new UserDAO();
-
             User user = dao.getUser(email);
 
             if (user != null && email.equals(user.getEmail())) {
-                //reset counter
+                // Reset the counter
                 counter = 0;
+                // Send a verification email with a link
                 Mail.sendEmail(email, "Verification Mail" + "",
                         "http://localhost:9999/ChildrenCare/resetpassword?phu3=" + phu2
                         + "&ID=" + user.getUserID()
                         + "&phoneNumber=" + user.getPhoneNumber()
                         + "&OTP=" + OTP + "&action=resetpass"
-                        + " \n Do not Public this email for Safety account");
+                        + " <br> Do not publicize this email for account safety.");
                 out.println("<!DOCTYPE html>\n"
                         + "<html>\n"
                         + "<head>\n"
@@ -122,44 +127,25 @@ public class ResetPassController extends HttpServlet {
                         + "    </div>\n"
                         + "</body>\n"
                         + "</html>");
-
             } else {
-                //neu nhu nguoi dung nhap sai se tao ra bien token khac
-                // tao ra bien phu random 
-                Random ra = new Random();
-                int phu1 = ra.nextInt(100);
-                //ma hoa bien phu1 nham muc dich bao mat
-                //chuyen phu thanh chuoi
-                String strphu1 = MaHoa.toSHA1(phu1 + "");
+                // Generate phu1 using the extracted function
+                String strphu1 = generatePhu1();
 
-                //kiem tra mail co hop le hay khong
+                // Check if the provided email is invalid
                 request.setAttribute("phu1", strphu1);
-
                 request.setAttribute("notify", "You must enter the correct email address.");
-
                 request.getRequestDispatcher("/view/SendMail.jsp").forward(request, response);
             }
-
         } else if (action.equals("resetpass")) {
-            //lay new password 
-
-            //tao ra 1 bien toan cuc la counter de dem so lan goi toi servlet
-            //neu nhu chay action la lan dau tien se tao ra session
-            // tu lan 2 se bo di dieu nay giup chay duoc tren nhieu browser
-            // tao ra session o action nay khien no chay duoc tren nen tang browser bat ky do nguoi dung click
-            //lay bien session de kiem tra neu qua 1000s thi bien se bi huy cung nhu link khong hop lo
-            // y tuong la duong link chi ton tai trong 1000s va chi kha dung trong lan dau tien click
+            // Global counter to keep track of the number of times the servlet is called
             counter++;
             System.out.println(counter);
             if (counter == 1) {
                 HttpSession session = request.getSession();
                 session.setMaxInactiveInterval(1000);
                 session.setAttribute("thoigian", "thoigian");
-                //lay bien phu 3 va OTP ve de check
-                // xac nhan phu3 sao cho bang voi OTP 
-                // phu3 + thoigian dem di ma hoa
+                // Get 'phu3' and 'OTP' parameters
                 String strphu3 = MaHoa.toSHA1(request.getParameter("phu3") + "thoigian");
-                // String phu3 = request.getParameter("phu3");
                 String OTP = request.getParameter("OTP");
                 System.out.println(strphu3);
                 System.out.println(OTP);
@@ -167,54 +153,48 @@ public class ResetPassController extends HttpServlet {
                 String thoigian = (String) session.getAttribute("thoigian");
 
                 if (!OTP.equals(strphu3) || thoigian == null) {
-                    // tao ra bien phu random
+                    // Generate a new random variable 'phu1' for security purposes
                     Random ra = new Random();
                     int phu1 = ra.nextInt(100);
-                    //ma hoa bien phu1 nham muc dich bao mat
-                    //chuyen phu thanh chuoi
-                    String strphu1 = MaHoa.toSHA1(phu1 + "");
+                    // Encrypt 'phu1' and convert it to a string
+                    String strphu1 = MaHoa.toSHA1(String.valueOf(phu1));
 
-                    //gui phu1 toi reset .jsp
+                    // Send 'strphu1' to the reset.jsp page
                     request.setAttribute("phu1", strphu1);
                     request.setAttribute("notify", "Link has expired.");
                     request.getRequestDispatcher("/view/SendMail.jsp").forward(request, response);
-
                 } else {
-                    //xoa bo session neu nhu da thanh cong
+                    // Invalidate the session if successful
                     session.invalidate();
                     String ID = request.getParameter("ID");
                     request.setAttribute("ID", ID);
                     String phoneNumber = request.getParameter("phoneNumber");
                     request.setAttribute("phoneNumber", phoneNumber);
-                    //di toi reset
+                    // Go to the resetPassword.jsp page
                     request.getRequestDispatcher("/view/resetPassword.jsp").forward(request, response);
-
                 }
             } else {
-                //counter > 1 thi link khong hieu luc
-                Random ra = new Random();
-                int phu1 = ra.nextInt(100);
-                //ma hoa bien phu1 nham muc dich bao mat
-                //chuyen phu thanh chuoi
-                String strphu1 = MaHoa.toSHA1(phu1 + "");
+                // Counter > 1 means the link is no longer valid
+                // Generate phu1 using the extracted function
+                String strphu1 = generatePhu1();
 
-                //gui phu1 toi reset .jsp
+                // Send 'strphu1' to the reset.jsp page
                 request.setAttribute("phu1", strphu1);
                 request.setAttribute("notify", "Link has been used.");
                 request.getRequestDispatcher("/view/SendMail.jsp").forward(request, response);
             }
-
         } else if (action.equals("change")) {
-            //lay mat khau moi de doi
+            // Get 'newpassword' and 'confirmpassword' parameters
             String newpassword = request.getParameter("newPassword");
             String confirmpassword = request.getParameter("conPassword");
-            // kiem tra mat khau da khop chua
+            // Get 'ID' and 'phoneNumber' parameters
             String ID = request.getParameter("ID");
             int id = Integer.parseInt(ID);
             String phoneNumber = request.getParameter("phoneNumber");
             UserDAO dao = new UserDAO();
 
             if (newpassword.equals(confirmpassword)) {
+                // Reset the password by ID and phone number
                 dao.resetPasswordByID(DigestUtils.md5Hex(newpassword), phoneNumber, id);
                 out.println("<!DOCTYPE html>\n"
                         + "<html>\n"
@@ -262,23 +242,18 @@ public class ResetPassController extends HttpServlet {
                         + "</html>");
             } else {
                 request.setAttribute("ID", ID);
+                request.setAttribute("phoneNumber", phoneNumber);
                 request.setAttribute("notify", "Passwords do not match.");
                 request.getRequestDispatcher("/view/resetPassword.jsp").forward(request, response);
             }
-
         } else {
-            //counter > 1 thi link khong hieu luc
+            // Counter > 1 means the link is no longer valid
+            // Generate phu1 using the extracted function
+            String strphu1 = generatePhu1();
 
-            //nguoi dung nhap sai link tao ra bien random moi
-            Random ra = new Random();
-            int phu1 = ra.nextInt(100);
-            //ma hoa bien phu1 nham muc dich bao mat
-            //chuyen phu thanh chuoi
-            String strphu1 = MaHoa.toSHA1(phu1 + "");
-
-            //gui phu1 toi reset .jsp
+            // Send 'strphu1' to the reset.jsp page
             request.setAttribute("phu1", strphu1);
-            request.setAttribute("notify", "link is invaild");
+            request.setAttribute("notify", "Link is invalid.");
             request.getRequestDispatcher("/view/SendMail.jsp").forward(request, response);
         }
     }
