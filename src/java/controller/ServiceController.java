@@ -4,6 +4,7 @@ package controller;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
+import Database.CategoryServiceDAO;
 import Database.ServiceDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -62,18 +63,31 @@ public class ServiceController extends HttpServlet {
         String event = request.getParameter("event");
 
         // Check the value of 'event'
-        if (event.equals("service-list")) {
-            // If 'event' is equal to "service-list", forward the request to the service-list.jsp page
-            request.getRequestDispatcher("./view/service-list.jsp").forward(request, response);
-        } else if (event.equals("service-list-userchoose")) {
-            // If 'event' is equal to "service-list-userchoose", call the renderServiceListByOption method
-            renderServiceListByOption(request, response);
-        } else if (event.equals("detail")) {
-            String id = request.getParameter("id");
-            ServiceDAO serviceDAO = new ServiceDAO();
-            Service services = serviceDAO.getServiceByID(id);
-            request.setAttribute("service", services);
-            request.getRequestDispatcher("./view/servicedetail.jsp").forward(request, response);
+        switch (event) {
+            case "service-list":
+                // If 'event' is equal to "service-list", forward the request to the service-list.jsp page
+                request.getRequestDispatcher("./view/service-list.jsp").forward(request, response);
+                break;
+            case "service-list-userchoose":
+                // If 'event' is equal to "service-list-userchoose", call the renderServiceListByOption method
+                renderServiceListByOption(request, response);
+                break;
+            case "detail":
+                String id = request.getParameter("id");
+                ServiceDAO serviceDAO = new ServiceDAO();
+                Service services = serviceDAO.getServiceByID(id);
+                request.setAttribute("service", services);
+                request.getRequestDispatcher("./view/servicedetail.jsp").forward(request, response);
+                break;
+            case "manage":
+                // If 'event' is equal to "manage", forward the request to the service-manage.jsp page
+                request.getRequestDispatcher("./view/service-manage.jsp").forward(request, response);
+                break;
+            case "service-list-managerchoose":
+                renderServiceListByManagerOption(request, response);
+                break;
+            default:
+                break;
         }
 
     }
@@ -90,7 +104,15 @@ public class ServiceController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // Call the processRequest method
-        processRequest(request, response);
+        String event = request.getParameter("event");
+        switch (event) {
+            case "hide":
+                hideService(request, response);
+                break;
+            case "show":
+                showService(request, response);
+                break;
+        }
     }
 
     protected void renderServiceListByOption(HttpServletRequest request, HttpServletResponse response)
@@ -109,7 +131,7 @@ public class ServiceController extends HttpServlet {
 
         // Generate the pagination HTML
         String paginationHtml = "";
-        for (int i = 1; i <= (serviceDAO.getCountOfServicesUserChoose(serviceTitle, serviceType, staff) / 5 + 1) * 2 / 2; i++) {
+        for (int i = 1; i <= (serviceDAO.getCountOfServicesUserChoose(serviceTitle, serviceType, staff) + 4) / 5; i++) {
             paginationHtml += "<button class=\"pagination-btn ms-2 " + (i == page ? "active" : "inactive")
                     + "\" data-page=\"" + i + "\" onclick=\"loadPageServices(" + i + ")\">" + i + "</button>";
         }
@@ -141,13 +163,105 @@ public class ServiceController extends HttpServlet {
             out.print("</div>\n"
                     + "                            <br />\n"
                     + "                            <p>\n"
-                    + "                                <a href=\"service?event=detail&id=" + service.getServiceID()+"\" class=\"btn btn-primary btn-block\"> Details </a>\n"
+                    + "                                <a href=\"service?event=detail&id=" + service.getServiceID() + "\" class=\"btn btn-primary btn-block\"> Details </a>\n"
                     + "                            </p>\n"
                     + "                        </div>\n"
                     + "                    </div>");
         }
         out.flush();
         out.close();
+    }
+
+    protected void renderServiceListByManagerOption(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        ServiceDAO serviceDAO = new ServiceDAO();
+        CategoryServiceDAO categoryServiceDAO = new CategoryServiceDAO();
+
+        // Get the values of the parameters and handle null values
+        String keyword = (request.getParameter("keyword") + "").equals("null") ? "" : (request.getParameter("keyword") + "");
+        String sortType = (request.getParameter("sortType") + "").equals("null") ? "" : (request.getParameter("sortType") + "");
+        int page = (request.getParameter("page") + "").equals("page") ? 1 : Integer.parseInt(request.getParameter("page") + "");
+
+        // Get the sorted and paged services based on the options
+        List<Service> serviceList = serviceDAO.getPaginatedSortedAndFilteredServices((page - 1) * 5, 5, sortType, keyword);
+
+        // Generate the pagination HTML
+        String paginationHtml = "";
+        for (int i = 1; i <= (serviceDAO.countFilteredServices(keyword) + 4) / 5; i++) {
+            paginationHtml += "<button class=\"pagination-btn ms-2 " + (i == page ? "active" : "inactive")
+                    + "\" data-page=\"" + i + "\" onclick=\"loadPageServices(" + i + ")\">" + i + "</button>";
+        }
+        // Add the pagination HTML to the response header
+        response.addHeader("pagination", paginationHtml);
+
+        // Render the service list
+        for (Service service : serviceList) {
+            out.print("<div id=\""+service.getServiceID()+"\" class=\"service row p-3"); if(service.getStatus()) out.print("inactives");
+            out.print("\">\n"
+                    + "                        <div class=\"col-md-3\">\n"
+                    + "                            <img src=\"" + service.getThumbnail() + "\" alt=\"ìmg\" class=\"w-100 h-100 object-contain\" />\n"
+                    + "                        </div>\n"
+                    + "                         <div class=\"col-md-6\">\n" +
+                    "                            <div>\n" +
+                    "                                <h3>ID: "+service.getServiceID()+"</h3>\n" +
+                    "                                <h3>"+service.getTitle()+"</h3>\n" +
+                    "                            </div>\n" +
+                    "                            <div class=\"d-flex mt-1 mb-2 align-items-end\">\n" +
+                    "                                <h5 class=\"pe-2\">Category:<p class=\"fw-normal\">"+categoryServiceDAO.getCategoryServiceByID(service.getCategoryID()+"").getCategoryName()+"</p></h5>\n" +
+                    "                            </div>\n" +
+                    "                            \n" +
+                    "                            <div class=\"text-black-50\">\n" +
+                    "                                <p class=\"clamp\">\n" +
+                    "                                    "+service.getBrief()+"\n" +
+                    "                                </p>\n" +
+                    "                            </div>\n" +
+                    "                        </div>"
+                    + "                        <div class=\"info-aside col-md-3\">\n"
+                    + "                            <div class=\"price-wrap\">");
+            if (service.getSalePrice() <= 0) {
+                out.print("<span class=\"price h5\"> $" + service.getOriginalPrice() + " </span>");
+            } else {
+                out.print("<span class=\"price h5\"> $" + service.getSalePrice() + " </span>\n"
+                        + "                                <del class=\"price-old\"> $" + service.getOriginalPrice() + "</del>");
+            }
+            out.print("</div>\n");
+            if (service.getStatus()) {
+                out.print("<h5 class=\"status text-success mt-2\">Active</h5>");
+            } else {
+                out.print("<h5 class=\"status text-black-50 mt-2\">Inactive</h5>");
+            }
+            out.print("<br />\n"
+                    + "       <div class=\"d-flex h-50 align-content-center flex-wrap\" >                      <div class=\"d-flex\">\n");
+                if(service.getStatus()){ out.print( "<button class=\"button-icon me-2  hide-service-button\" data-service-id=\""+service.getServiceID()+"\"><img src=\"resources/img/icon/hide.png\" alt=\"alt\"/></button>");
+                        }else{ out.print( " <button class=\"button-icon me-2 show-service-button\" data-service-id=\""+service.getServiceID()+"\"><img src=\"resources/img/icon/visual.png\" alt=\"alt\"/></button> "); }
+                        
+                   out.print( "                                <button class=\"button-icon me-2 \"><img src=\"resources/img/icon/detail.png\" alt=\"alt\"/></button>\n"
+                    + "                                <button class=\"button-icon\"><img src=\"resources/img/icon/pen.png\" alt=\"alt\"/></button>\n"
+                    + "                            </div> </div>"
+                    + "                        </div>\n"
+                    + "                    </div>");
+        }
+        out.flush();
+        out.close();
+    }
+    
+    protected void hideService(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        ServiceDAO serviceDAO = new ServiceDAO();
+        String ID = (String) request.getParameter("serviceId");
+        Service service = serviceDAO.getServiceByID(ID);
+        service.setStatus(false);
+        serviceDAO.update(service);
+    }
+    
+    protected void showService(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        ServiceDAO serviceDAO = new ServiceDAO();
+        String ID = (String) request.getParameter("serviceId");
+        Service service = serviceDAO.getServiceByID(ID);
+        service.setStatus(true);
+        serviceDAO.update(service);
     }
 
     /**

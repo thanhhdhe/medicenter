@@ -7,7 +7,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     Author     : Admin
 */
 
-
+body{
+    background-color: #eee;
+}
 .truncate {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -24,8 +26,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s, box-shadow 0.3s;
     margin-bottom: 1.5rem;
+    background: white;
 }
-
+.inactives{
+    background-color: #dddddd;
+    border:0;
+    color: #7c7c7c
+}
 .service:hover {
     background-color: #f0f5f9;
     box-shadow: 7px 7px 10px #b2c3db;
@@ -53,3 +60,31 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 .pagination-btn:hover {
     background-color: rgb(226, 226, 226);
 }
+
+.clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .button-icon{
+      width: 3rem;
+      height: 3rem;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+    border: 0;
+    background-color: rgba(255, 255, 255, 0);
+  }
+  
+  .button-icon:hover{
+    background-color: rgb(193 193 193 / 30%);
+  }
+  
+  .button-icon img{
+      width: 2.5rem;
+          border-radius : 50%;
+          object-fit: contain;
+  }
+    

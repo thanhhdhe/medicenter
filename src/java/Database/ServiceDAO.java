@@ -32,7 +32,8 @@ public class ServiceDAO extends MyDAO {
                 double salePrice = rs.getDouble("SalePrice");
                 String serviceDetail = rs.getString("ServiceDetails");
                 Date updateDate = rs.getDate("UpdateDate");
-                Service service = new Service(ServiceID, title, brief, thumbnail, categoryID, originalPrice, salePrice, serviceDetail, updateDate);
+                boolean status = rs.getBoolean("Status");
+                Service service = new Service(ServiceID, title, brief, thumbnail, categoryID, originalPrice, salePrice, serviceDetail, updateDate, status);
                 serviceList.add(service);
             }
             rs.close();
@@ -65,7 +66,8 @@ public class ServiceDAO extends MyDAO {
                 double salePrice = rs.getDouble("SalePrice");
                 String serviceDetail = rs.getString("ServiceDetails");
                 Date updateDate = rs.getDate("UpdateDate");
-                Service service = new Service(ServiceID, title, brief, thumbnail, categoryID, originalPrice, salePrice, serviceDetail, updateDate);
+                boolean status = rs.getBoolean("Status");
+                Service service = new Service(ServiceID, title, brief, thumbnail, categoryID, originalPrice, salePrice, serviceDetail, updateDate, status);
                 serviceList.add(service);
             }
             rs.close();
@@ -100,7 +102,44 @@ public class ServiceDAO extends MyDAO {
                 double salePrice = rs.getDouble("SalePrice");
                 String serviceDetail = rs.getString("ServiceDetails");
                 Date updateDate = rs.getDate("UpdateDate");
-                Service service = new Service(ServiceID, title, brief, thumbnail, categoryID, originalPrice, salePrice, serviceDetail, updateDate);
+                boolean status = rs.getBoolean("Status");
+                Service service = new Service(ServiceID, title, brief, thumbnail, categoryID, originalPrice, salePrice, serviceDetail, updateDate, status);
+                serviceList.add(service);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return serviceList;
+    }
+
+    public List<Service> getSortedPagedServicesBySearchTitleOrBrief(int offSetPage, int numberOfPage, String keyword) {
+        List<Service> serviceList = new ArrayList<>();
+        xSql = "SELECT *  FROM [dbo].[Services]  "
+                + "where Title like ? OR BriefInfo like ?"
+                + "OFFSET ? ROWS \n "
+                + "FETCH NEXT ? ROWS ONLY;";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, "%" + keyword + "%");
+            ps.setString(2, "%" + keyword + "%");
+            ps.setInt(3, offSetPage);
+            ps.setInt(4, numberOfPage);
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int ServiceID = rs.getInt("ServiceID");
+                String title = rs.getString("Title");
+                String brief = rs.getString("BriefInfo");
+                String thumbnail = rs.getString("Thumbnail");
+                int categoryID = rs.getInt("CategoryID");
+                double originalPrice = rs.getDouble("OriginalPrice");
+                double salePrice = rs.getDouble("SalePrice");
+                String serviceDetail = rs.getString("ServiceDetails");
+                Date updateDate = rs.getDate("UpdateDate");
+                boolean status = rs.getBoolean("Status");
+                Service service = new Service(ServiceID, title, brief, thumbnail, categoryID, originalPrice, salePrice, serviceDetail, updateDate, status);
                 serviceList.add(service);
             }
             rs.close();
@@ -113,14 +152,14 @@ public class ServiceDAO extends MyDAO {
 
     public List<Service> getSortedPagedServicesByUserChoice(int offSetPage, int numberOfPage, String keyword, String categoryIDInput, String staffIDInput) {
         List<Service> serviceList = new ArrayList<>();
-        xSql = "SELECT s.ServiceID, s.Title, s.Thumbnail, s.CategoryID, s.OriginalPrice, s.SalePrice, s.ServiceDetails, s.BriefInfo, s.UpdateDate "
+        xSql = "SELECT s.ServiceID, s.Title, s.Thumbnail, s.CategoryID, s.OriginalPrice, s.SalePrice, s.ServiceDetails, s.BriefInfo, s.UpdateDate, s.Status "
                 + "FROM ( "
                 + "    SELECT * FROM [dbo].[Services] "
                 + "    WHERE Title LIKE ? AND CategoryID = ? "
                 + ") AS s "
                 + "JOIN ServiceStaff ss ON s.ServiceID = ss.ServiceID "
                 + "WHERE ss.StaffID = ?"
-                + "    ORDER BY s.UpdateDate DESC "
+                + "    ORDER BY s.UpdateDate, s.Status DESC "
                 + "    OFFSET ? ROWS "
                 + "    FETCH NEXT ? ROWS ONLY ";
         try {
@@ -142,6 +181,7 @@ public class ServiceDAO extends MyDAO {
                 double salePrice = rs.getDouble("SalePrice");
                 String serviceDetail = rs.getString("ServiceDetails");
                 Date updateDate = rs.getDate("UpdateDate");
+                boolean status = rs.getBoolean("Status");
                 Service service = new Service(serviceID, title, brief, thumbnail, categoryID, originalPrice, salePrice, serviceDetail, updateDate);
                 serviceList.add(service);
             }
@@ -191,6 +231,7 @@ public class ServiceDAO extends MyDAO {
                 double salePrice = rs.getDouble("SalePrice");
                 String serviceDetail = rs.getString("ServiceDetails");
                 Date updateDate = rs.getDate("UpdateDate");
+                boolean status = rs.getBoolean("Status");
                 Service service = new Service(serviceID, title, brief, thumbnail, categoryID, originalPrice, salePrice, serviceDetail, updateDate);
                 serviceList.add(service);
             }
@@ -204,7 +245,7 @@ public class ServiceDAO extends MyDAO {
 
     public List<Service> getSortedPagedServicesByDoctor(int offSetPage, int numberOfPage, String keyword, String staffIDInput) {
         List<Service> serviceList = new ArrayList<>();
-        xSql = "SELECT s.ServiceID, s.Title, s.Thumbnail, s.CategoryID, s.OriginalPrice, s.SalePrice, s.ServiceDetails, s.BriefInfo, s.UpdateDate "
+        xSql = "SELECT s.ServiceID, s.Title, s.Thumbnail, s.CategoryID, s.OriginalPrice, s.SalePrice, s.ServiceDetails, s.BriefInfo, s.UpdateDate, s.Status "
                 + "FROM ( "
                 + "    SELECT * FROM [dbo].[Services] "
                 + "    WHERE Title LIKE ?"
@@ -231,6 +272,7 @@ public class ServiceDAO extends MyDAO {
                 double salePrice = rs.getDouble("SalePrice");
                 String serviceDetail = rs.getString("ServiceDetails");
                 Date updateDate = rs.getDate("UpdateDate");
+                boolean status = rs.getBoolean("Status");
                 Service service = new Service(serviceID, title, brief, thumbnail, categoryID, originalPrice, salePrice, serviceDetail, updateDate);
                 serviceList.add(service);
             }
@@ -240,6 +282,88 @@ public class ServiceDAO extends MyDAO {
             e.printStackTrace();
         }
         return serviceList;
+    }
+
+    public List<Service> getPaginatedSortedAndFilteredServices(int offSetPage, int numberOfPage, String optionSort, String keyword) {
+        List<Service> serviceList = new ArrayList<>();
+        String sql = "SELECT * FROM [dbo].[Services] WHERE Title LIKE ? OR BriefInfo LIKE ? ORDER BY ";
+
+        switch (optionSort) {
+            case "title":
+                sql += "Title";
+                break;
+            case "category":
+                sql += "CategoryID";
+                break;
+            case "listPrice":
+                sql += "OriginalPrice";
+                break;
+            case "salePrice":
+                sql += "SalePrice";
+                break;
+            case "featured":
+                sql += "Featured";
+                break;
+            case "status":
+                sql += "Status";
+                break;
+            default:
+                sql += "Title"; // Default sorting by title
+                break;
+        }
+
+        sql += " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;";
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setString(1, "%" + keyword + "%");
+            ps.setString(2, "%" + keyword + "%");
+            ps.setInt(3, offSetPage);
+            ps.setInt(4, numberOfPage);
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int ServiceID = rs.getInt("ServiceID");
+                String title = rs.getString("Title");
+                String brief = rs.getString("BriefInfo");
+                String thumbnail = rs.getString("Thumbnail");
+                int categoryID = rs.getInt("CategoryID");
+                double originalPrice = rs.getDouble("OriginalPrice");
+                double salePrice = rs.getDouble("SalePrice");
+                String serviceDetail = rs.getString("ServiceDetails");
+                Date updateDate = rs.getDate("UpdateDate");
+                boolean status = rs.getBoolean("Status");
+                Service service = new Service(ServiceID, title, brief, thumbnail, categoryID, originalPrice, salePrice, serviceDetail, updateDate, status);
+                serviceList.add(service);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return serviceList;
+    }
+
+    public int countFilteredServices(String keyword) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM [dbo].[Services] WHERE Title LIKE ? OR BriefInfo LIKE ?";
+
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setString(1, "%" + keyword + "%");
+            ps.setString(2, "%" + keyword + "%");
+
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return count;
     }
 
     public Service getServiceByID(String ID) {
@@ -259,7 +383,8 @@ public class ServiceDAO extends MyDAO {
                 double salePrice = rs.getDouble("SalePrice");
                 String serviceDetail = rs.getString("ServiceDetails");
                 Date updateDate = rs.getDate("UpdateDate");
-                service = new Service(ServiceID, title, brief, thumbnail, categoryID, originalPrice, salePrice, serviceDetail, updateDate);
+                boolean status = rs.getBoolean("Status");
+                service = new Service(ServiceID, title, brief, thumbnail, categoryID, originalPrice, salePrice, serviceDetail, updateDate, status);
             }
             rs.close();
             ps.close();
@@ -270,7 +395,7 @@ public class ServiceDAO extends MyDAO {
     }
 
     public void insert(Service service) {
-        xSql = "INSERT INTO [dbo].[Services] (Title ,Thumbnail ,CategoryID ,OriginalPrice ,SalePrice ,ServiceDetails ,BriefInfo ,UpdateDate) \n"
+        xSql = "INSERT INTO [dbo].[Services] (Title ,Thumbnail ,CategoryID ,OriginalPrice ,SalePrice ,ServiceDetails ,BriefInfo ,UpdateDate, Status) \n"
                 + "     VALUES (? ,? ,? ,? ,? ,? ,?)";
         try {
             ps = con.prepareStatement(xSql);
@@ -282,6 +407,8 @@ public class ServiceDAO extends MyDAO {
             ps.setString(6, service.getServiceDetail());
             ps.setString(7, service.getBrief());
             ps.setDate(8, service.getUpdateDate());
+            ps.setBoolean(9, service.getStatus());
+
             ps.executeUpdate();
             ps.close();
         } catch (Exception e) {
@@ -304,7 +431,7 @@ public class ServiceDAO extends MyDAO {
 
     public void update(Service service) {
         xSql = "UPDATE [dbo].[Services]\n"
-                + "   SET [Title] = ? ,[Thumbnail] = ? ,[CategoryID] = ? ,[OriginalPrice] = ? ,[SalePrice] = ? ,[ServiceDetails] =?,[UpdateDate]=?,[BriefInfo] = ?"
+                + "   SET [Title] = ? ,[Thumbnail] = ? ,[CategoryID] = ? ,[OriginalPrice] = ? ,[SalePrice] = ? ,[ServiceDetails] =?,[BriefInfo] = ?,[UpdateDate]=?,[Status] = ?"
                 + " WHERE [ServiceID] = ?";
         try {
             ps = con.prepareStatement(xSql);
@@ -314,8 +441,10 @@ public class ServiceDAO extends MyDAO {
             ps.setDouble(4, service.getOriginalPrice());
             ps.setDouble(5, service.getSalePrice());
             ps.setString(6, service.getServiceDetail());
-            ps.setDate(7, service.getUpdateDate());
-            ps.setInt(8, service.getServiceID());
+            ps.setString(7, service.getBrief());
+            ps.setDate(8, service.getUpdateDate());
+            ps.setBoolean(9, service.getStatus());
+            ps.setInt(10, service.getServiceID());
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {
@@ -344,7 +473,7 @@ public class ServiceDAO extends MyDAO {
 
     public int getCountOfServicesUserChoose(String keyword, String categoryIDInput, String staffIDInput) {
         int count = 0;
-        String sql = "SELECT COUNT(*) AS count "
+        String sql = "SELECT  COUNT(DISTINCT s.ServiceID) AS count "
                 + "FROM [dbo].[Services] AS s "
                 + "JOIN ServiceStaff ss ON s.ServiceID = ss.ServiceID "
                 + "WHERE s.Title LIKE ? ";
@@ -387,16 +516,24 @@ public class ServiceDAO extends MyDAO {
     public static void main(String[] args) {
         ServiceDAO serviceDAO = new ServiceDAO();
         CategoryServiceDAO categoryServiceDAO = new CategoryServiceDAO();
-//        List<Service> list = serviceDAO.getSortedPagedServicesByOption(0, 10, "s", "1", "1");
+//        List<Service> list = serviceDAO.getSortedPagedServicesByOption(0, 20, "", "", "1");
 //List<Service> list = serviceDAO.getAllServices();
 //        List<Service> list = serviceDAO.getSortedPagedServicesBySearch(5, 5, "");
+//            List<Service> list = serviceDAO.getSortedPaged(0, 5);
+//        List<Service> list = serviceDAO.getPaginatedSortedAndFilteredServices(0, 10, "title", "");
 //        for (Service service : list) {
 //            System.out.println(service.getTitle());
-//        }        
-//        System.out.println(serviceDAO.getCountOfServicesUserChoose("", "", ""));
+//        }
+//            System.out.println(serviceDAO.getServiceByID(15+"").getBrief());
+//        System.out.println((serviceDAO.getCountOfServicesUserChoose("", "", "")+4)/5);
 //        System.out.println((serviceDAO.getServiceCount()+4)/5);
 //        for (int i = 0; i < serviceDAO.getServiceCount(); i++) {
 //            
 //        }
+
+//        Service service = serviceDAO.getServiceByID(15+"");
+//        service.setStatus(false);
+//        serviceDAO.update(service);
+//        System.out.println(serviceDAO.getServiceByID(15+"").getStatus());
     }
 }
