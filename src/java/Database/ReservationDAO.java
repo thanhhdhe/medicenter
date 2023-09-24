@@ -16,14 +16,15 @@ import model.Reservation;
  */
 public class ReservationDAO extends MyDAO {
 
-    public List<Reservation> getSpecificReservation(String staffID, String day, String serviceID) {
+    public List<Reservation> getSpecificReservation(String staffID, String date, String month, String serviceID) {
         List<Reservation> list = new ArrayList<>();
-        xSql = "SELECT * from [dbo].[Reservations] where StaffID = ? and DAY(ReservationDate) = ? and ServiceID = ?";
+        xSql = "SELECT * from [dbo].[Reservations] where StaffID = ? and DAY(ReservationDate) = ? and MONTH(ReservationDate) = ? and ServiceID = ?";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, staffID);
-            ps.setInt(2, Integer.parseInt(day));
-            ps.setString(3, serviceID);
+            ps.setString(2, date);
+            ps.setString(3, month);
+            ps.setString(4, serviceID);
             rs = ps.executeQuery();
             while (rs.next()) {
                 int ReservationID = rs.getInt("ReservationID");
@@ -46,17 +47,9 @@ public class ReservationDAO extends MyDAO {
     }
 
     public static void main(String args[]) {
-        ReservationDAO rd = new ReservationDAO();
-
-        List<Integer> a = new ArrayList<>();
-        a.add(1);
-        a.add(2);
-        a.add(3);
-        for (Reservation r : rd.getSpecificReservation("3", "21", "1")) {
-            a.remove(Integer.valueOf(r.getReservationSlot()));
-        }
-        for (int b : a) {
-            System.out.println(b);
-        }
+//        ReservationDAO rd = new ReservationDAO();
+//        for (Reservation r : rd.getSpecificReservation("3", "27","9", "1")) {
+//            System.out.println(r.getReservationDate());
+//        }
     }
 }

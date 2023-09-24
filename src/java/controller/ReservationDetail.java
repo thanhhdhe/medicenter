@@ -4,6 +4,7 @@
  */
 package controller;
 
+import Database.ReservationDAO;
 import Database.ServiceDAO;
 import Database.StaffDAO;
 import Database.StaffScheduleDAO;
@@ -13,11 +14,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import model.Service;
 import model.Staff;
-import model.StaffSchedule;
 
 /**
  *
@@ -29,24 +30,42 @@ public class ReservationDetail extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try ( PrintWriter out = response.getWriter()) {
+            // Receive serviceID and staffID 
             String serviceID = (String) request.getParameter("serviceID");
             String staffID = (String) request.getParameter("staffID");
+
+            // Get the current date
+            LocalDate currentDate = LocalDate.now();
+
+            // Get the current month as a Month enum value
+            Month currentMonth = currentDate.getMonth();
+
+            // Get the current month as an integer (1-12)
+            int currentMonthValue = currentDate.getMonthValue();
+
             StaffDAO sd = new StaffDAO();
             StaffScheduleDAO ssd = new StaffScheduleDAO();
-            if (sd.getStaffByStaffId(Integer.parseInt(staffID)) != null) {
+            ServiceDAO serviceDAO = new ServiceDAO();
+
+            // Check the existence of the staff and services
+            if (sd.getStaffByStaffId(Integer.parseInt(staffID)) != null && serviceDAO.getServiceByID(serviceID) != null) {
+
+                // Get the staff
                 Staff staff = sd.getStaffByStaffId(Integer.parseInt(staffID));
-                List<StaffSchedule> staffScheduleList = ssd.getStaffSchedulesByStaffID(staffID);
-                // Xu ly services detail
-                ServiceDAO quanlyService = new ServiceDAO();
-                Service service = quanlyService.getServiceByID(serviceID);
+
+                // Process services detail
+                Service service = serviceDAO.getServiceByID(serviceID);
                 request.setAttribute("service", service);
-                // Xu ly staff schedule
-                List<Integer> WorkDay = new ArrayList<>();
-                for (StaffSchedule ss : staffScheduleList) {
-                    WorkDay.add(ss.getDayOfWeek());
-                }
-                request.setAttribute("WorkDay", WorkDay);
-                request.setAttribute("staffID", staffID);
+                request.setAttribute("Staff", staff);
+
+                // Process staff schedule
+                List<Integer> Workday = ssd.getWorkDay(staffID, Integer.toString(currentMonthValue)); // The variable will contain the number of workdays
+
+                List<Integer> fullDay = ssd.getListDayFullSlot(staffID, Integer.toString(currentMonthValue)); // The variable will store a day that full
+
+                request.setAttribute("Workday", Workday);
+                request.setAttribute("fullDay", fullDay);
+
                 request.getRequestDispatcher("/view/reservationdetail.jsp").forward(request, response);
             } else {
                 response.sendRedirect("home");

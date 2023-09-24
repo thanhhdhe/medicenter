@@ -46,7 +46,7 @@
     </servlet>
     <servlet>
         <servlet-name>SlotStatusServlet</servlet-name>
-        <servlet-class>controller.SlotStatusServlet</servlet-class>
+        <servlet-class>controller.ReservationDetailController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>UserController</servlet-name>
@@ -98,7 +98,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>SlotStatusServlet</servlet-name>
-        <url-pattern>/SlotStatusServlet</url-pattern>
+        <url-pattern>/reservationdetailcontroller</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>FeedBackController</servlet-name>

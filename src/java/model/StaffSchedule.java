@@ -14,16 +14,16 @@ public class StaffSchedule {
 
     private int ScheduleID;
     private int StaffID;
-    private int DayOfWeek;
+    private Date Workday;
     private int Slot;
 
     public StaffSchedule() {
     }
 
-    public StaffSchedule(int ScheduleID, int StaffID, int DayOfWeek, int Slot) {
+    public StaffSchedule(int ScheduleID, int StaffID, Date Workday, int Slot) {
         this.ScheduleID = ScheduleID;
         this.StaffID = StaffID;
-        this.DayOfWeek = DayOfWeek;
+        this.Workday = Workday;
         this.Slot = Slot;
     }
 
@@ -43,12 +43,12 @@ public class StaffSchedule {
         this.StaffID = StaffID;
     }
 
-    public int getDayOfWeek() {
-        return DayOfWeek;
+    public Date getWorkday() {
+        return Workday;
     }
 
-    public void setDayOfWeek(int DayOfWeek) {
-        this.DayOfWeek = DayOfWeek;
+    public void setWorkday(Date Workday) {
+        this.Workday = Workday;
     }
 
     public int getSlot() {
@@ -58,5 +58,5 @@ public class StaffSchedule {
     public void setSlot(int Slot) {
         this.Slot = Slot;
     }
-
+    
 }

@@ -8,25 +8,43 @@
     <body>
         <jsp:include page="layout/Header.jsp"/>
 
-        <%@ page import="java.util.List,java.util.ArrayList,model.Service" %>
-        <% List<Integer> WorkDay = (List<Integer>) request.getAttribute("WorkDay");
+        <%@ page import="java.util.List,java.util.ArrayList,model.Service,model.Staff" %>
+        <% List<Integer> Workday = (List<Integer>) request.getAttribute("Workday");
+            List<Integer> fullDay = (List<Integer>) request.getAttribute("fullDay");
            Service service = (Service) request.getAttribute("service");
-           String staffID = (String) request.getAttribute("staffID");
+           Staff staff = (Staff) request.getAttribute("Staff");
+           String staffID = staff.getStaffID() + "";
         %>
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
                     <h1><%=service.getTitle()%></h1>
-                    <img src="<%=service.getThumbnail()%>" alt="Service Thumbnail">
+                    <div class="staff-info" style="display: flex;align-items: center;gap: 16px;">
+                        <img style="width: 128px;height: 128px;border-radius: 50%;" src="<%=staff.getProfileImage()%>" alt="staff profile image"/>
+                        <p style="margin: 0;font-weight: bold;">Staff name : <%=staff.getFullName()%> </p>
+                    </div>
                     <p>Service Details: <%=service.getServiceDetail()%></p>
                     <p>Brief Info: <%=service.getBrief()%></p>
                 </div>
                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                     <!-- Timetable code -->
-                    <h2 style="font-size: 40px;text-align: center;" class="Title">Choose a Date for Examination</h2>
-                    <div id="schedule-table"> </div>
+                    <div class="title">
+                        <h2>Choose a Date for Examination</h2>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="text-center">
+                            <button id="previousMonth" type="button" class="previousmonth-button" disabled></button>
+                            <div class="time" id="time"></div>
+                            <button id="nextMonth" type="button" class="nextmonth-button"></button>
+                        </div>
+                    </div>
+
+                    <div id="schedule-table"> 
+
+                    </div>
+
                     <div id="time-slot-div">
-                        <!--Process the time-slot -->
+
                     </div>
                     <button id="btnCheckOut" disabled onclick="checkout()">Check out</button>
                 </div>
@@ -44,9 +62,79 @@
                 "15:00 - 16:00"
             ];
 
+            // Determine the day of week of that day
+            const currentDate = new Date();
+            let currentMonth = currentDate.getMonth();
+            let currentYear = currentDate.getFullYear();
+            let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            let firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
+            let workSlots = null;
+            let bookedSlots = null;
+            let Workday = <%=Workday%>; // Variable store list of day is workday
+            let fullDay = <%=fullDay%>; // Variable store list of day that is full
+
+
             // Variable store selected date and selected slot
-            let selectedDate = null;
-            let selectedSlot = null;
+            let selectedDate = null; // p
+            let selectedMonth = currentMonth + 1; // int
+            let selectedSlot = null; // int
+
+            // INIT
+            document.getElementById("time").textContent = currentMonth + 1 + " / " + currentYear;
+            document.getElementById("nextMonth").addEventListener("click", function () {
+                // Increase the month
+                changeMonth(selectedMonth + 1);
+            });
+
+            // Create a timetable for scheduling
+            function generateTimetable() {
+                const scheduletable = document.getElementById("schedule-table");
+                let name = "schedule-table";
+                let html = "<table class=" + name + "><tr>";
+
+                // Create header row
+                const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                for (let day of daysOfWeek) {
+                    html += "<th>" + day + "</th>";
+                }
+                html += "</tr><tr>";
+
+                // Fill in the days of the month
+                let dayCount = 1;
+
+                // Status of the day
+                let not_work = "not_work";
+                let work = "work";
+                let full = "full";
+
+                // FirstDayOfWeek = 4 because current month is September 
+                for (let i = 0; i < 42; i++) { // 6 rows of 7 days
+                    if (i < firstDayOfWeek || dayCount > daysInMonth) {
+                        html += '<td><p class=empty></td>';
+                    } else {
+                        // Check whether dayCount is working day or not
+                        if (Workday.includes(dayCount) && (dayCount >= currentDate.getDate() || currentMonth > currentDate.getMonth())) {
+                            // Check whether dayCount is in the list of day that full
+                            if (fullDay.includes(dayCount)) {
+                                html += "<td><p title='This date is fully booked' class=" + full + ">" + dayCount + "</p></td>";
+                            } else {
+                                html += "<td><p title='This date is available for booking' class=" + work + " onclick='selectDate(this)'>" + dayCount + "</p></td>";
+                            }
+                        } else {
+                            html += "<td><p class=" + not_work + ">" + dayCount + "</p></td>";
+                        }
+                        dayCount++;
+                    }
+                    // 
+                    if (i % 7 === 6) {
+                        html += "</tr><tr>";
+                    }
+                }
+                // Get down the line
+                html += "</tr></table>";
+                // Assign value to scheduletable
+                scheduletable.innerHTML = html;
+            }
 
             // Function to handle when the user clicks on a date
             function selectDate(day) {
@@ -62,12 +150,31 @@
                 // Create and display time slot buttons
                 selectedSlot = null;
                 btnCheckOut.disabled = true;
-                generateTimeSlots();
+
+                if (Workday.includes(parseInt(selectedDate.textContent, 10)) && !fullDay.includes(parseInt(selectedDate.textContent, 10))) {
+                    generateTimeSlots();
+                }
             }
-            function fetchSlotStatus(timeSlotDiv, selectedDateValue, staffID) {
+
+            // Function to create and display time slot buttons
+            function generateTimeSlots() {
+
+                const timeSlotDiv = document.getElementById("time-slot-div");
+                timeSlotDiv.innerHTML = "";
+                const title = document.createElement("h2");
+                title.textContent = "Select a slot";
+                title.className = "title";
+                timeSlotDiv.appendChild(title);
+
+                // Match data to each slot
+                fetchSlotStatus(timeSlotDiv);
+            }
+
+            function fetchSlotStatus(timeSlotDiv) {
                 const xhr = new XMLHttpRequest();
                 const serviceID = <%=service.getServiceID()%>;
-                const url = "SlotStatusServlet?day=" + selectedDate.textContent + "&selectedDate=" + selectedDateValue + "&staffID=" + staffID + "&serviceID=" + serviceID;
+                const staffID = <%=staffID%>;
+                const url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&staffID=" + staffID + "&serviceID=" + serviceID + "&action=checkSlot";
 
                 xhr.open("GET", url, true);
 
@@ -75,18 +182,53 @@
                     if (xhr.readyState === 4 && xhr.status === 200) {
                         const responseText = xhr.responseText; // Text string from response
 
-                        // split string into JavaScript array
-                        const workSlots = responseText.split(",").map(slot => parseInt(slot, 10));
+                        // This contain two part, part one is work slot and part two is booked slot
+                        const tempStringOne = responseText.split("&");
+                        // Split the String separated by commas
+                        workSlots = tempStringOne[0].split(',').map(item => parseInt(item, 10));
+                        bookedSlots = tempStringOne[1].split(',').map(item => parseInt(item, 10));
 
                         // Check the received number sequence and change the class of the slots
                         for (let i = 0; i < timeSlots.length; i++) {
                             const slot = document.createElement("div");
                             slot.textContent = timeSlots[i];
 
-                            if (workSlots.includes(i + 1)) {
+                            // Check if time slot is in the past
+                            if (parseInt(selectedDate.textContent, 10) === currentDate.getDate()) {
+                                if (currentDate.getHours() > 8 && i === 0) {
+                                    slot.className = "not_work";
+                                    timeSlotDiv.appendChild(slot);
+                                    continue;
+                                } else if (currentDate.getHours() > 9 && i === 1) {
+                                    slot.className = "not_work";
+                                    timeSlotDiv.appendChild(slot);
+                                    continue;
+                                } else if (currentDate.getHours() > 10 && i === 2) {
+                                    slot.className = "not_work";
+                                    timeSlotDiv.appendChild(slot);
+                                    continue;
+                                } else if (currentDate.getHours() > 11 && i === 3) {
+                                    slot.className = "not_work";
+                                    timeSlotDiv.appendChild(slot);
+                                    continue;
+                                } else if (currentDate.getHours() > 15 && i === 4) {
+                                    slot.className = "not_work";
+                                    timeSlotDiv.appendChild(slot);
+                                    continue;
+                                } else if (currentDate.getHours() > 16 && i === 5) {
+                                    slot.className = "not_work";
+                                    timeSlotDiv.appendChild(slot);
+                                    continue;
+                                }
+                            }
+
+                            // Check it condition to class slot
+                            if (bookedSlots.includes(i + 1)) {
+                                slot.className = "full";
+                            } else if (workSlots.includes(i + 1)) {
                                 slot.className = "work";
                                 slot.addEventListener("click", function () {
-                                    selectTimeSlot(slot);
+                                    selectTimeSlot(slot, i + 1);
                                 });
                             } else {
                                 slot.className = "not_work";
@@ -95,29 +237,11 @@
                         }
                     }
                 };
-
                 xhr.send();
-            }
-            // Function to create and display time slot buttons
-            function generateTimeSlots() {
-                const timeSlotDiv = document.getElementById("time-slot-div");
-                timeSlotDiv.innerHTML = "";
-                const title = document.createElement("h2");
-                title.textContent = "Select a slot";
-                title.className = "title";
-                timeSlotDiv.appendChild(title);
-
-                // Determine the day of week of that day
-                const currentDate = new Date();
-                const currentMonth = currentDate.getMonth();
-                const currentYear = currentDate.getFullYear();
-                const selectedDateValue = getDayOfWeek(currentYear, currentMonth, selectedDate.textContent);
-
-                fetchSlotStatus(timeSlotDiv, selectedDateValue, <%=staffID%>);
             }
 
             // Function to handle when the user clicks on a time slot
-            function selectTimeSlot(slot) {
+            function selectTimeSlot(slot, index) {
                 if (selectedSlot) {
                     // Reset the background color of the previous time slot (if any)
                     selectedSlot.style.backgroundColor = "";
@@ -127,9 +251,12 @@
                 selectedSlot = slot;
                 selectedSlot.style.backgroundColor = "deepskyblue";
 
-                // Turn on the "Check out" button
-                const btnCheckOut = document.getElementById("btnCheckOut");
-                btnCheckOut.disabled = false;
+                // Check the condition that selected slot must be in work slot and not in booked slot
+                if (workSlots.includes(index) && !bookedSlots.includes(index)) {
+                    // Turn on the "Check out" button
+                    const btnCheckOut = document.getElementById("btnCheckOut");
+                    btnCheckOut.disabled = false;
+                }
             }
 
             // Function to handle when the user clicks the "Check out" button
@@ -137,77 +264,119 @@
                 if (selectedDate && selectedSlot) {
                     // Get the selected date and time slot
                     const selectedDateValue = selectedDate.textContent;
+                    // Check not null
                     if (selectedDateValue === null)
                         return;
                     const selectedSlotValue = selectedSlot.textContent;
                     if (selectedSlotValue === null)
                         return;
-
-                    // Send date and time slot information to the servlet
-                    const url = "ConservationContact?selectedDate=" + selectedDateValue + "&selectedSlot=" + selectedSlotValue;
-                    window.location.href = url;
+                    
+                    // Check the right condition to send the signal to the servlet
+                    if (workSlots.includes(timeSlots.indexOf(selectedSlotValue)) && !bookedSlots.includes(timeSlots.indexOf(selectedSlotValue))
+                            && Workday.includes(parseInt(selectedDateValue, 10)) && !fullDay.includes(parseInt(selectedDateValue, 10))) {
+                        // Send date and time slot information to the servlet ...
+                        const url = "ConservationContact?selectedDate=" + selectedDateValue + "&selectedSlot=" + (timeSlots.indexOf(selectedSlotValue) + 1);
+                        window.location.href = url;
+                    }
                 }
             }
 
-            function generateTimetable() {
-                const currentDate = new Date();
-                const currentMonth = currentDate.getMonth();
-                const currentYear = currentDate.getFullYear();
+            // Function to send signal to servlet and receive data
+            function changeMonth(month) {
+                // Reset value
+                selectedDate = null;
+                selectedSlot = null;
 
-                const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-                const firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
 
-                const scheduletable = document.getElementById("schedule-table");
-                let name = "schedule-table";
-                let html = "<table class=" + name + "><tr>";
-
-                // Create header row
-                const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-                for (let day of daysOfWeek) {
-                    html += "<th>" + day + "</th>";
-                }
-                html += "</tr><tr>";
-                const WorkDay = <%=WorkDay%>;
-
-                // Fill in the days of the month
-                let dayCount = 1;
-                let not_work = "not_work";
-                let work = "work";
-
-                // FirstDayOfWeek = 4 because current month is September 
-                for (let i = 0; i < 42; i++) { // 6 rows of 7 days
-                    if (i < firstDayOfWeek || dayCount > daysInMonth) {
-                        html += '<td><p class=empty></td>';
-                    } else {
-                        const DayOfWeek = getDayOfWeek(currentYear, currentMonth, dayCount);
-                        // Check whether dayCount is working day or not
-                        if (WorkDay.includes(DayOfWeek) && (dayCount >= currentDate.getDate())) {
-                            html += "<td><p class=" + work + " onclick='selectDate(this)'>" + dayCount + "</p></td>";
-                        } else {
-                            html += "<td><p class=" + not_work + ">" + dayCount + "</p></td>";
-                        }
-                        dayCount++;
-                    }
-                    if (i % 7 === 6) {
-                        html += "</tr><tr>";
-                    }
+                // Validate the month, the month only can be the current month or the next month
+                if (month !== (currentDate.getMonth() + 1) && month !== (currentDate.getMonth() + 2)) {
+                    return;
                 }
 
-                html += "</tr></table>";
-                scheduletable.innerHTML = html;
-            }
+                // Set the right property of the variable
+                if (month === 13) {
+                    month = 1;
+                    currentMonth = 0;
+                    selectedMonth = 1;
+                    currentYear = currentYear + 1;
+                } else if (month === 0) {
+                    month = 12;
+                    currentMonth = 11;
+                    selectedMonth = 12;
+                    currentYear = currentYear - 1;
+                } else {
+                    currentMonth = month - 1;
+                    selectedMonth = month;
+                }
 
-            function getDayOfWeek(year, month, day) {
-                // Convert month and day to YYYY-MM-DD
-                const dateString = year + '-' + (month < 9 ? '0' : '') + (month + 1) + '-' + (day < 10 ? '0' : '') + day;
+                // Show the right month and year
+                document.getElementById("time").textContent = month + " / " + currentYear;
 
-                // Create object date
-                const date = new Date(dateString);
 
-                // Convert to day of week (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
-                const dayOfWeek = date.getDay();
+                daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
 
-                return dayOfWeek;
+                // 
+                if (month === (currentDate.getMonth() + 1)) {
+                    document.getElementById("previousMonth").disabled = true;
+                    document.getElementById("nextMonth").disabled = false;
+                    
+                    // remove the event listener
+                    document.getElementById("previousMonth").removeEventListener("click", function () {
+                        changeMonth(month + 1);
+                    });
+
+                    document.getElementById("nextMonth").addEventListener("click", function () {
+                        // Increase the month
+                        changeMonth(month + 1);
+                    });
+                } else if (month === (currentDate.getMonth() + 2)) {
+                    document.getElementById("previousMonth").disabled = false;
+                    document.getElementById("nextMonth").disabled = true;
+
+                    // remove the event listener
+                    document.getElementById("nextMonth").removeEventListener("click", function () {
+                        changeMonth(month - 1);
+                    });
+
+                    document.getElementById("previousMonth").addEventListener("click", function () {
+                        // Decrease the month
+                        changeMonth(selectedMonth - 1);
+                    });
+                }
+
+
+                const xhr = new XMLHttpRequest();
+                const serviceID = <%=service.getServiceID()%>;
+                const staffID = <%=staffID%>;
+                const url = "reservationdetailcontroller?selectedDate=null&selectedMonth=" + (currentMonth + 1) + "&staffID=" + staffID + "&serviceID=" + serviceID + "&action=changeMonth";
+
+                xhr.open("GET", url, true);
+
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        const responseText = xhr.responseText; // Text string from response
+
+                        // This contain two part, part one is work day and part two is full day
+                        const tempStringTwo = responseText.split("&");
+
+                        // Split the String separated by commas
+                        Workday = tempStringTwo[0].split(',').map(item => parseInt(item, 10));
+                        fullDay = tempStringTwo[1].split(',').map(item => parseInt(item, 10));
+
+                        // Disable check out button
+                        const btnCheckOut = document.getElementById("btnCheckOut");
+                        btnCheckOut.disabled = true;
+
+
+                        // Reset the content of time slot and schedule table
+                        document.getElementById("time-slot-div").textContent = "";
+                        document.getElementById("schedule-table").textContent = "";
+
+                        generateTimetable();
+                    }
+                };
+                xhr.send();
             }
 
             // Initial generation of the timetable when the page loads
