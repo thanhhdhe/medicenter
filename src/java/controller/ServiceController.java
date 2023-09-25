@@ -104,7 +104,7 @@ public class ServiceController extends HttpServlet {
             case "edit":
                 edit(request, response);
                 break;
-            case "add-service":
+            case "sent-to-add":
                 request.getRequestDispatcher("./view/add-service.jsp").forward(request, response);
                 break;
             default:
@@ -136,7 +136,7 @@ public class ServiceController extends HttpServlet {
             case "edit-service":
                 editService(request, response);
                 break;
-            case "service-add":
+            case "add-service":
                 addService(request, response);
                 break;
                 
@@ -442,8 +442,15 @@ public class ServiceController extends HttpServlet {
             }
         }
         if (!check) {
+            System.out.println("aa");
             request.setAttribute("validate", check);
-            request.getRequestDispatcher("./views/add-service.jsp").forward(request, response);
+            request.setAttribute("title", title);
+            request.setAttribute("brief", brief);
+            request.setAttribute("categoryID", categoryID);
+            request.setAttribute("originalPrice", originalPrice);
+            request.setAttribute("salePrice", salePrice);
+            request.setAttribute("description", description);
+            request.getRequestDispatcher("./view/add-service.jsp").forward(request, response);
         } else {
             Service newService = new Service(title, brief, imageURL, Integer.parseInt(categoryID), Double.parseDouble(originalPrice), Double.parseDouble(salePrice), description, updateDate, Boolean.getBoolean(status));
             serviceDAO.insert(newService);

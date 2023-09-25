@@ -35,7 +35,7 @@
         StaffDAO staffDAO = new StaffDAO();  %>
         <div class="d-flex flex-column align-items-center justify-content-center mt-5">
                 <div class="container d-flex justify-content-end">
-                    <button class="btn btn-primary me-3" type="button"><a href="service?event=add-service" class="text-white" target="target">Add Service</a></button>
+                    <button class="btn btn-primary me-3" type="button"><a href="service?event=sent-to-add" class="text-white" target="target">Add Service</a></button>
                 </div>
             <div class="container row mt-5 mb-4">
                 <div class="col-md-3">
