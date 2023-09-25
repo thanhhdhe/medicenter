@@ -343,13 +343,13 @@ public class ServiceController extends HttpServlet {
             } else {
                 throw new IOException();
             }
-
             filePart.write(url);
         } catch (Exception e) {
             if (newImg.length() > 0) {
                 imageURL = newImg;
             }
         }
+        
         //validate input
         boolean check = true;
         if (title.isEmpty()) {

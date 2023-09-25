@@ -67,7 +67,7 @@
             <div class="dropdown">
                 <a href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                     <div class="appointment-btn scrollto d-flex align-items-center p-1 pe-2">
-                        <img class="object-contain rounded-circle" style="width: 40px" src="<%=curUser.getProfileImage()%>" alt=""/>
+                        <img class="rounded-circle" style="object-fit: cover;object-position: top;overflow: hidden;width: 40px;height: 40px;" src="<%=curUser.getProfileImage()%>" alt=""/>
                         <p class="m-0 ms-1">Hi, <%=curUser.getFirstName()%></p>
 
 
