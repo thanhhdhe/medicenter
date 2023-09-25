@@ -98,7 +98,9 @@ public class ServiceController extends HttpServlet {
                 break;
             case "edit":
                 edit(request, response);
-
+                break;
+            case "add-service":
+                request.getRequestDispatcher("./view/add-service.jsp").forward(request, response);
                 break;
             default:
                 break;
@@ -129,6 +131,10 @@ public class ServiceController extends HttpServlet {
             case "edit-service":
                 editService(request, response);
                 break;
+            case "service-add":
+                addService(request, response);
+                break;
+                
         }
     }
 
@@ -366,6 +372,76 @@ public class ServiceController extends HttpServlet {
         } else {
             Service newService = new Service(Integer.parseInt(serviceID+""),title, brief, imageURL, Integer.parseInt(categoryID), Double.parseDouble(originalPrice), Double.parseDouble(salePrice), description, updateDate, Boolean.getBoolean(status));
             serviceDAO.update(newService);
+            response.sendRedirect("service?event=manage");
+        }
+    }
+    
+    protected void addService(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        ServiceDAO serviceDAO = new ServiceDAO();
+        String title = request.getParameter("Title");
+        String brief = request.getParameter("Brief");
+        String status = request.getParameter("status");
+        String categoryID = request.getParameter("serviceType");
+        String originalPrice = request.getParameter("OriginalPrice");
+        String salePrice = request.getParameter("SalePrice");
+        String description = request.getParameter("Description");
+        String newImg = request.getParameter("serviceURL")+"";
+        String imageURL = "resources/img/image1.jpg";
+        LocalDate currentDate = LocalDate.now();
+
+        // Chuyển đổi thành java.sql.Date
+        Date updateDate = Date.valueOf(currentDate);
+
+        try {
+            Part filePart = request.getPart("productImage");
+            String fileName = filePart.getSubmittedFileName();
+
+            // Lưu tệp vào đường dẫn cụ thể trên server
+            String uploadPath = getServletContext().getRealPath("") + File.separator + "uploads";
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+            String url = uploadPath + File.separator + fileName;
+            if (fileName.length() > 0) {
+                imageURL = "./uploads/" + fileName;
+            } else {
+                throw new IOException();
+            }
+
+            filePart.write(url);
+        } catch (Exception e) {
+            if (newImg.length() > 0) {
+                imageURL = newImg;
+            }
+        }
+        //validate input
+        boolean check = true;
+        if (title.isEmpty()) {
+            check = false;
+            request.setAttribute("titleErr", "*Title can not be left blank!");
+        }
+
+        if (originalPrice.isEmpty()) {
+            check = false;
+            request.setAttribute("originalPriceErr", "*Original Price can not be left blank!");
+        } else if (Double.parseDouble(originalPrice) < 0) {
+            check = false;
+            request.setAttribute("originalPriceErr", "*Original Price can not less than 0!");
+        }
+        if (!salePrice.isEmpty()) {
+            if (Double.parseDouble(salePrice) < 0) {
+                check = false;
+                request.setAttribute("salePriceErr", "*Sale Price can not less than 0!");
+            }
+        }
+        if (!check) {
+            request.setAttribute("validate", check);
+            request.getRequestDispatcher("./views/add-service.jsp").forward(request, response);
+        } else {
+            Service newService = new Service(title, brief, imageURL, Integer.parseInt(categoryID), Double.parseDouble(originalPrice), Double.parseDouble(salePrice), description, updateDate, Boolean.getBoolean(status));
+            serviceDAO.insert(newService);
             response.sendRedirect("service?event=manage");
         }
     }
