@@ -116,6 +116,9 @@ public class ServiceController extends HttpServlet {
             case "show":
                 showService(request, response);
                 break;
+            case "edit-service":
+                editService(request, response);
+                break;
         }
     }
 
@@ -277,6 +280,25 @@ public class ServiceController extends HttpServlet {
                 request.getRequestDispatcher("./view/service-edit.jsp").forward(request, response);
     }
 
+    protected void editService(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+         ServiceDAO serviceDAO = new ServiceDAO();
+         String serviceID = request.getParameter("ServiceID");
+         String title = request.getParameter("Title");
+         String brief = request.getParameter("Brief");
+         String status = request.getParameter("status");
+         String categoryID = request.getParameter("serviceType");
+         String originalPrice = request.getParameter("OriginalPrice");
+         String salePrice = request.getParameter("SalePrice");
+         String description = request.getParameter("Description");
+         Service service = serviceDAO.getServiceByID(serviceID);
+         String imageURL = service.getThumbnail();
+         
+
+        
+                
+    }
+    
     /**
      * Returns a short description of the servlet.
      *

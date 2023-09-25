@@ -35,15 +35,15 @@
                 <div class="col-md-8 ps-5">
                     <div class="d-flex align-items-baseline">
                         <p class="text-muted me-2">ID: </p>
-                        <input class="form-control text-muted" type="text" value="<%=service.getServiceID()%>" disabled  />
+                        <input class="form-control text-muted" type="text" name="ServiceID" value="<%=service.getServiceID()%>" disabled  />
                     </div>
                     <div class="d-flex align-items-baseline">
                         <p class="text-muted me-2">Title: </p>
-                        <input class="form-control" type="text" value="<%=service.getTitle()%>"  />
+                        <input class="form-control" type="text" name="Title" value="<%=service.getTitle()%>"  />
                     </div>
                     <div>
                         <p class="text-muted">Brief: </p>
-                        <textarea class="form-control text-muted" rows="4" cols="50" value="<%=service.getBrief()%>"><%=service.getBrief()%></textarea>
+                        <textarea class="form-control text-muted" rows="4" cols="50" name="Brief" value="<%=service.getBrief()%>"><%=service.getBrief()%></textarea>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
@@ -73,14 +73,14 @@
                     </div>
                     <div class="d-flex">
                         <div class="col-md-4"><p class="text-muted">Price: </p>
-                            <input class="form-control w-50" type="number" value="<%=service.getOriginalPrice()%>"  /></div>
+                            <input class="form-control w-50" type="number" value="<%=service.getOriginalPrice()%>" name="OriginalPrice" /></div>
                         <div class="col-md-4"><p class="text-muted">Sale price: </p>
-                            <input class="form-control w-50" type="number" value="<%=service.getSalePrice()%>"  /></div>
+                            <input class="form-control w-50" type="number" value="<%=service.getSalePrice()%>" name="SalePrice" /></div>
                     </div>
 
                     <div>
                         <p class="text-muted">Description: </p>
-                        <textarea class="form-control text-muted" rows="6" cols="50" value="<%=service.getServiceDetail()%>"><%=service.getServiceDetail()%></textarea>
+                        <textarea class="form-control text-muted" rows="6" cols="50" value="<%=service.getServiceDetail()%>" name="Description"><%=service.getServiceDetail()%></textarea>
                     </div>
                     
                     <div class="d-flex justify-content-center">
