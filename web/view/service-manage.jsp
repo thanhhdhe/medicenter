@@ -53,7 +53,7 @@
 
                     <!-- Services List -->
                     <%List<Service> list = serviceDAO.getSortedPaged(0, 5);
-            if(!list.isEmpty())   { for (Service service : list) {System.out.println(service.getTitle());%>
+            if(!list.isEmpty())   { for (Service service : list) {%>
             <div id="<%=service.getServiceID()%>" class="service row p-3 <%=!service.getStatus()?"inactives":"" %>">
                         <div class="col-md-3">
                             <img src="<%=service.getThumbnail()%>" alt="ìmg" class="w-100 h-100 object-contain" />

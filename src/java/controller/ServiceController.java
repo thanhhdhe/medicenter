@@ -9,9 +9,14 @@ import Database.ServiceDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+import java.io.File;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import model.Service;
 
@@ -19,6 +24,11 @@ import model.Service;
  *
  * @author Admin
  */
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 10, // 10 KB
+        maxFileSize = 1024 * 300, // 300 KB
+        maxRequestSize = 1024 * 1024 // 1 MB 
+)
 public class ServiceController extends HttpServlet {
 
     /**
@@ -88,7 +98,7 @@ public class ServiceController extends HttpServlet {
                 break;
             case "edit":
                 edit(request, response);
-               
+
                 break;
             default:
                 break;
@@ -204,26 +214,29 @@ public class ServiceController extends HttpServlet {
 
         // Render the service list
         for (Service service : serviceList) {
-            out.print("<div id=\""+service.getServiceID()+"\" class=\"service row p-3"); if(service.getStatus()) out.print("inactives");
+            out.print("<div id=\"" + service.getServiceID() + "\" class=\"service row p-3");
+            if (service.getStatus()) {
+                out.print("inactives");
+            }
             out.print("\">\n"
                     + "                        <div class=\"col-md-3\">\n"
                     + "                            <img src=\"" + service.getThumbnail() + "\" alt=\"ìmg\" class=\"w-100 h-100 object-contain\" />\n"
                     + "                        </div>\n"
-                    + "                         <div class=\"col-md-6\">\n" +
-                    "                            <div>\n" +
-                    "                                <h3>ID: "+service.getServiceID()+"</h3>\n" +
-                    "                                <h3>"+service.getTitle()+"</h3>\n" +
-                    "                            </div>\n" +
-                    "                            <div class=\"d-flex mt-1 mb-2 align-items-end\">\n" +
-                    "                                <h5 class=\"pe-2\">Category:<p class=\"fw-normal\">"+categoryServiceDAO.getCategoryServiceByID(service.getCategoryID()+"").getCategoryName()+"</p></h5>\n" +
-                    "                            </div>\n" +
-                    "                            \n" +
-                    "                            <div class=\"text-black-50\">\n" +
-                    "                                <p class=\"clamp\">\n" +
-                    "                                    "+service.getBrief()+"\n" +
-                    "                                </p>\n" +
-                    "                            </div>\n" +
-                    "                        </div>"
+                    + "                         <div class=\"col-md-6\">\n"
+                    + "                            <div>\n"
+                    + "                                <h3>ID: " + service.getServiceID() + "</h3>\n"
+                    + "                                <h3>" + service.getTitle() + "</h3>\n"
+                    + "                            </div>\n"
+                    + "                            <div class=\"d-flex mt-1 mb-2 align-items-end\">\n"
+                    + "                                <h5 class=\"pe-2\">Category:<p class=\"fw-normal\">" + categoryServiceDAO.getCategoryServiceByID(service.getCategoryID() + "").getCategoryName() + "</p></h5>\n"
+                    + "                            </div>\n"
+                    + "                            \n"
+                    + "                            <div class=\"text-black-50\">\n"
+                    + "                                <p class=\"clamp\">\n"
+                    + "                                    " + service.getBrief() + "\n"
+                    + "                                </p>\n"
+                    + "                            </div>\n"
+                    + "                        </div>"
                     + "                        <div class=\"info-aside col-md-3\">\n"
                     + "                            <div class=\"price-wrap\">");
             if (service.getSalePrice() <= 0) {
@@ -240,10 +253,13 @@ public class ServiceController extends HttpServlet {
             }
             out.print("<br />\n"
                     + "       <div class=\"d-flex h-50 align-content-center flex-wrap\" >                      <div class=\"d-flex\">\n");
-                if(service.getStatus()){ out.print( "<button class=\"button-icon me-2  hide-service-button\" data-service-id=\""+service.getServiceID()+"\"><img src=\"resources/img/icon/hide.png\" alt=\"alt\"/></button>");
-                        }else{ out.print( " <button class=\"button-icon me-2 show-service-button\" data-service-id=\""+service.getServiceID()+"\"><img src=\"resources/img/icon/visual.png\" alt=\"alt\"/></button> "); }
-                        
-                   out.print( "                                <button class=\"button-icon me-2 \"><img src=\"resources/img/icon/detail.png\" alt=\"alt\"/></button>\n"
+            if (service.getStatus()) {
+                out.print("<button class=\"button-icon me-2  hide-service-button\" data-service-id=\"" + service.getServiceID() + "\"><img src=\"resources/img/icon/hide.png\" alt=\"alt\"/></button>");
+            } else {
+                out.print(" <button class=\"button-icon me-2 show-service-button\" data-service-id=\"" + service.getServiceID() + "\"><img src=\"resources/img/icon/visual.png\" alt=\"alt\"/></button> ");
+            }
+
+            out.print("                                <button class=\"button-icon me-2 \"><img src=\"resources/img/icon/detail.png\" alt=\"alt\"/></button>\n"
                     + "                                <button class=\"button-icon\"><img src=\"resources/img/icon/pen.png\" alt=\"alt\"/></button>\n"
                     + "                            </div> </div>"
                     + "                        </div>\n"
@@ -252,7 +268,7 @@ public class ServiceController extends HttpServlet {
         out.flush();
         out.close();
     }
-    
+
     protected void hideService(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ServiceDAO serviceDAO = new ServiceDAO();
@@ -261,7 +277,7 @@ public class ServiceController extends HttpServlet {
         service.setStatus(false);
         serviceDAO.update(service);
     }
-    
+
     protected void showService(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ServiceDAO serviceDAO = new ServiceDAO();
@@ -270,35 +286,90 @@ public class ServiceController extends HttpServlet {
         service.setStatus(true);
         serviceDAO.update(service);
     }
-    
+
     protected void edit(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         String id = request.getParameter("id");
-         ServiceDAO serviceDAO = new ServiceDAO();
-                Service service = serviceDAO.getServiceByID(id);
-                request.setAttribute("service", service);
-                request.getRequestDispatcher("./view/service-edit.jsp").forward(request, response);
+        String id = request.getParameter("id");
+        ServiceDAO serviceDAO = new ServiceDAO();
+        Service service = serviceDAO.getServiceByID(id);
+        request.setAttribute("service", service);
+        request.setAttribute("ServiceID", id);
+        request.getRequestDispatcher("./view/service-edit.jsp").forward(request, response);
     }
 
     protected void editService(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         ServiceDAO serviceDAO = new ServiceDAO();
-         String serviceID = request.getParameter("ServiceID");
-         String title = request.getParameter("Title");
-         String brief = request.getParameter("Brief");
-         String status = request.getParameter("status");
-         String categoryID = request.getParameter("serviceType");
-         String originalPrice = request.getParameter("OriginalPrice");
-         String salePrice = request.getParameter("SalePrice");
-         String description = request.getParameter("Description");
-         Service service = serviceDAO.getServiceByID(serviceID);
-         String imageURL = service.getThumbnail();
-         
+        ServiceDAO serviceDAO = new ServiceDAO();
+        String serviceID = request.getParameter("ServiceID");
+        String title = request.getParameter("Title");
+        String brief = request.getParameter("Brief");
+        String status = request.getParameter("status");
+        String categoryID = request.getParameter("serviceType");
+        String originalPrice = request.getParameter("OriginalPrice");
+        String salePrice = request.getParameter("SalePrice");
+        String description = request.getParameter("Description");
+        Service service = serviceDAO.getServiceByID(serviceID);
+        String newImg = request.getParameter("serviceURL")+"";
+        String imageURL = service.getThumbnail();
+        LocalDate currentDate = LocalDate.now();
 
-        
-                
+        // Chuyển đổi thành java.sql.Date
+        Date updateDate = Date.valueOf(currentDate);
+
+        try {
+            Part filePart = request.getPart("productImage");
+            String fileName = filePart.getSubmittedFileName();
+
+            // Lưu tệp vào đường dẫn cụ thể trên server
+            String uploadPath = getServletContext().getRealPath("") + File.separator + "uploads";
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+            String url = uploadPath + File.separator + fileName;
+            if (fileName.length() > 0) {
+                imageURL = "./uploads/" + fileName;
+            } else {
+                throw new IOException();
+            }
+
+            filePart.write(url);
+        } catch (Exception e) {
+            if (newImg.length() > 0) {
+                imageURL = newImg;
+            }
+        }
+        //validate input
+        boolean check = true;
+        if (title.isEmpty()) {
+            check = false;
+            request.setAttribute("titleErr", "*Title can not be left blank!");
+        }
+
+        if (originalPrice.isEmpty()) {
+            check = false;
+            request.setAttribute("originalPriceErr", "*Original Price can not be left blank!");
+        } else if (Double.parseDouble(originalPrice) < 0) {
+            check = false;
+            request.setAttribute("originalPriceErr", "*Original Price can not less than 0!");
+        }
+        if (!salePrice.isEmpty()) {
+            if (Double.parseDouble(salePrice) < 0) {
+                check = false;
+                request.setAttribute("salePriceErr", "*Sale Price can not less than 0!");
+            }
+        }
+        if (!check) {
+            request.setAttribute("validate", check);
+            request.setAttribute("service", service);
+            request.getRequestDispatcher("./views/service-edit.jsp").forward(request, response);
+        } else {
+            Service newService = new Service(Integer.parseInt(serviceID+""),title, brief, imageURL, Integer.parseInt(categoryID), Double.parseDouble(originalPrice), Double.parseDouble(salePrice), description, updateDate, Boolean.getBoolean(status));
+            serviceDAO.update(newService);
+            response.sendRedirect("service?event=manage");
+        }
     }
-    
+
     /**
      * Returns a short description of the servlet.
      *
