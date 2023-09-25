@@ -6,6 +6,7 @@ package controller;
  */
 import Database.CategoryServiceDAO;
 import Database.ServiceDAO;
+import Database.StaffDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -19,6 +20,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import model.Service;
+import model.Staff;
 
 /**
  *
@@ -87,6 +89,9 @@ public class ServiceController extends HttpServlet {
                 ServiceDAO serviceDAO = new ServiceDAO();
                 Service services = serviceDAO.getServiceByID(id);
                 request.setAttribute("service", services);
+                StaffDAO staffDAO = new StaffDAO();
+                List<Staff> staffList = staffDAO.getDoctorByServices(id);
+                request.setAttribute("doctor", staffList);
                 request.getRequestDispatcher("./view/servicedetail.jsp").forward(request, response);
                 break;
             case "manage":
@@ -309,7 +314,7 @@ public class ServiceController extends HttpServlet {
         String salePrice = request.getParameter("SalePrice");
         String description = request.getParameter("Description");
         Service service = serviceDAO.getServiceByID(serviceID);
-        String newImg = request.getParameter("serviceURL")+"";
+        String newImg = request.getParameter("serviceURL") + "";
         String imageURL = service.getThumbnail();
         LocalDate currentDate = LocalDate.now();
 
@@ -364,7 +369,7 @@ public class ServiceController extends HttpServlet {
             request.setAttribute("service", service);
             request.getRequestDispatcher("./views/service-edit.jsp").forward(request, response);
         } else {
-            Service newService = new Service(Integer.parseInt(serviceID+""),title, brief, imageURL, Integer.parseInt(categoryID), Double.parseDouble(originalPrice), Double.parseDouble(salePrice), description, updateDate, Boolean.getBoolean(status));
+            Service newService = new Service(Integer.parseInt(serviceID + ""), title, brief, imageURL, Integer.parseInt(categoryID), Double.parseDouble(originalPrice), Double.parseDouble(salePrice), description, updateDate, Boolean.getBoolean(status));
             serviceDAO.update(newService);
             response.sendRedirect("service?event=manage");
         }

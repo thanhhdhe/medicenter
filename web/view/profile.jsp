@@ -10,6 +10,7 @@
     UserDAO dao = new UserDAO();
     User curUser = dao.getUser(email);
     %>
+    
     <style></style>
     <body>       
 

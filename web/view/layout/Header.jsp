@@ -86,11 +86,22 @@
                     <%}%>
                 </ul>
             </div>
+                </div>
+    </header>
+    <!-- End Header -->
+    <body>
+        
+        <jsp:include page="../login.jsp"/>
+        <jsp:include page="../changePassword.jsp"/>
+        <jsp:include page="../register.jsp"/>
+        <jsp:include page="../profile.jsp"/>
+
+    </body>
 
             <%}else{%>
             <a onclick="showRegisterPopup()" id="register"class="appointment-btn scrollto"><span class="d-none d-md-inline">Register Now</a>
             <a onclick="showLoginPopup()" id="login"class="appointment-btn scrollto"><span class="d-none d-md-inline">Login</a>
-            <%}%>
+            
         </div>
     </header>
     <!-- End Header -->
@@ -99,7 +110,8 @@
         <jsp:include page="../login.jsp"/>
         <jsp:include page="../changePassword.jsp"/>
         <jsp:include page="../register.jsp"/>
-        <%--<jsp:include page="../profile.jsp"/>--%>
+        
 
     </body>
+    <%}%>
 </html>

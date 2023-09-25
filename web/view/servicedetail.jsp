@@ -40,6 +40,7 @@
                                 </select>
                             </div>
                         </div>
+
                         <div class="col-md-9 card mt-4 mb-4">
                             <div class="row p-4">
                                 <div class="col-md-6 mt-4 mt-sm-0 pt-2 pt-sm-0">
@@ -50,7 +51,7 @@
                                         <ul class="list-unstyled text-warning h5 mb-0">
                                             <!-- Add list items here if needed -->
                                         </ul>
-                                        <h5 class="mt-4 py-2">Mô tả :</h5>
+                                        <h5 class="mt-4 py-2">Description:</h5>
                                         <p class="text-muted" style="text-align:justify">${service.brief}</p>
                                         <div class="mt-4 pt-2">
                                             <!-- Add any additional content here if needed -->
@@ -62,9 +63,35 @@
                                     <img src="${service.thumbnail}" class="img-fluid rounded" alt="">
                                 </div>
                             </div>
-                            <div class="text-center">
-                                <button class="btn btn-primary mb-4">Book Now</button>
+                            <div class="row p-4 mt-sm-0">
+                                <h4 class="title mt-4 text-center"><strong>Doctor</strong></h4>
+                                <div class="row">
+                                    <c:forEach items="${requestScope.doctor}" var="doc">
+                                        <div class="col-lg-4 col-md-6 col-12 mb-4">
+                                            <div class="custom-block bg-white shadow-lg">
+<!--                                                <input class="form-check-input" type="radio" name="doctorRadio" value="no1">-->
+                                                <img src="${doc.profileImage}" class="mt-0 custom-block-image img-fluid" alt="">
+                                                <div class="d-flex mt-4">
+                                                    <div>
+                                                        <h4><strong>${doc.fullName}</strong></h4>
+
+                                                        <p class="mb-0">${doc.gender}</p>
+                                                    </div>
+
+                                                    <span class="badge bg-design rounded-pill ms-auto">14</span>
+                                                </div>
+                                                <div class="text-center">
+                                                    <a id="bookNowLink" href="reservationdetail?serviceID=${service.serviceID}&staffID=${doc.staffID}"><button class="btn btn-primary mb-4">Book Now</button></a>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </c:forEach>
+                                </div>
                             </div>
+
+
                         </div>
 
                     </div>
@@ -77,7 +104,6 @@
         </section>
 
         <jsp:include page="./layout/footer.jsp"/>
-
 
     </body>
 
