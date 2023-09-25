@@ -39,7 +39,7 @@
                 </div>
             <div class="container row mt-5 mb-4">
                 <div class="col-md-3">
-                    <div class="card p-3 mt-3">
+                    <div class="card p-3">
                         <input type="text" name="keywordSearch" placeholder="Search Title or Brief" class="form-control mb-2" />
                         <select class="form-select text-primary mt-3 mb-4" name="sortBy" >
                             <option selected value="">Sort By</option>
@@ -113,7 +113,7 @@
         </div>
         <jsp:include page="layout/footer.jsp" />
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="./resources/js/services-manage-script.js"></script>
+        <script src="./resources/js/services-manage-script.js?v=1"></script>
         <script
             src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
             integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"

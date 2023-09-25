@@ -226,8 +226,8 @@ public class ServiceController extends HttpServlet {
         // Render the service list
         for (Service service : serviceList) {
             out.print("<div id=\"" + service.getServiceID() + "\" class=\"service row p-3");
-            if (service.getStatus()) {
-                out.print("inactives");
+            if (!service.getStatus()) {
+                out.print(" inactives");
             }
             out.print("\">\n"
                     + "                        <div class=\"col-md-3\">\n"
@@ -265,13 +265,13 @@ public class ServiceController extends HttpServlet {
             out.print("<br />\n"
                     + "       <div class=\"d-flex h-50 align-content-center flex-wrap\" >                      <div class=\"d-flex\">\n");
             if (service.getStatus()) {
-                out.print("<button class=\"button-icon me-2  hide-service-button\" data-service-id=\"" + service.getServiceID() + "\"><img src=\"resources/img/icon/hide.png\" alt=\"alt\"/></button>");
+                out.print("<button class=\"button-icon me-2 showhide hide-service-button\" data-service-id=\"" + service.getServiceID() + "\" onclick=\"handleUpdate()\" ><img src=\"resources/img/icon/hide.png\" alt=\"alt\"/></button>");
             } else {
-                out.print(" <button class=\"button-icon me-2 show-service-button\" data-service-id=\"" + service.getServiceID() + "\"><img src=\"resources/img/icon/visual.png\" alt=\"alt\"/></button> ");
+                out.print(" <button class=\"button-icon me-2 showhide show-service-button\" data-service-id=\"" + service.getServiceID() + "\" onclick=\"handleUpdate()\"  ><img src=\"resources/img/icon/visual.png\" alt=\"alt\"/></button> ");
             }
 
-            out.print("                                <button class=\"button-icon me-2 \"><img src=\"resources/img/icon/detail.png\" alt=\"alt\"/></button>\n"
-                    + "                                <button class=\"button-icon\"><img src=\"resources/img/icon/pen.png\" alt=\"alt\"/></button>\n"
+            out.print(" <button class=\"button-icon me-2\"><a href=\"service?event=detail&id="+service.getServiceID()+"\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\"/></a></button>\n" +
+"                                <button class=\"button-icon\"><a href=\"service?event=edit&id="+service.getServiceID()+"\"><img src=\"resources/img/icon/pen.png\" alt=\"alt\"/></a></button>"
                     + "                            </div> </div>"
                     + "                        </div>\n"
                     + "                    </div>");
@@ -328,7 +328,7 @@ public class ServiceController extends HttpServlet {
         Date updateDate = Date.valueOf(currentDate);
 
         try {
-            Part filePart = request.getPart("productImage");
+            Part filePart = request.getPart("serviceImage");
             String fileName = filePart.getSubmittedFileName();
 
             // Lưu tệp vào đường dẫn cụ thể trên server
@@ -399,7 +399,7 @@ public class ServiceController extends HttpServlet {
         Date updateDate = Date.valueOf(currentDate);
 
         try {
-            Part filePart = request.getPart("productImage");
+            Part filePart = request.getPart("serviceImage");
             String fileName = filePart.getSubmittedFileName();
 
             // Lưu tệp vào đường dẫn cụ thể trên server
