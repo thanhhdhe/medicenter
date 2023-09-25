@@ -86,6 +86,10 @@ public class ServiceController extends HttpServlet {
             case "service-list-managerchoose":
                 renderServiceListByManagerOption(request, response);
                 break;
+            case "edit":
+                edit(request, response);
+               
+                break;
             default:
                 break;
         }
@@ -262,6 +266,15 @@ public class ServiceController extends HttpServlet {
         Service service = serviceDAO.getServiceByID(ID);
         service.setStatus(true);
         serviceDAO.update(service);
+    }
+    
+    protected void edit(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+         String id = request.getParameter("id");
+         ServiceDAO serviceDAO = new ServiceDAO();
+                Service service = serviceDAO.getServiceByID(id);
+                request.setAttribute("service", service);
+                request.getRequestDispatcher("./view/service-edit.jsp").forward(request, response);
     }
 
     /**

@@ -16,8 +16,8 @@ body{
 }
 
 .text-container {
-  max-height: 140px; /* Giới hạn chiều cao của vùng chứa */
-  overflow: hidden; /* Ẩn nội dung vượt quá chiều cao */
+    max-height: 140px; /* Giới hạn chiều cao của vùng chứa */
+    overflow: hidden; /* Ẩn nội dung vượt quá chiều cao */
 }
 
 .service{
@@ -33,13 +33,18 @@ body{
     border:0;
     color: #7c7c7c
 }
+
 .service:hover {
     background-color: #f0f5f9;
     box-shadow: 7px 7px 10px #b2c3db;
     transform: translateY(-5px);
     border: 2px solid #ddebff;
 }
-
+.inactives:hover{
+    background-color: #ededed;
+    border:0;
+    box-shadow: 7px 7px 10px #c3c3c3;
+}
 #pagination-container .active {
     display: flex;
     background-color: #1687ff !important;
@@ -67,24 +72,23 @@ body{
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-  
-  .button-icon{
-      width: 3rem;
-      height: 3rem;
+}
+
+.button-icon{
+    width: 3rem;
+    height: 3rem;
     border-radius: 50%;
     margin-right: 0.5rem;
     border: 0;
     background-color: rgba(255, 255, 255, 0);
-  }
-  
-  .button-icon:hover{
+}
+
+.button-icon:hover{
     background-color: rgb(193 193 193 / 30%);
-  }
-  
-  .button-icon img{
-      width: 2.5rem;
-          border-radius : 50%;
-          object-fit: contain;
-  }
-    
+}
+
+.button-icon img{
+    width: 2.5rem;
+    border-radius : 50%;
+    object-fit: contain;
+}

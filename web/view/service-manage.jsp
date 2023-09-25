@@ -87,12 +87,12 @@
                             <br />
                             <div class="d-flex h-50 align-content-center flex-wrap" >
                             <div class="d-flex">
-                                <%if(service.getStatus()){%><button class="button-icon me-2  hide-service-button" data-service-id="<%=service.getServiceID()%>"><img src="resources/img/icon/hide.png" alt="alt"/></button> 
+                                <%if(service.getStatus()){%><button class="button-icon me-2 showhide hide-service-button" data-service-id="<%=service.getServiceID()%>"><img src="resources/img/icon/hide.png" alt="alt"/></button> 
                                 <%}else{%>
-                                <button class="button-icon me-2  show-service-button" data-service-id="<%=service.getServiceID()%>"><img src="resources/img/icon/visual.png" alt="alt"/></button> 
+                                <button class="button-icon me-2 showhide show-service-button" data-service-id="<%=service.getServiceID()%>"><img src="resources/img/icon/visual.png" alt="alt"/></button> 
                                 <%}%>
                                 <button class="button-icon me-2"><a href="service?event=detail&id=<%=service.getServiceID()%>"><img src="resources/img/icon/detail.png" alt="alt"/></a></button>
-                                <button class="button-icon"><img src="resources/img/icon/pen.png" alt="alt"/></button>
+                                <button class="button-icon"><a href="service?event=edit&id=<%=service.getServiceID()%>"><img src="resources/img/icon/pen.png" alt="alt"/></a></button>
                             </div></div>
                         </div>
                     </div>
@@ -110,7 +110,7 @@
         </div>
         <jsp:include page="layout/footer.jsp" />
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="./resources/js/service-manage-script.js"></script>
+        <script src="./resources/js/services-manage-script.js"></script>
         <script
             src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
             integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
