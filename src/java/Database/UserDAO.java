@@ -121,8 +121,8 @@ public class UserDAO extends MyDAO {
         }
     }
 
-    public void UpdateProfile(int UserID, String firstName,String lastName, String phone, String gender, String img, String address) {
-        String sql = "UPDATE [dbo].[Users]\n"
+    public void UpdateProfile(String firstName, String lastName, String phone, String gender, String img, String address, int UserID) {
+        String xSql = "UPDATE [dbo].[Users]\n"
                 + "   SET [Address] = ?\n"
                 + "      ,[FirstName] = ?\n"
                 + "      ,[LastName] = ?\n"
@@ -132,6 +132,7 @@ public class UserDAO extends MyDAO {
                 + " WHERE UserID = ?";
         try {
             ps = con.prepareStatement(xSql);
+            System.out.println(xSql);
             ps.setString(1, address);
             ps.setString(2, firstName);
             ps.setString(3, lastName);
@@ -142,7 +143,7 @@ public class UserDAO extends MyDAO {
             ps.executeUpdate();
             ps.close();
         } catch (Exception e) {
-              e.printStackTrace();
+            e.printStackTrace();
         }
     }
 

@@ -67,24 +67,26 @@
             <div class="dropdown">
                 <a href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                     <div class="appointment-btn scrollto d-flex align-items-center p-1 pe-2">
-                        <img class="object-contain rounded-circle" style="width: 40px" src="<%=curUser.getProfileImage()%>" alt="thangdz"/>
-                        <p class="m-0 ms-1"><%=curUser.getFirstName()%></p>
+                        <img class="object-contain rounded-circle" style="width: 40px" src="<%=curUser.getProfileImage()%>" alt=""/>
+                        <p class="m-0 ms-1">Hi, <%=curUser.getFirstName()%></p>
+
 
                     </div>
                 </a>
 
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal" >My profile</a></li>
                     <li><a onclick="myFunction()" class="dropdown-item">Change Password</a></li>
-                    
+
                     <li><a class="dropdown-item" href="logout">Logout</a></li>
-                     <%if(curUser.getRole().equals("manager")){%>
+                        <%if(curUser.getRole().equals("manager")){%>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="service?event=manage">Services Manage</a></li>
                     <!--<li><hr class="dropdown-divider"></li>-->
                     <%}%>
                 </ul>
             </div>
-           
+
             <%}else{%>
             <a onclick="showRegisterPopup()" id="register"class="appointment-btn scrollto"><span class="d-none d-md-inline">Register Now</a>
             <a onclick="showLoginPopup()" id="login"class="appointment-btn scrollto"><span class="d-none d-md-inline">Login</a>
@@ -93,8 +95,11 @@
     </header>
     <!-- End Header -->
     <body>
+        
         <jsp:include page="../login.jsp"/>
         <jsp:include page="../changePassword.jsp"/>
         <jsp:include page="../register.jsp"/>
+        <%--<jsp:include page="../profile.jsp"/>--%>
+
     </body>
 </html>

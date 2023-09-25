@@ -41,27 +41,30 @@ public class UserController extends HttpServlet {
         String message = null;
         String action = request.getParameter("action");
         User p = (User) session.getAttribute("user");
+        try {
+            if (action.equals("profile")) {
+                request.getRequestDispatcher("./view/profile.jsp").forward(request, response);
+            }
 
-        if (action.equals("profile")) {
-            session.setAttribute("user", p);
-            request.getRequestDispatcher("/view/profile.jsp").forward(request, response);
-        }
+            if (action.equals("updateprofile")) {
+                int userId = Integer.parseInt(request.getParameter("curID"));
+                String lastname = request.getParameter("lastname_raw");
+                String firstname = request.getParameter("firstname_raw");
+                String phone = request.getParameter("phone_raw");
+                String gender = request.getParameter("gender");
+                String address = request.getParameter("address");
+                String img = request.getParameter("images");
 
-        if (action.equals("updateprofile")) {
-            int userId = Integer.parseInt(request.getParameter("userId"));
-            String lastname = request.getParameter("lastname");
-            String firstname = request.getParameter("firstname");
-            String phone = request.getParameter("phone");
-            String gender = request.getParameter("gender");
-            String address = request.getParameter("address");
-            String img = request.getParameter("img");
-
-            userdao.UpdateProfile(userId, firstname, lastname, phone, gender, img, address);
-            User a = new User(userId, address, p.getEmail(), p.getPassword(), firstname, lastname, gender, phone, img, p.getRole());
-            session.setAttribute("user", a);
-            request.setAttribute("updatesuccess", "Updated profile successfully");
-            request.getRequestDispatcher("/view/profile.jsp").forward(request, response);
-            response.sendRedirect("user?action=profile");
+                if (lastname != null && firstname != null && phone != null && gender != null && address != null && img != null) {
+                    System.out.println("Name is" + lastname + " " + firstname);
+                    request.setAttribute("updatesuccess", "Updated profile successfully");
+                    userdao.UpdateProfile(firstname, lastname, phone, gender, img, address, userId);
+                    
+                    response.sendRedirect("home");
+                }
+            }
+        } catch (IOException | ServletException e) {
+            System.out.println(e);
         }
 
     }
