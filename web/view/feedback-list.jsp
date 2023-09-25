@@ -30,28 +30,45 @@
         <section style="background-color: #e1dada" >
             <!-- Fillter -->
             <div class="d-flex justify-content-center">
-                <div class="container">
-                    <div class="row mt-5 mb-4">
-                        <div class="dropdown col-md-7">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                Fillter
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <div class="container-fluid">
+
+
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <!-- dropdown  -->
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Dropdown
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="#">Action</a></li>
+                                        <li><a class="dropdown-item" href="#">Another action</a></li>
+
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Status
+                                            </a>
+                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <li><a class="dropdown-item" href="feedback?event=fillterstatus&fillstatus=Pending">Pending</a></li>
+                                                <li><a class="dropdown-item" href="feedback?event=fillterstatus&fillstatus=Reviewed">Reviewed</a></li>                              
+                                                <li><a class="dropdown-item" href="feedback?event=fillterstatus&fillstatus=Appored">Appored</a></li>
+                                                <li><a class="dropdown-item" href="feedback?event=fillterstatus&fillstatus=Unresolved">Unresolved</a></li>
+                                                <li><a class="dropdown-item" href="feedback?event=fillterstatus&fillstatus=Resolved">Resolved</a></li>                              
+
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+
                             </ul>
-                        </div>
-                        <!-- Search -->
-                        <div style="width: 400px; justify-content: right" class="container-fluid col-md-5">
                             <form class="d-flex">
                                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                                <button style="background-color: black; color: white; border: 0;" class="btn btn-outline-success" type="submit">Search</button>
+                                <button class="btn btn-outline-success" type="submit">Search</button>
                             </form>
                         </div>
                     </div>
-
-                </div>
+                </nav>
             </div>
             <form action="feedback" method="POST">
                 <div class="container my-5 py-5 mt-0 mb-0">
@@ -120,8 +137,17 @@
                                     <nav aria-label="...">
                                         <ul class="pagination pagination-sm">
                                             <c:forEach begin="1" end="${requestScope.endP}" var="i">
-                                                <li class="page-item"><a class="page-link" href="feedback?index=${i}">${i}</a></li>
-                                                </c:forEach>
+                                                <c:set var="fillstatus" value="${requestScope.fillstatus}"/>
+                                                <c:choose>
+                                                    <c:when test="${empty fillstatus}">
+                                                        <li class="page-item"><a class="page-link" href="feedback?index=${i}">${i}</a></li>
+                                                        </c:when>
+                                                    </c:choose>
+                                                    <c:if test="${not empty fillstatus}">
+                                                    <li class="page-item"><a class="page-link" href="feedback?index=${i}&event=fillterstatus&fillstatus=${fillstatus}">${i}</a></li>
+                                                    </c:if>
+
+                                            </c:forEach>
                                         </ul>
                                     </nav>
 

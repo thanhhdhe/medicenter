@@ -83,6 +83,31 @@ public class FeedBackController extends HttpServlet {
                 if (request.getParameter("redirected") == null || !request.getParameter("redirected").equals("true")) {
                     response.sendRedirect("feedback?index=1&redirected=true");
                 }
+            } else if(event.equals("fillterstatus")){
+                //get infor
+                String Fillstatus= request.getParameter("fillstatus");
+                //get total page
+                int endP = dao.getTotalFeedbackFStatus(Fillstatus);
+                int endPage = endP / 5;
+                //paging
+                if (endP % 5 != 0) {
+                    endPage++; // if endP not divide by 5 so that endPage + 1
+                }
+                String index = request.getParameter("index");
+                if (index == null) {
+                    List<FeedBack> feedbacks = dao.getPageFeedBackByFStatus(1,Fillstatus);
+                    request.setAttribute("fillstatus", Fillstatus);
+                    request.setAttribute("endP", endPage);
+                    request.setAttribute("feedbacks", feedbacks);
+                    request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                } else {
+                    request.setAttribute("fillstatus", Fillstatus);
+                    int page = Integer.parseInt(index);
+                    List<FeedBack> feedbacks = dao.getPageFeedBackByFStatus(page,Fillstatus);
+                    request.setAttribute("endP", endPage);
+                    request.setAttribute("feedbacks", feedbacks);
+                    request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                }
             }
 
         } else {

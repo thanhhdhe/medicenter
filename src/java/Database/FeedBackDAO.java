@@ -33,6 +33,22 @@ public class FeedBackDAO extends MyDAO {
         }
     }
 
+    //get total fillter
+    public int getTotalFeedbackFStatus(String Fill) {
+        xSql = "select COUNT(*) from Feedbacks where FStatus = ?;";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, Fill);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+
+        }
+        return 0;
+    }
+
     //get total feedbacks
     public int getTotalFeedback() {
         xSql = "select COUNT(*) from Feedbacks;";
@@ -46,6 +62,29 @@ public class FeedBackDAO extends MyDAO {
 
         }
         return 0;
+    }
+
+    public List<FeedBack> getPageFeedBackByFStatus(int index, String Fill) {
+        List<FeedBack> feedbacks = new ArrayList<>();
+        xSql = "select * from Feedbacks\n"
+                + "where FStatus = ?\n"
+                + "ORDER BY FeedbackID\n"
+                + "OFFSET ? Rows fetch next 5 rows ONLY;";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, Fill);
+            // set index for offser (page)
+            ps.setInt(2, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
+                        rs.getString(4), rs.getString(5).substring(0, 10), rs.getInt(6),
+                        rs.getString(7)));
+            }
+        } catch (Exception e) {
+
+        }
+        return (feedbacks);
     }
 
     //get list paging feedback 
@@ -69,9 +108,9 @@ public class FeedBackDAO extends MyDAO {
         }
         return (feedbacks);
     }
-    
+
     // update
-    public void updateStatus(String status, int FID){
+    public void updateStatus(String status, int FID) {
         xSql = "update Feedbacks set FStatus = ? where FeedbackID = ?";
         try {
             ps = con.prepareStatement(xSql);
