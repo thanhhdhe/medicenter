@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import model.FeedBack;
 import model.Mail;
 import model.MedicalExamination;
 import model.User;
@@ -37,143 +38,192 @@ public class FeedBackController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        // Get the 'action' parameter from the request
-        String action = request.getParameter("action");
-        // Determine the servlet action based on the 'action' parameter
-        if (action.equals("accessfeedback")) {
-            // Check if the user is logged in
-            HttpSession session = request.getSession();
-            String email = (String) session.getAttribute("email");
-             // Display a login required message as a popup overlay
-            if (email == null) {
-                out.println("<html><head><title>Login Required</title>");
-                out.println("<style>");
-                out.println("  .overlay {");
-                out.println("    position: fixed;");
-                out.println("    top: 0;");
-                out.println("    left: 0;");
-                out.println("    width: 100%;");
-                out.println("    height: 100%;");
-                out.println("    background-color: rgb(124 177 167 / 50%);");
-                out.println("    display: flex;");
-                out.println("    justify-content: center;");
-                out.println("    align-items: center;");
-                out.println("    z-index: 1;");
-                out.println("  }");
-                out.println("  .popup {");
-                out.println("    background-color: white;border-radius: 5px;");
-                out.println("    padding: 20px;");
-                out.println("    text-align: center;width: 300px;height: 150px;");
-                out.println("    z-index: 2;");
-                out.println("  }");
-                out.println("</style>");
-                out.println("</head><body>");
-                out.println("<div class='overlay'>");
-                out.println("  <div class='popup'>");
-                out.println("    <h2 style=\"color: red\">Login Required</h2>");
-                out.println("    <p>You must log in to access this page.</p>");
-                out.println("    <button style=\"padding: 10px;"
-                        + "background: #0089ff;"
-                        + "color: white;"
-                        + "border: 0px;"
-                        + "border-radius: 5px;\" onclick='closePopup()'>Cancel</button>");
-                out.println("  </div>");
-                out.println("</div>");
-                out.println("<script>");
-                out.println("  function closePopup() {");
-                out.println("    var overlay = document.querySelector('.overlay');");
-                out.println("    overlay.style.display = 'none';");
-                out.println("    window.location.href = 'index.jsp';");
-                out.println("  }");
-                out.println("</script>");
-                out.println("</body></html>");
-            } else {
+
+        //get Role account
+        HttpSession session = request.getSession();
+        String role = (String) session.getAttribute("email");
+        UserDAO userdao = new UserDAO();
+        User Arole = userdao.getUser(role);
+        String roleaccount = Arole.getRole();
+        // check role of account
+        if (roleaccount.equals("manager".trim())) {
+            FeedBackDAO dao = new FeedBackDAO();
+            // set event for servlet
+            String event = request.getParameter("event");
+            // if event null  appear information
+            if (event == null) {
+                //get feed back
+
+                //get total page
+                int endP = dao.getTotalFeedback();
+                int endPage = endP / 5;
+                //paging
+                if (endP % 5 != 0) {
+                    endPage++; // if endP not divide by 5 so that endPage + 1
+                }
+                String index = request.getParameter("index");
+                if (index == null) {
+                    List<FeedBack> feedbacks = dao.getPageFeedBacks(1);
+                    request.setAttribute("endP", endPage);
+                    request.setAttribute("feedbacks", feedbacks);
+                    request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                } else {
+                    int page = Integer.parseInt(index);
+                    List<FeedBack> feedbacks = dao.getPageFeedBacks(page);
+                    request.setAttribute("endP", endPage);
+                    request.setAttribute("feedbacks", feedbacks);
+                    request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                }
+            } else if (event.equals("updatestatus")) {
+                // get infor for update
+                String Fstatus = request.getParameter("Fstatus");
+                String UID = request.getParameter("UID");
+                dao.updateStatus(Fstatus, Integer.parseInt(UID));
+                // prevent loop
+                if (request.getParameter("redirected") == null || !request.getParameter("redirected").equals("true")) {
+                    response.sendRedirect("feedback?index=1&redirected=true");
+                }
+            }
+
+        } else {
+            // Get the 'action' parameter from the request
+            String action = request.getParameter("action");
+            // Determine the servlet action based on the 'action' parameter
+            if (action.equals("accessfeedback")) {
+                // Check if the user is logged in
+
+                String email = (String) session.getAttribute("email");
+                // Display a login required message as a popup overlay
+                if (email == null) {
+                    out.println("<html><head><title>Login Required</title>");
+                    out.println("<style>");
+                    out.println("  .overlay {");
+                    out.println("    position: fixed;");
+                    out.println("    top: 0;");
+                    out.println("    left: 0;");
+                    out.println("    width: 100%;");
+                    out.println("    height: 100%;");
+                    out.println("    background-color: rgb(124 177 167 / 50%);");
+                    out.println("    display: flex;");
+                    out.println("    justify-content: center;");
+                    out.println("    align-items: center;");
+                    out.println("    z-index: 1;");
+                    out.println("  }");
+                    out.println("  .popup {");
+                    out.println("    background-color: white;border-radius: 5px;");
+                    out.println("    padding: 20px;");
+                    out.println("    text-align: center;width: 300px;height: 150px;");
+                    out.println("    z-index: 2;");
+                    out.println("  }");
+                    out.println("</style>");
+                    out.println("</head><body>");
+                    out.println("<div class='overlay'>");
+                    out.println("  <div class='popup'>");
+                    out.println("    <h2 style=\"color: red\">Login Required</h2>");
+                    out.println("    <p>You must log in to access this page.</p>");
+                    out.println("    <button style=\"padding: 10px;"
+                            + "background: #0089ff;"
+                            + "color: white;"
+                            + "border: 0px;"
+                            + "border-radius: 5px;\" onclick='closePopup()'>Cancel</button>");
+                    out.println("  </div>");
+                    out.println("</div>");
+                    out.println("<script>");
+                    out.println("  function closePopup() {");
+                    out.println("    var overlay = document.querySelector('.overlay');");
+                    out.println("    overlay.style.display = 'none';");
+                    out.println("    window.location.href = 'index.jsp';");
+                    out.println("  }");
+                    out.println("</script>");
+                    out.println("</body></html>");
+                } else {
+                    // Get user information
+
+                    User user = userdao.getUser(email);
+                    System.out.println(user.getEmail());
+                    // Get medical examinations awaiting feedback
+                    System.out.println(user.getUserID());
+                    FeedBackDAO dao = new FeedBackDAO();
+                    // Set the 'medical' attribute for rendering in FeedBack.jsp
+                    List<MedicalExamination> medical = dao.getMedicalExamination(user.getUserID());
+                    request.setAttribute("medical", medical);
+                    request.getRequestDispatcher("/view/FeedBack.jsp").forward(request, response);
+
+                }
+
+            } else if (action.equals("sendfeedback")) {
                 // Get user information
-                UserDAO userdao = new UserDAO();
+
+                String email = (String) session.getAttribute("email");
+
                 User user = userdao.getUser(email);
                 System.out.println(user.getEmail());
-                 // Get medical examinations awaiting feedback
+                // Get feedback details from the request
                 System.out.println(user.getUserID());
                 FeedBackDAO dao = new FeedBackDAO();
-                // Set the 'medical' attribute for rendering in FeedBack.jsp
-                List<MedicalExamination> medical = dao.getMedicalExamination(user.getUserID());
-                request.setAttribute("medical", medical);
-                request.getRequestDispatcher("/view/FeedBack.jsp").forward(request, response);
-                
-            }
-            
-        } else if (action.equals("sendfeedback")) {
-              // Get user information
-            HttpSession session = request.getSession();
-            String email = (String) session.getAttribute("email");
-            UserDAO userdao = new UserDAO();
-            User user = userdao.getUser(email);
-            System.out.println(user.getEmail());
-            // Get feedback details from the request
-            System.out.println(user.getUserID());
-            FeedBackDAO dao = new FeedBackDAO();
-            String ratestar = request.getParameter("rate");
-            int rate = Integer.parseInt(ratestar);
-            
-            String content = request.getParameter("content");
-            String medicalID = request.getParameter("medical");
-            
-            int medicalId = Integer.parseInt(medicalID);
-            // Insert the feedback into the database
-            dao.InsertFeedBack(user.getUserID(), medicalId, content, rate);
-            out.println("<!DOCTYPE html>\n"
-                    + "<html>\n"
-                    + "<head>\n"
-                    + "    <meta charset=\"UTF-8\">\n"
-                    + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
-                    + "    <style>\n"
-                    + "        body {\n"
-                    + "            background-color: #f2f2f2;\n"
-                    + "            font-family: Arial, sans-serif;\n"
-                    + "            display: flex;\n"
-                    + "            justify-content: center;\n"
-                    + "            align-items: center;\n"
-                    + "            height: 100vh;\n"
-                    + "            margin: 0;\n"
-                    + "        }\n"
-                    + "        \n"
-                    + "        .container {\n"
-                    + "            text-align: center;\n"
-                    + "            background-color: #ffffff;\n"
-                    + "            border-radius: 10px;\n"
-                    + "            padding: 20px;\n"
-                    + "            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n"
-                    + "        }\n"
-                    + "        \n"
-                    + "        h1 {\n"
-                    + "            font-size: 36px;\n"
-                    + "            color: #333;\n"
-                    + "        }\n"
-                    + "        \n"
-                    + "        p {\n"
-                    + "            font-size: 18px;\n"
-                    + "            color: #666;\n"
-                    + "        }\n"
-                    + "    </style>\n"
-                    + "</head>\n"
-                    + "<body>\n"
-                    + "    <div class=\"container\">\n"
-                    + "        <h1>Thank you</h1>\n"
-                    + "        <p>FeedBack have been sent.</p>\n"
-                    + " <button style=\" background-color: blue; border: 0px; border-radius: 5px;padding: 10px;\"> "
-                    + " <a style=\"color: white; padding: 10px;text-decoration: none;\" href=\"http://localhost:9999/ChildrenCare/\">HOME</a> </button>"
-                    + "    </div>\n"
-                    + "</body>\n"
-                    + "</html>");
-        } else {
-            // Get user's email from the session
-            HttpSession session = request.getSession();
-            String email = (String) session.getAttribute("email");
-              // Send an email with a feedback request
-            Mail.sendEmail(email, "THANK TO USE SERVICE", "Thank you for using our service\n"
-                    + "Please give us feedback about the service by clicking on feedback in the header on the homepage on the website");
-            request.getRequestDispatcher("/view/FeedBack.jsp").forward(request, response);
+                String ratestar = request.getParameter("rate");
+                int rate = Integer.parseInt(ratestar);
 
+                String content = request.getParameter("content");
+                String medicalID = request.getParameter("medical");
+
+                int medicalId = Integer.parseInt(medicalID);
+                // Insert the feedback into the database
+                dao.InsertFeedBack(user.getUserID(), medicalId, content, rate);
+                out.println("<!DOCTYPE html>\n"
+                        + "<html>\n"
+                        + "<head>\n"
+                        + "    <meta charset=\"UTF-8\">\n"
+                        + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+                        + "    <style>\n"
+                        + "        body {\n"
+                        + "            background-color: #f2f2f2;\n"
+                        + "            font-family: Arial, sans-serif;\n"
+                        + "            display: flex;\n"
+                        + "            justify-content: center;\n"
+                        + "            align-items: center;\n"
+                        + "            height: 100vh;\n"
+                        + "            margin: 0;\n"
+                        + "        }\n"
+                        + "        \n"
+                        + "        .container {\n"
+                        + "            text-align: center;\n"
+                        + "            background-color: #ffffff;\n"
+                        + "            border-radius: 10px;\n"
+                        + "            padding: 20px;\n"
+                        + "            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n"
+                        + "        }\n"
+                        + "        \n"
+                        + "        h1 {\n"
+                        + "            font-size: 36px;\n"
+                        + "            color: #333;\n"
+                        + "        }\n"
+                        + "        \n"
+                        + "        p {\n"
+                        + "            font-size: 18px;\n"
+                        + "            color: #666;\n"
+                        + "        }\n"
+                        + "    </style>\n"
+                        + "</head>\n"
+                        + "<body>\n"
+                        + "    <div class=\"container\">\n"
+                        + "        <h1>Thank you</h1>\n"
+                        + "        <p>FeedBack have been sent.</p>\n"
+                        + " <button style=\" background-color: blue; border: 0px; border-radius: 5px;padding: 10px;\"> "
+                        + " <a style=\"color: white; padding: 10px;text-decoration: none;\" href=\"http://localhost:9999/ChildrenCare/\">HOME</a> </button>"
+                        + "    </div>\n"
+                        + "</body>\n"
+                        + "</html>");
+            } else {
+                // Get user's email from the session
+
+                String email = (String) session.getAttribute("email");
+                // Send an email with a feedback request
+                Mail.sendEmail(email, "THANK TO USE SERVICE", "Thank you for using our service\n"
+                        + "Please give us feedback about the service by clicking on feedback in the header on the homepage on the website");
+                request.getRequestDispatcher("/view/FeedBack.jsp").forward(request, response);
+
+            }
         }
 
     }

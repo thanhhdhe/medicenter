@@ -18,14 +18,24 @@ public class FeedBack {
     private String content;
     private String feedbackdate;
     private int ratestar;
+    private String Fstatus;
 
-    public FeedBack(int feedbackID, int userID, int medicalID, String content, String feedbackdate, int ratestar) {
+    public String getFstatus() {
+        return Fstatus;
+    }
+
+    public void setFstatus(String Fstatus) {
+        this.Fstatus = Fstatus;
+    }
+
+    public FeedBack(int feedbackID, int userID, int medicalID, String content, String feedbackdate, int ratestar, String Fstatus) {
         this.feedbackID = feedbackID;
         this.userID = userID;
         this.medicalID = medicalID;
         this.content = content;
         this.feedbackdate = feedbackdate;
         this.ratestar = ratestar;
+        this.Fstatus = Fstatus;
     }
 
     public FeedBack() {
