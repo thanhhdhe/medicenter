@@ -8,6 +8,7 @@
 <html lang="en">
     <jsp:include page="./layout/Head.jsp"/> 
     <link rel="stylesheet" href="./resources/css/services-style.css">
+    
 
     <body>
         <jsp:include page="./layout/Header.jsp"/>
@@ -67,7 +68,7 @@
                     </div>
                 </div>
 
-                <ul class="nav nav-tabs mb-3 justify-content-start" id="ex1" role="tablist">
+                <ul class="nav nav-tabs m-0 justify-content-start" id="ex1" role="tablist">
                     <li class="nav-item" role="presentation">
                         <a
                             class="nav-link active"
@@ -101,7 +102,7 @@
                 </ul>
                 <!-- Tabs navs -->
                 <!-- Tabs content -->
-                <div class="tab-content" id="ex1-content">
+                <div class="tab-content rounded-0" id="ex1-content">
                     <div
                         class="tab-pane fade show active"
                         id="ex1-tabs-1"
