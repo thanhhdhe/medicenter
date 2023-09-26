@@ -107,6 +107,9 @@ public class ServiceController extends HttpServlet {
             case "sent-to-add":
                 request.getRequestDispatcher("./view/add-service.jsp").forward(request, response);
                 break;
+            case "to-detail-manage":
+                toDetailManage(request, response);
+                break;
             default:
                 break;
         }
@@ -308,6 +311,16 @@ public class ServiceController extends HttpServlet {
         request.getRequestDispatcher("./view/service-edit.jsp").forward(request, response);
     }
 
+    protected void toDetailManage(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String id = request.getParameter("id");
+        ServiceDAO serviceDAO = new ServiceDAO();
+        Service service = serviceDAO.getServiceByID(id);
+        request.setAttribute("service", service);
+        request.setAttribute("ServiceID", id);
+        request.getRequestDispatcher("./view/service-detail-manage.jsp").forward(request, response);
+    }
+    
     protected void editService(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ServiceDAO serviceDAO = new ServiceDAO();
@@ -373,7 +386,7 @@ public class ServiceController extends HttpServlet {
         if (!check) {
             request.setAttribute("validate", check);
             request.setAttribute("service", service);
-            request.getRequestDispatcher("./views/service-edit.jsp").forward(request, response);
+            request.getRequestDispatcher("./view/service-edit.jsp").forward(request, response);
         } else {
             Service newService = new Service(Integer.parseInt(serviceID + ""), title, brief, imageURL, Integer.parseInt(categoryID), Double.parseDouble(originalPrice), Double.parseDouble(salePrice), description, updateDate, Boolean.getBoolean(status));
             serviceDAO.update(newService);

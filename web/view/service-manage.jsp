@@ -94,7 +94,7 @@
                                 <%}else{%>
                                 <button class="button-icon me-2 showhide show-service-button" data-service-id="<%=service.getServiceID()%>"><img src="resources/img/icon/visual.png" alt="alt"/></button> 
                                 <%}%>
-                                <button class="button-icon me-2"><a href="service?event=detail&id=<%=service.getServiceID()%>"><img src="resources/img/icon/detail.png" alt="alt"/></a></button>
+                                <button class="button-icon me-2"><a href="service?event=to-detail-manage&id=<%=service.getServiceID()%>"><img src="resources/img/icon/detail.png" alt="alt"/></a></button>
                                 <button class="button-icon"><a href="service?event=edit&id=<%=service.getServiceID()%>"><img src="resources/img/icon/pen.png" alt="alt"/></a></button>
                             </div></div>
                         </div>

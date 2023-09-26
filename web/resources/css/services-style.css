@@ -92,3 +92,19 @@ body{
     border-radius : 50%;
     object-fit: contain;
 }
+
+.button-edit{
+    width: 4rem;
+    height: 4rem;
+    border: 0;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.button-edit img{
+    width: 4rem;
+    height: 3rem;
+    object-fit: contain;
+}
+.fit-content-width {
+    width: fit-content;
+  }
