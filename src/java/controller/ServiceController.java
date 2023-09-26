@@ -276,7 +276,7 @@ public class ServiceController extends HttpServlet {
                 out.print(" <button class=\"button-icon me-2 showhide show-service-button\" data-service-id=\"" + service.getServiceID() + "\" onclick=\"handleUpdate()\"  ><img src=\"resources/img/icon/visual.png\" alt=\"alt\"/></button> ");
             }
 
-            out.print(" <button class=\"button-icon me-2\"><a href=\"service?event=detail&id="+service.getServiceID()+"\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\"/></a></button>\n" +
+            out.print(" <button class=\"button-icon me-2\"><a href=\"service?event=to-detail-manage&id="+service.getServiceID()+"\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\"/></a></button>\n" +
 "                                <button class=\"button-icon\"><a href=\"service?event=edit&id="+service.getServiceID()+"\"><img src=\"resources/img/icon/pen.png\" alt=\"alt\"/></a></button>"
                     + "                            </div> </div>"
                     + "                        </div>\n"

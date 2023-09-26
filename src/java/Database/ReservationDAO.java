@@ -46,6 +46,28 @@ public class ReservationDAO extends MyDAO {
         return list;
     }
 
+    public int countReservationsForService(String serviceID) {
+        int reservationCount = 0;
+        String xSql = "SELECT COUNT(*) AS ReservationCount FROM Reservations WHERE ServiceID = ?";
+
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, serviceID);
+            rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                reservationCount = rs.getInt("ReservationCount");
+            }
+
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return reservationCount;
+    }
+
     public static void main(String args[]) {
 //        ReservationDAO rd = new ReservationDAO();
 //        for (Reservation r : rd.getSpecificReservation("3", "27","9", "1")) {
