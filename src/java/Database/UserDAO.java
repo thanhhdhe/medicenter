@@ -42,13 +42,33 @@ public class UserDAO extends MyDAO {
             e.printStackTrace();
         }
     }
-
-    public User getUser(String email) {
+    
+        public User getUser(String email) {
 
         xSql = "select * from [dbo].[Users] where email = ?";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, email);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                         rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9),
+                         rs.getString(10));
+                return user;
+            }
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public User getUserByID(int userID) {
+
+        xSql = "select * from [dbo].[Users] where UserID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, userID);
             rs = ps.executeQuery();
             if (rs.next()) {
                 User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
@@ -148,8 +168,8 @@ public class UserDAO extends MyDAO {
     }
 
     public static void main(String[] args) {
-//        UserDAO u = new UserDAO();
-//        User user = new User();
+//            UserDAO u = new UserDAO();
+//            User user = u.getUserByID(0);
 //         user.setEmail("HieuBui");
 //            user.setFirstName("Hieu");
 //            user.setLastName("BUI");
