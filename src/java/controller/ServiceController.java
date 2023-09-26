@@ -110,6 +110,9 @@ public class ServiceController extends HttpServlet {
             case "to-detail-manage":
                 toDetailManage(request, response);
                 break;
+            case "to-contact-link":
+                request.getRequestDispatcher("./view/contact.jsp").forward(request, response);
+                break;
             default:
                 break;
         }
