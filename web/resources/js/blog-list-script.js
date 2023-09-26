@@ -45,14 +45,14 @@ document.addEventListener('DOMContentLoaded', function () {
         var CategoryPost = document.querySelector('select[name="postCategory"]').value;
         // Gửi yêu cầu Ajax đến máy chủ để lấy danh sách bài post
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'postPage?event=post-list-userchoose&postTitle=' + encodeURIComponent(postTitle) +
+        xhr.open('GET', 'blogPage?event=blog-list-userchoose&postTitle=' + encodeURIComponent(postTitle) +
                 '&postCategory=' + encodeURIComponent(CategoryPost) +
                 '&page=' + encodeURIComponent(page));
 
         xhr.onload = function () {
             if (xhr.status === 200) {
                 // Xử lý dữ liệu trả về từ máy chủ và cập nhật nội dung trang ko load l?i trang
-                document.querySelector('#post-list').innerHTML = xhr.responseText;
+                document.querySelector('#blog-list').innerHTML = xhr.responseText;
                 document.querySelector('#pagination-container').innerHTML = xhr.getResponseHeader('pagination');
             } else {
                 console.error('Error:', xhr.status);
@@ -73,14 +73,14 @@ function loadPagePosts(page) {
 
     // Gửi yêu cầu Ajax đến máy chủ để lấy danh sách bài post
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'postPage?event=post-list-userchoose&postTitle=' + encodeURIComponent(postTitle) +
+    xhr.open('GET', 'blogPage?event=blog-list-userchoose&postTitle=' + encodeURIComponent(postTitle) +
             '&postCategory=' + encodeURIComponent( CategoryPost) +
             '&page=' + encodeURIComponent(page));
 
     xhr.onload = function () {
         if (xhr.status === 200) {
             // Xử lý dữ liệu trả về từ máy chủ và cập nhật nội dung trang
-            document.querySelector('#post-list').innerHTML = xhr.responseText;
+            document.querySelector('#blog-list').innerHTML = xhr.responseText;
             document.querySelector('#pagination-container').innerHTML = xhr.getResponseHeader('pagination');
         } else {
             console.error('Error:', xhr.status);

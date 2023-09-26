@@ -18,7 +18,7 @@ import model.Post;
  *
  * @author Admin
  */
-public class PostController extends HttpServlet {
+public class BlogController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -59,9 +59,9 @@ public class PostController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String event = request.getParameter("event");
-        if (event.equals("post-list")) {
-            request.getRequestDispatcher("./view/post-list.jsp").forward(request, response);
-        } else if (event.equals("post-list-userchoose")) {
+        if (event.equals("blog-list")) {
+            request.getRequestDispatcher("./view/blog-list.jsp").forward(request, response);
+        } else if (event.equals("blog-list-userchoose")) {
             renderPostListByOption(request, response);
         }
     }
@@ -78,12 +78,12 @@ public class PostController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 //        processRequest(request, response);
-        String txtSearch = request.getParameter("postTitle");
-        request.setAttribute("postTitle", txtSearch);
+//        String txtSearch = request.getParameter("postTitle");
+//        request.setAttribute("postTitle", txtSearch);
         String event = request.getParameter("event");
-        if (event.equals("post-list")) {
-            request.getRequestDispatcher("./view/post-list.jsp").forward(request, response);
-        } else if (event.equals("post-list-userchoose")) {
+        if (event.equals("blog-list")) {
+            request.getRequestDispatcher("./view/blog-list.jsp").forward(request, response);
+        } else if (event.equals("blog-list-userchoose")) {
             renderPostListByOption(request, response);
         }
     }
@@ -120,7 +120,7 @@ public class PostController extends HttpServlet {
                     + "                        <div class=\"bg-light rounded overflow-hidden\">\n"
                     + "                            <img class=\"img-fluid w-100\" src=\"" + post.getThumbnail() + "\" alt=\"\">\n"
                     + "                            <div class=\"p-4\">\n"
-                    + "                                 <a class=\"h3 d-block mb-3\" href=\"/ChildrenCare/postDetail?ID=" + post.getPostID() + "\">" + post.getTitle() + "</a>\n"
+                    + "                                 <a class=\"h3 d-block mb-3\" href=\"/ChildrenCare/blogDetail?ID=" + post.getPostID() + "\">" + post.getTitle() + "</a>\n"
                     + "                                <p class=\"m-0\">" + post.getBriefInfo() + "</p>\n"
                     + "                            </div>\n"
                     + "                            <div class=\"d-flex justify-content-between border-top p-4\">\n"

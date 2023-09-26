@@ -21,7 +21,7 @@
             crossorigin="anonymous"
             />
         <link rel="stylesheet" href="./resources/css/post-style.css">
-        <title>Post Page</title>
+        <title>Medilab</title>
     </head>
     <body>
         <jsp:include page="./layout/Header.jsp" />
@@ -41,7 +41,7 @@
                     </div>
                     <!-- Category End -->
                 </div>
-                <div class="col-md-9" id="post-list">
+                <div class="col-md-9" id="blog-list">
                     <div class="container py-5">
                         <div class="row g-5">
                             <%List<Post> list = postDAO.getPostedPaged(0, 6);
@@ -50,7 +50,7 @@
                                 <div class="bg-light rounded overflow-hidden">
                                     <img class="img-fluid w-100" src="<%=post.getThumbnail()%>" alt="">
                                     <div class="p-4">
-                                        <a class="h3 d-block mb-3" href="/ChildrenCare/postDetail?ID=<%=post.getPostID()%>"><%=post.getTitle()%></a>
+                                        <a class="h3 d-block mb-3" href="/ChildrenCare/blogDetail?ID=<%=post.getPostID()%>"><%=post.getTitle()%></a>
                                         <p class="m-0"><%=post.getBriefInfo()%></p>
                                     </div>
                                     <div class="d-flex justify-content-between border-top p-4">
@@ -79,7 +79,7 @@
             <%}%>
         </div>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="./resources/js/post-list-script.js"></script>
+        <script src="./resources/js/blog-list-script.js"></script>
         <script
             src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
             integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"

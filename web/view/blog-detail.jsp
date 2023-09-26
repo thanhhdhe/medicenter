@@ -20,7 +20,7 @@
             crossorigin="anonymous"
             />
         <link rel="stylesheet" href="./resources/css/post-style.css">
-        <title>Post Page</title>
+        <title>Medilab</title>
     </head>
     <body>
         <jsp:include page="./layout/Header.jsp" />
@@ -84,7 +84,7 @@
                     <!-- Category Start -->
                     <div class="mb-5">
                         <%PostDAO postDAO = new PostDAO();%>
-                        <form action="postDetail" method="POST">
+                        <form action="blogDetail" method="POST">
                             <input id="post-title" type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3 search"/>
 <!--                            <select class="form-select text-primary mt-3" name="postCategory">
                                 <option selected value="">Post Category</option>

@@ -18,7 +18,7 @@ import model.Post;
  *
  * @author Admin
  */
-public class PostDetailController extends HttpServlet {
+public class BlogDetailController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -70,7 +70,7 @@ public class PostDetailController extends HttpServlet {
             request.setAttribute("update-date", post.getCreatedDate());
             request.setAttribute("categoryP", post.getCategoryPost());
             request.setAttribute("postdetail", post.getContent());
-            request.getRequestDispatcher("./view/post-detail.jsp").forward(request, response);
+            request.getRequestDispatcher("./view/blog-detail.jsp").forward(request, response);
             out.print(post.getContent());
         }
     }
@@ -92,7 +92,7 @@ public class PostDetailController extends HttpServlet {
 //            String txtCategory= request.getParameter("postCategory");
             request.setAttribute("postTitle", txtSearch);
             //            request.setAttribute(, out);
-            request.getRequestDispatcher("/postPage?event=post-list").forward(request, response);
+            request.getRequestDispatcher("/blogPage?event=blog-list").forward(request, response);
         }
     }
 
