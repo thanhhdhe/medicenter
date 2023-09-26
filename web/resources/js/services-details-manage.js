@@ -35,3 +35,7 @@
             document.querySelector(target).classList.add('active');
         });
     });
+    
+  function  sendToDetailManage(serviceID){
+      window.location.href = "service?event=onoff-status&id="+serviceID;
+  }

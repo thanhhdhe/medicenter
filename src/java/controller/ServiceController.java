@@ -113,6 +113,9 @@ public class ServiceController extends HttpServlet {
             case "to-contact-link":
                 request.getRequestDispatcher("./view/contact.jsp").forward(request, response);
                 break;
+            case "onoff-status":
+                onOffStatus(request, response);
+                break;
             default:
                 break;
         }
@@ -472,6 +475,16 @@ public class ServiceController extends HttpServlet {
             serviceDAO.insert(newService);
             response.sendRedirect("service?event=manage");
         }
+    }
+    
+    protected void onOffStatus(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String id = request.getParameter("id");
+        ServiceDAO serviceDAO = new ServiceDAO();
+        Service service = serviceDAO.getServiceByID(id);
+        service.setStatus(!service.getStatus());
+        serviceDAO.update(service);
+        request.getRequestDispatcher("service?event=to-detail-manage&id="+id).forward(request, response);
     }
 
     /**

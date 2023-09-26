@@ -50,7 +50,7 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <div class="form-check form-switch d-flex align-items-center">
-                                    <input class="form-check-input me-2" type="checkbox" id="flexSwitchCheckDefault" <%=service.getStatus()?"checked":""%> style="height: 24px;width: 47px;">
+                                    <input class="form-check-input me-2" type="checkbox" id="flexSwitchCheckDefault" <%=service.getStatus()?"checked":""%> onchange="sendToDetailManage(<%=service.getServiceID()%>)" style="height: 24px;width: 47px;">
                                     <%if(service.getStatus()){%><p class="status bg-success text-white m-0 p-1 fit-content-width rounded-1 text-center">Active</p> 
                                     <%}else{%> 
                                     <p class="status bg-danger text-light m-0 p-1 fit-content-width rounded-1 text-center">Inactive</p><%}%>
