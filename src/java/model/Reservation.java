@@ -5,7 +5,6 @@
 package model;
 
 import java.sql.Date;
-import java.sql.Time;
 
 /**
  *
@@ -16,21 +15,25 @@ public class Reservation {
     private int ReservationID, UserID, ServiceID;
     private Date ReservationDate;
     private int ReservationSlot;
+    private Date CreatedDate;
     private float Cost;
     private String Status;
+    private int StaffID;
 
     public Reservation() {
         
     }
 
-    public Reservation(int ReservationID, int UserID, int ServiceID, Date ReservationDate, int ReservationSlot, float Cost, String Status) {
+    public Reservation(int ReservationID, int UserID, int ServiceID, Date ReservationDate, int ReservationSlot, Date CreatedDate, float Cost, String Status, int StaffID) {
         this.ReservationID = ReservationID;
         this.UserID = UserID;
         this.ServiceID = ServiceID;
         this.ReservationDate = ReservationDate;
         this.ReservationSlot = ReservationSlot;
+        this.CreatedDate = CreatedDate;
         this.Cost = Cost;
         this.Status = Status;
+        this.StaffID = StaffID;
     }
 
     public int getReservationID() {
@@ -73,6 +76,14 @@ public class Reservation {
         this.ReservationSlot = ReservationSlot;
     }
 
+    public Date getCreatedDate() {
+        return CreatedDate;
+    }
+
+    public void setCreatedDate(Date CreatedDate) {
+        this.CreatedDate = CreatedDate;
+    }
+
     public float getCost() {
         return Cost;
     }
@@ -87,6 +98,14 @@ public class Reservation {
 
     public void setStatus(String Status) {
         this.Status = Status;
+    }
+
+    public int getStaffID() {
+        return StaffID;
+    }
+
+    public void setStaffID(int StaffID) {
+        this.StaffID = StaffID;
     }
 
 }
