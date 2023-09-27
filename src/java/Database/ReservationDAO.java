@@ -75,6 +75,28 @@ public class ReservationDAO extends MyDAO {
         return list;
     }
 
+    public int countReservationsForService(String serviceID) {
+        int reservationCount = 0;
+        String xSql = "SELECT COUNT(*) AS ReservationCount FROM Reservations WHERE ServiceID = ?";
+
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, serviceID);
+            rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                reservationCount = rs.getInt("ReservationCount");
+            }
+
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return reservationCount;
+    }
+
     public List<Reservation> getSortedPaged(int offSetPage, int numberOfPage) {
         List<Reservation> reservationList = new ArrayList<>();
         xSql = "SELECT *  FROM [dbo].[Reservations]  "

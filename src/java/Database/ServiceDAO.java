@@ -396,7 +396,7 @@ public class ServiceDAO extends MyDAO {
 
     public void insert(Service service) {
         xSql = "INSERT INTO [dbo].[Services] (Title ,Thumbnail ,CategoryID ,OriginalPrice ,SalePrice ,ServiceDetails ,BriefInfo ,UpdateDate, Status) \n"
-                + "     VALUES (? ,? ,? ,? ,? ,? ,?)";
+                + "     VALUES (? ,? ,? ,? ,? ,? ,?, ?, ?)";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, service.getTitle());

@@ -23,12 +23,10 @@
                 <div class="col-md-6">
                     <%String validate = request.getAttribute("validate")+"";
                     if(!validate.equals("null")&&validate.equals("false")){%>
-                    <h5  class="text-danger text-center">Update Fail!!</h5>
+                    <h4  class="text-danger text-start fw-bold">Update Fail!!</h4>
                     <%}%>
                 </div>
-                <div class="col-md-6 d-flex justify-content-end">
-                    <button class="btn btn-primary text-white w-25" type="button">Add Service</button>
-                </div>
+                
             </div>
             <form action="service?event=edit-service&ServiceID=<%=service.getServiceID()%>" method="POST" class="w-75" enctype="multipart/form-data">
                 <div class="row">    
@@ -88,11 +86,11 @@
                             </div>   
                         </div>
                         <div class="d-flex">
-                            <div class="col-md-4"><p class="text-muted">Price: </p>
+                            <div class="col-md-6"><p class="text-muted">Price: </p>
                                 <input class="form-control w-50" type="number" value="<%=service.getOriginalPrice()%>" name="OriginalPrice" />
                                 <%if(!originalPriceErr.equals("null")){%>    <p class="text-danger"><%=originalPriceErr%></p><%}%>
                             </div>
-                            <div class="col-md-4"><p class="text-muted">Sale price: </p>
+                            <div class="col-md-6"><p class="text-muted">Sale price: </p>
                                 <input class="form-control w-50" type="number" value="<%=service.getSalePrice()%>" name="SalePrice" />
                                 <%if(!salePriceErr.equals("null")){%>    <p class="text-danger"><%=salePriceErr%></p><%}%>
                             </div>

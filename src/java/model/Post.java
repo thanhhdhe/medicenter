@@ -16,12 +16,26 @@ public class Post {
     private String content;
     private String briefInfo;
     private String thumbnail;
+    private int count;
     private int authorID;
     private int serviceID;
     private Date createdDate;
     private String categoryPost;
 
     public Post() {
+    }
+
+    public Post(int postID, String title, String content, String briefInfo, String thumbnail, int count, int authorID, int serviceID, Date createdDate, String categoryPost) {
+        this.postID = postID;
+        this.title = title;
+        this.content = content;
+        this.briefInfo = briefInfo;
+        this.thumbnail = thumbnail;
+        this.count = count;
+        this.authorID = authorID;
+        this.serviceID = serviceID;
+        this.createdDate = createdDate;
+        this.categoryPost = categoryPost;
     }
     
 
@@ -104,6 +118,14 @@ public class Post {
 
     public void setCategoryPost(String categoryPost) {
         this.categoryPost = categoryPost;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
     
     

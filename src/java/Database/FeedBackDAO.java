@@ -6,6 +6,7 @@ package Database;
 
 import java.util.ArrayList;
 import java.util.List;
+import model.FeedBack;
 import model.MedicalExamination;
 
 /**
@@ -14,16 +15,107 @@ import model.MedicalExamination;
  */
 public class FeedBackDAO extends MyDAO {
 
+    //insert feedback of user
     public void InsertFeedBack(int userID, int MedicalID, String content, int ratestar) {
-        xSql = "INSERT INTO Feedbacks (UserID, MedicalExaminationID, Content, FeedbackDate, RatedStar)\n"
-                + "VALUES (?, ?, ?, GETDATE(), ?);";
+        xSql = "INSERT INTO Feedbacks (UserID, MedicalExaminationID, Content, FeedbackDate, RatedStar, FStatus)\n"
+                + "VALUES (?, ?, ?, GETDATE(), ?, ?);";
         try {
             ps = con.prepareStatement(xSql);
             ps.setInt(1, userID);
             ps.setInt(2, MedicalID);
             ps.setString(3, content);
-
             ps.setInt(4, ratestar);
+            ps.setString(5, "Pending");
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //get total fillter
+    public int getTotalFeedbackFStatus(String Fill) {
+        xSql = "select COUNT(*) from Feedbacks where FStatus = ?;";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, Fill);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+
+        }
+        return 0;
+    }
+
+    //get total feedbacks
+    public int getTotalFeedback() {
+        xSql = "select COUNT(*) from Feedbacks;";
+        try {
+            ps = con.prepareStatement(xSql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+
+        }
+        return 0;
+    }
+
+    public List<FeedBack> getPageFeedBackByFStatus(int index, String Fill) {
+        List<FeedBack> feedbacks = new ArrayList<>();
+        xSql = "select * from Feedbacks\n"
+                + "where FStatus = ?\n"
+                + "ORDER BY FeedbackID\n"
+                + "OFFSET ? Rows fetch next 5 rows ONLY;";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, Fill);
+            // set index for offser (page)
+            ps.setInt(2, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
+                        rs.getString(4), rs.getString(5).substring(0, 10), rs.getInt(6),
+                        rs.getString(7)));
+            }
+        } catch (Exception e) {
+
+        }
+        return (feedbacks);
+    }
+
+    //get list paging feedback 
+    public List<FeedBack> getPageFeedBacks(int index) {
+        List<FeedBack> feedbacks = new ArrayList<>();
+        xSql = "select * from Feedbacks\n"
+                + "ORDER BY FeedbackID\n"
+                + "OFFSET ? Rows fetch next 5 rows ONLY;";
+        try {
+            ps = con.prepareStatement(xSql);
+            // set index for offser (page)
+            ps.setInt(1, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
+                        rs.getString(4), rs.getString(5).substring(0, 10), rs.getInt(6),
+                        rs.getString(7)));
+            }
+        } catch (Exception e) {
+
+        }
+        return (feedbacks);
+    }
+
+    // update
+    public void updateStatus(String status, int FID) {
+        xSql = "update Feedbacks set FStatus = ? where FeedbackID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, status);
+            ps.setInt(2, FID);
             ps.executeUpdate();
             ps.close();
         } catch (Exception e) {
@@ -57,8 +149,7 @@ public class FeedBackDAO extends MyDAO {
 
     public static void main(String[] args) {
         FeedBackDAO dao = new FeedBackDAO();
-       
-        List<MedicalExamination> medical = dao.getMedicalExamination(1);
-        System.out.println(medical.get(0).getUsedServices());
+        dao.updateStatus("Appord", 2);
+
     }
 }

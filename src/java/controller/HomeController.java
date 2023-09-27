@@ -87,7 +87,9 @@ public class HomeController extends HttpServlet {
             }
         }
         request.setAttribute("last3post", latestPosts);
-
+        List<Post> get3hotpost = postDAO.get3HotestPost();
+        request.setAttribute("hot3pot", get3hotpost);
+        
         CategoryServiceDAO categoryServiceDAO = new CategoryServiceDAO();
         List<CategoryService> listCategoryService = categoryServiceDAO.getAllCategoryServices();
 //        List<CategoryService> listCategoryServiceHasService = new ArrayList<>();

@@ -6,6 +6,7 @@ package controller;
  */
 import Database.CategoryServiceDAO;
 import Database.ServiceDAO;
+import Database.StaffDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -19,6 +20,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import model.Service;
+import model.Staff;
 
 /**
  *
@@ -87,6 +89,9 @@ public class ServiceController extends HttpServlet {
                 ServiceDAO serviceDAO = new ServiceDAO();
                 Service services = serviceDAO.getServiceByID(id);
                 request.setAttribute("service", services);
+                StaffDAO staffDAO = new StaffDAO();
+                List<Staff> staffList = staffDAO.getDoctorByServices(id);
+                request.setAttribute("doctor", staffList);
                 request.getRequestDispatcher("./view/servicedetail.jsp").forward(request, response);
                 break;
             case "manage":
@@ -98,7 +103,18 @@ public class ServiceController extends HttpServlet {
                 break;
             case "edit":
                 edit(request, response);
-
+                break;
+            case "sent-to-add":
+                request.getRequestDispatcher("./view/add-service.jsp").forward(request, response);
+                break;
+            case "to-detail-manage":
+                toDetailManage(request, response);
+                break;
+            case "to-contact-link":
+                request.getRequestDispatcher("./view/contact.jsp").forward(request, response);
+                break;
+            case "onoff-status":
+                onOffStatus(request, response);
                 break;
             default:
                 break;
@@ -129,6 +145,10 @@ public class ServiceController extends HttpServlet {
             case "edit-service":
                 editService(request, response);
                 break;
+            case "add-service":
+                addService(request, response);
+                break;
+                
         }
     }
 
@@ -215,8 +235,8 @@ public class ServiceController extends HttpServlet {
         // Render the service list
         for (Service service : serviceList) {
             out.print("<div id=\"" + service.getServiceID() + "\" class=\"service row p-3");
-            if (service.getStatus()) {
-                out.print("inactives");
+            if (!service.getStatus()) {
+                out.print(" inactives");
             }
             out.print("\">\n"
                     + "                        <div class=\"col-md-3\">\n"
@@ -254,13 +274,13 @@ public class ServiceController extends HttpServlet {
             out.print("<br />\n"
                     + "       <div class=\"d-flex h-50 align-content-center flex-wrap\" >                      <div class=\"d-flex\">\n");
             if (service.getStatus()) {
-                out.print("<button class=\"button-icon me-2  hide-service-button\" data-service-id=\"" + service.getServiceID() + "\"><img src=\"resources/img/icon/hide.png\" alt=\"alt\"/></button>");
+                out.print("<button class=\"button-icon me-2 showhide hide-service-button\" data-service-id=\"" + service.getServiceID() + "\" onclick=\"handleUpdate()\" ><img src=\"resources/img/icon/hide.png\" alt=\"alt\"/></button>");
             } else {
-                out.print(" <button class=\"button-icon me-2 show-service-button\" data-service-id=\"" + service.getServiceID() + "\"><img src=\"resources/img/icon/visual.png\" alt=\"alt\"/></button> ");
+                out.print(" <button class=\"button-icon me-2 showhide show-service-button\" data-service-id=\"" + service.getServiceID() + "\" onclick=\"handleUpdate()\"  ><img src=\"resources/img/icon/visual.png\" alt=\"alt\"/></button> ");
             }
 
-            out.print("                                <button class=\"button-icon me-2 \"><img src=\"resources/img/icon/detail.png\" alt=\"alt\"/></button>\n"
-                    + "                                <button class=\"button-icon\"><img src=\"resources/img/icon/pen.png\" alt=\"alt\"/></button>\n"
+            out.print(" <button class=\"button-icon me-2\"><a href=\"service?event=to-detail-manage&id="+service.getServiceID()+"\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\"/></a></button>\n" +
+"                                <button class=\"button-icon\"><a href=\"service?event=edit&id="+service.getServiceID()+"\"><img src=\"resources/img/icon/pen.png\" alt=\"alt\"/></a></button>"
                     + "                            </div> </div>"
                     + "                        </div>\n"
                     + "                    </div>");
@@ -297,6 +317,16 @@ public class ServiceController extends HttpServlet {
         request.getRequestDispatcher("./view/service-edit.jsp").forward(request, response);
     }
 
+    protected void toDetailManage(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String id = request.getParameter("id");
+        ServiceDAO serviceDAO = new ServiceDAO();
+        Service service = serviceDAO.getServiceByID(id);
+        request.setAttribute("service", service);
+        request.setAttribute("ServiceID", id);
+        request.getRequestDispatcher("./view/service-detail-manage.jsp").forward(request, response);
+    }
+    
     protected void editService(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ServiceDAO serviceDAO = new ServiceDAO();
@@ -309,7 +339,7 @@ public class ServiceController extends HttpServlet {
         String salePrice = request.getParameter("SalePrice");
         String description = request.getParameter("Description");
         Service service = serviceDAO.getServiceByID(serviceID);
-        String newImg = request.getParameter("serviceURL")+"";
+        String newImg = request.getParameter("serviceURL") + "";
         String imageURL = service.getThumbnail();
         LocalDate currentDate = LocalDate.now();
 
@@ -317,7 +347,78 @@ public class ServiceController extends HttpServlet {
         Date updateDate = Date.valueOf(currentDate);
 
         try {
-            Part filePart = request.getPart("productImage");
+            Part filePart = request.getPart("serviceImage");
+            String fileName = filePart.getSubmittedFileName();
+
+            // Lưu tệp vào đường dẫn cụ thể trên server
+            String uploadPath = getServletContext().getRealPath("") + File.separator + "uploads";
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+            String url = uploadPath + File.separator + fileName;
+            if (fileName.length() > 0) {
+                imageURL = "./uploads/" + fileName;
+            } else {
+                throw new IOException();
+            }
+            filePart.write(url);
+        } catch (Exception e) {
+            if (newImg.length() > 0) {
+                imageURL = newImg;
+            }
+        }
+        
+        //validate input
+        boolean check = true;
+        if (title.isEmpty()) {
+            check = false;
+            request.setAttribute("titleErr", "*Title can not be left blank!");
+        }
+
+        if (originalPrice.isEmpty()) {
+            check = false;
+            request.setAttribute("originalPriceErr", "*Original Price can not be left blank!");
+        } else if (Double.parseDouble(originalPrice) < 0) {
+            check = false;
+            request.setAttribute("originalPriceErr", "*Original Price can not less than 0!");
+        }
+        if (!salePrice.isEmpty()) {
+            if (Double.parseDouble(salePrice) < 0) {
+                check = false;
+                request.setAttribute("salePriceErr", "*Sale Price can not less than 0!");
+            }
+        }
+        if (!check) {
+            request.setAttribute("validate", check);
+            request.setAttribute("service", service);
+            request.getRequestDispatcher("./view/service-edit.jsp").forward(request, response);
+        } else {
+            Service newService = new Service(Integer.parseInt(serviceID + ""), title, brief, imageURL, Integer.parseInt(categoryID), Double.parseDouble(originalPrice), Double.parseDouble(salePrice), description, updateDate, Boolean.getBoolean(status));
+            serviceDAO.update(newService);
+            response.sendRedirect("service?event=manage");
+        }
+    }
+    
+    protected void addService(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        ServiceDAO serviceDAO = new ServiceDAO();
+        String title = request.getParameter("Title");
+        String brief = request.getParameter("Brief");
+        String status = request.getParameter("status");
+        String categoryID = request.getParameter("serviceType");
+        String originalPrice = request.getParameter("OriginalPrice");
+        String salePrice = request.getParameter("SalePrice");
+        String description = request.getParameter("Description");
+        String newImg = request.getParameter("serviceURL")+"";
+        String imageURL = "resources/img/image1.jpg";
+        LocalDate currentDate = LocalDate.now();
+
+        // Chuyển đổi thành java.sql.Date
+        Date updateDate = Date.valueOf(currentDate);
+
+        try {
+            Part filePart = request.getPart("serviceImage");
             String fileName = filePart.getSubmittedFileName();
 
             // Lưu tệp vào đường dẫn cụ thể trên server
@@ -360,14 +461,30 @@ public class ServiceController extends HttpServlet {
             }
         }
         if (!check) {
+            System.out.println("aa");
             request.setAttribute("validate", check);
-            request.setAttribute("service", service);
-            request.getRequestDispatcher("./views/service-edit.jsp").forward(request, response);
+            request.setAttribute("title", title);
+            request.setAttribute("brief", brief);
+            request.setAttribute("categoryID", categoryID);
+            request.setAttribute("originalPrice", originalPrice);
+            request.setAttribute("salePrice", salePrice);
+            request.setAttribute("description", description);
+            request.getRequestDispatcher("./view/add-service.jsp").forward(request, response);
         } else {
-            Service newService = new Service(Integer.parseInt(serviceID+""),title, brief, imageURL, Integer.parseInt(categoryID), Double.parseDouble(originalPrice), Double.parseDouble(salePrice), description, updateDate, Boolean.getBoolean(status));
-            serviceDAO.update(newService);
+            Service newService = new Service(title, brief, imageURL, Integer.parseInt(categoryID), Double.parseDouble(originalPrice), Double.parseDouble(salePrice), description, updateDate, Boolean.getBoolean(status));
+            serviceDAO.insert(newService);
             response.sendRedirect("service?event=manage");
         }
+    }
+    
+    protected void onOffStatus(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String id = request.getParameter("id");
+        ServiceDAO serviceDAO = new ServiceDAO();
+        Service service = serviceDAO.getServiceByID(id);
+        service.setStatus(!service.getStatus());
+        serviceDAO.update(service);
+        request.getRequestDispatcher("service?event=to-detail-manage&id="+id).forward(request, response);
     }
 
     /**

@@ -5,7 +5,73 @@
 
 
 
+    function hideService(serviceId) {
+        console.log("hide");
+        $.ajax({
+            url: "/ChildrenCare/service?event=hide&serviceId=" + serviceId,
+            type: "POST",
+            success: function (response) {
+                // Xử lý thành công, ví dụ: thông báo thành công hoặc cập nhật giao diện người dùng
+                return;
+            },
+            error: function (xhr, status, error) {
+                // Xử lý lỗi, ví dụ: thông báo lỗi hoặc ghi log
+                console.error(error);
+            }
+        });
+    }
+    function showService(serviceId) {
+        console.log("show");
+        $.ajax({
+            url: "/ChildrenCare/service?event=show&serviceId=" + serviceId,
+            type: "POST",
+            success: function (response) {
+                // Xử lý thành công, ví dụ: thông báo thành công hoặc cập nhật giao diện người dùng
+                console.log("sc")
+            },
+            error: function (xhr, status, error) {
+                // Xử lý lỗi, ví dụ: thông báo lỗi hoặc ghi log
+                console.error(error);
+            }
+        });
+    }
+
+    function handleUpdate() {
+        let serviceId = event.currentTarget.dataset.serviceId;
+        let serviceElement = document.getElementById(serviceId);
+        serviceElement.classList.toggle("inactives");
+
+        if (event.currentTarget.classList.contains("hide-service-button")) {
+            hideService(serviceId);
+
+            // Thay đổi status thành "Inactive"
+            let statusElement = serviceElement.querySelector('.status');
+            statusElement.classList.remove('text-success');
+            statusElement.classList.add('text-black-50');
+            statusElement.textContent = 'Inactive';
+
+            event.currentTarget.classList.remove("hide-service-button");
+            event.currentTarget.classList.add("show-service-button");
+            event.currentTarget.querySelector('img').src = "resources/img/icon/visual.png";
+        } else if (event.currentTarget.classList.contains("show-service-button")) {
+            showService(serviceId);
+
+            // Thay đổi status thành "Active"
+            let statusElement = serviceElement.querySelector('.status');
+            statusElement.classList.remove('text-black-50');
+            statusElement.classList.add('text-success');
+            statusElement.textContent = 'Active';
+
+            event.currentTarget.classList.remove("show-service-button");
+            event.currentTarget.classList.add("hide-service-button");
+            event.currentTarget.querySelector('img').src = "resources/img/icon/hide.png";
+        }
+    }
+
 document.addEventListener('DOMContentLoaded', function () {
+    
+    
+    
     document.querySelector('select[name="sortBy"]').addEventListener('change', function () {
         loadServices(1); // Gọi hàm loadServices() để tải danh sách dịch vụ
     });
@@ -60,74 +126,12 @@ document.addEventListener('DOMContentLoaded', function () {
         xhr.send();
     }
 
-    function handleUpdate() {
-        let serviceId = this.getAttribute("data-service-id");
-        let serviceElement = document.getElementById(serviceId);
-        serviceElement.classList.toggle("inactives");
-
-        if (this.classList.contains("hide-service-button")) {
-            hideService(serviceId);
-
-            // Thay đổi status thành "Inactive"
-            let statusElement = serviceElement.querySelector('.status');
-            statusElement.classList.remove('text-success');
-            statusElement.classList.add('text-black-50');
-            statusElement.textContent = 'Inactive';
-
-            this.classList.remove("hide-service-button");
-            this.classList.add("show-service-button");
-            this.querySelector('img').src = "resources/img/icon/visual.png";
-        } else if (this.classList.contains("show-service-button")) {
-            showService(serviceId);
-
-            // Thay đổi status thành "Active"
-            let statusElement = serviceElement.querySelector('.status');
-            statusElement.classList.remove('text-black-50');
-            statusElement.classList.add('text-success');
-            statusElement.textContent = 'Active';
-
-            this.classList.remove("show-service-button");
-            this.classList.add("hide-service-button");
-            this.querySelector('img').src = "resources/img/icon/hide.png";
-        }
-    }
-
     let showHideButtons = document.getElementsByClassName("showhide");
 
     for (let i = 0; i < showHideButtons.length; i++) {
         showHideButtons[i].addEventListener("click", handleUpdate);
     }
 
-    function hideService(serviceId) {
-        console.log("hide");
-        $.ajax({
-            url: "/ChildrenCare/service?event=hide&serviceId=" + serviceId,
-            type: "POST",
-            success: function (response) {
-                // Xử lý thành công, ví dụ: thông báo thành công hoặc cập nhật giao diện người dùng
-                return;
-            },
-            error: function (xhr, status, error) {
-                // Xử lý lỗi, ví dụ: thông báo lỗi hoặc ghi log
-                console.error(error);
-            }
-        });
-    }
-    function showService(serviceId) {
-        console.log("show");
-        $.ajax({
-            url: "/ChildrenCare/service?event=show&serviceId=" + serviceId,
-            type: "POST",
-            success: function (response) {
-                // Xử lý thành công, ví dụ: thông báo thành công hoặc cập nhật giao diện người dùng
-                console.log("sc")
-            },
-            error: function (xhr, status, error) {
-                // Xử lý lỗi, ví dụ: thông báo lỗi hoặc ghi log
-                console.error(error);
-            }
-        });
-    }
 
 });
 function loadPageServices(page) {

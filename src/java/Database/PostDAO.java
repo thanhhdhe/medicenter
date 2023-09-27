@@ -28,11 +28,46 @@ public class PostDAO extends MyDAO {
                 String content = rs.getString(3);
                 String briefInfo = rs.getString(4);
                 String thumbnail = rs.getString(5);
-                int authorID = rs.getInt(6);
-                int serviceID = rs.getInt(7);
-                Date createdDate = rs.getDate(8);
-                String categoryPost = rs.getString(9);
-                Post post = new Post(postID, title, content, briefInfo, thumbnail, authorID, serviceID, createdDate, categoryPost);
+                int count = rs.getInt(6);
+                int authorID = rs.getInt(7);
+                int serviceID = rs.getInt(8);
+                Date createdDate = rs.getDate(9);
+                String categoryPost = rs.getString(10);
+                Post post = new Post(postID, title, content, briefInfo, thumbnail, count, authorID, serviceID, createdDate, categoryPost);
+                postList.add(post);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return postList;
+    }
+
+    public List<Post> get3HotestPost() {
+        List<Post> postList = new ArrayList<>();
+        xSql = "SELECT *\n"
+                + "FROM\n"
+                + "    Posts\n"
+                + "ORDER BY\n"
+                + "    Counts DESC\n"
+                + "OFFSET 1 ROWS \n"
+                + "FETCH NEXT 3 ROWS ONLY; ";
+        try {
+            ps = con.prepareStatement(xSql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int postID = rs.getInt(1);
+                String title = rs.getString(2);
+                String content = rs.getString(3);
+                String briefInfo = rs.getString(4);
+                String thumbnail = rs.getString(5);
+                int count = rs.getInt(6);
+                int authorID = rs.getInt(7);
+                int serviceID = rs.getInt(8);
+                Date createdDate = rs.getDate(9);
+                String categoryPost = rs.getString(10);
+                Post post = new Post(postID, title, content, briefInfo, thumbnail, count, authorID, serviceID, createdDate, categoryPost);
                 postList.add(post);
             }
             rs.close();
@@ -61,11 +96,12 @@ public class PostDAO extends MyDAO {
                 String content = rs.getString(3);
                 String briefInfo = rs.getString(4);
                 String thumbnail = rs.getString(5);
-                int authorID = rs.getInt(6);
-                int serviceID = rs.getInt(7);
-                Date createdDate = rs.getDate(8);
-                String categoryPost = rs.getString(9);
-                Post post = new Post(postID, title, content, briefInfo, thumbnail, authorID, serviceID, createdDate, categoryPost);
+                int count = rs.getInt(6);
+                int authorID = rs.getInt(7);
+                int serviceID = rs.getInt(8);
+                Date createdDate = rs.getDate(9);
+                String categoryPost = rs.getString(10);
+                Post post= new Post(postID, title, content, briefInfo, thumbnail, count, authorID, serviceID, createdDate, categoryPost);
                 postList.add(post);
             }
             rs.close();
@@ -96,11 +132,12 @@ public class PostDAO extends MyDAO {
                 String content = rs.getString(3);
                 String briefInfo = rs.getString(4);
                 String thumbnail = rs.getString(5);
-                int authorID = rs.getInt(6);
-                int serviceID = rs.getInt(7);
-                Date createdDate = rs.getDate(8);
-                String categoryPost = rs.getString(9);
-                Post post = new Post(postID, title, content, briefInfo, thumbnail, authorID, serviceID, createdDate, categoryPost);
+                int count = rs.getInt(6);
+                int authorID = rs.getInt(7);
+                int serviceID = rs.getInt(8);
+                Date createdDate = rs.getDate(9);
+                String categoryPost = rs.getString(10);
+                Post post= new Post(postID, title, content, briefInfo, thumbnail, count, authorID, serviceID, createdDate, categoryPost);
                 postList.add(post);
             }
             rs.close();
@@ -132,11 +169,12 @@ public class PostDAO extends MyDAO {
                 String content = rs.getString(3);
                 String briefInfo = rs.getString(4);
                 String thumbnail = rs.getString(5);
-                int authorID = rs.getInt(6);
-                int serviceID = rs.getInt(7);
-                Date createdDate = rs.getDate(8);
-                String categoryPost = rs.getString(9);
-                Post post = new Post(postID, title, content, briefInfo, thumbnail, authorID, serviceID, createdDate, categoryPost);
+                int count = rs.getInt(6);
+                int authorID = rs.getInt(7);
+                int serviceID = rs.getInt(8);
+                Date createdDate = rs.getDate(9);
+                String categoryPost = rs.getString(10);
+                Post post= new Post(postID, title, content, briefInfo, thumbnail, count, authorID, serviceID, createdDate, categoryPost);
                 postList.add(post);
             }
             rs.close();
@@ -160,11 +198,41 @@ public class PostDAO extends MyDAO {
                 String content = rs.getString(3);
                 String briefInfo = rs.getString(4);
                 String thumbnail = rs.getString(5);
-                int authorID = rs.getInt(6);
-                int serviceID = rs.getInt(7);
-                Date createdDate = rs.getDate(8);
-                String categoryPost = rs.getString(9);
-                post = new Post(postID, title, content, briefInfo, thumbnail, authorID, serviceID, createdDate, categoryPost);
+                int count = rs.getInt(6);
+                int authorID = rs.getInt(7);
+                int serviceID = rs.getInt(8);
+                Date createdDate = rs.getDate(9);
+                String categoryPost = rs.getString(10);
+                post= new Post(postID, title, content, briefInfo, thumbnail, count, authorID, serviceID, createdDate, categoryPost);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return post;
+    }
+
+    public Post getHotestPost() {
+        Post post = null;
+        xSql = "SELECT TOP 1 *\n"
+                + "FROM Posts\n"
+                + "ORDER BY Counts DESC;";
+        try {
+            ps = con.prepareStatement(xSql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                int postID = rs.getInt(1);
+                String title = rs.getString(2);
+                String content = rs.getString(3);
+                String briefInfo = rs.getString(4);
+                String thumbnail = rs.getString(5);
+                int count = rs.getInt(6);
+                int authorID = rs.getInt(7);
+                int serviceID = rs.getInt(8);
+                Date createdDate = rs.getDate(9);
+                String categoryPost = rs.getString(10);
+                post = new Post(postID, title, content, briefInfo, thumbnail, count, authorID, serviceID, createdDate, categoryPost);
             }
             rs.close();
             ps.close();
@@ -175,7 +243,7 @@ public class PostDAO extends MyDAO {
     }
 
     public void insert(Post post) {
-        xSql = "INSERT INTO Posts(Title, Content, BriefInfo, Thumbnail, AuthorID, ServiceID, CreatedDate, CategoryPost) \n"
+        xSql = "INSERT INTO Posts(Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost) \n"
                 + "     VALUES (? ,? ,? ,? ,? ,? ,?,?)";
         try {
             ps = con.prepareStatement(xSql);
@@ -183,10 +251,11 @@ public class PostDAO extends MyDAO {
             ps.setString(2, post.getContent());
             ps.setString(3, post.getBriefInfo());
             ps.setString(4, post.getThumbnail());
-            ps.setInt(5, post.getAuthorID());
-            ps.setInt(6, post.getServiceID());
-            ps.setDate(7, post.getCreatedDate());
-            ps.setString(8, post.getCategoryPost());
+            ps.setInt(5, post.getCount());
+            ps.setInt(6, post.getAuthorID());
+            ps.setInt(7, post.getServiceID());
+            ps.setDate(8, post.getCreatedDate());
+            ps.setString(9, post.getCategoryPost());
             ps.executeUpdate();
             ps.close();
         } catch (Exception e) {
@@ -324,6 +393,30 @@ public class PostDAO extends MyDAO {
         } catch (Exception e) {
         }
         return avatar;
+    }
+        public List<Post> getPostListByUser(int authourID) {
+        xSql = "select * from Posts where p.AuthorID=?";
+        List<Post> postList = new ArrayList<Post>();
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, authourID);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int postID = rs.getInt(1);
+                String title = rs.getString(2);
+                String content = rs.getString(3);
+                String briefInfo = rs.getString(3);
+                String thumbnail = rs.getString(4);
+                int authorID = rs.getInt(5);
+                int serviceID = rs.getInt(6);
+                Date createdDate = rs.getDate(7);
+                String categoryPost = rs.getString(8);
+                Post post = new Post(postID, title, content, briefInfo, thumbnail, authorID, serviceID, createdDate, categoryPost);
+                postList.add(post);
+            }
+        } catch (Exception e) {
+        }
+        return postList;
     }
 
     public static void main(String[] args) {

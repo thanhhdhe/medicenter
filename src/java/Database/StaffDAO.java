@@ -41,6 +41,35 @@ public class StaffDAO extends MyDAO {
         return staffList;
     }
 
+    public List<Staff> getDoctorByServices(String id) {
+        List<Staff> doctorList = new ArrayList<>();
+        xSql = "select s.StaffID, s.StaffName, s.Email, s.Email, s.Password, s.FullName,s.Gender, s.PhoneNumber, s.ProfileImage, s.StaffRole\n"
+                + "		   from Staff s inner join ServiceStaff ss on s.StaffID = ss.StaffID where s.StaffRole = 'doctor' AND ServiceID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, id);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int staffID = rs.getInt("StaffID");
+                String staffName = rs.getString("StaffName");
+                String password = rs.getString("Password");
+                String email = rs.getString("Email");
+                String fullName = rs.getString("FullName");
+                String gender = rs.getString("Gender");
+                String phoneNumber = rs.getString("PhoneNumber");
+                String profileImage = rs.getString("ProfileImage");
+                String role = rs.getString("StaffRole");
+                Staff staff = new Staff(staffID,staffName, password, email, fullName, gender, phoneNumber, profileImage, role);
+                doctorList.add(staff);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return doctorList;
+    }
+
     public List<Staff> getStaffsByRole(String staffRole) {
         List<Staff> staffList = new ArrayList<>();
         xSql = "SELECT *  FROM [dbo].[Staff] where StaffRole = ?";
@@ -68,7 +97,7 @@ public class StaffDAO extends MyDAO {
         }
         return staffList;
     }
-    
+
     public Staff getStaffByStaffId(int staffID) {
         Staff staff = null;
         xSql = "SELECT *  FROM [dbo].[Staff] where StaffID = ?";
@@ -97,9 +126,10 @@ public class StaffDAO extends MyDAO {
 
     public static void main(String[] args) {
         StaffDAO staffDAO = new StaffDAO();
-        List<Staff> staffList = staffDAO.getStaffsByRole("doctor");
+        List<Staff> staffList = staffDAO.getDoctorByServices("3");
         for (Staff staff : staffList) {
-            System.out.println(staff.getStaffID());
+            System.out.println(staff.getFullName());
         }
+        
     }
 }

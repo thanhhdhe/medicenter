@@ -21,12 +21,12 @@
         <servlet-class>controller.RegisterController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>PostController</servlet-name>
-        <servlet-class>controller.PostController</servlet-class>
+        <servlet-name>BlogController</servlet-name>
+        <servlet-class>controller.BlogController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>PostDetailController</servlet-name>
-        <servlet-class>controller.PostDetailController</servlet-class>
+        <servlet-name>BlogDetailController</servlet-name>
+        <servlet-class>controller.BlogDetailController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ActivateAccount</servlet-name>
@@ -77,12 +77,12 @@
         <url-pattern>/resetpassword</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>PostController</servlet-name>
-        <url-pattern>/postPage</url-pattern>
+        <servlet-name>BlogController</servlet-name>
+        <url-pattern>/blogPage</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>PostDetailController</servlet-name>
-        <url-pattern>/postDetail</url-pattern>
+        <servlet-name>BlogDetailController</servlet-name>
+        <url-pattern>/blogDetail</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>RegisterController</servlet-name>

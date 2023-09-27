@@ -12,12 +12,11 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/resources/css/services-style.css</file>
-            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/view/service-manage.jsp</file>
-            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/src/java/Database/ServiceDAO.java</file>
-            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/view/service-list.jsp</file>
-            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/src/java/controller/ServiceController.java</file>
-            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/resources/js/service-manage-script.js</file>
+            <file>file:/D:/New%20folder/swp391-children-care/web/resources/js/blog-list-script.js</file>
+            <file>file:/D:/New%20folder/swp391-children-care/web/view/blog-list.jsp</file>
+            <file>file:/D:/New%20folder/swp391-children-care/src/java/controller/BlogDetailController.java</file>
+            <file>file:/D:/New%20folder/swp391-children-care/src/java/controller/BlogController.java</file>
+            <file>file:/D:/New%20folder/swp391-children-care/web/view/blog-detail.jsp</file>
         </group>
     </open-files>
 </project-private>

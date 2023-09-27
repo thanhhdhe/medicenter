@@ -39,7 +39,7 @@
                         </ul>
                     </li>
                     <li><a class="nav-link scrollto" href="#doctors">Doctors</a></li>
-                    <li class="dropdown"><a href="/ChildrenCare/postPage?event=post-list"><span>Blog</span> <i class="bi bi-chevron-down"></i></a>
+                    <li class="dropdown"><a href="/ChildrenCare/blogPage?event=blog-list"><span>Blog</span> <i class="bi bi-chevron-down"></i></a>
                         <ul>
                             <li><a href="#">Drop Down 1</a></li>
                             <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i class="bi bi-chevron-right"></i></a>
@@ -67,7 +67,7 @@
             <div class="dropdown">
                 <a href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                     <div class="appointment-btn scrollto d-flex align-items-center p-1 pe-2">
-                        <img class="object-contain rounded-circle" style="width: 40px" src="<%=curUser.getProfileImage()%>" alt=""/>
+                        <img class="rounded-circle" style="object-fit: cover;object-position: top;overflow: hidden;width: 40px;height: 40px;" src="<%=curUser.getProfileImage()%>" alt=""/>
                         <p class="m-0 ms-1">Hi, <%=curUser.getFirstName()%></p>
 
 
@@ -86,11 +86,22 @@
                     <%}%>
                 </ul>
             </div>
+                </div>
+    </header>
+    <!-- End Header -->
+    <body>
+        
+        <jsp:include page="../login.jsp"/>
+        <jsp:include page="../changePassword.jsp"/>
+        <jsp:include page="../register.jsp"/>
+        <jsp:include page="../profile.jsp"/>
+
+    </body>
 
             <%}else{%>
             <a onclick="showRegisterPopup()" id="register"class="appointment-btn scrollto"><span class="d-none d-md-inline">Register Now</a>
             <a onclick="showLoginPopup()" id="login"class="appointment-btn scrollto"><span class="d-none d-md-inline">Login</a>
-            <%}%>
+            
         </div>
     </header>
     <!-- End Header -->
@@ -99,7 +110,8 @@
         <jsp:include page="../login.jsp"/>
         <jsp:include page="../changePassword.jsp"/>
         <jsp:include page="../register.jsp"/>
-        <%--<jsp:include page="../profile.jsp"/>--%>
+        
 
     </body>
+    <%}%>
 </html>
