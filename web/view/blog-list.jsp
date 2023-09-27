@@ -56,7 +56,8 @@
                                 <option value="${c}">${c}</option>
                             </c:forEach>
                         </select>
-
+                        <br>
+                        <a href="service?event=to-contact-link" class="mt-3 ms-2">Contact Us</a>
                 </div>
             </div>
         </div>
