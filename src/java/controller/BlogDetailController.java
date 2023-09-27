@@ -86,14 +86,6 @@ public class BlogDetailController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
-            String txtSearch = request.getParameter("postTitle");
-//            String txtCategory= request.getParameter("postCategory");
-            request.setAttribute("postTitle", txtSearch);
-            //            request.setAttribute(, out);
-            request.getRequestDispatcher("/blogPage?event=blog-list").forward(request, response);
-        }
     }
 
     /**
