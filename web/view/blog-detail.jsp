@@ -25,8 +25,8 @@
     <body>
         <jsp:include page="./layout/Header.jsp" />
         <!-- Blog Start -->
-        <div class="container py-5">
-            <div class="row g-5">
+        <div class="container py-5" id="blog-list">
+            <div class="row g-5" >
                 <div class="col-lg-8">
                     <!-- Blog Detail Start -->
                     <div class="mb-5">
@@ -48,35 +48,35 @@
                     </div>
                     <!-- Blog Detail End -->
 
-                    <!-- Comment List Start -->
-                    <div class="mb-5">
-                        <h4 class="d-inline-block text-primary text-uppercase border-bottom border-5 mb-4">Comments</h4>
-                        <div class="d-flex mb-4">
-                            <img src="img/user.jpg" class="img-fluid rounded-circle" style="width: 45px; height: 45px;">
-                            <div class="ps-3">
-                                <h6><a href="">author</a> <small><i>date</i></small></h6>
-                                <p>comment</p>
-                                <button class="btn btn-sm btn-light">Reply</button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Comment List End -->
+                    <!--                     Comment List Start 
+                                        <div class="mb-5">
+                                            <h4 class="d-inline-block text-primary text-uppercase border-bottom border-5 mb-4">Comments</h4>
+                                            <div class="d-flex mb-4">
+                                                <img src="img/user.jpg" class="img-fluid rounded-circle" style="width: 45px; height: 45px;">
+                                                <div class="ps-3">
+                                                    <h6><a href="">author</a> <small><i>date</i></small></h6>
+                                                    <p>comment</p>
+                                                    <button class="btn btn-sm btn-light">Reply</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                         Comment List End -->
 
-                    <!-- Comment Form Start -->
-                    <div class="bg-light rounded p-5">
-                        <h4 class="d-inline-block text-primary text-uppercase border-bottom border-5 border-white mb-4">Leave a comment</h4>
-                        <form>
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <textarea class="form-control bg-white border-0" rows="5" placeholder="Comment"></textarea>
-                                </div>
-                                <div class="col-12">
-                                    <button class="btn btn-primary w-100 py-3" type="submit">Leave Your Comment</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <!-- Comment Form End -->
+                    <!--                     Comment Form Start 
+                                        <div class="bg-light rounded p-5">
+                                            <h4 class="d-inline-block text-primary text-uppercase border-bottom border-5 border-white mb-4">Leave a comment</h4>
+                                            <form>
+                                                <div class="row g-3">
+                                                    <div class="col-12">
+                                                        <textarea class="form-control bg-white border-0" rows="5" placeholder="Comment"></textarea>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <button class="btn btn-primary w-100 py-3" type="submit">Leave Your Comment</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                         Comment Form End -->
                 </div>
 
                 <!-- Sidebar Start -->
@@ -84,15 +84,15 @@
                     <!-- Category Start -->
                     <div class="mb-5">
                         <%PostDAO postDAO = new PostDAO();%>
-                        <form action="blogDetail" method="POST">
+                        <form action="blogPage">
                             <input id="post-title" type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3 search"/>
-<!--                            <select class="form-select text-primary mt-3" name="postCategory">
+                            <select class="form-select text-primary mt-3" name="postCategory">
                                 <option selected value="">Post Category</option>
                                 <%List<String> categoryPostList = postDAO.allCategoryPost();
             for (String categoryPost : categoryPostList) {%>
                                 <option value="<%=categoryPost%>"><%=categoryPost%></option>
                                 <%}%>
-                            </select>-->
+                            </select>
                         </form>
                     </div>
                     <!-- Category End -->
@@ -101,7 +101,7 @@
             </div>
         </div>
         <!-- Blog End -->
-
+        <jsp:include page="layout/footer.jsp" />
     </body>
 </html>
 

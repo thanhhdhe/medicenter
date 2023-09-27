@@ -58,12 +58,44 @@ public class BlogController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String event = request.getParameter("event");
-        if (event.equals("blog-list")) {
-            request.getRequestDispatcher("./view/blog-list.jsp").forward(request, response);
-        } else if (event.equals("blog-list-userchoose")) {
-            renderPostListByOption(request, response);
+        String postTitle;
+        try {
+            postTitle = request.getParameter("postTitle");
+            if (postTitle == null) {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            postTitle = "";
         }
+        String postCategory;
+        try {
+            postCategory = request.getParameter("postCategory");
+            if (postCategory == null || postCategory.equals("Post Category")) {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            postCategory = "";
+        }
+        int page;
+        try {
+            page = Integer.parseInt(request.getParameter("page"));
+        } catch (Exception e) {
+            page = 1;
+        }
+        PostDAO postDao = new PostDAO();
+        List<String> categoryList = postDao.allCategoryPost();
+        int numOfPage = numOfPage(postTitle, postCategory);
+        List<Post> list = getList(request, response, postTitle, postCategory, page);
+        request.setAttribute("postTitle", postTitle);
+        if (postCategory.isEmpty()) {
+            postCategory = "Post Category";
+        }
+        request.setAttribute("postCategory", postCategory);
+        request.setAttribute("categoryList", categoryList);
+//        request.setAttribute("page", page);
+        request.setAttribute("numOfPage", numOfPage);
+        request.setAttribute("list", list);
+        request.getRequestDispatcher("./view/blog-list.jsp").forward(request, response);
     }
 
     /**
@@ -77,65 +109,33 @@ public class BlogController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        processRequest(request, response);
-//        String txtSearch = request.getParameter("postTitle");
-//        request.setAttribute("postTitle", txtSearch);
-        String event = request.getParameter("event");
-        if (event.equals("blog-list")) {
-            request.getRequestDispatcher("./view/blog-list.jsp").forward(request, response);
-        } else if (event.equals("blog-list-userchoose")) {
-            renderPostListByOption(request, response);
+
+    }
+
+    protected List<Post> getList(HttpServletRequest request, HttpServletResponse response,
+            String postTitle, String postCategory, int page)
+            throws ServletException, IOException {
+        PostDAO postDAO = new PostDAO();
+        if (postCategory == null || postCategory.isEmpty()) {
+            return postDAO.getPostedPagedPostsBySearch((page - 1) * 6, 6, postTitle);
+        } else {
+            return postDAO.getSortedPagedPostsByCategory((page - 1) * 6, 6, postTitle, postCategory);
         }
     }
 
-    protected void renderPostListByOption(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        PrintWriter out = response.getWriter();
+    protected int numOfPage(String postTitle, String postCategory) {
         PostDAO postDAO = new PostDAO();
-        String postTitle = request.getParameter("postTitle");
-        String postCategory = request.getParameter("postCategory");
-        int page = Integer.parseInt(request.getParameter("page"));
-        List<Post> postList;
-        if (postCategory.isEmpty()) {
-            postList = postDAO.getPostedPagedPostsBySearch((page - 1) * 6, 6, postTitle);
-
-        } else {
-            postList = postDAO.getSortedPagedPostsByUserChoice((page - 1) * 6, 6, postTitle, postCategory);
+        if (postCategory == null) {
+            postCategory = "";
         }
-        String paginationHtml = "";
+        if (postTitle == null) {
+            postTitle = "";
+        }
         int numOfPage = postDAO.getCountOfPostsUserChoose(postTitle, postCategory) / 6;
         if (postDAO.getCountOfPostsUserChoose(postTitle, postCategory) % 6 != 0) {
             numOfPage += 1;
         }
-        for (int i = 1; i <= numOfPage; i++) {
-            paginationHtml += "<button class=\"pagination-btn ms-2 " + (i == page ? "active" : "inactive")
-                    + "\" data-page=\"" + i + "\" onclick=\"loadPagePosts(" + i + ")\">" + i + "</button>";
-        }
-        // Thêm giá trị phân trang vào header của phản hồi
-        response.addHeader("pagination", paginationHtml);
-        out.print("<div class=\"container py-5\">\n"
-                + "                        <div class=\"row g-5\">");
-        for (Post post : postList) {
-            out.print("                     <div class=\"col-xl-4 col-lg-6\">\n"
-                    + "                        <div class=\"bg-light rounded overflow-hidden\">\n"
-                    + "                            <img class=\"img-fluid w-100\" src=\"" + post.getThumbnail() + "\" alt=\"\">\n"
-                    + "                            <div class=\"p-4\">\n"
-                    + "                                 <a class=\"h3 d-block mb-3\" href=\"/ChildrenCare/blogDetail?ID=" + post.getPostID() + "\">" + post.getTitle() + "</a>\n"
-                    + "                                <p class=\"m-0\">" + post.getBriefInfo() + "</p>\n"
-                    + "                            </div>\n"
-                    + "                            <div class=\"d-flex justify-content-between border-top p-4\">\n"
-                    + "                                <div class=\"d-flex align-items-center\">\n"
-                            + "                                           <img class=\"rounded-circle me-2 avatar\" src=\""+postDAO.getAvatarByUserID(post.getAuthorID())+"\" id=\"avatar\" alt=\"\">\n" 
-                    + "                                    <small>" + postDAO.getNameByUserID(post.getAuthorID()) + "</small>\n"
-                    + "                                </div>\n"
-                    + "                            </div>\n"
-                    + "                        </div>\n"
-                    + "                    </div>");
-        }
-        out.print("</div>\n"
-                + "                    </div>");
-        out.flush();
-        out.close();
+        return numOfPage;
     }
 
     /**
