@@ -113,8 +113,10 @@
                     if (i < firstDayOfWeek || dayCount > daysInMonth) {
                         html += '<td><p class=empty></td>';
                     } else {
-                        // Check whether dayCount is working day or not
-                        if (Workday.includes(dayCount) && (dayCount >= currentDate.getDate() || currentMonth > currentDate.getMonth())) {
+                        // Check whether day in the past or in working day or not
+                        if (currentDate.getHours() > 16 && currentDate.getDate() === dayCount && currentDate.getMonth() === selectedMonth && currentDate.getYear() === currentYear) {
+                            html += "<td><p title='This date is not available for booking' class=" + not_work + ">" + dayCount + "</p></td>";
+                        } else if (Workday.includes(dayCount) && (dayCount >= currentDate.getDate() || currentMonth > currentDate.getMonth())) {
                             // Check whether dayCount is in the list of day that full
                             if (fullDay.includes(dayCount)) {
                                 html += "<td><p title='This date is fully booked' class=" + full + ">" + dayCount + "</p></td>";
@@ -175,7 +177,7 @@
                 const xhr = new XMLHttpRequest();
                 const serviceID = <%=service.getServiceID()%>;
                 const staffID = <%=staffID%>;
-                const url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&serviceID=" + serviceID + "&action=checkSlot";
+                const url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=checkSlot";
 
                 xhr.open("GET", url, true);
 
@@ -284,7 +286,7 @@
                     if (workSlots.includes(timeSlots.indexOf(selectedSlotValue) + 1) && !bookedSlots.includes(timeSlots.indexOf(selectedSlotValue) + 1)
                             && Workday.includes(parseInt(selectedDateValue, 10)) && !fullDay.includes(parseInt(selectedDateValue, 10))) {
                         // Send date and time slot information to the servlet ...
-                        const url = "ConservationContact?selectedDate=" + selectedDateValue + "&selectedSlot=" + (timeSlots.indexOf(selectedSlotValue) + 1);
+                        const url = "ConservationContact?selectedDate=" + selectedDateValue + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear +"&selectedSlot=" + (timeSlots.indexOf(selectedSlotValue) + 1) + "&serviceID=" + <%=service.getServiceID()%>;
                         window.location.href = url;
                     }
                 }
@@ -303,7 +305,7 @@
                 if (month !== (currentDate.getMonth() + 1) && month !== (currentDate.getMonth() + 2)) {
                     return;
                 }
-
+                
                 // Set the right property of the variable
                 if (month === 13) {
                     month = 1;
@@ -327,32 +329,32 @@
                 daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
                 firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
 
-                // 
+                // Check the condition to enable previous or next button
                 if (month === (currentDate.getMonth() + 1)) {
                     document.getElementById("previousMonth").disabled = true;
                     document.getElementById("nextMonth").disabled = false;
 
-                    // remove the event listener
+                    // remove the event listener of the previous month button
                     document.getElementById("previousMonth").removeEventListener("click", function () {
-                        changeMonth(month + 1);
+                        changeMonth(month - 1);
                     });
 
+                    // add the event listener of the next month button
                     document.getElementById("nextMonth").addEventListener("click", function () {
-                        // Increase the month
                         changeMonth(month + 1);
                     });
                 } else if (month === (currentDate.getMonth() + 2)) {
                     document.getElementById("previousMonth").disabled = false;
                     document.getElementById("nextMonth").disabled = true;
 
-                    // remove the event listener
+                    // remove the event listener of next month button
                     document.getElementById("nextMonth").removeEventListener("click", function () {
-                        changeMonth(month - 1);
+                        changeMonth(month + 1);
                     });
 
+                    // add the event listener of previous month button
                     document.getElementById("previousMonth").addEventListener("click", function () {
-                        // Decrease the month
-                        changeMonth(selectedMonth - 1);
+                        changeMonth(month - 1);
                     });
                 }
 
@@ -360,7 +362,7 @@
                 const xhr = new XMLHttpRequest();
                 const serviceID = <%=service.getServiceID()%>;
                 const staffID = <%=staffID%>;
-                const url = "reservationdetailcontroller?selectedDate=null&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&serviceID=" + serviceID + "&action=changeMonth";
+                const url = "reservationdetailcontroller?selectedDate=null&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=changeMonth";
 
                 xhr.open("GET", url, true);
 

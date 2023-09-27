@@ -43,16 +43,15 @@ public class ReservationDAO extends MyDAO {
         return list;
     }
 
-    public List<Reservation> getSpecificReservation(String staffID, String date, String month, String year, String serviceID) {
+    public List<Reservation> getSpecificReservation(String staffID, String date, String month, String year) {
         List<Reservation> list = new ArrayList<>();
-        xSql = "SELECT * from [dbo].[Reservations] where StaffID = ? and DAY(ReservationDate) = ? and MONTH(ReservationDate) = ? and YEAR(ReservationDate) = ? and ServiceID = ?";
+        xSql = "SELECT * from [dbo].[Reservations] where StaffID = ? and DAY(ReservationDate) = ? and MONTH(ReservationDate) = ? and YEAR(ReservationDate) = ?";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, staffID);
             ps.setString(2, date);
             ps.setString(3, month);
             ps.setString(4, year);
-            ps.setString(5, serviceID);
             rs = ps.executeQuery();
             while (rs.next()) {
                 int ReservationID = rs.getInt("ReservationID");

@@ -32,18 +32,17 @@ public class ReservationDetailController extends HttpServlet {
         String selectedMonth = (String) request.getParameter("selectedMonth");
         String selectedYear = (String) request.getParameter("selectedYear");
         String staffID = (String) request.getParameter("staffID");
-        String serviceID = (String) request.getParameter("serviceID");
         String action = (String) request.getParameter("action");
 
         if (action.equals("checkSlot")) {
-            checkSlot(selectedDate, selectedMonth, selectedYear, staffID, serviceID, request, response);
+            checkSlot(selectedDate, selectedMonth, selectedYear, staffID, request, response);
         } else if (action.equals("changeMonth")) {
-            changeMonth(selectedMonth, selectedYear, staffID, serviceID, request, response);
+            changeMonth(selectedMonth, selectedYear, staffID, request, response);
         }
 
     }
 
-    private void changeMonth(String selectedMonth, String selectedYear, String staffID, String serviceID, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void changeMonth(String selectedMonth, String selectedYear, String staffID, HttpServletRequest request, HttpServletResponse response) throws IOException {
         StaffScheduleDAO ssd = new StaffScheduleDAO();
         List<Integer> Workday = ssd.getWorkDay(staffID, selectedMonth, selectedYear);
         List<Integer> fullDay = ssd.getListDayFullSlot(staffID, selectedMonth, selectedYear);
@@ -78,7 +77,7 @@ public class ReservationDetailController extends HttpServlet {
         response.getWriter().write(result);
     }
 
-    private void checkSlot(String selectedDate, String selectedMonth, String selectedYear, String staffID, String serviceID, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void checkSlot(String selectedDate, String selectedMonth, String selectedYear, String staffID, HttpServletRequest request, HttpServletResponse response) throws IOException {
         StaffScheduleDAO ssd = new StaffScheduleDAO();
         // Get the data of the work slots
         List<Integer> workSlots = ssd.getWorkSlots(selectedDate, selectedMonth, selectedYear, staffID);
@@ -87,7 +86,7 @@ public class ReservationDetailController extends HttpServlet {
         // This is slot that booked
         List<Integer> bookedSlots = new ArrayList<>();
 
-        for (Reservation r : rd.getSpecificReservation(staffID, selectedDate, selectedMonth, selectedYear, serviceID)) {
+        for (Reservation r : rd.getSpecificReservation(staffID, selectedDate, selectedMonth, selectedYear)) {
             // Check if the reservation of the slot is not cancel
             if (!r.getStatus().equals("cancel")) {
                 bookedSlots.add(r.getReservationSlot());
