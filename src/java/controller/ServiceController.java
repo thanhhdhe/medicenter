@@ -110,6 +110,12 @@ public class ServiceController extends HttpServlet {
             case "to-detail-manage":
                 toDetailManage(request, response);
                 break;
+            case "to-contact-link":
+                request.getRequestDispatcher("./view/contact.jsp").forward(request, response);
+                break;
+            case "onoff-status":
+                onOffStatus(request, response);
+                break;
             default:
                 break;
         }
@@ -273,7 +279,7 @@ public class ServiceController extends HttpServlet {
                 out.print(" <button class=\"button-icon me-2 showhide show-service-button\" data-service-id=\"" + service.getServiceID() + "\" onclick=\"handleUpdate()\"  ><img src=\"resources/img/icon/visual.png\" alt=\"alt\"/></button> ");
             }
 
-            out.print(" <button class=\"button-icon me-2\"><a href=\"service?event=detail&id="+service.getServiceID()+"\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\"/></a></button>\n" +
+            out.print(" <button class=\"button-icon me-2\"><a href=\"service?event=to-detail-manage&id="+service.getServiceID()+"\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\"/></a></button>\n" +
 "                                <button class=\"button-icon\"><a href=\"service?event=edit&id="+service.getServiceID()+"\"><img src=\"resources/img/icon/pen.png\" alt=\"alt\"/></a></button>"
                     + "                            </div> </div>"
                     + "                        </div>\n"
@@ -469,6 +475,16 @@ public class ServiceController extends HttpServlet {
             serviceDAO.insert(newService);
             response.sendRedirect("service?event=manage");
         }
+    }
+    
+    protected void onOffStatus(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String id = request.getParameter("id");
+        ServiceDAO serviceDAO = new ServiceDAO();
+        Service service = serviceDAO.getServiceByID(id);
+        service.setStatus(!service.getStatus());
+        serviceDAO.update(service);
+        request.getRequestDispatcher("service?event=to-detail-manage&id="+id).forward(request, response);
     }
 
     /**

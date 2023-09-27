@@ -35,7 +35,7 @@
         <div class="d-flex justify-content-center mt-5">
             <div class="container row mt-5 mb-4">
                 <div class="col-md-3">
-                    <div class="card p-3 mt-3">
+                    <div class="card p-3">
                         <input type="text" name="serviceTitle" placeholder="Search" class="form-control" />
                         <select class="form-select text-primary mt-3" name="serviceType"  class="form-select">
                             <option selected value="">Service Type</option>
@@ -52,6 +52,7 @@
                             <option value="<%=staff.getStaffID()%>"><%=staff.getFullName()%></option>
                             <%}%>
                         </select>
+                        <a href="service?event=to-contact-link" class="mt-3 ms-2">Contact Us</a>
                     </div>
                 </div>
                 <div class="col-md-9" id="service-list">
