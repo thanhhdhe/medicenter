@@ -19,6 +19,20 @@ public class FeedBack {
     private String feedbackdate;
     private int ratestar;
     private String Fstatus;
+    private String ServiceName;
+    
+    //contructor lay them ServiceName
+    public FeedBack(int feedbackID, int userID, int medicalID, String content, String feedbackdate, int ratestar, String Fstatus, String ServiceName) {
+        this.feedbackID = feedbackID;
+        this.userID = userID;
+        this.medicalID = medicalID;
+        this.content = content;
+        this.feedbackdate = feedbackdate;
+        this.ratestar = ratestar;
+        this.Fstatus = Fstatus;
+        this.ServiceName = ServiceName;
+    }
+    
 
     public String getFstatus() {
         return Fstatus;
