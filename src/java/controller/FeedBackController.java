@@ -47,48 +47,48 @@ public class FeedBackController extends HttpServlet {
         UserDAO userdao = new UserDAO();
         User Arole = userdao.getUser(role);
         // check login
-        if(Arole == null){
+        if (Arole == null) {
             out.println("<html><head><title>Login Required</title>");
-                        out.println("<style>");
-                        out.println("  .overlay {");
-                        out.println("    position: fixed;");
-                        out.println("    top: 0;");
-                        out.println("    left: 0;");
-                        out.println("    width: 100%;");
-                        out.println("    height: 100%;");
-                        out.println("    background-color: rgb(124 177 167 / 50%);");
-                        out.println("    display: flex;");
-                        out.println("    justify-content: center;");
-                        out.println("    align-items: center;");
-                        out.println("    z-index: 1;");
-                        out.println("  }");
-                        out.println("  .popup {");
-                        out.println("    background-color: white;border-radius: 5px;");
-                        out.println("    padding: 20px;");
-                        out.println("    text-align: center;width: 300px;height: 150px;");
-                        out.println("    z-index: 2;");
-                        out.println("  }");
-                        out.println("</style>");
-                        out.println("</head><body>");
-                        out.println("<div class='overlay'>");
-                        out.println("  <div class='popup'>");
-                        out.println("    <h2 style=\"color: red\">Login Required</h2>");
-                        out.println("    <p>You must log in to access this page.</p>");
-                        out.println("    <button style=\"padding: 10px;"
-                                + "background: #0089ff;"
-                                + "color: white;"
-                                + "border: 0px;"
-                                + "border-radius: 5px;\" onclick='closePopup()'>Cancel</button>");
-                        out.println("  </div>");
-                        out.println("</div>");
-                        out.println("<script>");
-                        out.println("  function closePopup() {");
-                        out.println("    var overlay = document.querySelector('.overlay');");
-                        out.println("    overlay.style.display = 'none';");
-                        out.println("    window.location.href = 'home';");
-                        out.println("  }");
-                        out.println("</script>");
-                        out.println("</body></html>");
+            out.println("<style>");
+            out.println("  .overlay {");
+            out.println("    position: fixed;");
+            out.println("    top: 0;");
+            out.println("    left: 0;");
+            out.println("    width: 100%;");
+            out.println("    height: 100%;");
+            out.println("    background-color: rgb(124 177 167 / 50%);");
+            out.println("    display: flex;");
+            out.println("    justify-content: center;");
+            out.println("    align-items: center;");
+            out.println("    z-index: 1;");
+            out.println("  }");
+            out.println("  .popup {");
+            out.println("    background-color: white;border-radius: 5px;");
+            out.println("    padding: 20px;");
+            out.println("    text-align: center;width: 300px;height: 150px;");
+            out.println("    z-index: 2;");
+            out.println("  }");
+            out.println("</style>");
+            out.println("</head><body>");
+            out.println("<div class='overlay'>");
+            out.println("  <div class='popup'>");
+            out.println("    <h2 style=\"color: red\">Login Required</h2>");
+            out.println("    <p>You must log in to access this page.</p>");
+            out.println("    <button style=\"padding: 10px;"
+                    + "background: #0089ff;"
+                    + "color: white;"
+                    + "border: 0px;"
+                    + "border-radius: 5px;\" onclick='closePopup()'>Cancel</button>");
+            out.println("  </div>");
+            out.println("</div>");
+            out.println("<script>");
+            out.println("  function closePopup() {");
+            out.println("    var overlay = document.querySelector('.overlay');");
+            out.println("    overlay.style.display = 'none';");
+            out.println("    window.location.href = 'home';");
+            out.println("  }");
+            out.println("</script>");
+            out.println("</body></html>");
         } else {
             String roleaccount = Arole.getRole();
             // check role of account
@@ -102,7 +102,6 @@ public class FeedBackController extends HttpServlet {
                 String event = request.getParameter("event");
                 // if event null  appear information
                 if (event == null) {
-                    //get feed back
 
                     //get total page
                     int endP = dao.getTotalFeedback();
@@ -124,12 +123,19 @@ public class FeedBackController extends HttpServlet {
                         request.setAttribute("feedbacks", feedbacks);
                         request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
                     }
-                } else if (event.equals("updatestatus")) {
+                } else if (event.equals("showdetailfeedback")) {
+                    //create feedback by id
+                    String FDid = request.getParameter("FDid");
+                    FeedBack feedback = dao.getFeedbackDetail(Integer.parseInt(FDid));
+                    request.setAttribute("feedbackdetail", feedback);
+                    request.getRequestDispatcher("/view/feedback-detail.jsp").forward(request, response);
+                } // update status
+                else if (event.equals("updatestatus")) {
                     // get infor for update
                     String Fstatus = request.getParameter("Fstatus");
                     String UID = request.getParameter("UID");
                     dao.updateStatus(Fstatus, Integer.parseInt(UID));
-                    
+
                     //fillter for status
                 } else if (event.equals("fillterstatus")) {
                     //get infor
@@ -203,8 +209,8 @@ public class FeedBackController extends HttpServlet {
                         request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
                     }
                 } // fillter for service 
-                else if(event.equals("fillterservice")){
-                     //get infor
+                else if (event.equals("fillterservice")) {
+                    //get infor
                     String Fillservice = request.getParameter("fillservice");
                     //get total page
                     int endP = dao.getTotalFeedbackFillSer(Fillservice);
@@ -239,8 +245,8 @@ public class FeedBackController extends HttpServlet {
                         request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
                     }
                 } // search
-                else if(event.equals("searchfeedback")){
-                     //get infor
+                else if (event.equals("searchfeedback")) {
+                    //get infor
                     String SearchN = request.getParameter("search");
                     //get total page
                     int endP = dao.getTotalFeedbackSearch(SearchN);
@@ -274,6 +280,126 @@ public class FeedBackController extends HttpServlet {
                         request.setAttribute("feedbacks", feedbacks);
                         request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
                     }
+                } // sort
+                else if (event.equals("sort")) {
+                    //get total page
+                    int endP = dao.getTotalFeedback();
+                    int endPage = endP / 5;
+                    //paging
+                    if (endP % 5 != 0) {
+                        endPage++; // if endP not divide by 5 so that endPage + 1
+                    }
+
+                    //get type of sort
+                    String sortby = request.getParameter("sortby");
+                    if (sortby.equals("fullname")) {
+                        String index = request.getParameter("index");
+                        if (index == null) {
+                            List<FeedBack> feedbacks = dao.getSortByName(1);
+                            // set event for paging
+                            request.setAttribute("fillevent", event);
+                            //set name of fill parameter url paging                  
+                            request.setAttribute("fillparameter", "sortby");
+                            //set fill for url paging
+                            request.setAttribute("fill", sortby);
+                            request.setAttribute("endP", endPage);
+                            request.setAttribute("feedbacks", feedbacks);
+                            request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        } else {
+                            // set event for paging
+                            request.setAttribute("fillevent", event);
+                            //set name of fill parameter url paging                  
+                            request.setAttribute("fillparameter", "sortby");
+                            //set fill for url paging
+                            request.setAttribute("fill", sortby);
+                            int page = Integer.parseInt(index);
+                            List<FeedBack> feedbacks = dao.getSortByName(page);
+                            request.setAttribute("endP", endPage);
+                            request.setAttribute("feedbacks", feedbacks);
+                            request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        }
+                    } //sort by service name 
+                    else if (sortby.equals("servicename")) {
+                        String index = request.getParameter("index");
+                        if (index == null) {
+                            List<FeedBack> feedbacks = dao.getSortByService(1);
+                            // set event for paging
+                            request.setAttribute("fillevent", event);
+                            //set name of fill parameter url paging                  
+                            request.setAttribute("fillparameter", "sortby");
+                            //set fill for url paging
+                            request.setAttribute("fill", sortby);
+                            request.setAttribute("endP", endPage);
+                            request.setAttribute("feedbacks", feedbacks);
+                            request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        } else {
+                            // set event for paging
+                            request.setAttribute("fillevent", event);
+                            //set name of fill parameter url paging                  
+                            request.setAttribute("fillparameter", "sortby");
+                            //set fill for url paging
+                            request.setAttribute("fill", sortby);
+                            int page = Integer.parseInt(index);
+                            List<FeedBack> feedbacks = dao.getSortByService(page);
+                            request.setAttribute("endP", endPage);
+                            request.setAttribute("feedbacks", feedbacks);
+                            request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        }
+                    } // sort by rate star
+                    else if (sortby.equals("ratestar")) {
+                        String index = request.getParameter("index");
+                        if (index == null) {
+                            List<FeedBack> feedbacks = dao.getSortByRate(1);
+                            // set event for paging
+                            request.setAttribute("fillevent", event);
+                            //set name of fill parameter url paging                  
+                            request.setAttribute("fillparameter", "sortby");
+                            //set fill for url paging
+                            request.setAttribute("fill", sortby);
+                            request.setAttribute("endP", endPage);
+                            request.setAttribute("feedbacks", feedbacks);
+                            request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        } else {
+                            // set event for paging
+                            request.setAttribute("fillevent", event);
+                            //set name of fill parameter url paging                  
+                            request.setAttribute("fillparameter", "sortby");
+                            //set fill for url paging
+                            request.setAttribute("fill", sortby);
+                            int page = Integer.parseInt(index);
+                            List<FeedBack> feedbacks = dao.getSortByRate(page);
+                            request.setAttribute("endP", endPage);
+                            request.setAttribute("feedbacks", feedbacks);
+                            request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        }
+                    } // sort by status
+                    else if (sortby.equals("status")) {
+                        String index = request.getParameter("index");
+                        if (index == null) {
+                            List<FeedBack> feedbacks = dao.getSortByStatus(1);
+                            // set event for paging
+                            request.setAttribute("fillevent", event);
+                            //set name of fill parameter url paging                  
+                            request.setAttribute("fillparameter", "sortby");
+                            //set fill for url paging
+                            request.setAttribute("fill", sortby);
+                            request.setAttribute("endP", endPage);
+                            request.setAttribute("feedbacks", feedbacks);
+                            request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        } else {
+                            // set event for paging
+                            request.setAttribute("fillevent", event);
+                            //set name of fill parameter url paging                  
+                            request.setAttribute("fillparameter", "sortby");
+                            //set fill for url paging
+                            request.setAttribute("fill", sortby);
+                            int page = Integer.parseInt(index);
+                            List<FeedBack> feedbacks = dao.getSortByStatus(page);
+                            request.setAttribute("endP", endPage);
+                            request.setAttribute("feedbacks", feedbacks);
+                            request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        }
+                    }
                 }
 
             } else {
@@ -285,20 +411,17 @@ public class FeedBackController extends HttpServlet {
 
                     String email = (String) session.getAttribute("email");
                     // Display a login required message as a popup overlay
-                    
-                        // Get user information
 
-                        User user = userdao.getUser(email);
-                        System.out.println(user.getEmail());
-                        // Get medical examinations awaiting feedback
-                        System.out.println(user.getUserID());
-                        FeedBackDAO dao = new FeedBackDAO();
-                        // Set the 'medical' attribute for rendering in FeedBack.jsp
-                        List<MedicalExamination> medical = dao.getMedicalExamination(user.getUserID());
-                        request.setAttribute("medical", medical);
-                        request.getRequestDispatcher("/view/FeedBack.jsp").forward(request, response);
-
-                    
+                    // Get user information
+                    User user = userdao.getUser(email);
+                    System.out.println(user.getEmail());
+                    // Get medical examinations awaiting feedback
+                    System.out.println(user.getUserID());
+                    FeedBackDAO dao = new FeedBackDAO();
+                    // Set the 'medical' attribute for rendering in FeedBack.jsp
+                    List<MedicalExamination> medical = dao.getMedicalExamination(user.getUserID());
+                    request.setAttribute("medical", medical);
+                    request.getRequestDispatcher("/view/FeedBack.jsp").forward(request, response);
 
                 } else if (action.equals("sendfeedback")) {
                     // Get user information
@@ -373,10 +496,8 @@ public class FeedBackController extends HttpServlet {
                     request.getRequestDispatcher("/view/FeedBack.jsp").forward(request, response);
 
                 }
-            } 
+            }
         }
-        
-        
 
     }
 

@@ -25,8 +25,6 @@
     </head>
     <body>
         <jsp:include page="../view/layout/Header.jsp" />
-
-
         <section style="background-color: #e1dada" >
             <!-- Fillter -->
             <div class="d-flex justify-content-center">
@@ -44,7 +42,7 @@
                                         </svg>
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><a class="dropdown-item" href="feedback">default</a></li>
+                                        <li><a class="dropdown-item" href="feedback">Default</a></li>
                                         <!-- service -->
                                         <li class="nav-item dropdown">
                                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -68,7 +66,6 @@
                                                 <li><a class="dropdown-item" href="feedback?event=fillterrate&fillrate=3">3</a></li>
                                                 <li><a class="dropdown-item" href="feedback?event=fillterrate&fillrate=4">4</a></li>
                                                 <li><a class="dropdown-item" href="feedback?event=fillterrate&fillrate=5">5</a></li>                              
-
                                             </ul>
                                         </li>
                                         <!-- status -->
@@ -83,6 +80,18 @@
                                                 <li><a class="dropdown-item" href="feedback?event=fillterstatus&fillstatus=Unresolved">Unresolved</a></li>
                                                 <li><a class="dropdown-item" href="feedback?event=fillterstatus&fillstatus=Resolved">Resolved</a></li>                              
 
+                                            </ul>
+                                        </li>
+                                        <!-- status -->
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Sort
+                                            </a>
+                                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <li><a class="dropdown-item" href="feedback?event=sort&sortby=fullname">Sort by Full Name</a></li>
+                                                <li><a class="dropdown-item" href="feedback?event=sort&sortby=servicename">Sort by Service Name</a></li>                              
+                                                <li><a class="dropdown-item" href="feedback?event=sort&sortby=ratestar">Sort by rate star</a></li>
+                                                <li><a class="dropdown-item" href="feedback?event=sort&sortby=status">Sort by status</a></li>                                                                             
                                             </ul>
                                         </li>
                                     </ul>
@@ -147,6 +156,9 @@
                                                             <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${feedback.getFeedbackID()})">Resolved</a></li>
                                                             <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${feedback.getFeedbackID()})">Reviewed</a></li>
                                                         </ul>
+                                                        <a href="feedback?event=showdetailfeedback&FDid=${feedback.getFeedbackID()}">
+                                                            <img style="width: 24px" src="./resources/img/icon/detail.png" alt="alt"/>
+                                                        </a>
                                                     </div>
 
                                                 </div>
@@ -156,7 +168,7 @@
                                                     </c:forEach>
 
                                                 <p class="mb-0">
-                                                    ${feedback.getContent()}
+                                                    ${feedback.getContentSub()}
                                                 </p>
                                             </div>
 
@@ -207,27 +219,25 @@
             crossorigin="anonymous"
         ></script>
         <script>
-    function changestatus(a, uid) {
-        var text = a.textContent;
-        var textchange = document.getElementById("statusBadge-"+uid);
-        textchange.textContent = text;
+            function changestatus(a, uid) {
+                var text = a.textContent;
+                var textchange = document.getElementById("statusBadge-"+uid);
+                textchange.textContent = text;
 
-        // Gửi yêu cầu Ajax đến servlet
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "feedback?event=updatestatus&Fstatus=" + text + "&UID=" + uid, true);
+                // Gửi yêu cầu Ajax đến servlet
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "feedback?event=updatestatus&Fstatus=" + text + "&UID=" + uid, true);
 
-        xhr.onload = function () {
+                xhr.onload = function () {
 
-        };
+                };
 
-        xhr.onerror = function () {
+                xhr.onerror = function () {
 
-        };
+                };
 
-        xhr.send();
-    }
-
-
+                xhr.send();
+            }
         </script>
     </body>
 </html>
