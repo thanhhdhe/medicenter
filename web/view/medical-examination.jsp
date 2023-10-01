@@ -11,7 +11,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>DASHMIN - Bootstrap Admin Template</title>
+        <title>Medical examination</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <meta content="" name="keywords" />
         <meta content="" name="description" />
@@ -85,7 +85,7 @@
                     </div>
                     <div class="navbar-nav w-100  text-light">
                         <a href="staff?event=send-to-medical-examination" class="nav-item nav-link active"
-                           ><i class="fa fa-th me-2"></i>Medical examination</a
+                           ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
                 </nav>
@@ -170,17 +170,44 @@
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
                     <div
-                        class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0"
+                        class="medical-records row vh-100 bg-white rounded align-items-center justify-content-center mx-0"
                         >
-                        <div class="col-md-6 text-center">
-                            <h3>This is blank page</h3>
+                        <div class="col-md-12 p-0">
+                            <div class="mb-4 px-4 py-3 border-bottom">
+                                <h4>MEDICAL RECORDS</h4>
+                            </div>
+                            <div class="table-responsive p-4">
+                                <table class="table">
+                                    <thead class="text-light" style="background: #1977cc;">
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Patient Name</th>
+                                            <th scope="col">Age</th>
+                                            <th scope="col">Service</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Disease</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td>John</td>
+                                            <td>Doe</td>
+                                            <td>jhon@email.com</td>
+                                            <td>USA</td>
+                                            <td>123</td>
+                                            <td>Member</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                         </div>
                     </div>
                 </div>
                 <!-- Blank End -->
 
                 <!-- Footer Start -->
-                <div class="container-fluid pt-4 px-4">
+                <div class="mt-4">
                     <jsp:include page="layout/footer.jsp" />
                 </div>
                 <!-- Footer End -->

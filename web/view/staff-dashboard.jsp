@@ -11,7 +11,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>DASHMIN - Bootstrap Admin Template</title>
+        <title>Staff dashboard</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <meta content="" name="keywords" />
         <meta content="" name="description" />
@@ -85,7 +85,7 @@
                     </div>
                     <div class="navbar-nav w-100  text-light">
                         <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
-                           ><i class="fa fa-th me-2"></i>Medical examination</a
+                           ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
                 </nav>
@@ -180,7 +180,7 @@
                 <!-- Blank End -->
 
                 <!-- Footer Start -->
-                <div class="container-fluid pt-4 px-4">
+                <div class="mt-4">
                     <jsp:include page="layout/footer.jsp" />
                 </div>
                 <!-- Footer End -->

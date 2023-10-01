@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.sql.Date;
+
 /**
  *
  * @author pc
@@ -13,22 +15,23 @@ public class MedicalExamination {
     private int MuserID;
     private int MchildrenID;
     private int MstaffID;
-    private String examinationDate;
-    private String usedServices;
+    private Date examinationDate;
+    private int  serviceID;
     private String medicalPrescription;
 
     public MedicalExamination() {
     }
 
-    public MedicalExamination(int MedicalExaminationID, int MuserID, int MchildrenID, int MstaffID, String examinationDate, String usedServices, String medicalPrescription) {
+    public MedicalExamination(int MedicalExaminationID, int MuserID, int MchildrenID, int MstaffID, Date examinationDate, int serviceID, String medicalPrescription) {
         this.MedicalExaminationID = MedicalExaminationID;
         this.MuserID = MuserID;
         this.MchildrenID = MchildrenID;
         this.MstaffID = MstaffID;
         this.examinationDate = examinationDate;
-        this.usedServices = usedServices;
+        this.serviceID = serviceID;
         this.medicalPrescription = medicalPrescription;
     }
+
 
     public int getMedicalExaminationID() {
         return MedicalExaminationID;
@@ -62,20 +65,20 @@ public class MedicalExamination {
         this.MstaffID = MstaffID;
     }
 
-    public String getExaminationDate() {
+    public Date getExaminationDate() {
         return examinationDate;
     }
 
-    public void setExaminationDate(String examinationDate) {
+    public void setExaminationDate(Date examinationDate) {
         this.examinationDate = examinationDate;
     }
 
-    public String getUsedServices() {
-        return usedServices;
+    public int getServiceID() {
+        return serviceID;
     }
 
-    public void setUsedServices(String usedServices) {
-        this.usedServices = usedServices;
+    public void setServiceID(int serviceID) {
+        this.serviceID = serviceID;
     }
 
     public String getMedicalPrescription() {

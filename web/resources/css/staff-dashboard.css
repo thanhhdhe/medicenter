@@ -287,3 +287,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     background: var(--dark);
     border-color: var(--primary);
 }
+
+
+.medical-records{
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.1);
+}
