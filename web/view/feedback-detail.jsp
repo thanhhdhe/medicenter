@@ -25,7 +25,7 @@
         <link rel="stylesheet" href="../resources/css/style.css">
     </head>
     <body>
-         <jsp:include page="../view/layout/Header.jsp" />
+        <jsp:include page="../view/layout/Header.jsp" />
         <div style="background-color: #e1dada">
             <div class="container pb-5">
                 <h1 class="mb-4">Feedback Details</h1>
@@ -42,28 +42,42 @@
                         </div>
                     </div>
 
-                    <div class="card mt-4">
+                    <div class="card mt-4 ">
                         <div class="card-header">
                             Feedback Information
                         </div>
+                        <!-- get name service  -->
+
+                        <c:set var="ser" value="${requestScope.ser}" />
                         <div class="card-body">
-                            <h5 class="card-title">Service: ${fe.getServiceName()}</h5>
-                            <c:forEach var="star" begin="1" end="${fe.getRatestar()}" step="1">
-                                <img style="width: 24px; height: 12px" src="./resources/img/icon/star.png" alt="alt"/>
-                            </c:forEach>
-                            <p class="card-text">Feedback:</p>
-                            <p class="card-text">${fe.getContent()}</p>
-                            <div style="width: 50px; height: 30px; border: solid 1px; 
-                                 display: flex; justify-content: center;
-                                 border-radius: 5px; background-color: #e1dada; color: white">
-                                <a style="text-decoration: none;" href="/ChildrenCare/feedback?action=accessfeedback">Home</a>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h5 class="card-title">Service: ${ser.getTitle()}</h5>
+                                    <c:forEach var="star" begin="1" end="${fe.getRatestar()}" step="1">
+                                        <img style="width: 24px; height: 12px" src="./resources/img/icon/star.png" alt="alt"/>
+                                    </c:forEach>
+                                    <p class="card-text">Feedback:</p>
+                                    <p class="card-text">${fe.getContent()}</p>
+                                    <div style="width: 50px; height: 30px; border: solid 1px;
+                                         display: flex; justify-content: center;
+                                         border-radius: 5px; background-color: #e1dada; color: white">
+                                        <a style="text-decoration: none;" href="/ChildrenCare/feedback?action=accessfeedback">Home</a>
+                                    </div>
+                                </div>
+
+
+                                <div style="margin-right: 100px; width: 400px;height: 300px;">
+                                    <img style="object-fit: contain; height: 100%"  src="${ser.getThumbnail()}" alt="alt"/>
+
+                                </div>
                             </div>
                             
                         </div>
                     </div>
 
+
                     <!-- Thêm hình ảnh nếu cần -->
-                    
+
                 </div>
             </div>
         </div>
@@ -78,7 +92,7 @@
             integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
             crossorigin="anonymous"
         ></script>
-        
+
 
         <!-- Thêm các tệp JS của Bootstrap 5.0.2 tại đây (nếu cần) -->
         <script src="path-to-bootstrap-js/bootstrap.bundle.min.js"></script>

@@ -141,7 +141,7 @@ public class FeedBack {
     }
 
     public String getContentSub() {
-        return content.substring(0, 5) + "...";
+        return content.substring(0, 2) + "...";
     }
 
     public void setContent(String content) {
