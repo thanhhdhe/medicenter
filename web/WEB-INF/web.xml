@@ -60,6 +60,10 @@
         <servlet-name>MyReservationController</servlet-name>
         <servlet-class>controller.MyReservationController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>StaffController</servlet-name>
+        <servlet-class>controller.StaffController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServiceController</servlet-name>
         <url-pattern>/service</url-pattern>
@@ -119,6 +123,10 @@
     <servlet-mapping>
         <servlet-name>MyReservationController</servlet-name>
         <url-pattern>/myreservation</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StaffController</servlet-name>
+        <url-pattern>/staff</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.FeedBack;
 import model.MedicalExamination;
+import org.apache.jasper.tagplugins.jstl.core.ForEach;
 
 /**
  *
@@ -34,8 +35,27 @@ public class FeedBackDAO extends MyDAO {
     }
 
     //get total fillter
-    public int getTotalFeedbackFStatus(String Fill) {
-        xSql = "select COUNT(*) from Feedbacks where FStatus = ?;";
+    public int getTotalFeedbackFill(String Fill, String Fillter) {
+        xSql = "select COUNT(*) from Feedbacks where " + Fillter + "= ?;";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, Fill);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+
+        }
+        return 0;
+    }
+
+    //get total service name
+    public int getTotalFeedbackFillSer(String Fill) {
+        xSql = "SELECT COUNT(*) \n"
+                + "FROM Feedbacks F\n"
+                + "INNER JOIN MedicalExaminations M ON F.MedicalExaminationID = M.MedicalExaminationID\n"
+                + "WHERE M.UsedServices = ?;";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, Fill);
@@ -64,10 +84,11 @@ public class FeedBackDAO extends MyDAO {
         return 0;
     }
 
-    public List<FeedBack> getPageFeedBackByFStatus(int index, String Fill) {
+    // fillter
+    public List<FeedBack> getPageFeedBackByFill(int index, String Fill, String Fillter) {
         List<FeedBack> feedbacks = new ArrayList<>();
         xSql = "select * from Feedbacks\n"
-                + "where FStatus = ?\n"
+                + "where " + Fillter + " = ?\n"
                 + "ORDER BY FeedbackID\n"
                 + "OFFSET ? Rows fetch next 5 rows ONLY;";
         try {
@@ -75,6 +96,188 @@ public class FeedBackDAO extends MyDAO {
             ps.setString(1, Fill);
             // set index for offser (page)
             ps.setInt(2, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
+                        rs.getString(4), rs.getString(5).substring(0, 10), rs.getInt(6),
+                        rs.getString(7)));
+            }
+        } catch (Exception e) {
+
+        }
+        return (feedbacks);
+    }
+
+    //get name service feedback
+    public String getNameServiceFeed(String MedicalExaminationID) {
+        xSql = "select UsedServices from MedicalExaminations where MedicalExaminationID = ?;";
+        try {
+            ps = con.prepareStatement(xSql);
+
+            ps.setString(1, MedicalExaminationID);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                String name = rs.getString(1);
+                return name;
+            }
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
+    //get list for fill service 
+    public List<FeedBack> getPageFeedBackByFillSer(int index, String Fill) {
+        List<FeedBack> feedbacks = new ArrayList<>();
+        xSql = "SELECT F.*, M.UsedServices\n"
+                + "FROM Feedbacks F\n"
+                + "INNER JOIN MedicalExaminations M ON F.MedicalExaminationID = M.MedicalExaminationID\n"
+                + "WHERE M.UsedServices = ?\n"
+                + "ORDER BY FeedbackID\n"
+                + "OFFSET ? Rows fetch next 5 rows ONLY;";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, Fill);
+            // set index for offser (page)
+            ps.setInt(2, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
+                        rs.getString(4), rs.getString(5).substring(0, 10), rs.getInt(6),
+                        rs.getString(7), rs.getString(8)));
+            }
+        } catch (Exception e) {
+
+        }
+        return (feedbacks);
+    }
+
+    // get list for search
+    public List<FeedBack> getPageFeedBacksSearch(String FullName, String Content, int index) {
+        List<FeedBack> feedbacks = new ArrayList<>();
+        xSql = "SELECT F.*\n"
+                + "FROM Feedbacks F\n"
+                + "INNER JOIN Users U ON F.UserID = U.UserID\n"
+                + "WHERE CONCAT(U.FirstName, ' ', U.LastName) LIKE ? OR F.Content LIKE ?\n"
+                + "ORDER BY CONCAT(U.FirstName, ' ', U.LastName), FeedbackID\n"
+                + "OFFSET ? Rows fetch next 5 rows ONLY;";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, "%" + FullName + "%");
+            ps.setString(2, "%" + Content + "%");
+            // set index for offser (page)
+            ps.setInt(3, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
+                        rs.getString(4), rs.getString(5).substring(0, 10), rs.getInt(6),
+                        rs.getString(7)));
+            }
+        } catch (Exception e) {
+
+        }
+        return (feedbacks);
+    }
+
+    // get total search
+    public int getTotalFeedbackSearch(String searchN) {
+        xSql = "SELECT COUNT(*) AS TotalCount\n"
+                + "FROM Feedbacks F\n"
+                + "INNER JOIN Users U ON F.UserID = U.UserID\n"
+                + "WHERE CONCAT(U.FirstName, ' ', U.LastName) LIKE ? OR F.Content LIKE ?;";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, "%" + searchN + "%");
+            ps.setString(2, "%" + searchN + "%");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+
+        }
+        return 0;
+    }
+
+    //get sort by full name 
+    public List<FeedBack> getSortByName(int index) {
+        List<FeedBack> feedbacks = new ArrayList<>();
+        xSql = "SELECT F.*\n"
+                + "FROM Feedbacks F\n"
+                + "INNER JOIN Users U ON F.UserID = U.UserID\n"
+                + "ORDER BY CONCAT(U.FirstName, ' ', U.LastName)\n"
+                + "OFFSET ? Rows fetch next 5 rows ONLY;";
+        try {
+            ps = con.prepareStatement(xSql);
+            // set index for offser (page)
+            ps.setInt(1, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
+                        rs.getString(4), rs.getString(5).substring(0, 10), rs.getInt(6),
+                        rs.getString(7)));
+            }
+        } catch (Exception e) {
+
+        }
+        return (feedbacks);
+    }
+
+    //get sort by  service
+    public List<FeedBack> getSortByService(int index) {
+        List<FeedBack> feedbacks = new ArrayList<>();
+        xSql = "SELECT F.*, M.UsedServices\n"
+                + "FROM Feedbacks F\n"
+                + "INNER JOIN MedicalExaminations M ON F.MedicalExaminationID = M.MedicalExaminationID\n"
+                + "Order by UsedServices\n"
+                + "OFFSET ? Rows fetch next 5 rows ONLY;";
+        try {
+            ps = con.prepareStatement(xSql);
+            // set index for offser (page)
+            ps.setInt(1, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
+                        rs.getString(4), rs.getString(5).substring(0, 10), rs.getInt(6),
+                        rs.getString(7)));
+            }
+        } catch (Exception e) {
+
+        }
+        return (feedbacks);
+    }
+
+    //get sort by rate star
+    public List<FeedBack> getSortByRate(int index) {
+        List<FeedBack> feedbacks = new ArrayList<>();
+        xSql = "select * from Feedbacks\n"
+                + "ORDER BY RatedStar\n"
+                + "OFFSET ? Rows fetch next 5 rows ONLY;";
+        try {
+            ps = con.prepareStatement(xSql);
+            // set index for offser (page)
+            ps.setInt(1, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
+                        rs.getString(4), rs.getString(5).substring(0, 10), rs.getInt(6),
+                        rs.getString(7)));
+            }
+        } catch (Exception e) {
+
+        }
+        return (feedbacks);
+    }
+
+    //get sort by status
+    public List<FeedBack> getSortByStatus(int index) {
+        List<FeedBack> feedbacks = new ArrayList<>();
+        xSql = "select * from Feedbacks\n"
+                + "ORDER BY FStatus\n"
+                + "OFFSET ? Rows fetch next 5 rows ONLY;";
+        try {
+            ps = con.prepareStatement(xSql);
+            // set index for offser (page)
+            ps.setInt(1, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
             rs = ps.executeQuery();
             while (rs.next()) {
                 feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
@@ -109,6 +312,40 @@ public class FeedBackDAO extends MyDAO {
         return (feedbacks);
     }
 
+    // get feed back detail
+    public FeedBack getFeedbackDetail(int feedbackid) {
+        xSql = "SELECT\n"
+                + "    U.FirstName AS UserFirstName,\n"
+                + "    U.LastName AS UserLastName,\n"
+                + "    U.Email AS UserEmail,\n"
+                + "    U.PhoneNumber AS UserPhoneNumber,\n"
+                + "    F.Content AS FeedbackContent,\n"
+                + "    F.FeedbackDate AS FeedbackDate,\n"
+                + "    F.RatedStar AS FeedbackRatedStar,\n"
+                + "    F.FStatus AS FeedbackStatus,\n"
+                + "    M.UsedServices AS UsedServices,\n"
+                + "    M.MedicalPrescription AS MedicalPrescription\n"
+                + "FROM Feedbacks F\n"
+                + "INNER JOIN Users U ON F.UserID = U.UserID\n"
+                + "INNER JOIN MedicalExaminations M ON F.MedicalExaminationID = M.MedicalExaminationID\n"
+                + "where FeedbackID = ?;";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, feedbackid);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                FeedBack feeback = new FeedBack(rs.getString(1)+" "+rs.getString(2), rs.getString(3), 
+                        rs.getString(4), rs.getString(5), rs.getString(6), rs.getInt(7), 
+                        rs.getString(8), rs.getString(9), rs.getString(10));
+                return feeback;
+            }
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     // update
     public void updateStatus(String status, int FID) {
         xSql = "update Feedbacks set FStatus = ? where FeedbackID = ?";
@@ -137,7 +374,7 @@ public class FeedBackDAO extends MyDAO {
             while (rs.next()) {
                 medical.add(new MedicalExamination(rs.getInt(1), rs.getInt(2),
                         rs.getInt(3), rs.getInt(4),
-                        rs.getString(5), rs.getString(6), rs.getString(7)));
+                        rs.getDate(5), rs.getInt(6), rs.getString(7)));
             }
             rs.close();
             ps.close();
@@ -149,7 +386,13 @@ public class FeedBackDAO extends MyDAO {
 
     public static void main(String[] args) {
         FeedBackDAO dao = new FeedBackDAO();
-        dao.updateStatus("Appord", 2);
+        //System.out.println(dao.getTotalFeedback());
+//        List<FeedBack> feedbacks = dao.getSortByService(1);
+          FeedBack fe = dao.getFeedbackDetail(10);
+          System.out.println(fe.getFullName());
+//        for (FeedBack f : feedbacks) {
+//            System.out.println(f.getFeedbackID());
+//        }
 
     }
 }
