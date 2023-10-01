@@ -61,6 +61,9 @@ public class StaffController extends HttpServlet {
             case "sent-to-login":
                 request.getRequestDispatcher("./view/login-staff.jsp").forward(request, response);
                 break;
+            case "send-to-medical-examination":
+                request.getRequestDispatcher("./view/medical-examination.jsp").forward(request, response);
+                break;
         }
     } 
 

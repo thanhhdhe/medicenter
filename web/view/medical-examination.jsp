@@ -84,7 +84,7 @@
                         </div>
                     </div>
                     <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
+                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link active"
                            ><i class="fa fa-th me-2"></i>Medical examination</a
                         >
                     </div>
@@ -173,7 +173,7 @@
                         class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0"
                         >
                         <div class="col-md-6 text-center">
-                            <h3>This is staff dashboard page</h3>
+                            <h3>This is blank page</h3>
                         </div>
                     </div>
                 </div>
