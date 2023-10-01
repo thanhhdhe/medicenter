@@ -42,8 +42,8 @@ public class UserDAO extends MyDAO {
             e.printStackTrace();
         }
     }
-    
-        public User getUser(String email) {
+
+    public User getUser(String email) {
 
         xSql = "select * from [dbo].[Users] where email = ?";
         try {
@@ -52,8 +52,8 @@ public class UserDAO extends MyDAO {
             rs = ps.executeQuery();
             if (rs.next()) {
                 User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
-                         rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9),
-                         rs.getString(10));
+                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9),
+                        rs.getString(10));
                 return user;
             }
             ps.close();
@@ -72,8 +72,8 @@ public class UserDAO extends MyDAO {
             rs = ps.executeQuery();
             if (rs.next()) {
                 User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
-                         rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9),
-                         rs.getString(10));
+                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9),
+                        rs.getString(10));
                 return user;
             }
             ps.close();
@@ -100,38 +100,10 @@ public class UserDAO extends MyDAO {
         return false;
     }
 
-    public User selectUser(String email) {
-        User u = null;
-        xSql = "select * from [dbo].[Users] where Email = ?";
-        try {
-            ps = con.prepareStatement(xSql);
-            ps.setString(1, email);
-
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                int userID = rs.getInt("userID");
-                String password = rs.getString("password");
-                String Email = rs.getString("email");
-                String firstName = rs.getString("firstName");
-                String lastName = rs.getString("lastName");
-                String gender = rs.getString("gender");
-                String phoneNumber = rs.getString("phoneNumber");
-                String profileImage = rs.getString("profileImage");
-                String role = rs.getString("role");
-                String address = rs.getString("address");
-                u = new User(userID, password, Email, firstName, lastName, gender, phoneNumber, profileImage, role, address);
-            }
-            ps.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return u;
-    }
-
     public void insert(User x) {
         xSql = "INSERT INTO [dbo].[Users]([Email],[FirstName],[LastName],[Password],[Gender],[Address],[PhoneNumber],[Role],[ProfileImage]) VALUES(N'"
                 + x.getEmail() + "',N'" + x.getFirstName() + "',N'" + x.getLastName() + "','" + x.getPassword() + "',N'"
-                + x.getGender() + "',N'" + x.getAddress() + "','" + x.getPhoneNumber() + "','" + x.getRole() + "','" + x.getProfileImage() +"')";
+                + x.getGender() + "',N'" + x.getAddress() + "','" + x.getPhoneNumber() + "','" + x.getRole() + "','" + x.getProfileImage() + "')";
         try {
             ps = con.prepareStatement(xSql);
             ps.executeUpdate();

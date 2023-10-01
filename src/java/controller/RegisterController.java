@@ -32,7 +32,7 @@ public class RegisterController extends HttpServlet {
         String address = request.getParameter("raddress");
         UserDAO u = new UserDAO();
 
-        if (u.selectUser(email) != null) {
+        if (u.getUser(email) != null) {
             response.getWriter().write("email existed");
             return;
         }

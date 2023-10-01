@@ -14,16 +14,20 @@
            List<Integer> fullDay = (List<Integer>) request.getAttribute("fullDay");
            Service service = (Service) request.getAttribute("service");
            Staff staff = (Staff) request.getAttribute("Staff");
-           String staffID = staff.getStaffID() + "";
+           String staffID = "";
+           if (staff != null) {
+                staffID = staff.getStaffID() + "";
+           }
         %>
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
                     <h1><%=service.getTitle()%></h1>
+                    <% if (staff != null) {%>
                     <div class="staff-info" style="display: flex;align-items: center;gap: 16px;">
                         <img style="width: 128px;height: 128px;border-radius: 50%;" src="<%=staff.getProfileImage()%>" alt="staff profile image"/>
                         <p style="margin: 0;font-weight: bold;">Staff name : <%=staff.getFullName()%> </p>
-                    </div>
+                    </div> <% } %>
                     <p>Service Details: <%=service.getServiceDetail()%></p>
                     <p>Brief Info: <%=service.getBrief()%></p>
                 </div>
@@ -85,6 +89,10 @@
             document.getElementById("nextMonth").addEventListener("click", function () {
                 // Increase the month
                 changeMonth(selectedMonth + 1);
+            });
+            // add the event listener of previous month button
+            document.getElementById("previousMonth").addEventListener("click", function () {
+                changeMonth(selectedMonth);
             });
 
             // Create a timetable for scheduling
@@ -176,8 +184,13 @@
             function fetchSlotStatus(timeSlotDiv) {
                 const xhr = new XMLHttpRequest();
                 const serviceID = <%=service.getServiceID()%>;
+            <% if (staffID != null) { %>
                 const staffID = <%=staffID%>;
                 const url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=checkSlot";
+            <% } else { %>
+                const staffID = <%=staffID%>;
+                const url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=all&action=checkSlotForService";
+            <% } %>
 
                 xhr.open("GET", url, true);
 
@@ -286,8 +299,15 @@
                     if (workSlots.includes(timeSlots.indexOf(selectedSlotValue) + 1) && !bookedSlots.includes(timeSlots.indexOf(selectedSlotValue) + 1)
                             && Workday.includes(parseInt(selectedDateValue, 10)) && !fullDay.includes(parseInt(selectedDateValue, 10))) {
                         // Send date and time slot information to the servlet ...
-                        const url = "ConservationContact?selectedDate=" + selectedDateValue + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear +"&selectedSlot=" + (timeSlots.indexOf(selectedSlotValue) + 1) + "&serviceID=" + <%=service.getServiceID()%>;
+
+                        // Send signal to servlet to save data into database
+            <% if (staffID != null) {%>
+                        const url = "ConservationContact?selectedDate=" + selectedDateValue + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&selectedSlot=" + (timeSlots.indexOf(selectedSlotValue) + 1) + "&serviceID=" + <%=service.getServiceID()%>;
                         window.location.href = url;
+            <% } else { %>
+                        const url = "ConservationContact?selectedDate=" + selectedDateValue + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&selectedSlot=" + (timeSlots.indexOf(selectedSlotValue) + 1) + "&serviceID=" + <%=service.getServiceID()%>;
+                        window.location.href = url;
+            <% } %>
                     }
                 }
             }
@@ -305,7 +325,7 @@
                 if (month !== (currentDate.getMonth() + 1) && month !== (currentDate.getMonth() + 2)) {
                     return;
                 }
-                
+
                 // Set the right property of the variable
                 if (month === 13) {
                     month = 1;
@@ -333,29 +353,9 @@
                 if (month === (currentDate.getMonth() + 1)) {
                     document.getElementById("previousMonth").disabled = true;
                     document.getElementById("nextMonth").disabled = false;
-
-                    // remove the event listener of the previous month button
-                    document.getElementById("previousMonth").removeEventListener("click", function () {
-                        changeMonth(month - 1);
-                    });
-
-                    // add the event listener of the next month button
-                    document.getElementById("nextMonth").addEventListener("click", function () {
-                        changeMonth(month + 1);
-                    });
                 } else if (month === (currentDate.getMonth() + 2)) {
                     document.getElementById("previousMonth").disabled = false;
                     document.getElementById("nextMonth").disabled = true;
-
-                    // remove the event listener of next month button
-                    document.getElementById("nextMonth").removeEventListener("click", function () {
-                        changeMonth(month + 1);
-                    });
-
-                    // add the event listener of previous month button
-                    document.getElementById("previousMonth").addEventListener("click", function () {
-                        changeMonth(month - 1);
-                    });
                 }
 
 
@@ -381,11 +381,9 @@
                         const btnCheckOut = document.getElementById("btnCheckOut");
                         btnCheckOut.disabled = true;
 
-
                         // Reset the content of time slot and schedule table
                         document.getElementById("time-slot-div").textContent = "";
                         document.getElementById("schedule-table").textContent = "";
-
 
                         generateTimetable();
                     }

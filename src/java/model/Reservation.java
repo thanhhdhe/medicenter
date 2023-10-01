@@ -5,6 +5,7 @@
 package model;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  *
@@ -15,7 +16,7 @@ public class Reservation {
     private int ReservationID, UserID, ServiceID;
     private Date ReservationDate;
     private int ReservationSlot;
-    private Date CreatedDate;
+    private Timestamp CreatedDate;
     private float Cost;
     private String Status;
     private int StaffID;
@@ -24,7 +25,7 @@ public class Reservation {
         
     }
 
-    public Reservation(int ReservationID, int UserID, int ServiceID, Date ReservationDate, int ReservationSlot, Date CreatedDate, float Cost, String Status, int StaffID) {
+    public Reservation(int ReservationID, int UserID, int ServiceID, Date ReservationDate, int ReservationSlot, Timestamp CreatedDate, float Cost, String Status, int StaffID) {
         this.ReservationID = ReservationID;
         this.UserID = UserID;
         this.ServiceID = ServiceID;
@@ -76,11 +77,11 @@ public class Reservation {
         this.ReservationSlot = ReservationSlot;
     }
 
-    public Date getCreatedDate() {
+    public Timestamp getCreatedDate() {
         return CreatedDate;
     }
 
-    public void setCreatedDate(Date CreatedDate) {
+    public void setCreatedDate(Timestamp CreatedDate) {
         this.CreatedDate = CreatedDate;
     }
 

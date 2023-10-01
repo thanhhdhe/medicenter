@@ -4,7 +4,9 @@
  */
 package controller;
 
+import Database.ReservationDAO;
 import Database.ServiceDAO;
+import Database.ServiceStaffDAO;
 import Database.StaffDAO;
 import Database.StaffScheduleDAO;
 import java.io.IOException;
@@ -13,6 +15,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.util.List;
 import model.Service;
@@ -28,6 +31,15 @@ public class ReservationDetail extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try ( PrintWriter out = response.getWriter()) {
+            HttpSession session = request.getSession(true);
+            if (session.getAttribute("email") == null) {
+                    response.sendRedirect("home");
+            }
+
+            // Update the database to cancel the pending reservation exceeds 5 minutes
+            ReservationDAO rdao = new ReservationDAO();
+            rdao.updateDatabase();
+
             // Receive serviceID and staffID 
             String serviceID = (String) request.getParameter("serviceID");
             String staffID = (String) request.getParameter("staffID");
@@ -43,28 +55,58 @@ public class ReservationDetail extends HttpServlet {
             StaffScheduleDAO ssd = new StaffScheduleDAO();
             ServiceDAO serviceDAO = new ServiceDAO();
 
-            // Check the existence of the staff and services
-            if (sd.getStaffByStaffId(Integer.parseInt(staffID)) != null && serviceDAO.getServiceByID(serviceID) != null) {
+            if (staffID == null) {
+                // Check is user choose service or choose staff
+                if (serviceDAO.getServiceByID(serviceID) != null) {
+                    // Set attribute to send to the page
+                    Service service = serviceDAO.getServiceByID(serviceID);
+                    request.setAttribute("service", service);
 
-                // Get the staff
-                Staff staff = sd.getStaffByStaffId(Integer.parseInt(staffID));
+                    request.setAttribute("staff", null);
 
-                // Process services detail
-                Service service = serviceDAO.getServiceByID(serviceID);
-                request.setAttribute("service", service);
-                request.setAttribute("Staff", staff);
+                    // Process the service schedule for all staff available
+                    List<Integer> Workday = ssd.getWorkdayByServiceID(serviceID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue));
+                    List<Integer> fullDay = ssd.getFullDayByServiceID(serviceID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue));
 
-                // Process staff schedule
-                List<Integer> Workday = ssd.getWorkDay(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue)); // The variable will contain the number of workdays
+                    request.setAttribute("Workday", Workday);
+                    request.setAttribute("fullDay", fullDay);
 
-                List<Integer> fullDay = ssd.getListDayFullSlot(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue)); // The variable will store a day that full
-
-                request.setAttribute("Workday", Workday);
-                request.setAttribute("fullDay", fullDay);
-
-                request.getRequestDispatcher("/view/reservationdetail.jsp").forward(request, response);
+                    request.getRequestDispatcher("/view/reservationdetail.jsp").forward(request, response);
+                } else {
+                    response.sendRedirect("home");
+                }
             } else {
-                response.sendRedirect("home");
+
+                // Check the existence of the staff and services
+                if (sd.getStaffByStaffId(Integer.parseInt(staffID)) != null && serviceDAO.getServiceByID(serviceID) != null) {
+
+                    // Check if the Staff is correctly working for the service
+                    ServiceStaffDAO servicestaffDAO = new ServiceStaffDAO();
+                    if (!servicestaffDAO.checkExist(staffID, serviceID)) {
+                        response.sendRedirect("home");
+                        return;
+                    }
+
+                    // Get the staff
+                    Staff staff = sd.getStaffByStaffId(Integer.parseInt(staffID));
+
+                    // Set attribute to send to the page
+                    Service service = serviceDAO.getServiceByID(serviceID);
+                    request.setAttribute("service", service);
+                    request.setAttribute("Staff", staff);
+
+                    // Process staff schedule
+                    List<Integer> Workday = ssd.getWorkDay(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue)); // The variable will contain the number of workdays
+
+                    List<Integer> fullDay = ssd.getListDayFullSlot(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue)); // The variable will store a day that full
+
+                    request.setAttribute("Workday", Workday);
+                    request.setAttribute("fullDay", fullDay);
+
+                    request.getRequestDispatcher("/view/reservationdetail.jsp").forward(request, response);
+                } else {
+                    response.sendRedirect("home");
+                }
             }
         }
     }
@@ -80,15 +122,4 @@ public class ReservationDetail extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }
