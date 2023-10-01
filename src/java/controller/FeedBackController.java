@@ -127,6 +127,11 @@ public class FeedBackController extends HttpServlet {
                     //create feedback by id
                     String FDid = request.getParameter("FDid");
                     FeedBack feedback = dao.getFeedbackDetail(Integer.parseInt(FDid));
+                    ServiceDAO serviceDAO = new ServiceDAO();
+                   
+                    Service ser = serviceDAO.getServiceByID(feedback.getServiceName());
+                    
+                    request.setAttribute("ser", ser);
                     request.setAttribute("feedbackdetail", feedback);
                     request.getRequestDispatcher("/view/feedback-detail.jsp").forward(request, response);
                 } // update status

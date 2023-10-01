@@ -55,7 +55,7 @@ public class FeedBackDAO extends MyDAO {
         xSql = "SELECT COUNT(*) \n"
                 + "FROM Feedbacks F\n"
                 + "INNER JOIN MedicalExaminations M ON F.MedicalExaminationID = M.MedicalExaminationID\n"
-                + "WHERE M.UsedServices = ?;";
+                + "WHERE M.ServiceID = ?;";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, Fill);
@@ -109,29 +109,29 @@ public class FeedBackDAO extends MyDAO {
     }
 
     //get name service feedback
-    public String getNameServiceFeed(String MedicalExaminationID) {
-        xSql = "select UsedServices from MedicalExaminations where MedicalExaminationID = ?;";
+    public int getNameServiceFeed(String MedicalExaminationID) {
+        xSql = "select ServiceID from MedicalExaminations where MedicalExaminationID = ?;";
         try {
             ps = con.prepareStatement(xSql);
 
             ps.setString(1, MedicalExaminationID);
             rs = ps.executeQuery();
             if (rs.next()) {
-                String name = rs.getString(1);
+                int name = rs.getInt(1);
                 return name;
             }
         } catch (Exception e) {
         }
-        return null;
+        return 0;
     }
 
     //get list for fill service 
     public List<FeedBack> getPageFeedBackByFillSer(int index, String Fill) {
         List<FeedBack> feedbacks = new ArrayList<>();
-        xSql = "SELECT F.*, M.UsedServices\n"
+        xSql = "SELECT F.*, M.ServiceID\n"
                 + "FROM Feedbacks F\n"
                 + "INNER JOIN MedicalExaminations M ON F.MedicalExaminationID = M.MedicalExaminationID\n"
-                + "WHERE M.UsedServices = ?\n"
+                + "WHERE M.ServiceID = ?\n"
                 + "ORDER BY FeedbackID\n"
                 + "OFFSET ? Rows fetch next 5 rows ONLY;";
         try {
@@ -225,10 +225,10 @@ public class FeedBackDAO extends MyDAO {
     //get sort by  service
     public List<FeedBack> getSortByService(int index) {
         List<FeedBack> feedbacks = new ArrayList<>();
-        xSql = "SELECT F.*, M.UsedServices\n"
+        xSql = "SELECT F.*, M.ServiceID\n"
                 + "FROM Feedbacks F\n"
                 + "INNER JOIN MedicalExaminations M ON F.MedicalExaminationID = M.MedicalExaminationID\n"
-                + "Order by UsedServices\n"
+                + "Order by ServiceID\n"
                 + "OFFSET ? Rows fetch next 5 rows ONLY;";
         try {
             ps = con.prepareStatement(xSql);
@@ -323,7 +323,7 @@ public class FeedBackDAO extends MyDAO {
                 + "    F.FeedbackDate AS FeedbackDate,\n"
                 + "    F.RatedStar AS FeedbackRatedStar,\n"
                 + "    F.FStatus AS FeedbackStatus,\n"
-                + "    M.UsedServices AS UsedServices,\n"
+                + "    M.ServiceID AS ServiceID,\n"
                 + "    M.MedicalPrescription AS MedicalPrescription\n"
                 + "FROM Feedbacks F\n"
                 + "INNER JOIN Users U ON F.UserID = U.UserID\n"
@@ -387,12 +387,12 @@ public class FeedBackDAO extends MyDAO {
     public static void main(String[] args) {
         FeedBackDAO dao = new FeedBackDAO();
         //System.out.println(dao.getTotalFeedback());
-//        List<FeedBack> feedbacks = dao.getSortByService(1);
-          FeedBack fe = dao.getFeedbackDetail(10);
-          System.out.println(fe.getFullName());
-//        for (FeedBack f : feedbacks) {
-//            System.out.println(f.getFeedbackID());
-//        }
+        List<FeedBack> feedbacks = dao.getPageFeedBacks(1);
+//          FeedBack fe = dao.getFeedbackDetail(10);
+//          System.out.println(fe.getFullName());
+        for (FeedBack f : feedbacks) {
+            System.out.println(f.getContentSub());
+        }
 
     }
 }

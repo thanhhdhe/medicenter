@@ -50,7 +50,7 @@
                                             </a>
                                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                                 <c:forEach var="ser" items="${requestScope.servicelistfill}">
-                                                    <li><a class="dropdown-item" href="feedback?event=fillterservice&fillservice=${ser.getTitle()}">${ser.getTitle()}</a></li> 
+                                                    <li><a class="dropdown-item" href="feedback?event=fillterservice&fillservice=${ser.getServiceID()}">${ser.getTitle()}</a></li> 
                                                     </c:forEach>
                                                 <li><a class="dropdown-item" href="feedback?event=fillterservice&fillservice=Physical3Exam3">Physical3Exam3</a></li>
                                             </ul>
@@ -125,7 +125,10 @@
                                         <c:set var="medicalIDString" value="${medicalID.toString()}" />
                                         <%
                                             FeedBackDAO dao = new FeedBackDAO();
-                                            String userservice = dao.getNameServiceFeed((String) pageContext.getAttribute("medicalIDString"));
+                                            ServiceDAO serviceDAO = new ServiceDAO();
+                                            int userserviceid = dao.getNameServiceFeed((String) pageContext.getAttribute("medicalIDString"));
+                                            Service Uservice = serviceDAO.getServiceByID(String.valueOf(userserviceid));
+                                            String userservice = Uservice.getTitle();
                                         %>
                                         <div class="d-flex flex-start mb-4" 
                                              style="border-bottom: 1px; background-color: #ffffff; padding: 10px;

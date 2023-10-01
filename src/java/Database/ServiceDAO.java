@@ -532,7 +532,7 @@ public class ServiceDAO extends MyDAO {
 //        }
 
         Service service = serviceDAO.getServiceByID(15+"");
-        System.out.println(service.getTitle());
+        System.out.println(serviceDAO.getServiceByID(String.valueOf(11)));
         service.setTitle("sss");
         serviceDAO.update(service);
         System.out.println(service.getTitle());
