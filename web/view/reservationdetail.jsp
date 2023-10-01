@@ -14,7 +14,7 @@
            List<Integer> fullDay = (List<Integer>) request.getAttribute("fullDay");
            Service service = (Service) request.getAttribute("service");
            Staff staff = (Staff) request.getAttribute("Staff");
-           String staffID = "";
+           String staffID = null;
            if (staff != null) {
                 staffID = staff.getStaffID() + "";
            }
@@ -69,6 +69,7 @@
 
             // Determine the day of week of that day
             const currentDate = new Date();
+            const realMonth = currentDate.getMonth(); // +1 to get the real month
             let currentMonth = currentDate.getMonth();
             let currentYear = currentDate.getFullYear();
             let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -78,25 +79,24 @@
             let Workday = <%=Workday%>; // Variable store list of day is workday
             let fullDay = <%=fullDay%>; // Variable store list of day that is full
 
-
             // Variable store selected date and selected slot
             let selectedDate = null; // p
             let selectedMonth = currentMonth + 1; // int
             let selectedSlot = null; // int
-
             // INIT
             document.getElementById("time").textContent = currentMonth + 1 + " / " + currentYear;
             document.getElementById("nextMonth").addEventListener("click", function () {
                 // Increase the month
-                changeMonth(selectedMonth + 1);
+                changeMonth(realMonth + 2);
             });
             // add the event listener of previous month button
             document.getElementById("previousMonth").addEventListener("click", function () {
-                changeMonth(selectedMonth);
+                changeMonth(realMonth + 1);
             });
 
             // Create a timetable for scheduling
             function generateTimetable() {
+                const staffID = <%=staffID%>;
                 const scheduletable = document.getElementById("schedule-table");
                 let name = "schedule-table";
                 let html = "<table class=" + name + "><tr>";
@@ -115,24 +115,39 @@
                 let not_work = "not_work";
                 let work = "work";
                 let full = "full";
+                
+                console.log(fullDay);
+                console.log(Workday);
 
                 // FirstDayOfWeek = 4 because current month is September 
                 for (let i = 0; i < 42; i++) { // 6 rows of 7 days
                     if (i < firstDayOfWeek || dayCount > daysInMonth) {
                         html += '<td><p class=empty></td>';
                     } else {
-                        // Check whether day in the past or in working day or not
-                        if (currentDate.getHours() > 16 && currentDate.getDate() === dayCount && currentDate.getMonth() === selectedMonth && currentDate.getYear() === currentYear) {
-                            html += "<td><p title='This date is not available for booking' class=" + not_work + ">" + dayCount + "</p></td>";
-                        } else if (Workday.includes(dayCount) && (dayCount >= currentDate.getDate() || currentMonth > currentDate.getMonth())) {
-                            // Check whether dayCount is in the list of day that full
-                            if (fullDay.includes(dayCount)) {
-                                html += "<td><p title='This date is fully booked' class=" + full + ">" + dayCount + "</p></td>";
+                        if (staffID != null) {
+                            // Check whether day in the past or in working day or not
+                            if (currentDate.getHours() > 16 && currentDate.getDate() === dayCount && currentDate.getMonth() === selectedMonth && currentDate.getYear() === currentYear) {
+                                html += "<td><p title='This date is not available for booking' class=" + not_work + ">" + dayCount + "</p></td>";
+                            } else if (Workday.includes(dayCount) && (dayCount >= currentDate.getDate() || currentMonth > currentDate.getMonth())) {
+                                // Check whether dayCount is in the list of day that full
+                                if (fullDay.includes(dayCount)) {
+                                    html += "<td><p title='This date is fully booked' class=" + full + ">" + dayCount + "</p></td>";
+                                } else {
+                                    html += "<td><p title='This date is available for booking' class=" + work + " onclick='selectDate(this)'>" + dayCount + "</p></td>";
+                                }
                             } else {
-                                html += "<td><p title='This date is available for booking' class=" + work + " onclick='selectDate(this)'>" + dayCount + "</p></td>";
+                                html += "<td><p title='This date is not available for booking' class=" + not_work + ">" + dayCount + "</p></td>";
                             }
                         } else {
-                            html += "<td><p title='This date is not available for booking' class=" + not_work + ">" + dayCount + "</p></td>";
+                            if (currentDate.getHours() > 16 && currentDate.getDate() === dayCount && currentDate.getMonth() === selectedMonth && currentDate.getYear() === currentYear) {
+                                html += "<td><p title='This date is not available for booking' class=" + not_work + ">" + dayCount + "</p></td>";
+                            } else if (fullDay.includes(dayCount) && (dayCount >= currentDate.getDate() || currentMonth > currentDate.getMonth())) {
+                                html += "<td><p title='This date is fully booked' class=" + full + ">" + dayCount + "</p></td>";
+                            } else if (Workday.includes(dayCount) && (dayCount >= currentDate.getDate() || currentMonth > currentDate.getMonth())) {
+                                html += "<td><p title='This date is available for booking' class=" + work + " onclick='selectDate(this)'>" + dayCount + "</p></td>";
+                            } else {
+                                html += "<td><p title='This date is not available for booking' class=" + not_work + ">" + dayCount + "</p></td>";
+                            }
                         }
                         dayCount++;
                     }
@@ -188,7 +203,6 @@
                 const staffID = <%=staffID%>;
                 const url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=checkSlot";
             <% } else { %>
-                const staffID = <%=staffID%>;
                 const url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=all&action=checkSlotForService";
             <% } %>
 
@@ -290,25 +304,34 @@
                     // Get the selected date and time slot
                     const selectedDateValue = selectedDate.textContent;
                     // Check not null
-                    if (selectedDateValue === null)
+                    if (selectedDateValue === null) {
                         return;
+                    }
                     const selectedSlotValue = selectedSlot.textContent;
-                    if (selectedSlotValue === null)
+                    if (selectedSlotValue === null) {
                         return;
+                    }
                     // Check the right condition to send the signal to the servlet
                     if (workSlots.includes(timeSlots.indexOf(selectedSlotValue) + 1) && !bookedSlots.includes(timeSlots.indexOf(selectedSlotValue) + 1)
                             && Workday.includes(parseInt(selectedDateValue, 10)) && !fullDay.includes(parseInt(selectedDateValue, 10))) {
                         // Send date and time slot information to the servlet ...
-
-                        // Send signal to servlet to save data into database
-            <% if (staffID != null) {%>
-                        const url = "ConservationContact?selectedDate=" + selectedDateValue + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&selectedSlot=" + (timeSlots.indexOf(selectedSlotValue) + 1) + "&serviceID=" + <%=service.getServiceID()%>;
-                        window.location.href = url;
-            <% } else { %>
-                        const url = "ConservationContact?selectedDate=" + selectedDateValue + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&selectedSlot=" + (timeSlots.indexOf(selectedSlotValue) + 1) + "&serviceID=" + <%=service.getServiceID()%>;
-                        window.location.href = url;
-            <% } %>
+                        const xhr = new XMLHttpRequest();
+                        const serviceID = <%=service.getServiceID()%>;
+                        const staffID = <%=staffID%>;
+                        if (staffID === null || staffID === 'all') {
+                            const url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + currentMonth + "&selectedYear=" + currentYear + "&staffID=all&action=save&serviceID=" + <%=service.getServiceID()%> + "&slot=" + selectedSlot;
+                        } else {
+                            const url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + currentMonth + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=save&serviceID=" + <%=service.getServiceID()%> + "&slot=" + selectedSlot;
+                        }
+                        xhr.open("GET", url, true);
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState === 4 && xhr.status === 200) {
+                                const responseText = xhr.responseText; // Text string from response
+                                const url = "ReservationContact?reservationID=" + responseText;
+                            }
+                        };
                     }
+                    xhr.send();
                 }
             }
 
@@ -362,9 +385,13 @@
                 const xhr = new XMLHttpRequest();
                 const serviceID = <%=service.getServiceID()%>;
                 const staffID = <%=staffID%>;
-                const url = "reservationdetailcontroller?selectedDate=null&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=changeMonth";
-
-                xhr.open("GET", url, true);
+                let urlChangeMonth = "";
+                if (staffID === null) {
+                    urlChangeMonth = "reservationdetailcontroller?selectedDate=null&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=all&action=changeMonth&serviceID=" + serviceID;
+                } else {
+                    urlChangeMonth = "reservationdetailcontroller?selectedDate=null&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=changeMonth&serviceID=null";
+                }
+                xhr.open("GET", urlChangeMonth, true);
 
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4 && xhr.status === 200) {

@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.awt.BorderLayout;
 import java.time.LocalDate;
 import java.util.List;
 import model.Service;
@@ -71,12 +72,11 @@ public class ReservationDetail extends HttpServlet {
                     request.setAttribute("Workday", Workday);
                     request.setAttribute("fullDay", fullDay);
 
-                    request.getRequestDispatcher("/view/reservationdetail.jsp").forward(request, response);
+                    request.getRequestDispatcher("/view/reservationdetail.jsp").include(request, response);
                 } else {
                     response.sendRedirect("home");
                 }
             } else {
-
                 // Check the existence of the staff and services
                 if (sd.getStaffByStaffId(Integer.parseInt(staffID)) != null && serviceDAO.getServiceByID(serviceID) != null) {
 
@@ -103,7 +103,7 @@ public class ReservationDetail extends HttpServlet {
                     request.setAttribute("Workday", Workday);
                     request.setAttribute("fullDay", fullDay);
 
-                    request.getRequestDispatcher("/view/reservationdetail.jsp").forward(request, response);
+                    request.getRequestDispatcher("/view/reservationdetail.jsp").include(request, response);
                 } else {
                     response.sendRedirect("home");
                 }

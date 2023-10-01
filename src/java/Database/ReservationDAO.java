@@ -6,7 +6,6 @@ package Database;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -175,7 +174,7 @@ public class ReservationDAO extends MyDAO {
 
     public List<Reservation> getListReservationByServiceID(String serviceID, String selectedDate, String selectedMonth, String selectedYear) {
         List<Reservation> list = new ArrayList<>();
-        xSql = "select * from Reservations r\n"
+        xSql = "select * from [dbo].[Reservations] r\n"
                 + "where r.serviceID = ? and DAY(r.ReservationDate) = ? AND MONTH(r.ReservationDate) = ? and YEAR(r.ReservationDate) = ? and r.status <> 'cancel'";
         try {
             ps = con.prepareStatement(xSql);
@@ -206,7 +205,7 @@ public class ReservationDAO extends MyDAO {
     }
 
     public void insert(Reservation r) {
-        xSql = "insert into Reservations(ReservationDate, ReservationSlot, ServiceID, StaffID, CreatedDate, Cost, UserID, Status)\n"
+        xSql = "insert into [dbo].[Reservations](ReservationDate, ReservationSlot, ServiceID, StaffID, CreatedDate, Cost, UserID, Status)\n"
                 + "values (?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             ps = con.prepareStatement(xSql);
@@ -224,14 +223,32 @@ public class ReservationDAO extends MyDAO {
             e.printStackTrace();
         }
     }
+    public int findReservationID(int userID, Timestamp createdDate , String ServiceID) {
+        int id = -1;
+        xSql = "select * from [dbo].[Reservations] where UserID = ? and CreatedDate = ? and ServiceID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, userID);
+            ps.setTimestamp(2, createdDate);
+            ps.setString(3, ServiceID);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                id = rs.getInt("ReservationID");
+                return id;
+            }
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
 
     public static void main(String args[]) {
         ReservationDAO rd = new ReservationDAO();
-        String a = "30";
-        String b = "10";
-        String c = "2023";
-        String abc = a + "-" + b + "-" + c;
-        System.out.println(abc);
+        String dateString = "2023-10-01 22:20:00";
+        Timestamp sqlTimestamp = Timestamp.valueOf(dateString);
+        System.out.println(rd.findReservationID(1, sqlTimestamp, "9"));
+        
 //        LocalDateTime currentDateTime = LocalDateTime.now();
 //        Timestamp sqlTimestamp = Timestamp.valueOf(currentDateTime);
 //        Date sqlDate = null;

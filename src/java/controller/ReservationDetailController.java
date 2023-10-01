@@ -5,6 +5,8 @@
 package controller;
 
 import Database.ReservationDAO;
+import Database.ServiceDAO;
+import Database.ServiceStaffDAO;
 import Database.StaffScheduleDAO;
 import Database.UserDAO;
 import java.io.IOException;
@@ -21,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import model.Reservation;
+import model.Service;
 import model.User;
 
 /**
@@ -53,32 +56,45 @@ public class ReservationDetailController extends HttpServlet {
         String staffID = (String) request.getParameter("staffID");
         String action = (String) request.getParameter("action");
 
-        if (action.equals("checkSlot")) {
-            checkSlot(selectedDate, selectedMonth, selectedYear, staffID, request, response);
-        } else if (action.equals("changeMonth")) {
-            changeMonth(selectedMonth, selectedYear, staffID, request, response);
-        } else if (action.equals("checkSlotForService")) {
-            String serviceID = (String) request.getParameter("serviceID");
-            checkSlotForService(selectedDate, selectedMonth, selectedYear, serviceID, request, response);
-        } else if (action.equals("save")) {
-            String serviceID = (String) request.getParameter("serviceID");
-            String slot = (String) request.getParameter("slot");
-            saveData(selectedDate, selectedMonth, selectedYear, staffID, slot, serviceID, userDAO.getUser(email));
+        switch (action) {
+            case "checkSlot":
+                checkSlot(selectedDate, selectedMonth, selectedYear, staffID, request, response);
+                break;
+            case "changeMonth": {
+                String serviceID = (String) request.getParameter("serviceID");
+                changeMonth(selectedMonth, selectedYear, staffID, serviceID, request, response);
+                break;
+            }
+            case "checkSlotForService": {
+                String serviceID = (String) request.getParameter("serviceID");
+                checkSlotForService(selectedDate, selectedMonth, selectedYear, serviceID, request, response);
+                break;
+            }
+            case "save": {
+                String serviceID = (String) request.getParameter("serviceID");
+                String slot = (String) request.getParameter("slot");
+                saveData(selectedDate, selectedMonth, selectedYear, staffID, slot, serviceID, userDAO.getUser(email), request, response);
+                break;
+            }
+            default:
+                break;
         }
 
     }
 
-    private void saveData(String selectedDate, String selectedMonth, String selectedYear, String staffID, String slot, String serviceID, User user) {
+    private void saveData(String selectedDate, String selectedMonth, String selectedYear, String staffID, String slot, String serviceID, User user, HttpServletRequest request, HttpServletResponse response) throws IOException {
         ReservationDAO rd = new ReservationDAO();
-
+        ServiceDAO serviceDAO = new ServiceDAO();
+        ServiceStaffDAO ssd = new ServiceStaffDAO();
+        Service service = serviceDAO.getServiceByID(serviceID);
         // Get the current time
         LocalDateTime currentDateTime = LocalDateTime.now();
         Timestamp sqlTimestamp = Timestamp.valueOf(currentDateTime);
         // Get the date
         Date sqlDate = null;
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
             String date = selectedMonth + "-" + selectedDate + "-" + selectedYear;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
             java.util.Date utilDate = dateFormat.parse(date);
             sqlDate = new Date(utilDate.getTime());
         } catch (Exception e) {
@@ -91,8 +107,14 @@ public class ReservationDetailController extends HttpServlet {
             r.setReservationDate(sqlDate);
             r.setReservationSlot(Integer.parseInt(slot));
             r.setServiceID(Integer.parseInt(serviceID));
-            r.setStaffID(0); // TODO
-            r.setCost(300); // TODO
+
+            r.setStaffID(ssd.getListStaffIDCanWork(selectedDate, selectedMonth, selectedYear, slot, serviceID).get(0));
+
+            if (service.getSalePrice() > 0) {
+                r.setCost((float) service.getSalePrice());
+            } else {
+                r.setCost((float) service.getOriginalPrice());
+            }
             r.setStatus("pending");
             r.setUserID(user.getUserID());
             rd.insert(r);
@@ -103,18 +125,33 @@ public class ReservationDetailController extends HttpServlet {
             r.setReservationSlot(Integer.parseInt(slot));
             r.setServiceID(Integer.parseInt(serviceID));
             r.setStaffID(Integer.parseInt(staffID));
-            r.setCost(300); // TODO
+            if (service.getSalePrice() > 0) {
+                r.setCost((float) service.getSalePrice());
+            } else {
+                r.setCost((float) service.getOriginalPrice());
+            }
             r.setStatus("pending");
             r.setUserID(user.getUserID());
             rd.insert(r);
         }
+        int Id = rd.findReservationID(user.getUserID(), sqlTimestamp, serviceID);
+        // Send the reservation id to the jsp
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(Id);
     }
 
-    private void changeMonth(String selectedMonth, String selectedYear, String staffID, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void changeMonth(String selectedMonth, String selectedYear, String staffID, String serviceID, HttpServletRequest request, HttpServletResponse response) throws IOException {
         StaffScheduleDAO ssd = new StaffScheduleDAO();
-        List<Integer> Workday = ssd.getWorkDay(staffID, selectedMonth, selectedYear);
-        List<Integer> fullDay = ssd.getListDayFullSlot(staffID, selectedMonth, selectedYear);
-
+        List<Integer> Workday = null;
+        List<Integer> fullDay = null;
+        if (staffID.equals("all")) {
+            Workday = ssd.getWorkdayByServiceID(serviceID, selectedMonth, selectedYear);
+            fullDay = ssd.getFullDayByServiceID(serviceID, selectedMonth, selectedYear);
+        } else {
+            Workday = ssd.getWorkDay(staffID, selectedMonth, selectedYear);
+            fullDay = ssd.getListDayFullSlot(staffID, selectedMonth, selectedYear);
+        }
         // Build the string that contain work day and day that fully booked
         StringBuilder sb = new StringBuilder();
         // Append elements from the first ArrayList 

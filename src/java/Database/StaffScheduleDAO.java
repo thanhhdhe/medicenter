@@ -235,6 +235,9 @@ public class StaffScheduleDAO extends MyDAO {
 
     public static void main(String args[]) {
         StaffScheduleDAO ssd = new StaffScheduleDAO();
+        for (int i : ssd.getFullDayByServiceID("3" , "10", "2023")) {
+            System.out.println(i);
+        }
 //        for (int i : ssd.getListDayFullSlot("3","9")) {
 //            System.out.println(i);
 //        }
