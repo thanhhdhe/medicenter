@@ -23,6 +23,16 @@ public class MedicalExamination {
     public MedicalExamination() {
     }
 
+    public MedicalExamination(int MedicalExaminationID, int MuserID, int MchildrenID, int MstaffID, Date examinationDate, int serviceID, String medicalPrescription) {
+        this.MedicalExaminationID = MedicalExaminationID;
+        this.MuserID = MuserID;
+        this.MchildrenID = MchildrenID;
+        this.MstaffID = MstaffID;
+        this.examinationDate = examinationDate;
+        this.serviceID = serviceID;
+        this.medicalPrescription = medicalPrescription;
+    }
+    
     public MedicalExamination(int MedicalExaminationID, int MuserID, int MchildrenID, int MstaffID, Date examinationDate, int serviceID, String medicalPrescription, String disease) {
         this.MedicalExaminationID = MedicalExaminationID;
         this.MuserID = MuserID;

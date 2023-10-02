@@ -153,7 +153,13 @@
                     <label for="medical">medical</label>
                     <select id="medical" name="medical">
                         <c:forEach items="${requestScope.medical}" var="me">
-                            <option value="${me.getMedicalExaminationID()}">${me.getUsedServices()}</option>   
+                            <c:set var="serID" value="${me.getServiceID()}" />
+                            <c:set var="serIDString" value="${serID.toString()}" />
+                            <% 
+                            ServiceDAO serviceDAO = new ServiceDAO();
+                            Service service = serviceDAO.getServiceByID((String) pageContext.getAttribute("serIDString"));
+                            %>
+                            <option value="${me.getMedicalExaminationID()}"> <%= service.getTitle() %> </option>   
                         </c:forEach>
 
                     </select>
