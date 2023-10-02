@@ -134,11 +134,11 @@ public class ReservationDetailController extends HttpServlet {
             r.setUserID(user.getUserID());
             rd.insert(r);
         }
-        int Id = rd.findReservationID(user.getUserID(), sqlTimestamp, serviceID);
+        int Id = rd.findReservationID(user.getUserID(), serviceID, sqlDate, Integer.parseInt(slot));
         // Send the reservation id to the jsp
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(Id);
+        response.getWriter().write(Integer.toString(Id));
     }
 
     private void changeMonth(String selectedMonth, String selectedYear, String staffID, String serviceID, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -253,9 +253,9 @@ public class ReservationDetailController extends HttpServlet {
 
         // Create to string and send to the jsp
         StringBuilder sb = new StringBuilder();
-        // Append elements from the first ArrayList (workSlots)
+        // Append elements from the first ArrayList
         for (int i = 0; i < slotAvailable.size(); i++) {
-            sb.append(slotAvailable.get(i));
+            sb.append(slotAvailable.get(i).toString());
             // Add a comma if it's not the last element
             if (i < slotAvailable.size() - 1) {
                 sb.append(",");
@@ -265,7 +265,7 @@ public class ReservationDetailController extends HttpServlet {
         // Append "&" to separate the two ArrayLists
         sb.append("&");
 
-        // Append elements from the second ArrayList (bookedSlots)
+        // Append elements from the second ArrayList
         for (int i = 0; i < fullBookSlot.size(); i++) {
             sb.append(fullBookSlot.get(i));
             // Add a comma if it's not the last element

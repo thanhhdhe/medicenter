@@ -16,8 +16,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.awt.BorderLayout;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import model.Service;
 import model.Staff;
@@ -34,7 +34,7 @@ public class ReservationDetail extends HttpServlet {
         try ( PrintWriter out = response.getWriter()) {
             HttpSession session = request.getSession(true);
             if (session.getAttribute("email") == null) {
-                    response.sendRedirect("home");
+                response.sendRedirect("home");
             }
 
             // Update the database to cancel the pending reservation exceeds 5 minutes
@@ -98,8 +98,26 @@ public class ReservationDetail extends HttpServlet {
                     // Process staff schedule
                     List<Integer> Workday = ssd.getWorkDay(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue)); // The variable will contain the number of workdays
 
-                    List<Integer> fullDay = ssd.getListDayFullSlot(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue)); // The variable will store a day that full
-
+                    // List of slot and day in the reservation of that staff ID
+                    List<Integer> temp = ssd.getWorkDay(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue));
+                    List<Integer> fullDay = ssd.getWorkDay(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue));
+                    // Loop in workday
+                    for (int day : temp) {
+                        // Boolean to check if the slot is available
+                        boolean check = false;
+                        // Select all the slot have in that day
+                        for (int slot : ssd.getWorkSlots(Integer.toString(day), Integer.toString(currentMonthValue), Integer.toString(currentYearValue), staffID)) {
+                            if (rdao.checkSlotForAvailable(Integer.toString(slot), staffID, Integer.toString(day), Integer.toString(currentMonthValue), Integer.toString(currentYearValue)) == true) {
+                                check = true;
+                                break;
+                            }
+                        }
+                        // If we can search the slot in the reservation with status != cancel => fullDay remove it
+                        if (check == true) {
+                            fullDay.remove(Integer.valueOf(day));
+//                            fullDay.add(day);
+                        }
+                    }
                     request.setAttribute("Workday", Workday);
                     request.setAttribute("fullDay", fullDay);
 

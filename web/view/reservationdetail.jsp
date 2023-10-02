@@ -115,16 +115,12 @@
                 let not_work = "not_work";
                 let work = "work";
                 let full = "full";
-                
-                console.log(fullDay);
-                console.log(Workday);
-
                 // FirstDayOfWeek = 4 because current month is September 
                 for (let i = 0; i < 42; i++) { // 6 rows of 7 days
                     if (i < firstDayOfWeek || dayCount > daysInMonth) {
                         html += '<td><p class=empty></td>';
                     } else {
-                        if (staffID != null) {
+                        if (staffID !== null) {
                             // Check whether day in the past or in working day or not
                             if (currentDate.getHours() > 16 && currentDate.getDate() === dayCount && currentDate.getMonth() === selectedMonth && currentDate.getYear() === currentYear) {
                                 html += "<td><p title='This date is not available for booking' class=" + not_work + ">" + dayCount + "</p></td>";
@@ -199,25 +195,24 @@
             function fetchSlotStatus(timeSlotDiv) {
                 const xhr = new XMLHttpRequest();
                 const serviceID = <%=service.getServiceID()%>;
+                let url = null;
+                let staffID = null;
             <% if (staffID != null) { %>
-                const staffID = <%=staffID%>;
-                const url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=checkSlot";
+                staffID = <%=staffID%>;
+                url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=checkSlot";
             <% } else { %>
-                const url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=all&action=checkSlotForService";
+                url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=all&action=checkSlotForService&serviceID=" + serviceID;
             <% } %>
-
                 xhr.open("GET", url, true);
 
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4 && xhr.status === 200) {
                         const responseText = xhr.responseText; // Text string from response
-
                         // This contain two part, part one is work slot and part two is booked slot
                         const tempStringOne = responseText.split("&");
                         // Split the String separated by commas
                         workSlots = tempStringOne[0].split(',').map(item => parseInt(item, 10));
                         bookedSlots = tempStringOne[1].split(',').map(item => parseInt(item, 10));
-
                         // Check the received number sequence and change the class of the slots
                         for (let i = 0; i < timeSlots.length; i++) {
                             const slot = document.createElement("div");
@@ -257,7 +252,6 @@
                                     continue;
                                 }
                             }
-
                             // Check it condition to class slot
                             if (bookedSlots.includes(i + 1)) {
                                 slot.className = "full";
@@ -318,20 +312,23 @@
                         const xhr = new XMLHttpRequest();
                         const serviceID = <%=service.getServiceID()%>;
                         const staffID = <%=staffID%>;
+                        let checkOutURL = null;
                         if (staffID === null || staffID === 'all') {
-                            const url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + currentMonth + "&selectedYear=" + currentYear + "&staffID=all&action=save&serviceID=" + <%=service.getServiceID()%> + "&slot=" + selectedSlot;
+                            checkOutURL = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=all&action=save&serviceID=" + <%=service.getServiceID()%> + "&slot=" + (timeSlots.indexOf(selectedSlotValue) + 1);
                         } else {
-                            const url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + currentMonth + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=save&serviceID=" + <%=service.getServiceID()%> + "&slot=" + selectedSlot;
+                            checkOutURL = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=save&serviceID=" + <%=service.getServiceID()%> + "&slot=" + (timeSlots.indexOf(selectedSlotValue) + 1);
                         }
-                        xhr.open("GET", url, true);
+                        xhr.open("GET", checkOutURL, true);
                         xhr.onreadystatechange = function () {
                             if (xhr.readyState === 4 && xhr.status === 200) {
                                 const responseText = xhr.responseText; // Text string from response
                                 const url = "ReservationContact?reservationID=" + responseText;
+                                window.location.href = url;
                             }
                         };
+                        xhr.send();
+
                     }
-                    xhr.send();
                 }
             }
 

@@ -34,7 +34,8 @@ public class ReservationDAO extends MyDAO {
                 float Cost = rs.getFloat("Cost");
                 String Status = rs.getString("Status");
                 int StaffID = rs.getInt("StaffID");
-                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status, StaffID);
+                int ChildID = rs.getInt("ChildID");
+                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status);
                 list.add(reservation);
             }
             rs.close();
@@ -65,7 +66,8 @@ public class ReservationDAO extends MyDAO {
                 float Cost = rs.getFloat("Cost");
                 String Status = rs.getString("Status");
                 int StaffID = rs.getInt("StaffID");
-                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status, StaffID);
+                int ChildID = rs.getInt("ChildID");
+                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status);
                 list.add(reservation);
             }
             rs.close();
@@ -121,7 +123,8 @@ public class ReservationDAO extends MyDAO {
                 float Cost = rs.getFloat("Cost");
                 String Status = rs.getString("Status");
                 int StaffID = rs.getInt("StaffID");
-                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status, StaffID);
+                int ChildID = rs.getInt("ChildID");
+                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status);
                 reservationList.add(reservation);
             }
             rs.close();
@@ -193,7 +196,8 @@ public class ReservationDAO extends MyDAO {
                 float Cost = rs.getFloat("Cost");
                 String Status = rs.getString("Status");
                 int StaffID = rs.getInt("StaffID");
-                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status, StaffID);
+                int ChildID = rs.getInt("ChildID");
+                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status);
                 list.add(reservation);
             }
             rs.close();
@@ -223,19 +227,22 @@ public class ReservationDAO extends MyDAO {
             e.printStackTrace();
         }
     }
-    public int findReservationID(int userID, Timestamp createdDate , String ServiceID) {
+
+    public int findReservationID(int userID, String serviceID, Date reservationDate, int slot) {
         int id = -1;
-        xSql = "select * from [dbo].[Reservations] where UserID = ? and CreatedDate = ? and ServiceID = ?";
+        xSql = "select * from [dbo].[Reservations] where UserID = ? and ServiceID = ? and ReservationDate = ? and ReservationSlot = ?";
         try {
             ps = con.prepareStatement(xSql);
-            ps.setInt(1, userID);
-            ps.setTimestamp(2, createdDate);
-            ps.setString(3, ServiceID);
+            ps.setString(1, Integer.toString(userID));
+            ps.setString(2, serviceID);
+            ps.setDate(3, reservationDate);
+            ps.setInt(4, slot);
             rs = ps.executeQuery();
             while (rs.next()) {
                 id = rs.getInt("ReservationID");
                 return id;
             }
+            rs.close();
             ps.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -243,12 +250,38 @@ public class ReservationDAO extends MyDAO {
         return id;
     }
 
+    public boolean checkSlotForAvailable(String slot, String staffID, String selectedDate, String selectedMonth, String selectedYear) {
+        boolean result = true;
+        xSql = "select * from Reservations\n"
+                + "where ReservationSlot = ? and StaffID = ? and DAY(ReservationDate) = ? \n"
+                + "and MONTH(ReservationDate) = ? and YEAR(ReservationDate) = ? \n"
+                + "and Status <> 'cancel'";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, slot);
+            ps.setString(2, staffID);
+            ps.setString(3, selectedDate);
+            ps.setString(4, selectedMonth);
+            ps.setString(5, selectedYear);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                result = false;
+                break;
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     public static void main(String args[]) {
         ReservationDAO rd = new ReservationDAO();
         String dateString = "2023-10-01 22:20:00";
         Timestamp sqlTimestamp = Timestamp.valueOf(dateString);
-        System.out.println(rd.findReservationID(1, sqlTimestamp, "9"));
-        
+        System.out.println(rd.checkSlotForAvailable("4", "3", "26", "10", "2023"));
+
 //        LocalDateTime currentDateTime = LocalDateTime.now();
 //        Timestamp sqlTimestamp = Timestamp.valueOf(currentDateTime);
 //        Date sqlDate = null;
@@ -276,7 +309,6 @@ public class ReservationDAO extends MyDAO {
 //        r.setStatus("pending");
 //        r.setUserID(1);
 //        rd.insert(r);
-
 //        System.out.println(rd.getTotalReservationByUserID("1", 3));
 //        for (Reservation r : rd.getSpecificReservation("3", "27","9", "1")) {
 //            System.out.println(r.getReservationDate());

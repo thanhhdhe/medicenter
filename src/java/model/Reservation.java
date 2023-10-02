@@ -14,27 +14,29 @@ import java.sql.Timestamp;
 public class Reservation {
 
     private int ReservationID, UserID, ServiceID;
+    private int StaffID;
+    private int ChildID;
     private Date ReservationDate;
     private int ReservationSlot;
     private Timestamp CreatedDate;
     private float Cost;
     private String Status;
-    private int StaffID;
 
     public Reservation() {
         
     }
 
-    public Reservation(int ReservationID, int UserID, int ServiceID, Date ReservationDate, int ReservationSlot, Timestamp CreatedDate, float Cost, String Status, int StaffID) {
+    public Reservation(int ReservationID, int UserID, int ServiceID, int StaffID, int ChildID, Date ReservationDate, int ReservationSlot, Timestamp CreatedDate, float Cost, String Status) {
         this.ReservationID = ReservationID;
         this.UserID = UserID;
         this.ServiceID = ServiceID;
+        this.StaffID = StaffID;
+        this.ChildID = ChildID;
         this.ReservationDate = ReservationDate;
         this.ReservationSlot = ReservationSlot;
         this.CreatedDate = CreatedDate;
         this.Cost = Cost;
         this.Status = Status;
-        this.StaffID = StaffID;
     }
 
     public int getReservationID() {
@@ -59,6 +61,22 @@ public class Reservation {
 
     public void setServiceID(int ServiceID) {
         this.ServiceID = ServiceID;
+    }
+
+    public int getStaffID() {
+        return StaffID;
+    }
+
+    public void setStaffID(int StaffID) {
+        this.StaffID = StaffID;
+    }
+
+    public int getChildID() {
+        return ChildID;
+    }
+
+    public void setChildID(int ChildID) {
+        this.ChildID = ChildID;
     }
 
     public Date getReservationDate() {
@@ -99,14 +117,6 @@ public class Reservation {
 
     public void setStatus(String Status) {
         this.Status = Status;
-    }
-
-    public int getStaffID() {
-        return StaffID;
-    }
-
-    public void setStaffID(int StaffID) {
-        this.StaffID = StaffID;
     }
 
 }
