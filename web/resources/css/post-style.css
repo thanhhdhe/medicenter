@@ -5,3 +5,9 @@
     height: 30px;
     width: 30px;
 }
+.button-icon{
+    width: 30px;
+    height: auto;
+    margin-bottom: 2px;
+    border: none;
+}
