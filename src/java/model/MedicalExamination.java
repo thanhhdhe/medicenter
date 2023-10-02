@@ -18,11 +18,12 @@ public class MedicalExamination {
     private Date examinationDate;
     private int  serviceID;
     private String medicalPrescription;
+    private String disease;
 
     public MedicalExamination() {
     }
 
-    public MedicalExamination(int MedicalExaminationID, int MuserID, int MchildrenID, int MstaffID, Date examinationDate, int serviceID, String medicalPrescription) {
+    public MedicalExamination(int MedicalExaminationID, int MuserID, int MchildrenID, int MstaffID, Date examinationDate, int serviceID, String medicalPrescription, String disease) {
         this.MedicalExaminationID = MedicalExaminationID;
         this.MuserID = MuserID;
         this.MchildrenID = MchildrenID;
@@ -30,6 +31,7 @@ public class MedicalExamination {
         this.examinationDate = examinationDate;
         this.serviceID = serviceID;
         this.medicalPrescription = medicalPrescription;
+        this.disease = disease;
     }
 
 
@@ -87,6 +89,14 @@ public class MedicalExamination {
 
     public void setMedicalPrescription(String medicalPrescription) {
         this.medicalPrescription = medicalPrescription;
+    }
+
+    public String getDisease() {
+        return disease;
+    }
+
+    public void setDisease(String disease) {
+        this.disease = disease;
     }
     
 }

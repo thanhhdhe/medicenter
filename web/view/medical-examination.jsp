@@ -51,10 +51,13 @@
     </head>
 
     <body>
-         <%
-        String email = (String) session.getAttribute("email");
-        StaffDAO staffDAO = new StaffDAO();
-        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+        <%
+            ServiceDAO serviceDAO = new ServiceDAO();
+       String email = (String) session.getAttribute("email");
+       StaffDAO staffDAO = new StaffDAO();
+       Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+       ChildrenDAO childrenDAO = new ChildrenDAO();
+       MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){%>
@@ -93,10 +96,10 @@
             <!-- Sidebar End -->
             <%}%>
             <!-- Content Start -->
-            <div class="content">
+            <div class="content <%if(curStaff==null){%>ms-0 w-100<%}%>">
                 <!-- Navbar Start -->
                 <nav class="navbar navbar-expand navbar-light sticky-top px-4 py-0" style="background-color: #1977cc;">
-                    
+
                     <a href="#" class="sidebar-toggler flex-shrink-0 text-decoration-none text-light">
                         <i class="fa fa-bars"></i>
                     </a>
@@ -159,9 +162,8 @@
                                 <a href="#" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
-                         <%}else{%>
-                        <a onclick="showRegisterPopup()" id="register"class="appointment-btn scrollto"><span class="d-none d-md-inline">Register Now</a>
-                        <a onclick="showLoginPopup()" id="login"class="appointment-btn scrollto"><span class="d-none d-md-inline">Login</a>
+                        <%}else{%>
+                        <a href="http://localhost:9999/ChildrenCare/staff?event=sent-to-login" id="login" class="btn btn-outline-primary ms-3 bg-light rounded-pill text-decoration-none"><span class="d-none d-md-inline">Login</a>
                         <%}%>
                     </div>
                 </nav>
@@ -170,14 +172,15 @@
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
                     <div
-                        class="medical-records row vh-100 bg-white rounded align-items-center justify-content-center mx-0"
+                        class="medical-records row vh-100 bg-white rounded align-items-md-start justify-content-center mx-0"
                         >
                         <div class="col-md-12 p-0">
                             <div class="mb-4 px-4 py-3 border-bottom">
                                 <h4>MEDICAL RECORDS</h4>
                             </div>
                             <div class="table-responsive p-4">
-                                <table class="table">
+                                <%if(curStaff!=null){%>
+                                <table class="table table-striped table-hover">
                                     <thead class="text-light" style="background: #1977cc;">
                                         <tr>
                                             <th scope="col">ID</th>
@@ -190,53 +193,62 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <th scope="row">1</th>
-                                            <td>John</td>
-                                            <td>Doe</td>
-                                            <td>jhon@email.com</td>
-                                            <td>USA</td>
-                                            <td>123</td>
-                                            <td>Member</td>
+                                    <%
+                                    List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getMedicalExaminationsByStaff(curStaff.getStaffID()+"");
+                                    for (MedicalExamination medicalExamination : listMedicalExamination) {%>
+                                    <tr>
+                                            <th scope="row"><%=medicalExamination.getMedicalExaminationID()%></th>
+                                            <td><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getChildName()%></td>
+                                            <td><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getAge()%></td>
+                                            <td><%=serviceDAO.getServiceByID(medicalExamination.getMuserID()+"").getTitle()%></td>
+                                            <td><%=medicalExamination.getExaminationDate()%></td>
+                                            <td><%=medicalExamination.getDisease()%></td>
+                                            <td class="d-flex">
+                                                <a class="me-3" href="#"><i class="fas fa-pencil-alt ms-text-primary"></i></a>
+                                                <a href="#" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
+                                            </td>
                                         </tr>
+                                    <%}%>
+                                        
                                     </tbody>
                                 </table>
+                                    <%}%>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- Blank End -->
+                    <!-- Blank End -->
 
-                <!-- Footer Start -->
-                <div class="mt-4">
-                    <jsp:include page="layout/footer.jsp" />
+                    <!-- Footer Start -->
+                    <div class="mt-4">
+                        <jsp:include page="layout/footer.jsp" />
+                    </div>
+                    <!-- Footer End -->
                 </div>
-                <!-- Footer End -->
+                <!-- Content End -->
+
             </div>
-            <!-- Content End -->
 
-        </div>
+            <!-- JavaScript Libraries -->
+            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script
+                src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+                integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+                crossorigin="anonymous"
+            ></script>
 
-        <!-- JavaScript Libraries -->
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-            crossorigin="anonymous"
-        ></script>
+            <!-- Template Javascript -->
+            <script>
+                            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+                                var sidebar = document.querySelector('.sidebar');
+                                var content = document.querySelector('.content');
 
-        <!-- Template Javascript -->
-        <script>
-            document.querySelector('.sidebar-toggler').addEventListener('click', function() {
-                var sidebar = document.querySelector('.sidebar');
-                var content = document.querySelector('.content');
+                                sidebar.classList.toggle('open');
+                                content.classList.toggle('open');
 
-                sidebar.classList.toggle('open');
-                content.classList.toggle('open');
-
-                return false;
-            });
-        </script>
+                                return false;
+                            });
+            </script>
     </body>
 </html>
 
