@@ -16,27 +16,36 @@ public class Children {
     private String childName;
     private Date birthday;
     private String status;
+    private String gender;
 
     public Children() {
     }
 
-    public Children(int childID, int userID, String childName, Date birthday, String status) {
+    public Children(int childID, int userID, String childName, Date birthday, String status, String gender) {
         this.childID = childID;
         this.userID = userID;
         this.childName = childName;
         this.birthday = birthday;
         this.status = status;
+        this.gender = gender;
     }
 
-    
-    
-    public Children(int userID, String childName, Date birthday, String status) {
+    public Children(int userID, String childName, Date birthday, String status, String gender) {
         this.userID = userID;
         this.childName = childName;
         this.birthday = birthday;
         this.status = status;
+        this.gender = gender;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+    
     public int getChildID() {
         return childID;
     }

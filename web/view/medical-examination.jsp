@@ -64,7 +64,7 @@
             <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">
                 <nav class="navbar navbar-light">
-                    <a href="index.html" class="navbar-brand mx-4 mb-3">
+                    <a href="staff?event=sent-to-home" class="navbar-brand mx-4 mb-3">
                         <h3 class="text-light">
                             <i class="fa fa-hashtag me-2"></i>Medilab
                         </h3>
@@ -163,7 +163,7 @@
                             </div>
                         </div>
                         <%}else{%>
-                        <a href="http://localhost:9999/ChildrenCare/staff?event=sent-to-login" id="login" class="btn btn-outline-primary ms-3 bg-light rounded-pill text-decoration-none"><span class="d-none d-md-inline">Login</a>
+                        <a href="staff?event=sent-to-login" id="login" class="btn btn-outline-primary ms-3 bg-light rounded-pill text-decoration-none"><span class="d-none d-md-inline">Login</a>
                         <%}%>
                     </div>
                 </nav>
@@ -175,8 +175,9 @@
                         class="medical-records row vh-100 bg-white rounded align-items-md-start justify-content-center mx-0"
                         >
                         <div class="col-md-12 p-0">
-                            <div class="mb-4 px-4 py-3 border-bottom">
+                            <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
                                 <h4>MEDICAL RECORDS</h4>
+                                <a href="add-appointment.html" class="ms-text-primary font-weight-bold">Add Medical Record</a>
                             </div>
                             <div class="table-responsive p-4">
                                 <%if(curStaff!=null){%>
@@ -204,7 +205,7 @@
                                             <td><%=medicalExamination.getExaminationDate()%></td>
                                             <td><%=medicalExamination.getDisease()%></td>
                                             <td class="d-flex">
-                                                <a class="me-3" href="#"><i class="fas fa-pencil-alt ms-text-primary"></i></a>
+                                                <a class="me-3" href="staff?event=send-to-edit&id=<%=medicalExamination.getMedicalExaminationID()%>"><i class="fas fa-pencil-alt ms-text-primary"></i></a>
                                                 <a href="#" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
                                             </td>
                                         </tr>

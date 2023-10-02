@@ -51,10 +51,10 @@
     </head>
 
     <body>
-         <%
-        String email = (String) session.getAttribute("email");
-        StaffDAO staffDAO = new StaffDAO();
-        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+        <%
+       String email = (String) session.getAttribute("email");
+       StaffDAO staffDAO = new StaffDAO();
+       Staff curStaff = staffDAO.getStaffByStaffEmail(email);
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){%>
@@ -84,7 +84,7 @@
                         </div>
                     </div>
                     <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
+                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link active"
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
@@ -96,7 +96,7 @@
             <div class="content <%if(curStaff==null){%>ms-0 w-100<%}%>">
                 <!-- Navbar Start -->
                 <nav class="navbar navbar-expand navbar-light sticky-top px-4 py-0" style="background-color: #1977cc;">
-                    
+
                     <a href="#" class="sidebar-toggler flex-shrink-0 text-decoration-none text-light">
                         <i class="fa fa-bars"></i>
                     </a>
@@ -159,7 +159,7 @@
                                 <a href="logout" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
-                         <%}else{%>
+                        <%}else{%>
                         <a href="staff?event=sent-to-login" id="login" class="btn btn-outline-primary ms-3 bg-light rounded-pill text-decoration-none"><span class="d-none d-md-inline">Login</a>
                         <%}%>
                     </div>
@@ -169,11 +169,78 @@
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
                     <div
-                        class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0"
+                        class="row bg-light rounded align-items-center justify-content-center mx-0"
                         >
-                        <div class="col-md-6 text-center">
-                            <h3>This is staff dashboard page</h3>
-                        </div>
+                        <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
+                                <h4>MEDICAL EDIT</h4>
+                            </div>
+                        <form class="needs-validation" novalidate="">
+                                <div class="form-row">
+                                    <div class="col-md-6 mb-3 px-3">
+                                        <label for="validationCustom001">First Name</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="validationCustom001" placeholder="Enter First Name" required="">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3 px-3">
+                                        <label for="validationCustom002">Last name</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="validationCustom002" placeholder="Enter Last Name" required="">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6 mb-3 px-3">
+                                        <label for="validationCustom007">Date of Birth</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="validationCustom007" placeholder="Enter Doctor Name" required="">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3 px-3">
+                                        <label for="validationCustom008">Appointment Date</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="validationCustom008" placeholder="Enter Appointment Date" required="">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6 mb-3 px-3">
+                                        <label for="validationCustom008">Disease</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="validationCustom008" placeholder="Enter Disease" required="">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3 px-3">
+                                        <label>Sex</label>
+                                        <ul class="d-flex list-unstyled">
+                                            <li class="ms-list-item ps-0">
+                                                <input type="radio" name="radioExample" value="">
+                                                <span> Male </span>
+                                            </li>
+                                            <li class="ms-list-item">
+                                                    <input type="radio" name="radioExample" value="" checked="">
+                                                <span> Female </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-2 px-3">
+                                        <label>MedicalPrescription</label>
+                                        <div class="input-group">
+                                            <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-warning mt-4 ms-3 me-2 d-inline w-20" type="submit">Reset</button>
+                                <button class="btn btn-primary mt-4 d-inline w-20" type="submit">Save</button>
+                        </form>
                     </div>
                 </div>
                 <!-- Blank End -->
@@ -203,7 +270,7 @@
 
         <!-- Template Javascript -->
         <script>
-            document.querySelector('.sidebar-toggler').addEventListener('click', function() {
+            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
                 var sidebar = document.querySelector('.sidebar');
                 var content = document.querySelector('.content');
 

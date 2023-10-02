@@ -292,3 +292,20 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 .medical-records{
     box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.1);
 }
+
+.ms-list-item {
+    position: relative;
+    padding: 0.75rem;
+    margin-bottom: 0.7rem;
+}
+.ms-text-primary{
+    color: #009efb;
+    text-decoration: none;
+}
+
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -5px;
+    margin-left: -5px;
+}
