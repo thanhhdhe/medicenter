@@ -374,7 +374,7 @@ public class FeedBackDAO extends MyDAO {
             while (rs.next()) {
                 medical.add(new MedicalExamination(rs.getInt(1), rs.getInt(2),
                         rs.getInt(3), rs.getInt(4),
-                        rs.getDate(5), rs.getInt(6), rs.getString(7)));
+                        rs.getDate(5), rs.getInt(6), rs.getString(7), rs.getString(8)));
             }
             rs.close();
             ps.close();

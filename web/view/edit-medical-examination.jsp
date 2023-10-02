@@ -11,7 +11,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Medical examination</title>
+        <title>Staff dashboard</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <meta content="" name="keywords" />
         <meta content="" name="description" />
@@ -52,12 +52,9 @@
 
     <body>
         <%
-            ServiceDAO serviceDAO = new ServiceDAO();
        String email = (String) session.getAttribute("email");
        StaffDAO staffDAO = new StaffDAO();
        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-       ChildrenDAO childrenDAO = new ChildrenDAO();
-       MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){%>
@@ -172,88 +169,117 @@
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
                     <div
-                        class="medical-records row vh-100 bg-white rounded align-items-md-start justify-content-center mx-0"
+                        class="row bg-light rounded align-items-center justify-content-center mx-0"
                         >
-                        <div class="col-md-12 p-0">
-                            <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
-                                <h4>MEDICAL RECORDS</h4>
-                                <a href="add-appointment.html" class="ms-text-primary font-weight-bold">Add Medical Record</a>
+                        <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
+                                <h4>MEDICAL EDIT</h4>
                             </div>
-                            <div class="table-responsive p-4">
-                                <%if(curStaff!=null){%>
-                                <table class="table table-striped table-hover">
-                                    <thead class="text-light" style="background: #1977cc;">
-                                        <tr>
-                                            <th scope="col">ID</th>
-                                            <th scope="col">Patient Name</th>
-                                            <th scope="col">Date of birth</th>
-                                            <th scope="col">Service</th>
-                                            <th scope="col">Date</th>
-                                            <th scope="col">Disease</th>
-                                            <th scope="col">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <%
-                                        List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getMedicalExaminationsByStaff(curStaff.getStaffID()+"");
-                                        for (MedicalExamination medicalExamination : listMedicalExamination) {%>
-                                        <tr>
-                                            <th scope="row"><%=medicalExamination.getMedicalExaminationID()%></th>
-                                            <td><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getChildName()%></td>
-                                            <td><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getBirthday()%></td>
-                                            <td><%=serviceDAO.getServiceByID(medicalExamination.getMuserID()+"").getTitle()%></td>
-                                            <td><%=medicalExamination.getExaminationDate()%></td>
-                                            <td><%=medicalExamination.getDisease()%></td>
-                                            <td class="d-flex">
-                                                <a class="me-3" href="staff?event=send-to-edit&id=<%=medicalExamination.getMedicalExaminationID()%>"><i class="fas fa-pencil-alt ms-text-primary"></i></a>
-                                                <a href="#" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
-                                            </td>
-                                        </tr>
-                                        <%}%>
+                        <form class="needs-validation" novalidate="">
+                                <div class="form-row">
+                                    <div class="col-md-6 mb-3 px-3">
+                                        <label for="validationCustom001">First Name</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="validationCustom001" placeholder="Enter First Name" required="">
 
-                                    </tbody>
-                                </table>
-                                <%}%>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Blank End -->
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3 px-3">
+                                        <label for="validationCustom002">Last name</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="validationCustom002" placeholder="Enter Last Name" required="">
 
-                    <!-- Footer Start -->
-                    <div class="mt-4">
-                        <jsp:include page="layout/footer.jsp" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6 mb-3 px-3">
+                                        <label for="validationCustom007">Date of Birth</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="validationCustom007" placeholder="Enter Doctor Name" required="">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3 px-3">
+                                        <label for="validationCustom008">Appointment Date</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="validationCustom008" placeholder="Enter Appointment Date" required="">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6 mb-3 px-3">
+                                        <label for="validationCustom008">Disease</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="validationCustom008" placeholder="Enter Disease" required="">
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3 px-3">
+                                        <label>Sex</label>
+                                        <ul class="d-flex list-unstyled">
+                                            <li class="ms-list-item ps-0">
+                                                <input type="radio" name="radioExample" value="">
+                                                <span> Male </span>
+                                            </li>
+                                            <li class="ms-list-item">
+                                                    <input type="radio" name="radioExample" value="" checked="">
+                                                <span> Female </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-12 mb-2 px-3">
+                                        <label>Medical Prescription</label>
+                                        <div class="input-group">
+                                            <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-warning mt-4 ms-3 me-2 d-inline w-20" type="submit">Reset</button>
+                                <button class="btn btn-primary mt-4 d-inline w-20" type="submit">Save</button>
+                        </form>
                     </div>
-                    <!-- Footer End -->
                 </div>
-                <!-- Content End -->
+                <!-- Blank End -->
 
+                <!-- Footer Start -->
+                <div class="mt-4">
+                    <jsp:include page="layout/footer.jsp" />
+                </div>
+                <!-- Footer End -->
             </div>
+            <!-- Content End -->
 
-            <!-- JavaScript Libraries -->
-            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-            <script
-                src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-                integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-                crossorigin="anonymous"
-            ></script>
-            <script
-                src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-                integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-                crossorigin="anonymous"
-            ></script>
+        </div>
 
-            <!-- Template Javascript -->
-            <script>
-                document.querySelector('.sidebar-toggler').addEventListener('click', function () {
-                    var sidebar = document.querySelector('.sidebar');
-                    var content = document.querySelector('.content');
+        <!-- JavaScript Libraries -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+            crossorigin="anonymous"
+        ></script>
 
-                    sidebar.classList.toggle('open');
-                    content.classList.toggle('open');
+        <!-- Template Javascript -->
+        <script>
+            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+                var sidebar = document.querySelector('.sidebar');
+                var content = document.querySelector('.content');
 
-                    return false;
-                });
-            </script>
+                sidebar.classList.toggle('open');
+                content.classList.toggle('open');
+
+                return false;
+            });
+        </script>
     </body>
 </html>
 

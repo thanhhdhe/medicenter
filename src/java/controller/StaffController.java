@@ -58,11 +58,19 @@ public class StaffController extends HttpServlet {
     throws ServletException, IOException {
         String event = request.getParameter("event");
         switch(event){
+            case "sent-to-home":
+                request.getRequestDispatcher("./view/staff-dashboard.jsp").forward(request, response);
+                break;
             case "sent-to-login":
                 request.getRequestDispatcher("./view/login-staff.jsp").forward(request, response);
                 break;
             case "send-to-medical-examination":
                 request.getRequestDispatcher("./view/medical-examination.jsp").forward(request, response);
+                break;
+            case "send-to-edit":
+                request.getRequestDispatcher("./view/edit-medical-examination.jsp").forward(request, response);
+            case "send-to-feedback":
+                request.getRequestDispatcher("feedback").forward(request, response);
                 break;
         }
     } 

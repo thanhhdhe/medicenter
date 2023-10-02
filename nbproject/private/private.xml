@@ -12,13 +12,14 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/view/service-manage.jsp</file>
-            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/view/service-detail-manage.jsp</file>
-            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/view/servicedetail.jsp</file>
-            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/view/contact.jsp</file>
-            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/resources/js/services-details-manage.js</file>
-            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/src/java/controller/ServiceController.java</file>
-            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/src/java/Database/ReservationDAO.java</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/src/java/model/Staff.java</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/resources/css/staff-dashboard.css</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/src/java/model/Children.java</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/view/service-list.jsp</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/view/staff-dashboard.jsp</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/view/edit-medical-examination.jsp</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/web/view/medical-examination.jsp</file>
+            <file>file:/E:/java%20web%20workspace/childrenClone/swp391-children-care/src/java/Database/ChildrenDAO.java</file>
         </group>
     </open-files>
 </project-private>
