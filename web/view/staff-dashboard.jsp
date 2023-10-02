@@ -93,7 +93,7 @@
             <!-- Sidebar End -->
             <%}%>
             <!-- Content Start -->
-            <div class="content">
+            <div class="content <%if(curStaff==null){%>ms-0 w-100<%}%>">
                 <!-- Navbar Start -->
                 <nav class="navbar navbar-expand navbar-light sticky-top px-4 py-0" style="background-color: #1977cc;">
                     
@@ -156,12 +156,11 @@
                                 >
                                 <a href="#" class="dropdown-item">My Profile</a>
                                 <a href="#" class="dropdown-item">Settings</a>
-                                <a href="#" class="dropdown-item">Log Out</a>
+                                <a href="logout" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
                          <%}else{%>
-                        <a onclick="showRegisterPopup()" id="register"class="appointment-btn scrollto"><span class="d-none d-md-inline">Register Now</a>
-                        <a onclick="showLoginPopup()" id="login"class="appointment-btn scrollto"><span class="d-none d-md-inline">Login</a>
+                        <a href="http://localhost:9999/ChildrenCare/staff?event=sent-to-login" id="login" class="btn btn-outline-primary ms-3 bg-light rounded-pill text-decoration-none"><span class="d-none d-md-inline">Login</a>
                         <%}%>
                     </div>
                 </nav>
@@ -191,7 +190,11 @@
 
         <!-- JavaScript Libraries -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+            crossorigin="anonymous"
+        ></script>
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
             integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"

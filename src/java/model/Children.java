@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.sql.Date;
+
 /**
  *
  * @author Admin
@@ -12,24 +14,26 @@ public class Children {
     private int childID;
     private int userID;
     private String childName;
-    private int age;
+    private Date birthday;
     private String status;
 
     public Children() {
     }
 
-    public Children(int childID, int userID, String childName, int age, String status) {
+    public Children(int childID, int userID, String childName, Date birthday, String status) {
         this.childID = childID;
         this.userID = userID;
         this.childName = childName;
-        this.age = age;
+        this.birthday = birthday;
         this.status = status;
     }
+
     
-    public Children( int userID, String childName, int age, String status) {
+    
+    public Children(int userID, String childName, Date birthday, String status) {
         this.userID = userID;
         this.childName = childName;
-        this.age = age;
+        this.birthday = birthday;
         this.status = status;
     }
 
@@ -57,13 +61,14 @@ public class Children {
         this.childName = childName;
     }
 
-    public int getAge() {
-        return age;
+    public Date getBirthday() {
+        return birthday;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
     }
+
 
     public String getStatus() {
         return status;

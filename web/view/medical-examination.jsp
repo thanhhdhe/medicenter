@@ -159,7 +159,7 @@
                                 >
                                 <a href="#" class="dropdown-item">My Profile</a>
                                 <a href="#" class="dropdown-item">Settings</a>
-                                <a href="#" class="dropdown-item">Log Out</a>
+                                <a href="logout" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
                         <%}else{%>
@@ -185,7 +185,7 @@
                                         <tr>
                                             <th scope="col">ID</th>
                                             <th scope="col">Patient Name</th>
-                                            <th scope="col">Age</th>
+                                            <th scope="col">Date of birth</th>
                                             <th scope="col">Service</th>
                                             <th scope="col">Date</th>
                                             <th scope="col">Disease</th>
@@ -193,13 +193,13 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    <%
-                                    List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getMedicalExaminationsByStaff(curStaff.getStaffID()+"");
-                                    for (MedicalExamination medicalExamination : listMedicalExamination) {%>
-                                    <tr>
+                                        <%
+                                        List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getMedicalExaminationsByStaff(curStaff.getStaffID()+"");
+                                        for (MedicalExamination medicalExamination : listMedicalExamination) {%>
+                                        <tr>
                                             <th scope="row"><%=medicalExamination.getMedicalExaminationID()%></th>
                                             <td><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getChildName()%></td>
-                                            <td><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getAge()%></td>
+                                            <td><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getBirthday()%></td>
                                             <td><%=serviceDAO.getServiceByID(medicalExamination.getMuserID()+"").getTitle()%></td>
                                             <td><%=medicalExamination.getExaminationDate()%></td>
                                             <td><%=medicalExamination.getDisease()%></td>
@@ -208,11 +208,11 @@
                                                 <a href="#" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
                                             </td>
                                         </tr>
-                                    <%}%>
-                                        
+                                        <%}%>
+
                                     </tbody>
                                 </table>
-                                    <%}%>
+                                <%}%>
                             </div>
                         </div>
                     </div>
@@ -230,7 +230,11 @@
 
             <!-- JavaScript Libraries -->
             <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+            <script
+                src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+                integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+                crossorigin="anonymous"
+            ></script>
             <script
                 src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
                 integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
@@ -239,15 +243,15 @@
 
             <!-- Template Javascript -->
             <script>
-                            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
-                                var sidebar = document.querySelector('.sidebar');
-                                var content = document.querySelector('.content');
+                document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+                    var sidebar = document.querySelector('.sidebar');
+                    var content = document.querySelector('.content');
 
-                                sidebar.classList.toggle('open');
-                                content.classList.toggle('open');
+                    sidebar.classList.toggle('open');
+                    content.classList.toggle('open');
 
-                                return false;
-                            });
+                    return false;
+                });
             </script>
     </body>
 </html>

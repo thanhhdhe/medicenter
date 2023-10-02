@@ -4,6 +4,7 @@
  */
 package Database;
 
+import java.sql.Date;
 import model.Children;
 
 /**
@@ -22,9 +23,9 @@ public class ChildrenDAO extends MyDAO{
                 int childID = rs.getInt("ChildID");
                 int userID = rs.getInt("UserID");
                 String childName = rs.getString("ChildName");
-                int age = rs.getInt("Age");
+                Date birthday = rs.getDate("Birthday");
                 String status = rs.getString("Status");
-                children = new Children(childID, userID, childName, age, status);
+                children = new Children(childID, userID, childName, birthday, status);
             }
             rs.close();
             ps.close();
