@@ -88,6 +88,11 @@
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="staff?event=send-to-feedback" class="nav-item nav-link"
+                           ><i class="far fa-file-alt me-2"></i>Feedback</a
+                        >
+                    </div>
                 </nav>
             </div>
             <!-- Sidebar End -->

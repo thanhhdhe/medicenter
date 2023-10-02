@@ -231,7 +231,7 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="col-md-12 mb-2 px-3">
-                                        <label>MedicalPrescription</label>
+                                        <label>Medical Prescription</label>
                                         <div class="input-group">
                                             <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
 
