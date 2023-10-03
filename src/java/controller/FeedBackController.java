@@ -101,7 +101,7 @@ public class FeedBackController extends HttpServlet {
                 roleaccount = staff.getRole();
             }
             // check role of account
-            if (roleaccount.equals("doctor".trim())) {
+            if (roleaccount.equals("manager".trim())) {
                 FeedBackDAO dao = new FeedBackDAO();
                 //get service for fillter
                 ServiceDAO servicedao = new ServiceDAO();
