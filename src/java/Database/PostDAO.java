@@ -6,6 +6,7 @@ package Database;
 
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import model.Post;
@@ -115,18 +116,27 @@ public class PostDAO extends MyDAO {
         return postList;
     }
 
-    public List<Post> getPostedPagedPostsBySearch(int offSetPage, int numberOfPage, String keyword) {
+    public List<Post> getSortedPagedPostsByUserChoice(int offSetPage, int numberOfPage, String keyword, String postCategory) {
         List<Post> postList = new ArrayList<>();
-        xSql = "SELECT *  FROM [dbo].[Posts]  "
-                + "where Title like ? "
-                + "ORDER BY CreatedDate DESC "
-                + "OFFSET ? ROWS \n "
-                + "FETCH NEXT ? ROWS ONLY;";
+        xSql = "SELECT *  FROM Posts "
+                + "WHERE Title like ? and StatusPost= 'true' ";
+        if (!postCategory.isEmpty()) {
+            xSql += " and CategoryPost = ? ";
+        }
+        xSql += "    ORDER BY CreatedDate DESC "
+                + "    OFFSET ? ROWS "
+                + "    FETCH NEXT ? ROWS ONLY ";
         try {
+            int index = 2;
             ps = con.prepareStatement(xSql);
             ps.setString(1, "%" + keyword + "%");
-            ps.setInt(2, offSetPage);
-            ps.setInt(3, numberOfPage);
+            if (!postCategory.isEmpty()) {
+                ps.setString(index, postCategory);
+                index++;
+            }
+            ps.setInt(index, offSetPage);
+            index++;
+            ps.setInt(index, numberOfPage);
 
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -151,20 +161,28 @@ public class PostDAO extends MyDAO {
         }
         return postList;
     }
-
-    public List<Post> getSortedPagedPostsByCategory(int offSetPage, int numberOfPage, String keyword, String postCategory) {
+    
+        public List<Post> getSortedPagedPostsByManagerChoice(int offSetPage, int numberOfPage, String keyword, String postCategory, String Author, String postStatus) {
         List<Post> postList = new ArrayList<>();
         xSql = "SELECT *  FROM Posts "
-                + "WHERE Title like ? and CategoryPost = ?"
-                + "    ORDER BY CreatedDate DESC "
+                + "WHERE Title like ? ";
+        if (!postCategory.isEmpty()) {
+            xSql += " and CategoryPost = ? ";
+        }
+        xSql += "    ORDER BY CreatedDate DESC "
                 + "    OFFSET ? ROWS "
                 + "    FETCH NEXT ? ROWS ONLY ";
         try {
+            int index = 2;
             ps = con.prepareStatement(xSql);
             ps.setString(1, "%" + keyword + "%");
-            ps.setString(2, postCategory);
-            ps.setInt(3, offSetPage);
-            ps.setInt(4, numberOfPage);
+            if (!postCategory.isEmpty()) {
+                ps.setString(index, postCategory);
+                index++;
+            }
+            ps.setInt(index, offSetPage);
+            index++;
+            ps.setInt(index, numberOfPage);
 
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -228,42 +246,6 @@ public class PostDAO extends MyDAO {
         return postList;
     }
 
-//    public List<Post> getSortedPagedPostsByStatus(int offSetPage, int numberOfPage, String keyword, boolean Status) {
-//        List<Post> postList = new ArrayList<>();
-//        xSql = "SELECT *  FROM Posts "
-//                + "WHERE Title like ? and CategoryPost = ?"
-//                + "    ORDER BY CreatedDate DESC "
-//                + "    OFFSET ? ROWS "
-//                + "    FETCH NEXT ? ROWS ONLY ";
-//        try {
-//            ps = con.prepareStatement(xSql);
-//            ps.setString(1, "%" + keyword + "%");
-//            ps.set
-//            ps.setInt(3, offSetPage);
-//            ps.setInt(4, numberOfPage);
-//
-//            rs = ps.executeQuery();
-//            while (rs.next()) {
-//                int postID = rs.getInt(1);
-//                String title = rs.getString(2);
-//                String content = rs.getString(3);
-//                String briefInfo = rs.getString(4);
-//                String thumbnail = rs.getString(5);
-//                int count = rs.getInt(6);
-//                int authorID = rs.getInt(7);
-//                int serviceID = rs.getInt(8);
-//                Date createdDate = rs.getDate(9);
-//                String categoryPost = rs.getString(10);
-//                Post post = new Post(postID, title, content, briefInfo, thumbnail, count, authorID, serviceID, createdDate, categoryPost);
-//                postList.add(post);
-//            }
-//            rs.close();
-//            ps.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return postList;
-//    }
     public Post getPostByID(int ID) {
         Post post = null;
         xSql = "select * from [dbo].[Posts] where PostID = ?";
@@ -324,19 +306,18 @@ public class PostDAO extends MyDAO {
     }
 
     public void insert(Post post) {
-        xSql = "INSERT INTO Posts(Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost) \n"
-                + "     VALUES (? ,? ,? ,? ,? ,? ,?,?)";
+        xSql = "INSERT INTO Posts(Title, Content, BriefInfo, Thumbnail, AuthorID, ServiceID, CreatedDate, CategoryPost) \n"
+                + "     VALUES (? ,? ,? ,? ,? ,? ,?, ?)";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, post.getTitle());
             ps.setString(2, post.getContent());
             ps.setString(3, post.getBriefInfo());
             ps.setString(4, post.getThumbnail());
-            ps.setInt(5, post.getCount());
-            ps.setInt(6, post.getAuthorID());
-            ps.setInt(7, post.getServiceID());
-            ps.setDate(8, post.getCreatedDate());
-            ps.setString(9, post.getCategoryPost());
+            ps.setInt(5, post.getAuthorID());
+            ps.setInt(6, post.getServiceID());
+            ps.setDate(7, post.getCreatedDate());
+            ps.setString(8, post.getCategoryPost());
             ps.executeUpdate();
             ps.close();
         } catch (Exception e) {
@@ -359,7 +340,7 @@ public class PostDAO extends MyDAO {
 
     public void update(int postID, Post post) {
         xSql = "UPDATE [dbo].[Posts]\n"
-                + "   SET Title=?,Content=?,BriefInfo=?,Thumbnail=?,AuthorID=?,ServiceID+? ,CreatedDate=?, CategoryPost=?"
+                + "   SET Title=?,Content=?,BriefInfo=?,Thumbnail=?,AuthorID=?,ServiceID=? ,CreatedDate=?, CategoryPost=?, StatusPost=?"
                 + " WHERE [PostID] = ?";
         try {
             ps = con.prepareStatement(xSql);
@@ -371,7 +352,8 @@ public class PostDAO extends MyDAO {
             ps.setInt(6, post.getServiceID());
             ps.setDate(7, post.getCreatedDate());
             ps.setString(8, post.getCategoryPost());
-            ps.setInt(9, postID);
+            ps.setBoolean(9, post.isStatusPost());
+            ps.setInt(10, postID);
             ps.executeUpdate();
             ps.close();
         } catch (SQLException e) {
@@ -380,35 +362,18 @@ public class PostDAO extends MyDAO {
         }
     }
 
-    public int getPostCount() {
-        xSql = "SELECT COUNT(*) AS TotalRecords FROM Posts";
-        int total = 0;
-        try {
-            ps = con.prepareStatement(xSql);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                total = rs.getInt("TotalRecords");
-            }
-            rs.close();
-            ps.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return total;
-    }
-
     public int getCountOfPostsUserChoose(String keyword, String categoryPost) {
         int count = 0;
-        String sql = "SELECT COUNT(*) AS count "
+        String xSql = "SELECT COUNT(*) AS count "
                 + "FROM [dbo].[Posts]"
                 + "WHERE Title LIKE ? ";
 
         if (!categoryPost.isEmpty()) {
-            sql += "AND CategoryPost = ? ";
+            xSql += "AND CategoryPost = ? ";
         }
-
+            xSql += "AND StatusPost='true'";
         try {
-            ps = con.prepareStatement(sql);
+            ps = con.prepareStatement(xSql);
             ps.setString(1, "%" + keyword + "%");
 
             if (!categoryPost.isEmpty()) {
@@ -444,6 +409,23 @@ public class PostDAO extends MyDAO {
             e.printStackTrace();
         }
         return categoryList;
+    }
+
+    public List<String> allAuthorPost() {
+        xSql = "SELECT DISTINCT u.FirstName + ' '+ u.LastName as UserName FROM Posts as p join Users as u on p.AuthorID= u.UserID ";
+        List<String> authorList = new ArrayList<>();
+        try {
+            ps = con.prepareStatement(xSql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                authorList.add(rs.getString(1));
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return authorList;
     }
 
     public String getAvatarByUserID(int authourID) {
@@ -503,38 +485,10 @@ public class PostDAO extends MyDAO {
         return postList;
     }
 
-    public List<Post> postsSortByTitle() {
+    public List<Post> postsSortByUserChoice(String choice) {
         List<Post> postList = new ArrayList<>();
-        xSql = "SELECT *  FROM [dbo].[Posts] Order by Title";
-        try {
-            ps = con.prepareStatement(xSql);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                int postID = rs.getInt(1);
-                String title = rs.getString(2);
-                String content = rs.getString(3);
-                String briefInfo = rs.getString(4);
-                String thumbnail = rs.getString(5);
-                int count = rs.getInt(6);
-                int authorID = rs.getInt(7);
-                int serviceID = rs.getInt(8);
-                Date createdDate = rs.getDate(9);
-                String categoryPost = rs.getString(10);
-                Boolean statusPost = rs.getBoolean(11);
-                Post post = new Post(postID, title, content, briefInfo, thumbnail, count, authorID, serviceID, createdDate, categoryPost, statusPost);
-                postList.add(post);
-            }
-            rs.close();
-            ps.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return postList;
-    }
-
-    public List<Post> postsSortByCategory() {
-        List<Post> postList = new ArrayList<>();
-        xSql = "SELECT *  FROM [dbo].[Posts] Order by CategoryPost";
+        xSql = "SELECT *  FROM [dbo].[Posts] Order by";
+        xSql += choice;
         try {
             ps = con.prepareStatement(xSql);
             rs = ps.executeQuery();
@@ -562,9 +516,10 @@ public class PostDAO extends MyDAO {
     }
 
     public static void main(String[] args) {
-        PostDAO postDAO= new PostDAO();
-        
-        int numOfPage = postDAO.getCountOfPostsUserChoose("", "") / 6;
-        System.out.println(numOfPage);
+        PostDAO postDAO = new PostDAO();
+        List<Post> list = postDAO.getSortedPagedPostsByUserChoice(0, 6, "a", "1");
+        for (Post post : list) {
+            System.out.println(post.getTitle());
+        }
     }
 }

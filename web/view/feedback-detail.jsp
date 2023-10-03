@@ -50,6 +50,20 @@
 
                         <c:set var="ser" value="${requestScope.ser}" />
                         <div class="card-body">
+                            <!-- Status -->
+                            <c:set var="FDid" value="${requestScope.FDid}" />
+                            <div class="dropdown">
+                                <button style="border: 0px; background-color: #ffffff;" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="badge bg-primary"  id="statusBadge-${FDid}">${fe.getFstatus()}</span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${FDid})">Appored</a></li>
+                                    <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${FDid})">Unresolved</a></li>
+                                    <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${FDid}})">Resolved</a></li>
+                                    <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${FDid})">Reviewed</a></li>
+                                </ul>
+
+                            </div>
                             <div class="d-flex justify-content-between">
                                 <div>
                                     <h5 class="card-title">Service: ${ser.getTitle()}</h5>
@@ -71,7 +85,7 @@
 
                                 </div>
                             </div>
-                            
+
                         </div>
                     </div>
 
@@ -92,7 +106,27 @@
             integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
             crossorigin="anonymous"
         ></script>
+        <script>
+                                        function changestatus(a, uid) {
+                                            var text = a.textContent;
+                                            var textchange = document.getElementById("statusBadge-" + uid);
+                                            textchange.textContent = text;
 
+                                            // Gửi yêu cầu Ajax đến servlet
+                                            var xhr = new XMLHttpRequest();
+                                            xhr.open("POST", "feedback?event=updatestatus&Fstatus=" + text + "&UID=" + uid, true);
+
+                                            xhr.onload = function () {
+
+                                            };
+
+                                            xhr.onerror = function () {
+
+                                            };
+
+                                            xhr.send();
+                                        }
+        </script>
 
         <!-- Thêm các tệp JS của Bootstrap 5.0.2 tại đây (nếu cần) -->
         <script src="path-to-bootstrap-js/bootstrap.bundle.min.js"></script>

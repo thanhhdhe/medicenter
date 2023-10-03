@@ -6,6 +6,7 @@ package controller;
 
 import Database.FeedBackDAO;
 import Database.ServiceDAO;
+import Database.StaffDAO;
 import Database.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -19,6 +20,7 @@ import model.FeedBack;
 import model.Mail;
 import model.MedicalExamination;
 import model.Service;
+import model.Staff;
 import model.User;
 
 /**
@@ -44,10 +46,12 @@ public class FeedBackController extends HttpServlet {
         //get Role account
         HttpSession session = request.getSession();
         String role = (String) session.getAttribute("email");
+        StaffDAO staffDAO = new StaffDAO();
+        Staff staff= staffDAO.getStaffByStaffEmail(role);
         UserDAO userdao = new UserDAO();
         User Arole = userdao.getUser(role);
         // check login
-        if (Arole == null) {
+        if (staff == null && Arole == null) {
             out.println("<html><head><title>Login Required</title>");
             out.println("<style>");
             out.println("  .overlay {");
@@ -90,7 +94,12 @@ public class FeedBackController extends HttpServlet {
             out.println("</script>");
             out.println("</body></html>");
         } else {
-            String roleaccount = Arole.getRole();
+            String roleaccount="";
+            if(staff == null){
+                roleaccount = Arole.getRole();
+            } else {
+                roleaccount = staff.getRole();
+            }
             // check role of account
             if (roleaccount.equals("manager".trim())) {
                 FeedBackDAO dao = new FeedBackDAO();
@@ -105,23 +114,23 @@ public class FeedBackController extends HttpServlet {
 
                     //get total page
                     int endP = dao.getTotalFeedback();
-                    int endPage = endP / 5;
+                    int endPage = endP / 10;
                     //paging
-                    if (endP % 5 != 0) {
-                        endPage++; // if endP not divide by 5 so that endPage + 1
+                    if (endP % 10 != 0) {
+                        endPage++; // if endP not divide by 10 so that endPage + 1
                     }
                     String index = request.getParameter("index");
                     if (index == null) {
                         List<FeedBack> feedbacks = dao.getPageFeedBacks(1);
                         request.setAttribute("endP", endPage);
                         request.setAttribute("feedbacks", feedbacks);
-                        request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     } else {
                         int page = Integer.parseInt(index);
                         List<FeedBack> feedbacks = dao.getPageFeedBacks(page);
                         request.setAttribute("endP", endPage);
                         request.setAttribute("feedbacks", feedbacks);
-                        request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     }
                 } else if (event.equals("showdetailfeedback")) {
                     //create feedback by id
@@ -130,7 +139,7 @@ public class FeedBackController extends HttpServlet {
                     ServiceDAO serviceDAO = new ServiceDAO();
                    
                     Service ser = serviceDAO.getServiceByID(feedback.getServiceName());
-                    
+                    request.setAttribute("FDid", FDid);
                     request.setAttribute("ser", ser);
                     request.setAttribute("feedbackdetail", feedback);
                     request.getRequestDispatcher("/view/feedback-detail.jsp").forward(request, response);
@@ -147,10 +156,10 @@ public class FeedBackController extends HttpServlet {
                     String Fillstatus = request.getParameter("fillstatus");
                     //get total page
                     int endP = dao.getTotalFeedbackFill(Fillstatus, "FStatus");
-                    int endPage = endP / 5;
+                    int endPage = endP / 10;
                     //paging
-                    if (endP % 5 != 0) {
-                        endPage++; // if endP not divide by 5 so that endPage + 1
+                    if (endP % 10 != 0) {
+                        endPage++; // if endP not divide by 10 so that endPage + 1
                     }
                     String index = request.getParameter("index");
                     if (index == null) {
@@ -163,7 +172,7 @@ public class FeedBackController extends HttpServlet {
                         request.setAttribute("fill", Fillstatus);
                         request.setAttribute("endP", endPage);
                         request.setAttribute("feedbacks", feedbacks);
-                        request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     } else {
                         // set event for paging
                         request.setAttribute("fillevent", event);
@@ -175,7 +184,7 @@ public class FeedBackController extends HttpServlet {
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFill(page, Fillstatus, "FStatus");
                         request.setAttribute("endP", endPage);
                         request.setAttribute("feedbacks", feedbacks);
-                        request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     }
                     //fillter for rate star
                 } else if (event.equals("fillterrate")) {
@@ -183,10 +192,10 @@ public class FeedBackController extends HttpServlet {
                     String Fillrate = request.getParameter("fillrate");
                     //get total page
                     int endP = dao.getTotalFeedbackFill(Fillrate, "RatedStar");
-                    int endPage = endP / 5;
+                    int endPage = endP / 10;
                     //paging
-                    if (endP % 5 != 0) {
-                        endPage++; // if endP not divide by 5 so that endPage + 1
+                    if (endP % 10 != 0) {
+                        endPage++; // if endP not divide by 10 so that endPage + 1
                     }
                     String index = request.getParameter("index");
                     if (index == null) {
@@ -199,7 +208,7 @@ public class FeedBackController extends HttpServlet {
                         request.setAttribute("fill", Fillrate);
                         request.setAttribute("endP", endPage);
                         request.setAttribute("feedbacks", feedbacks);
-                        request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     } else {
                         // set event for paging
                         request.setAttribute("fillevent", event);
@@ -211,7 +220,7 @@ public class FeedBackController extends HttpServlet {
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFill(page, Fillrate, "RatedStar");
                         request.setAttribute("endP", endPage);
                         request.setAttribute("feedbacks", feedbacks);
-                        request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     }
                 } // fillter for service 
                 else if (event.equals("fillterservice")) {
@@ -219,10 +228,10 @@ public class FeedBackController extends HttpServlet {
                     String Fillservice = request.getParameter("fillservice");
                     //get total page
                     int endP = dao.getTotalFeedbackFillSer(Fillservice);
-                    int endPage = endP / 5;
+                    int endPage = endP / 10;
                     //paging
-                    if (endP % 5 != 0) {
-                        endPage++; // if endP not divide by 5 so that endPage + 1
+                    if (endP % 10 != 0) {
+                        endPage++; // if endP not divide by 10 so that endPage + 1
                     }
                     String index = request.getParameter("index");
                     if (index == null) {
@@ -235,7 +244,7 @@ public class FeedBackController extends HttpServlet {
                         request.setAttribute("fill", Fillservice);
                         request.setAttribute("endP", endPage);
                         request.setAttribute("feedbacks", feedbacks);
-                        request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     } else {
                         // set event for paging
                         request.setAttribute("fillevent", event);
@@ -247,7 +256,7 @@ public class FeedBackController extends HttpServlet {
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFillSer(page, Fillservice);
                         request.setAttribute("endP", endPage);
                         request.setAttribute("feedbacks", feedbacks);
-                        request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     }
                 } // search
                 else if (event.equals("searchfeedback")) {
@@ -255,10 +264,10 @@ public class FeedBackController extends HttpServlet {
                     String SearchN = request.getParameter("search");
                     //get total page
                     int endP = dao.getTotalFeedbackSearch(SearchN);
-                    int endPage = endP / 5;
+                    int endPage = endP / 10;
                     //paging
-                    if (endP % 5 != 0) {
-                        endPage++; // if endP not divide by 5 so that endPage + 1
+                    if (endP % 10 != 0) {
+                        endPage++; // if endP not divide by 10 so that endPage + 1
                     }
                     String index = request.getParameter("index");
                     if (index == null) {
@@ -271,7 +280,7 @@ public class FeedBackController extends HttpServlet {
                         request.setAttribute("fill", SearchN);
                         request.setAttribute("endP", endPage);
                         request.setAttribute("feedbacks", feedbacks);
-                        request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     } else {
                         // set event for paging
                         request.setAttribute("fillevent", event);
@@ -283,16 +292,16 @@ public class FeedBackController extends HttpServlet {
                         List<FeedBack> feedbacks = dao.getPageFeedBacksSearch(SearchN, SearchN, page);
                         request.setAttribute("endP", endPage);
                         request.setAttribute("feedbacks", feedbacks);
-                        request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                        request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     }
                 } // sort
                 else if (event.equals("sort")) {
                     //get total page
                     int endP = dao.getTotalFeedback();
-                    int endPage = endP / 5;
+                    int endPage = endP / 10;
                     //paging
-                    if (endP % 5 != 0) {
-                        endPage++; // if endP not divide by 5 so that endPage + 1
+                    if (endP % 10 != 0) {
+                        endPage++; // if endP not divide by 10 so that endPage + 1
                     }
 
                     //get type of sort
@@ -309,7 +318,7 @@ public class FeedBackController extends HttpServlet {
                             request.setAttribute("fill", sortby);
                             request.setAttribute("endP", endPage);
                             request.setAttribute("feedbacks", feedbacks);
-                            request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                            request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                         } else {
                             // set event for paging
                             request.setAttribute("fillevent", event);
@@ -321,7 +330,7 @@ public class FeedBackController extends HttpServlet {
                             List<FeedBack> feedbacks = dao.getSortByName(page);
                             request.setAttribute("endP", endPage);
                             request.setAttribute("feedbacks", feedbacks);
-                            request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                            request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                         }
                     } //sort by service name 
                     else if (sortby.equals("servicename")) {
@@ -336,7 +345,7 @@ public class FeedBackController extends HttpServlet {
                             request.setAttribute("fill", sortby);
                             request.setAttribute("endP", endPage);
                             request.setAttribute("feedbacks", feedbacks);
-                            request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                            request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                         } else {
                             // set event for paging
                             request.setAttribute("fillevent", event);
@@ -348,7 +357,7 @@ public class FeedBackController extends HttpServlet {
                             List<FeedBack> feedbacks = dao.getSortByService(page);
                             request.setAttribute("endP", endPage);
                             request.setAttribute("feedbacks", feedbacks);
-                            request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                            request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                         }
                     } // sort by rate star
                     else if (sortby.equals("ratestar")) {
@@ -363,7 +372,7 @@ public class FeedBackController extends HttpServlet {
                             request.setAttribute("fill", sortby);
                             request.setAttribute("endP", endPage);
                             request.setAttribute("feedbacks", feedbacks);
-                            request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                            request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                         } else {
                             // set event for paging
                             request.setAttribute("fillevent", event);
@@ -375,7 +384,7 @@ public class FeedBackController extends HttpServlet {
                             List<FeedBack> feedbacks = dao.getSortByRate(page);
                             request.setAttribute("endP", endPage);
                             request.setAttribute("feedbacks", feedbacks);
-                            request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                            request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                         }
                     } // sort by status
                     else if (sortby.equals("status")) {
@@ -390,7 +399,7 @@ public class FeedBackController extends HttpServlet {
                             request.setAttribute("fill", sortby);
                             request.setAttribute("endP", endPage);
                             request.setAttribute("feedbacks", feedbacks);
-                            request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                            request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                         } else {
                             // set event for paging
                             request.setAttribute("fillevent", event);
@@ -402,7 +411,7 @@ public class FeedBackController extends HttpServlet {
                             List<FeedBack> feedbacks = dao.getSortByStatus(page);
                             request.setAttribute("endP", endPage);
                             request.setAttribute("feedbacks", feedbacks);
-                            request.getRequestDispatcher("/view/feedback-list.jsp").forward(request, response);
+                            request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                         }
                     }
                 }

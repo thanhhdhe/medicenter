@@ -57,6 +57,11 @@ public class StaffController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         String event = request.getParameter("event");
+        HttpSession session = request.getSession(true);
+        String email = (String) session.getAttribute("email");
+        StaffDAO staffDAO = new StaffDAO();
+        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+        
         switch(event){
             case "sent-to-home":
                 request.getRequestDispatcher("./view/staff-dashboard.jsp").forward(request, response);
