@@ -6,6 +6,7 @@ package Database;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -209,18 +210,19 @@ public class ReservationDAO extends MyDAO {
     }
 
     public void insert(Reservation r) {
-        xSql = "insert into [dbo].[Reservations](ReservationDate, ReservationSlot, ServiceID, StaffID, CreatedDate, Cost, UserID, Status)\n"
-                + "values (?, ?, ?, ?, ?, ?, ?, ?)";
+        xSql = "insert into [dbo].[Reservations](ReservationDate, ReservationSlot, ServiceID, StaffID, ChildID, CreatedDate, Cost, UserID, Status)\n"
+                + "values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             ps = con.prepareStatement(xSql);
             ps.setDate(1, r.getReservationDate());
             ps.setInt(2, r.getReservationSlot());
             ps.setInt(3, r.getServiceID());
             ps.setInt(4, r.getStaffID());
-            ps.setTimestamp(5, r.getCreatedDate());
-            ps.setFloat(6, r.getCost());
-            ps.setInt(7, r.getUserID());
-            ps.setString(8, r.getStatus());
+            ps.setInt(5, r.getChildID());
+            ps.setTimestamp(6, r.getCreatedDate());
+            ps.setFloat(7, r.getCost());
+            ps.setInt(8, r.getUserID());
+            ps.setString(9, r.getStatus());
             ps.executeUpdate();
             ps.close();
         } catch (Exception e) {
@@ -228,15 +230,16 @@ public class ReservationDAO extends MyDAO {
         }
     }
 
-    public int findReservationID(int userID, String serviceID, Date reservationDate, int slot) {
+    public int findReservationID(int userID, String childID, String serviceID, Date reservationDate, int slot) {
         int id = -1;
-        xSql = "select * from [dbo].[Reservations] where UserID = ? and ServiceID = ? and ReservationDate = ? and ReservationSlot = ?";
+        xSql = "select * from [dbo].[Reservations] where UserID = ? and ServiceID = ? and ReservationDate = ? and ReservationSlot = ? and ChildID = ?";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, Integer.toString(userID));
             ps.setString(2, serviceID);
             ps.setDate(3, reservationDate);
             ps.setInt(4, slot);
+            ps.setString(5, childID);
             rs = ps.executeQuery();
             while (rs.next()) {
                 id = rs.getInt("ReservationID");
@@ -308,7 +311,7 @@ public class ReservationDAO extends MyDAO {
                 + "  where ChildID = ? and DAY(ReservationDate) = ? \n"
                 + "  and MONTH(ReservationDate) = ? and YEAR(ReservationDate) = ?\n"
                 + "  and Status <> 'cancel'";
-         try {
+        try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, ChildID);
             ps.setString(2, selectedDate);
@@ -326,6 +329,25 @@ public class ReservationDAO extends MyDAO {
         return list;
     }
 
+    public boolean validateReservationByChildrenID(String ChildID, int ReservationSlot, Date ReservationDate) {
+        xSql = "select * from Reservations where ChildID = ? and ReservationSlot = ? and ReservationDate = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, ChildID);
+            ps.setInt(2, ReservationSlot);
+            ps.setDate(3, ReservationDate);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return false;
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     public static void main(String args[]) {
         ReservationDAO rd = new ReservationDAO();
 //        String dateString = "2023-10-01 22:20:00";
@@ -334,20 +356,20 @@ public class ReservationDAO extends MyDAO {
         for (int i : rd.getListSelfBookedSlot("1", "15", "10", "2023")) {
             System.out.println(i);
         }
-//        LocalDateTime currentDateTime = LocalDateTime.now();
-//        Timestamp sqlTimestamp = Timestamp.valueOf(currentDateTime);
-//        Date sqlDate = null;
-//        try {
-//            // Define a date format for parsing
-//            SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-//
-//            // Parse the string into a java.util.Date object
-//            java.util.Date utilDate = dateFormat.parse("10-26-2023");
-//            // Convert java.util.Date to java.sql.Date
-//            sqlDate = new Date(utilDate.getTime());
-//        } catch (Exception e) {
-//
-//        }
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        Timestamp sqlTimestamp = Timestamp.valueOf(currentDateTime);
+        Date sqlDate = null;
+        try {
+            // Define a date format for parsing
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+
+            // Parse the string into a java.util.Date object
+            java.util.Date utilDate = dateFormat.parse("10-26-2023");
+            // Convert java.util.Date to java.sql.Date
+            sqlDate = new Date(utilDate.getTime());
+        } catch (Exception e) {
+
+        }
 //
 //        Reservation r = new Reservation();
 //        r.setCost(300);

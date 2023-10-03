@@ -259,10 +259,6 @@ public class StaffScheduleDAO extends MyDAO {
     public static void main(String args[]) {
         StaffScheduleDAO ssd = new StaffScheduleDAO();
         ReservationDAO rdao = new ReservationDAO();
-        List<Integer> slotAvailable = ssd.getWorkSlotsByService("15", "10", "2023", "3");
-        for (int i : slotAvailable) {
-            System.out.println(i);
-        }
 //        List<Integer> fullDay = ssd.getWorkDay("3", "10", "2023");
 //        // Loop in workday
 //        for (int day : fullDay) {

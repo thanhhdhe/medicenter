@@ -76,7 +76,8 @@ public class ReservationDetailController extends HttpServlet {
             case "save": {
                 String serviceID = (String) request.getParameter("serviceID");
                 String slot = (String) request.getParameter("slot");
-                saveData(selectedDate, selectedMonth, selectedYear, staffID, slot, serviceID, userDAO.getUser(email), request, response);
+                String ChildID = (String) request.getParameter("ChildID");
+                saveData(selectedDate, selectedMonth, selectedYear, staffID, slot, serviceID, userDAO.getUser(email), ChildID, request, response);
                 break;
             }
             default:
@@ -85,7 +86,7 @@ public class ReservationDetailController extends HttpServlet {
 
     }
 
-    private void saveData(String selectedDate, String selectedMonth, String selectedYear, String staffID, String slot, String serviceID, User user, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    synchronized private void saveData(String selectedDate, String selectedMonth, String selectedYear, String staffID, String slot, String serviceID, User user, String ChildID, HttpServletRequest request, HttpServletResponse response) throws IOException {
         ReservationDAO rd = new ReservationDAO();
         ServiceDAO serviceDAO = new ServiceDAO();
         ServiceStaffDAO ssd = new ServiceStaffDAO();
@@ -103,14 +104,42 @@ public class ReservationDetailController extends HttpServlet {
         } catch (Exception e) {
 
         }
+        // Check duplicate if user click two times or user book for that chilren 2 service at one slot
+        try {
+            if (rd.findReservationID(user.getUserID(), ChildID, serviceID, sqlDate, Integer.parseInt(slot)) != -1) {
+                response.setContentType("text/plain");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write("Duplicate reservation");
+                return;
+            }
+            if (!rd.validateReservationByChildrenID(ChildID, Integer.parseInt(slot), sqlDate)) {
+                response.setContentType("text/plain");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write("Double book at one time");
+                return;
+            }
+            
+        } catch (Exception e) {
+            return;
+        }
+        Reservation r = new Reservation();
         if (staffID.equals("all") || staffID == null) {
+            // Double check if there is no staff for this service
+            List<Integer> listStaff = ssd.getListStaffIDCanWork(selectedDate, selectedMonth, selectedYear, slot, serviceID);
+            
+            if (listStaff == null) {
+                response.setContentType("text/plain");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write("Choose date again");
+                return;
+            }
+            
             // Create an reservation
-            Reservation r = new Reservation();
             r.setCreatedDate(sqlTimestamp);
             r.setReservationDate(sqlDate);
             r.setReservationSlot(Integer.parseInt(slot));
             r.setServiceID(Integer.parseInt(serviceID));
-
+            
             r.setStaffID(ssd.getListStaffIDCanWork(selectedDate, selectedMonth, selectedYear, slot, serviceID).get(0));
 
             if (service.getSalePrice() > 0) {
@@ -120,9 +149,9 @@ public class ReservationDetailController extends HttpServlet {
             }
             r.setStatus("pending");
             r.setUserID(user.getUserID());
+            r.setChildID(Integer.parseInt(ChildID));
             rd.insert(r);
         } else {
-            Reservation r = new Reservation();
             r.setCreatedDate(sqlTimestamp);
             r.setReservationDate(sqlDate);
             r.setReservationSlot(Integer.parseInt(slot));
@@ -135,9 +164,10 @@ public class ReservationDetailController extends HttpServlet {
             }
             r.setStatus("pending");
             r.setUserID(user.getUserID());
+            r.setChildID(Integer.parseInt(ChildID));
             rd.insert(r);
         }
-        int Id = rd.findReservationID(user.getUserID(), serviceID, sqlDate, Integer.parseInt(slot));
+        int Id = rd.findReservationID(user.getUserID(), ChildID, serviceID, sqlDate, Integer.parseInt(slot));
         // Send the reservation id to the jsp
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");
@@ -226,7 +256,7 @@ public class ReservationDetailController extends HttpServlet {
                 sb.append(",");
             }
         }
-        
+
         // Append "&" to separate the ArrayLists
         sb.append("&");
 
@@ -238,9 +268,9 @@ public class ReservationDetailController extends HttpServlet {
                 sb.append(",");
             }
         }
-        
+
         String result = sb.toString();
-        
+
         // Response to the jsp
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");

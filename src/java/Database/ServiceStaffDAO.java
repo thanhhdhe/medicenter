@@ -52,4 +52,10 @@ public class ServiceStaffDAO extends MyDAO{
         }
         return list;
     }
+    public static void main(String args[]) {
+        ServiceStaffDAO ssd = new ServiceStaffDAO();
+        for (int i : ssd.getListStaffIDCanWork("29", "10", "2023", "3", "9")) {
+            System.out.println(i);
+        }
+    }
 }

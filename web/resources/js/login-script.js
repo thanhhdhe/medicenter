@@ -50,8 +50,12 @@ function attemptLogin() {
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
                 var result = xhr.responseText;
-
-                if (result === "success") {
+                if (result === "reload") {
+                    // Prevent user login into 2 account at the same time in one device
+                    loginStatus = true;
+                    resetLoginAttempts();
+                    location.reload();
+                } else if (result === "success") {
                     // Display the messasge
                     document.getElementById("loginResult").textContent = "Login successful!";
                     document.getElementById("loginResult").style.color = "gold";

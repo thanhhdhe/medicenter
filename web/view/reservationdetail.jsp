@@ -82,10 +82,7 @@
             let Workday = <%=Workday%>; // Variable store list of day is workday
             let fullDay = <%=fullDay%>; // Variable store list of day that is full
             const childID = <%=ChildID%>;
-            
-            console.log(childID);
-            console.log(<%=service.getServiceID()%>);
-            console.log(<%=staffID%>);
+
             // Variable store selected date and selected slot
             let selectedDate = null; // p
             let selectedMonth = currentMonth + 1; // int
@@ -208,7 +205,7 @@
                 staffID = <%=staffID%>;
                 url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=checkSlot&ChildID=" + childID;
             <% } else { %>
-                url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=all&action=checkSlotForService&serviceID=" + serviceID + "ChildID=" + childID;
+                url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=all&action=checkSlotForService&serviceID=" + serviceID + "&ChildID=" + childID;
             <% } %>
                 xhr.open("GET", url, true);
 
@@ -225,7 +222,7 @@
                         for (let i = 0; i < timeSlots.length; i++) {
                             const slot = document.createElement("div");
                             slot.textContent = timeSlots[i];
-                            
+
                             // Check if time slot is in the past
                             if (parseInt(selectedDate.textContent, 10) === currentDate.getDate()) {
                                 if (currentDate.getHours() > 8 && i === 0) {
@@ -325,16 +322,24 @@
                         const staffID = <%=staffID%>;
                         let checkOutURL = null;
                         if (staffID === null || staffID === 'all') {
-                            checkOutURL = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=all&action=save&serviceID=" + <%=service.getServiceID()%> + "&slot=" + (timeSlots.indexOf(selectedSlotValue) + 1);
+                            checkOutURL = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=all&action=save&serviceID=" + <%=service.getServiceID()%> + "&slot=" + (timeSlots.indexOf(selectedSlotValue) + 1) + "&ChildID=" + childID;
                         } else {
-                            checkOutURL = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=save&serviceID=" + <%=service.getServiceID()%> + "&slot=" + (timeSlots.indexOf(selectedSlotValue) + 1);
+                            checkOutURL = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=save&serviceID=" + <%=service.getServiceID()%> + "&slot=" + (timeSlots.indexOf(selectedSlotValue) + 1) + "&ChildID=" + childID;
                         }
                         xhr.open("GET", checkOutURL, true);
                         xhr.onreadystatechange = function () {
                             if (xhr.readyState === 4 && xhr.status === 200) {
                                 const responseText = xhr.responseText; // Text string from response
-                                const url = "ReservationContact?reservationID=" + responseText;
-                                window.location.href = url;
+                                if (responseText === "Duplicate reservation") {
+                                    alert("Duplicate reservation. Please choose again.");
+                                } else if (responseText === "Choose date again") {
+                                    alert("This slot is no longer available. Please choose again.");
+                                } else if (responseText === "Double book at one time"){
+                                    alert("This children cannot duplicate slots with other services. Please choose again.");
+                                } else {
+                                    const url = "ReservationContact?reservationID=" + responseText;
+                                    window.location.href = url;
+                                }
                             }
                         };
                         xhr.send();
