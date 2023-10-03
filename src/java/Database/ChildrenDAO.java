@@ -35,6 +35,24 @@ public class ChildrenDAO extends MyDAO{
         }
         return children;
     }
+    public boolean validateChildren(String id, String userID) {
+        boolean check = false;
+        xSql = "SELECT *  FROM [dbo].[Children] where ChildID = ? and UserID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, id);
+            ps.setString(2, userID);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                check = true;
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return check;
+    }
     public static void main(String[] args) {
         ChildrenDAO childrenDAO = new ChildrenDAO();
         System.out.println(childrenDAO.getChildrenByChildrenId(1+"").getChildName());

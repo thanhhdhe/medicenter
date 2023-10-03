@@ -41,6 +41,18 @@
     cursor: default;
 }
 
+.selfbooked{
+    padding: 2px;
+    margin: 5px;
+    font-size: 20px;
+    text-align: center;
+    border: 1px solid #000;
+    background-color: gold;
+    border-radius: 5px;
+    color: black;
+    cursor: default;
+}
+
 .schedule-table th {
     background-color: #f0f0f0;
     font-size: 20px;

@@ -276,12 +276,64 @@ public class ReservationDAO extends MyDAO {
         return result;
     }
 
+    public boolean checkSlotThatSelfBooked(String slot, String staffID, String childID, String selectedDate, String selectedMonth, String selectedYear) {
+        boolean result = false;
+        xSql = "select * from Reservations\n"
+                + "where ReservationSlot = ? and StaffID = ? and DAY(ReservationDate) = ? \n"
+                + "and MONTH(ReservationDate) = ? and YEAR(ReservationDate) = ? \n"
+                + "and Status <> 'cancel'";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, slot);
+            ps.setString(2, staffID);
+            ps.setString(3, selectedDate);
+            ps.setString(4, selectedMonth);
+            ps.setString(5, selectedYear);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                result = false;
+                break;
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public List<Integer> getListSelfBookedSlot(String ChildID, String selectedDate, String selectedMonth, String selectedYear) {
+        List<Integer> list = new ArrayList<>();
+        xSql = "select ReservationSlot from Reservations \n"
+                + "  where ChildID = ? and DAY(ReservationDate) = ? \n"
+                + "  and MONTH(ReservationDate) = ? and YEAR(ReservationDate) = ?\n"
+                + "  and Status <> 'cancel'";
+         try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, ChildID);
+            ps.setString(2, selectedDate);
+            ps.setString(3, selectedMonth);
+            ps.setString(4, selectedYear);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(rs.getInt("ReservationSlot"));
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public static void main(String args[]) {
         ReservationDAO rd = new ReservationDAO();
-        String dateString = "2023-10-01 22:20:00";
-        Timestamp sqlTimestamp = Timestamp.valueOf(dateString);
-        System.out.println(rd.checkSlotForAvailable("4", "3", "26", "10", "2023"));
-
+//        String dateString = "2023-10-01 22:20:00";
+//        Timestamp sqlTimestamp = Timestamp.valueOf(dateString);
+//        System.out.println(rd.checkSlotForAvailable("4", "3", "26", "10", "2023"));
+        for (int i : rd.getListSelfBookedSlot("1", "15", "10", "2023")) {
+            System.out.println(i);
+        }
 //        LocalDateTime currentDateTime = LocalDateTime.now();
 //        Timestamp sqlTimestamp = Timestamp.valueOf(currentDateTime);
 //        Date sqlDate = null;

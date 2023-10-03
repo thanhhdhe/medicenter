@@ -9,9 +9,11 @@
     <body>
         <jsp:include page="layout/Header.jsp"/>
 
-        <%@ page import="java.util.List,java.util.ArrayList,model.Service,model.Staff" %>
+        <%@ page import="java.util.List,java.util.ArrayList,model.Service,model.Staff,model.Children" %>
         <% List<Integer> Workday = (List<Integer>) request.getAttribute("Workday");
            List<Integer> fullDay = (List<Integer>) request.getAttribute("fullDay");
+           
+           String ChildID = (String) request.getAttribute("ChildID");
            Service service = (Service) request.getAttribute("service");
            Staff staff = (Staff) request.getAttribute("Staff");
            String staffID = null;
@@ -76,9 +78,14 @@
             let firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
             let workSlots = null;
             let bookedSlots = null;
+            let selfBooked = null;
             let Workday = <%=Workday%>; // Variable store list of day is workday
             let fullDay = <%=fullDay%>; // Variable store list of day that is full
-
+            const childID = <%=ChildID%>;
+            
+            console.log(childID);
+            console.log(<%=service.getServiceID()%>);
+            console.log(<%=staffID%>);
             // Variable store selected date and selected slot
             let selectedDate = null; // p
             let selectedMonth = currentMonth + 1; // int
@@ -199,9 +206,9 @@
                 let staffID = null;
             <% if (staffID != null) { %>
                 staffID = <%=staffID%>;
-                url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=checkSlot";
+                url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=checkSlot&ChildID=" + childID;
             <% } else { %>
-                url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=all&action=checkSlotForService&serviceID=" + serviceID;
+                url = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + selectedMonth + "&selectedYear=" + currentYear + "&staffID=all&action=checkSlotForService&serviceID=" + serviceID + "ChildID=" + childID;
             <% } %>
                 xhr.open("GET", url, true);
 
@@ -213,11 +220,12 @@
                         // Split the String separated by commas
                         workSlots = tempStringOne[0].split(',').map(item => parseInt(item, 10));
                         bookedSlots = tempStringOne[1].split(',').map(item => parseInt(item, 10));
+                        selfBooked = tempStringOne[2].split(',').map(item => parseInt(item, 10));
                         // Check the received number sequence and change the class of the slots
                         for (let i = 0; i < timeSlots.length; i++) {
                             const slot = document.createElement("div");
                             slot.textContent = timeSlots[i];
-
+                            
                             // Check if time slot is in the past
                             if (parseInt(selectedDate.textContent, 10) === currentDate.getDate()) {
                                 if (currentDate.getHours() > 8 && i === 0) {
@@ -253,7 +261,10 @@
                                 }
                             }
                             // Check it condition to class slot
-                            if (bookedSlots.includes(i + 1)) {
+                            if (selfBooked.includes(i + 1)) {
+                                slot.className = "selfbooked";
+                                slot.title = "This slot has been booked for this children";
+                            } else if (bookedSlots.includes(i + 1)) {
                                 slot.className = "full";
                                 slot.title = "This slot has been booked";
                             } else if (workSlots.includes(i + 1)) {
@@ -338,6 +349,7 @@
                 selectedDate = null;
                 selectedSlot = null;
                 workSlots = null;
+                // For service scheduling only
                 bookedSlots = null;
 
 

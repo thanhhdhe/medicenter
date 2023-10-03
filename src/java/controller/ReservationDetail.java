@@ -4,11 +4,13 @@
  */
 package controller;
 
+import Database.ChildrenDAO;
 import Database.ReservationDAO;
 import Database.ServiceDAO;
 import Database.ServiceStaffDAO;
 import Database.StaffDAO;
 import Database.StaffScheduleDAO;
+import Database.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -17,7 +19,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import model.Service;
 import model.Staff;
@@ -35,6 +36,7 @@ public class ReservationDetail extends HttpServlet {
             HttpSession session = request.getSession(true);
             if (session.getAttribute("email") == null) {
                 response.sendRedirect("home");
+                return;
             }
 
             // Update the database to cancel the pending reservation exceeds 5 minutes
@@ -44,6 +46,20 @@ public class ReservationDetail extends HttpServlet {
             // Receive serviceID and staffID 
             String serviceID = (String) request.getParameter("serviceID");
             String staffID = (String) request.getParameter("staffID");
+            String childID = (String) request.getParameter("childID");
+
+            // Validate children
+            if (childID == null) {
+                response.sendRedirect("home");
+                return;
+            }
+            UserDAO userDAO = new UserDAO();
+            ChildrenDAO cdao = new ChildrenDAO();
+            String email = (String) session.getAttribute("email");
+            if (!cdao.validateChildren(childID, Integer.toString(userDAO.getUser(email).getUserID()))) {
+                response.sendRedirect("home");
+                return;
+            }
 
             // Get the current date
             LocalDate currentDate = LocalDate.now();
@@ -64,11 +80,11 @@ public class ReservationDetail extends HttpServlet {
                     request.setAttribute("service", service);
 
                     request.setAttribute("staff", null);
+                    request.setAttribute("ChildID", childID);
 
                     // Process the service schedule for all staff available
                     List<Integer> Workday = ssd.getWorkdayByServiceID(serviceID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue));
                     List<Integer> fullDay = ssd.getFullDayByServiceID(serviceID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue));
-
                     request.setAttribute("Workday", Workday);
                     request.setAttribute("fullDay", fullDay);
 
@@ -94,6 +110,7 @@ public class ReservationDetail extends HttpServlet {
                     Service service = serviceDAO.getServiceByID(serviceID);
                     request.setAttribute("service", service);
                     request.setAttribute("Staff", staff);
+                    request.setAttribute("ChildID", childID);
 
                     // Process staff schedule
                     List<Integer> Workday = ssd.getWorkDay(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue)); // The variable will contain the number of workdays
@@ -111,11 +128,11 @@ public class ReservationDetail extends HttpServlet {
                                 check = true;
                                 break;
                             }
+
                         }
                         // If we can search the slot in the reservation with status != cancel => fullDay remove it
                         if (check == true) {
                             fullDay.remove(Integer.valueOf(day));
-//                            fullDay.add(day);
                         }
                     }
                     request.setAttribute("Workday", Workday);

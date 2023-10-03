@@ -57,9 +57,11 @@ public class ReservationDetailController extends HttpServlet {
         String action = (String) request.getParameter("action");
 
         switch (action) {
-            case "checkSlot":
-                checkSlot(selectedDate, selectedMonth, selectedYear, staffID, request, response);
+            case "checkSlot": {
+                String ChildID = (String) request.getParameter("ChildID");
+                checkSlot(selectedDate, selectedMonth, selectedYear, staffID, ChildID, request, response);
                 break;
+            }
             case "changeMonth": {
                 String serviceID = (String) request.getParameter("serviceID");
                 changeMonth(selectedMonth, selectedYear, staffID, serviceID, request, response);
@@ -67,7 +69,8 @@ public class ReservationDetailController extends HttpServlet {
             }
             case "checkSlotForService": {
                 String serviceID = (String) request.getParameter("serviceID");
-                checkSlotForService(selectedDate, selectedMonth, selectedYear, serviceID, request, response);
+                String ChildID = (String) request.getParameter("ChildID");
+                checkSlotForService(selectedDate, selectedMonth, selectedYear, serviceID, ChildID, request, response);
                 break;
             }
             case "save": {
@@ -182,7 +185,7 @@ public class ReservationDetailController extends HttpServlet {
         response.getWriter().write(result);
     }
 
-    private void checkSlot(String selectedDate, String selectedMonth, String selectedYear, String staffID, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void checkSlot(String selectedDate, String selectedMonth, String selectedYear, String staffID, String childID, HttpServletRequest request, HttpServletResponse response) throws IOException {
         StaffScheduleDAO ssd = new StaffScheduleDAO();
         // Get the data of the work slots
         List<Integer> workSlots = ssd.getWorkSlots(selectedDate, selectedMonth, selectedYear, staffID);
@@ -197,6 +200,10 @@ public class ReservationDetailController extends HttpServlet {
                 bookedSlots.add(r.getReservationSlot());
             }
         }
+
+        // Get the list that self booking
+        List<Integer> selfBooked = rd.getListSelfBookedSlot(childID, selectedDate, selectedMonth, selectedYear);
+
         // Build the string that contain work slot and booked slot
         StringBuilder sb = new StringBuilder();
         // Append elements from the first ArrayList (workSlots)
@@ -208,7 +215,7 @@ public class ReservationDetailController extends HttpServlet {
             }
         }
 
-        // Append "&" to separate the two ArrayLists
+        // Append "&" to separate the ArrayLists
         sb.append("&");
 
         // Append elements from the second ArrayList (bookedSlots)
@@ -219,15 +226,28 @@ public class ReservationDetailController extends HttpServlet {
                 sb.append(",");
             }
         }
-        String result = sb.toString();
+        
+        // Append "&" to separate the ArrayLists
+        sb.append("&");
 
+        // Append elements from the second ArrayList (selfBooked)
+        for (int i = 0; i < selfBooked.size(); i++) {
+            sb.append(selfBooked.get(i));
+            // Add a comma if it's not the last element
+            if (i < selfBooked.size() - 1) {
+                sb.append(",");
+            }
+        }
+        
+        String result = sb.toString();
+        
         // Response to the jsp
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(result);
     }
 
-    private void checkSlotForService(String selectedDate, String selectedMonth, String selectedYear, String serviceID, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void checkSlotForService(String selectedDate, String selectedMonth, String selectedYear, String serviceID, String childID, HttpServletRequest request, HttpServletResponse response) throws IOException {
         StaffScheduleDAO ssd = new StaffScheduleDAO();
         ReservationDAO rdao = new ReservationDAO();
         // Store list of slot that staff can work
@@ -250,6 +270,8 @@ public class ReservationDetailController extends HttpServlet {
                 fullBookSlot.add(i);
             }
         }
+        // Get the list that self booking
+        List<Integer> selfBooked = rdao.getListSelfBookedSlot(childID, selectedDate, selectedMonth, selectedYear);
 
         // Create to string and send to the jsp
         StringBuilder sb = new StringBuilder();
@@ -262,7 +284,7 @@ public class ReservationDetailController extends HttpServlet {
             }
         }
 
-        // Append "&" to separate the two ArrayLists
+        // Append "&" to separate between arraylist
         sb.append("&");
 
         // Append elements from the second ArrayList
@@ -273,8 +295,20 @@ public class ReservationDetailController extends HttpServlet {
                 sb.append(",");
             }
         }
-        String result = sb.toString();
 
+        // Append "&" to separate between arraylist
+        sb.append("&");
+
+        // Append elements from the third ArrayList
+        for (int i = 0; i < selfBooked.size(); i++) {
+            sb.append(selfBooked.get(i).toString());
+            // Add a comma if it's not the last element
+            if (i < selfBooked.size() - 1) {
+                sb.append(",");
+            }
+        }
+
+        String result = sb.toString();
         // Response to the jsp
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");
