@@ -48,14 +48,13 @@
         <!-- Customized Bootstrap Stylesheet -->
         <link href="css/bootstrap.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="./resources/css/staff-dashboard.css">
-        <link rel="stylesheet" href="./resources/css/services-style.css">
     </head>
 
     <body>
-        <%
-       String email = (String) session.getAttribute("email");
-       StaffDAO staffDAO = new StaffDAO();
-       Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+         <%
+        String email = (String) session.getAttribute("email");
+        StaffDAO staffDAO = new StaffDAO();
+        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){%>
@@ -95,7 +94,7 @@
                         >
                     </div>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="service?event=manage" class="nav-item nav-link active"
+                        <a href="service?event=manage" class="nav-item nav-link"
                            ><i class="fas fa-stethoscope"></i>Services</a
                         >
                     </div>
@@ -107,7 +106,7 @@
             <div class="content <%if(curStaff==null){%>ms-0 w-100<%}%>">
                 <!-- Navbar Start -->
                 <nav class="navbar navbar-expand navbar-light sticky-top px-4 py-0" style="background-color: #1977cc;">
-
+                    
                     <a href="#" class="sidebar-toggler flex-shrink-0 text-decoration-none text-light">
                         <i class="fa fa-bars"></i>
                     </a>
@@ -170,129 +169,26 @@
                                 <a href="logout" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
-                        <%}else{%>
+                         <%}else{%>
                         <a href="staff?event=sent-to-login" id="login" class="btn btn-outline-primary ms-3 bg-light rounded-pill text-decoration-none"><span class="d-none d-md-inline">Login</a>
                         <%}%>
                     </div>
                 </nav>
                 <!-- Navbar End -->
 
-                <!-- Blank Start -->
+               <!-- 404 Start -->
                 <div class="container-fluid pt-4 px-4">
-                    <div
-                        class="row bg-light rounded align-items-center justify-content-center mx-0"
-                        >
-                        <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-start">
-                            <h4>ADD SERVICE</h4>
-                        </div>
-                        <div class="col-md-12">
-                            <%  
-        CategoryServiceDAO categoryServiceDAO = new CategoryServiceDAO();
-        String title = (request.getParameter("title") + "").equals("null") ? "" : (request.getParameter("title") + "");
-        String brief = (request.getParameter("brief") + "").equals("null") ? "" : (request.getParameter("brief") + "");
-        String status = (request.getParameter("status") + "").equals("null") ? "" : (request.getParameter("status") + "");
-        String categoryID = (request.getParameter("categoryID") + "").equals("null") ? "" : (request.getParameter("categoryID") + "");
-        String originalPrice = (request.getParameter("originalPrice") + "").equals("null") ? "" : (request.getParameter("originalPrice") + "");
-        String salePrice = (request.getParameter("salePrice") + "").equals("null") ? "" : (request.getParameter("salePrice") + "");
-        String description = (request.getParameter("description") + "").equals("null") ? "" : (request.getParameter("description") + "");
-        String titleErr = (request.getAttribute("titleErr") + "").equals("null") ? "" : (request.getAttribute("titleErr") + "");
-        String originalPriceErr = (request.getAttribute("originalPriceErr") + "").equals("null") ? "" : (request.getAttribute("originalPriceErr") + "");
-        String salePriceErr = (request.getAttribute("salePriceErr") + "").equals("null") ? "" : (request.getAttribute("salePriceErr") + "");
-        String categoryIDErr = (request.getAttribute("categoryIDErr") + "").equals("null") ? "" : (request.getAttribute("categoryIDErr") + "");
-        %>
-        <div class="d-flex flex-column align-items-center justify-content-center px-5 mb-5">
-            <div class="row mb-3">
-                <div class="col-md-6 d-flex justify-content-start">
-                    <%String validate = request.getAttribute("validate")+"";
-                    if(!validate.equals("null")&&validate.equals("false")){%>
-                    <h5  class="text-danger text-center">Add Service Fail!!</h5>
-                    <%}%>
-                </div>
-                
-            </div>
-            <form action="service?event=add-service" method="POST" enctype="multipart/form-data">
-                <div class="row">    
-                    <div class="col-md-4">
-                        <div>
-                            <img src="resources/img/image1.jpg" alt="img" class="w-100 h-100 object-contain" /></div>
-                        <div class="form-group mt-3">
-                            <label for="serviceImage">Service Image:</label>
-                            <input type="file" class="form-control-file" id="serviceImage" name="serviceImage">
-                        </div>
-                        <h5 class="d-flex justify-content-center mt-3">- Or -</h5>
-                        <div class="form-group mt-3">
-                            <label for="serviceURL">Service Image:</label>
-                            <input type="text" class="form-control" id="serviceURL" name="serviceURL">
-                        </div>
-                    </div>
-                    <div class="col-md-8 ps-5">
-                       
-                        <div class="d-flex align-items-baseline">
-                            <p class="text-muted me-2">Title: </p>
-                            <input class="form-control" type="text" name="Title" value="<%=title%>"  />
-                        </div>
-                         <%if(!titleErr.equals("null")){%>    <p class="text-danger"><%=titleErr%></p><%}%> 
-                        
-                        <div>
-                            <p class="text-muted">Brief: </p>
-                            <textarea class="form-control text-muted" rows="4" cols="50" name="Brief" value="<%=brief%>"></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <select class="form-select text-primary mt-3 mb-4 w-75" name="status" >
-                                    <option value="active">Status</option>
-                                    <%if(status.equals("") || status.equals("active")){%>
-                                    <option value="active" selected>Active</option>
-                                    <option value="inactive">Inactive</option>
-                                    <%}else{%>
-                                    <option value="active">Active</option>
-                                    <option value="inactive" selected>Inactive</option>
-                                    <%}%>
-                                </select>
-                            </div>
-                            <div class="col-md-5">
-                                <select class="form-select text-primary mt-3 mb-4 w-100" name="serviceType"  class="form-select">
-                                    <option value="" selected>Category Service</option>
-                                    <%List<CategoryService> categoryServiceList = categoryServiceDAO.getAllCategoryServices();
-                    for (CategoryService categoryService : categoryServiceList) {
-                        if(categoryID.equals(categoryService.getCategoryID()+"")){ %>
-                                    <option value="<%=categoryService.getCategoryID()%>" selected><%=categoryService.getCategoryName()%></option>
-                                    <%}else{%>
-                                    <option value="<%=categoryService.getCategoryID()%>"><%=categoryService.getCategoryName()%></option>
-                                 <%}%>
-                                    <%}%>
-
-                                </select>
-                                    <%if(!categoryIDErr.equals("null")){%>    <p class="text-danger"><%=categoryIDErr%></p><%}%>
-                            </div>   
-                        </div>
-                        <div class="d-flex">
-                            <div class="col-md-6"><p class="text-muted">Price: </p>
-                                <input class="form-control w-50" type="number" value="<%=originalPrice%>" name="OriginalPrice" />
-                                <%if(!originalPriceErr.equals("null")){%>    <p class="text-danger"><%=originalPriceErr%></p><%}%> 
-                            </div>
-                            <div class="col-md-6"><p class="text-muted">Sale price: </p>
-                                <input class="form-control w-50" type="number" value="<%=salePrice%>" name="SalePrice" />
-                                <%if(!salePriceErr.equals("null")){%>    <p class="text-danger"><%=salePriceErr%></p><%}%>  
-                            </div>
-                        </div>
-
-                        <div>
-                            <p class="text-muted">Description: </p>
-                            <textarea class="form-control text-muted" rows="6" cols="50" value="<%=description%>" name="Description"></textarea>
-                        </div>
-                            
-                        <div class="d-flex justify-content-center">
-                            <input class="btn btn-primary mt-3 w-25" type="submit" value="Add Service" />
-                        </div>
-                    </div>
-            </form>
-        </div>
-    </div>
+                    <div class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0">
+                        <div class="container text-center p-4">
+                            <i class="bi bi-exclamation-triangle display-1 text-primary"></i>
+                            <h2 class="display-2 fw-bold text-danger">403 - ACCESS DENIED</h2>
+                            <h3 class="mb-4 text-info">Oops, You don't have permission to access this page.</h3>
+                            <p class="mb-4">A web server may return a 403 Forbidden HTTP status code in response to a request from a client for a web page or resource to indicate that the server can be reached and understood the request, but refuses to take any further action. Status code 403 responses are the result of the web server being configured to deny access, for some reason, to the requested resource by the client</p>
+                            <a class="btn btn-primary rounded-pill py-3 px-5" href="staff?event=sent-to-home">Go Back To Home</a>
                         </div>
                     </div>
                 </div>
-                <!-- Blank End -->
+                <!-- 404 End -->
 
                 <!-- Footer Start -->
                 <div class="mt-4">
@@ -305,8 +201,7 @@
         </div>
 
         <!-- JavaScript Libraries -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="./resources/js/services-manage-script.js"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
         <script
             src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
             integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
@@ -320,7 +215,7 @@
 
         <!-- Template Javascript -->
         <script>
-            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+            document.querySelector('.sidebar-toggler').addEventListener('click', function() {
                 var sidebar = document.querySelector('.sidebar');
                 var content = document.querySelector('.content');
 

@@ -14,6 +14,7 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.sql.Date;
@@ -73,6 +74,14 @@ public class ServiceController extends HttpServlet {
             throws ServletException, IOException {
         // Get the 'event' parameter from the request
         String event = request.getParameter("event");
+        HttpSession session = request.getSession(true);
+        String email = (String) session.getAttribute("email");
+        StaffDAO staffDAO = new StaffDAO();
+        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+        boolean isManager = false;
+        if(curStaff!=null){
+            if(curStaff.getRole().equals("manager")) isManager=true;
+        }
 
         // Check the value of 'event'
         switch (event) {
@@ -89,31 +98,47 @@ public class ServiceController extends HttpServlet {
                 ServiceDAO serviceDAO = new ServiceDAO();
                 Service services = serviceDAO.getServiceByID(id);
                 request.setAttribute("service", services);
-                StaffDAO staffDAO = new StaffDAO();
                 List<Staff> staffList = staffDAO.getDoctorByServices(id);
                 request.setAttribute("doctor", staffList);
                 request.getRequestDispatcher("./view/servicedetail.jsp").forward(request, response);
                 break;
             case "manage":
-                // If 'event' is equal to "manage", forward the request to the service-manage.jsp page
+                if(!isManager){
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
                 request.getRequestDispatcher("./view/service-manage.jsp").forward(request, response);
                 break;
             case "service-list-managerchoose":
+                if(!isManager)break;
                 renderServiceListByManagerOption(request, response);
                 break;
             case "edit":
+                if(!isManager){
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
                 edit(request, response);
                 break;
             case "sent-to-add":
+                if(!isManager){
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
                 request.getRequestDispatcher("./view/add-service.jsp").forward(request, response);
                 break;
             case "to-detail-manage":
+                if(!isManager){
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
                 toDetailManage(request, response);
                 break;
             case "to-contact-link":
                 request.getRequestDispatcher("./view/contact.jsp").forward(request, response);
                 break;
             case "onoff-status":
+                if(!isManager)break;
                 onOffStatus(request, response);
                 break;
             default:
@@ -221,11 +246,11 @@ public class ServiceController extends HttpServlet {
         int page = (request.getParameter("page") + "").equals("page") ? 1 : Integer.parseInt(request.getParameter("page") + "");
 
         // Get the sorted and paged services based on the options
-        List<Service> serviceList = serviceDAO.getPaginatedSortedAndFilteredServices((page - 1) * 5, 5, sortType, keyword);
+        List<Service> serviceList = serviceDAO.getPaginatedSortedAndFilteredServices((page - 1) * 10, 10, sortType, keyword);
 
         // Generate the pagination HTML
         String paginationHtml = "";
-        for (int i = 1; i <= (serviceDAO.countFilteredServices(keyword) + 4) / 5; i++) {
+        for (int i = 1; i <= (serviceDAO.countFilteredServices(keyword) + 9) / 10; i++) {
             paginationHtml += "<button class=\"pagination-btn ms-2 " + (i == page ? "active" : "inactive")
                     + "\" data-page=\"" + i + "\" onclick=\"loadPageServices(" + i + ")\">" + i + "</button>";
         }
@@ -234,56 +259,32 @@ public class ServiceController extends HttpServlet {
 
         // Render the service list
         for (Service service : serviceList) {
-            out.print("<div id=\"" + service.getServiceID() + "\" class=\"service row p-3");
-            if (!service.getStatus()) {
-                out.print(" inactives");
-            }
-            out.print("\">\n"
-                    + "                        <div class=\"col-md-3\">\n"
-                    + "                            <img src=\"" + service.getThumbnail() + "\" alt=\"ìmg\" class=\"w-100 h-100 object-contain\" />\n"
-                    + "                        </div>\n"
-                    + "                         <div class=\"col-md-6\">\n"
-                    + "                            <div>\n"
-                    + "                                <h3>ID: " + service.getServiceID() + "</h3>\n"
-                    + "                                <h3>" + service.getTitle() + "</h3>\n"
-                    + "                            </div>\n"
-                    + "                            <div class=\"d-flex mt-1 mb-2 align-items-end\">\n"
-                    + "                                <h5 class=\"pe-2\">Category:<p class=\"fw-normal\">" + categoryServiceDAO.getCategoryServiceByID(service.getCategoryID() + "").getCategoryName() + "</p></h5>\n"
-                    + "                            </div>\n"
-                    + "                            \n"
-                    + "                            <div class=\"text-black-50\">\n"
-                    + "                                <p class=\"clamp\">\n"
-                    + "                                    " + service.getBrief() + "\n"
-                    + "                                </p>\n"
-                    + "                            </div>\n"
-                    + "                        </div>"
-                    + "                        <div class=\"info-aside col-md-3\">\n"
-                    + "                            <div class=\"price-wrap\">");
-            if (service.getSalePrice() <= 0) {
-                out.print("<span class=\"price h5\"> $" + service.getOriginalPrice() + " </span>");
-            } else {
-                out.print("<span class=\"price h5\"> $" + service.getSalePrice() + " </span>\n"
-                        + "                                <del class=\"price-old\"> $" + service.getOriginalPrice() + "</del>");
-            }
-            out.print("</div>\n");
-            if (service.getStatus()) {
-                out.print("<h5 class=\"status text-success mt-2\">Active</h5>");
-            } else {
-                out.print("<h5 class=\"status text-black-50 mt-2\">Inactive</h5>");
-            }
-            out.print("<br />\n"
-                    + "       <div class=\"d-flex h-50 align-content-center flex-wrap\" >                      <div class=\"d-flex\">\n");
-            if (service.getStatus()) {
-                out.print("<button class=\"button-icon me-2 showhide hide-service-button\" data-service-id=\"" + service.getServiceID() + "\" onclick=\"handleUpdate()\" ><img src=\"resources/img/icon/hide.png\" alt=\"alt\"/></button>");
-            } else {
-                out.print(" <button class=\"button-icon me-2 showhide show-service-button\" data-service-id=\"" + service.getServiceID() + "\" onclick=\"handleUpdate()\"  ><img src=\"resources/img/icon/visual.png\" alt=\"alt\"/></button> ");
-            }
-
-            out.print(" <button class=\"button-icon me-2\"><a href=\"service?event=to-detail-manage&id="+service.getServiceID()+"\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\"/></a></button>\n" +
-"                                <button class=\"button-icon\"><a href=\"service?event=edit&id="+service.getServiceID()+"\"><img src=\"resources/img/icon/pen.png\" alt=\"alt\"/></a></button>"
-                    + "                            </div> </div>"
-                    + "                        </div>\n"
-                    + "                    </div>");
+            out.print("<tr id=\""+service.getServiceID()+"\" class=\"service p-3 ");
+            if(service.getStatus()){out.print("\"inactives\"");} 
+            out.print("\">\n" +
+"                                                    <th scope=\"row\">"+service.getServiceID()+"</th>\n" +
+"                                                    <td><img src=\""+service.getThumbnail()+"\" alt=\"ìmg\" style=\"width: 12rem;height: 8rem;object-fit: cover;\" /></td>\n" +
+"                                                    <td>"+service.getTitle()+"</td>\n" +
+"                                                    <td>"+categoryServiceDAO.getCategoryServiceByID(service.getCategoryID()+"").getCategoryName()+"</td>\n" +
+"                                                    <td>$"+service.getOriginalPrice()+"</td>\n" +
+"                                                    <td>$"+service.getSalePrice()+" </td>\n" +
+"                                                    <td>");
+            if(service.getStatus()){out.print("<p class=\"status text-success mt-2\">Active</p> ");}else{out.print(" <p class=\"status text-black-50 mt-2\">Inactive</p>");}
+            out.print("</td>\n" +
+"                                                    <td>\n" +
+"                                                        <div class=\"d-flex h-50 align-content-center flex-wrap\" >\n" +
+"                                                            <div class=\"d-flex\">\n");
+            if(service.getStatus()){out.print("<button class=\"button-icon me-2 showhide hide-service-button\" data-service-id=\""+service.getServiceID()+"\"  onclick=\"handleUpdate()\"  ><img src=\"resources/img/icon/hide.png\" alt=\"alt\"/></button> \n" +
+"                                                                    ");}else{out.print("\n" +
+"                                                                <button class=\"button-icon me-2 showhide show-service-button\" data-service-id=\""+service.getServiceID()+"\"   onclick=\"handleUpdate()\"  ><img src=\"resources/img/icon/visual.png\" alt=\"alt\"/></button> \n" +
+"                                                                    ");}
+            out.print("\n" +
+"                                                                <button class=\"button-icon me-2\"><a href=\"service?event=to-detail-manage&id="+service.getServiceID()+"\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\"/></a></button>\n" +
+"                                                                <button class=\"button-icon\"><a href=\"service?event=edit&id="+service.getServiceID()+"\"><img src=\"resources/img/icon/pen.png\" alt=\"alt\"/></a></button>\n" +
+"                                                            </div></div>\n" +
+"                                                    </td>\n" +
+"                                                </tr>");
+            
         }
         out.flush();
         out.close();

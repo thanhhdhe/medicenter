@@ -93,6 +93,11 @@
                            ><i class="far fa-file-alt me-2"></i>Feedback</a
                         >
                     </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="service?event=manage" class="nav-item nav-link"
+                           ><i class="fas fa-stethoscope"></i>Services</a
+                        >
+                    </div>
                 </nav>
             </div>
             <!-- Sidebar End -->
