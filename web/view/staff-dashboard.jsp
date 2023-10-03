@@ -90,7 +90,7 @@
                     </div>
                     <div class="navbar-nav w-100 text-light">
                         <a href="feedback" class="nav-item nav-link"
-                           ><i class="far fa-file-alt me-2"></i>Feedback</a
+                           ><i class="far fa-file-alt"></i>Feedback</a
                         >
                     </div>
                     <div class="navbar-nav w-100 text-light">

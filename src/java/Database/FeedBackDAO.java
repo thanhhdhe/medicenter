@@ -387,11 +387,11 @@ public class FeedBackDAO extends MyDAO {
     public static void main(String[] args) {
         FeedBackDAO dao = new FeedBackDAO();
         //System.out.println(dao.getTotalFeedback());
-        List<FeedBack> feedbacks = dao.getPageFeedBacks(1);
+        List<MedicalExamination> feedbacks = dao.getMedicalExamination(1);
 //          FeedBack fe = dao.getFeedbackDetail(10);
 //          System.out.println(fe.getFullName());
-        for (FeedBack f : feedbacks) {
-            System.out.println(f.getContentSub());
+        for (MedicalExamination f : feedbacks) {
+            System.out.println(f.getMchildrenID());
         }
 
     }
