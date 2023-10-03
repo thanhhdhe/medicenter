@@ -51,7 +51,6 @@
                     <form action="blogPage">
                         <input type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3 search" value="${postTitle}"/>
                         <select class="form-select text-primary mt-3" name="postCategory">
-                            <option selected value="">Post Category</option>
                             <c:forEach var="c" items="${categoryList}">
                                 <option value="${c}">${c}</option>
                             </c:forEach>

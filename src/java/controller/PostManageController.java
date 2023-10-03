@@ -58,6 +58,7 @@ public class PostManageController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        //get title
         String postTitle;
         try {
             postTitle = request.getParameter("postTitle");
@@ -67,6 +68,7 @@ public class PostManageController extends HttpServlet {
         } catch (Exception e) {
             postTitle = "";
         }
+        //get category
         String postCategory;
         try {
             postCategory = request.getParameter("postCategory");
@@ -76,23 +78,48 @@ public class PostManageController extends HttpServlet {
         } catch (Exception e) {
             postCategory = "";
         }
+        //get author
+        String postAuthor;
+        try {
+            postAuthor = request.getParameter("postAuthor");
+            if (postAuthor == null || postCategory.equals("Post Author")) {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            postAuthor = "";
+        }
+        //get page
         int page;
         try {
             page = Integer.parseInt(request.getParameter("page"));
         } catch (Exception e) {
             page = 1;
         }
+        
         PostDAO postDao = new PostDAO();
+        //get categorylist
         List<String> categoryList = postDao.allCategoryPost();
-        int numOfPage = numOfPage(postTitle, postCategory);
-        List<Post> list = postDao.getSortedPagedPostsByUserChoice((page - 1) * 6, 6, postTitle, postCategory, "manager");
-        request.setAttribute("postTitle", postTitle);
-        if (postCategory.isEmpty()) {
-            postCategory = "Post Category";
+        categoryList.add(0, "Post Category");
+        if (!postCategory.isEmpty()) {
+            categoryList.remove(postCategory);
+            categoryList.add(0, postCategory);
         }
-        request.setAttribute("postCategory", postCategory);
+        //get authorlist
+        List<String> authorList= postDao.allAuthorPost();
+        authorList.add(0, "Post Author");
+        if (!postAuthor.isEmpty()) {
+            authorList.remove(postAuthor);
+            authorList.add(0, postAuthor);
+        }
+        //get number of page
+        int numOfPage = numOfPage(postTitle, postCategory);
+        //get list post
+        List<Post> list = postDao.getSortedPagedPostsByUserChoice((page - 1) * 6, 6, postTitle, postCategory);
+        
+        
+        request.setAttribute("postTitle", postTitle);
         request.setAttribute("categoryList", categoryList);
-//        request.setAttribute("page", page);
+        request.setAttribute("authorList", authorList);
         request.setAttribute("numOfPage", numOfPage);
         request.setAttribute("list", list);
         request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
@@ -137,11 +164,10 @@ public class PostManageController extends HttpServlet {
 //            return postDAO.getSortedPagedPostsByUserChoice((page - 1) * 6, 6, postTitle, postCategory, "manager");
 //        }
 //    }
-
     protected int numOfPage(String postTitle, String postCategory) {
         PostDAO postDAO = new PostDAO();
-        int numOfPage = postDAO.getCountOfPostsUserChoose(postTitle, postCategory, "manager") / 6;
-        if (postDAO.getCountOfPostsUserChoose(postTitle, postCategory, "manager") % 6 != 0) {
+        int numOfPage = postDAO.getCountOfPostsUserChoose(postTitle, postCategory) / 6;
+        if (postDAO.getCountOfPostsUserChoose(postTitle, postCategory) % 6 != 0) {
             numOfPage += 1;
         }
         return numOfPage;
@@ -155,7 +181,7 @@ public class PostManageController extends HttpServlet {
         post.setStatusPost(false);
         postDAO.update(ID, post);
         PrintWriter out = response.getWriter();
-        out.print(post.isStatusPost()+" "+post.getPostID());
+        out.print(post.isStatusPost() + " " + post.getPostID());
         out.print(postDAO.getPostByID(ID).isStatusPost());
     }
 
@@ -166,7 +192,7 @@ public class PostManageController extends HttpServlet {
         Post post = postDAO.getPostByID(ID);
         post.setStatusPost(true);
         postDAO.update(ID, post);
-        
+
     }
 
     /**

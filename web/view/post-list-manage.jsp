@@ -69,9 +69,13 @@
                     <form action="postManage">
                         <input type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3 search" value="${postTitle}"/>
                         <select class="form-select text-primary mt-3" name="postCategory">
-                            <option selected value="">Post Category</option>
                             <c:forEach var="c" items="${categoryList}">
                                 <option value="${c}">${c}</option>
+                            </c:forEach>
+                        </select>
+                        <select class="form-select text-primary mt-3" name="postAuthor">
+                            <c:forEach var="a" items="${authorList}">
+                                <option value="${a}">${a}</option>
                             </c:forEach>
                         </select>
                         <br>

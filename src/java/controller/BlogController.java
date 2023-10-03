@@ -86,12 +86,15 @@ public class BlogController extends HttpServlet {
         PostDAO postDao = new PostDAO();
         List<String> categoryList = postDao.allCategoryPost();
         int numOfPage = numOfPage(postTitle, postCategory);
-        List<Post> list = postDao.getSortedPagedPostsByUserChoice((page - 1) * 6, 6, postTitle, postCategory, "user");
+        List<Post> list = postDao.getSortedPagedPostsByUserChoice((page - 1) * 6, 6, postTitle, postCategory);
 
-        request.setAttribute("postTitle", postTitle);
-        if (postCategory.isEmpty()) {
-            postCategory = "Post Category";
+        categoryList.add(0, "Post Category");
+        if (!postCategory.isEmpty()) {
+            categoryList.remove(postCategory);
+            categoryList.add(0, postCategory);
         }
+        
+        request.setAttribute("postTitle", postTitle);
         request.setAttribute("postCategory", postCategory);
         request.setAttribute("categoryList", categoryList);
         request.setAttribute("numOfPage", numOfPage);
@@ -125,8 +128,8 @@ public class BlogController extends HttpServlet {
 //    }
     protected int numOfPage(String postTitle, String postCategory) {
         PostDAO postDAO = new PostDAO();
-        int numOfPage = postDAO.getCountOfPostsUserChoose(postTitle, postCategory, "user") / 6;
-        if (postDAO.getCountOfPostsUserChoose(postTitle, postCategory, "user") % 6 != 0) {
+        int numOfPage = postDAO.getCountOfPostsUserChoose(postTitle, postCategory) / 6;
+        if (postDAO.getCountOfPostsUserChoose(postTitle, postCategory) % 6 != 0) {
             numOfPage += 1;
         }
         return numOfPage;
