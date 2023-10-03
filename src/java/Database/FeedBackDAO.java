@@ -90,12 +90,12 @@ public class FeedBackDAO extends MyDAO {
         xSql = "select * from Feedbacks\n"
                 + "where " + Fillter + " = ?\n"
                 + "ORDER BY FeedbackID\n"
-                + "OFFSET ? Rows fetch next 5 rows ONLY;";
+                + "OFFSET ? Rows fetch next 10 rows ONLY;";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, Fill);
             // set index for offser (page)
-            ps.setInt(2, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
+            ps.setInt(2, (index - 1) * 10); //page 0 -> index 0 page 1 -> index 5
             rs = ps.executeQuery();
             while (rs.next()) {
                 feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
@@ -133,12 +133,12 @@ public class FeedBackDAO extends MyDAO {
                 + "INNER JOIN MedicalExaminations M ON F.MedicalExaminationID = M.MedicalExaminationID\n"
                 + "WHERE M.ServiceID = ?\n"
                 + "ORDER BY FeedbackID\n"
-                + "OFFSET ? Rows fetch next 5 rows ONLY;";
+                + "OFFSET ? Rows fetch next 10 rows ONLY;";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, Fill);
             // set index for offser (page)
-            ps.setInt(2, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
+            ps.setInt(2, (index - 1) * 10); //page 0 -> index 0 page 1 -> index 5
             rs = ps.executeQuery();
             while (rs.next()) {
                 feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
@@ -159,13 +159,13 @@ public class FeedBackDAO extends MyDAO {
                 + "INNER JOIN Users U ON F.UserID = U.UserID\n"
                 + "WHERE CONCAT(U.FirstName, ' ', U.LastName) LIKE ? OR F.Content LIKE ?\n"
                 + "ORDER BY CONCAT(U.FirstName, ' ', U.LastName), FeedbackID\n"
-                + "OFFSET ? Rows fetch next 5 rows ONLY;";
+                + "OFFSET ? Rows fetch next 10 rows ONLY;";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, "%" + FullName + "%");
             ps.setString(2, "%" + Content + "%");
             // set index for offser (page)
-            ps.setInt(3, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
+            ps.setInt(3, (index - 1) * 10); //page 0 -> index 0 page 1 -> index 5
             rs = ps.executeQuery();
             while (rs.next()) {
                 feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
@@ -205,11 +205,11 @@ public class FeedBackDAO extends MyDAO {
                 + "FROM Feedbacks F\n"
                 + "INNER JOIN Users U ON F.UserID = U.UserID\n"
                 + "ORDER BY CONCAT(U.FirstName, ' ', U.LastName)\n"
-                + "OFFSET ? Rows fetch next 5 rows ONLY;";
+                + "OFFSET ? Rows fetch next 10 rows ONLY;";
         try {
             ps = con.prepareStatement(xSql);
             // set index for offser (page)
-            ps.setInt(1, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
+            ps.setInt(1, (index - 1) * 10); //page 0 -> index 0 page 1 -> index 5
             rs = ps.executeQuery();
             while (rs.next()) {
                 feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
@@ -229,11 +229,11 @@ public class FeedBackDAO extends MyDAO {
                 + "FROM Feedbacks F\n"
                 + "INNER JOIN MedicalExaminations M ON F.MedicalExaminationID = M.MedicalExaminationID\n"
                 + "Order by ServiceID\n"
-                + "OFFSET ? Rows fetch next 5 rows ONLY;";
+                + "OFFSET ? Rows fetch next 10 rows ONLY;";
         try {
             ps = con.prepareStatement(xSql);
             // set index for offser (page)
-            ps.setInt(1, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
+            ps.setInt(1, (index - 1) * 10); //page 0 -> index 0 page 1 -> index 5
             rs = ps.executeQuery();
             while (rs.next()) {
                 feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
@@ -251,11 +251,11 @@ public class FeedBackDAO extends MyDAO {
         List<FeedBack> feedbacks = new ArrayList<>();
         xSql = "select * from Feedbacks\n"
                 + "ORDER BY RatedStar\n"
-                + "OFFSET ? Rows fetch next 5 rows ONLY;";
+                + "OFFSET ? Rows fetch next 10 rows ONLY;";
         try {
             ps = con.prepareStatement(xSql);
             // set index for offser (page)
-            ps.setInt(1, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
+            ps.setInt(1, (index - 1) * 10); //page 0 -> index 0 page 1 -> index 5
             rs = ps.executeQuery();
             while (rs.next()) {
                 feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
@@ -273,11 +273,11 @@ public class FeedBackDAO extends MyDAO {
         List<FeedBack> feedbacks = new ArrayList<>();
         xSql = "select * from Feedbacks\n"
                 + "ORDER BY FStatus\n"
-                + "OFFSET ? Rows fetch next 5 rows ONLY;";
+                + "OFFSET ? Rows fetch next 10 rows ONLY;";
         try {
             ps = con.prepareStatement(xSql);
             // set index for offser (page)
-            ps.setInt(1, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
+            ps.setInt(1, (index - 1) * 10); //page 0 -> index 0 page 1 -> index 5
             rs = ps.executeQuery();
             while (rs.next()) {
                 feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
@@ -295,11 +295,11 @@ public class FeedBackDAO extends MyDAO {
         List<FeedBack> feedbacks = new ArrayList<>();
         xSql = "select * from Feedbacks\n"
                 + "ORDER BY FeedbackID\n"
-                + "OFFSET ? Rows fetch next 5 rows ONLY;";
+                + "OFFSET ? Rows fetch next 10 rows ONLY;";
         try {
             ps = con.prepareStatement(xSql);
             // set index for offser (page)
-            ps.setInt(1, (index - 1) * 5); //page 0 -> index 0 page 1 -> index 5
+            ps.setInt(1, (index - 1) * 10); //page 0 -> index 0 page 1 -> index 5
             rs = ps.executeQuery();
             while (rs.next()) {
                 feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),

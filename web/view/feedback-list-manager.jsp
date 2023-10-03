@@ -7,6 +7,7 @@
 <%@page import = "Database.*" %>
 <%@page import = "java.util.*" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -51,11 +52,12 @@
     </head>
 
     <body>
-         <%
-        String email = (String) session.getAttribute("email");
-        StaffDAO staffDAO = new StaffDAO();
-        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+        <%
+       String email = (String) session.getAttribute("email");
+       StaffDAO staffDAO = new StaffDAO();
+       Staff curStaff = staffDAO.getStaffByStaffEmail(email);
         %>
+        
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){%>
             <!-- Sidebar Start -->
@@ -89,13 +91,8 @@
                         >
                     </div>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="feedback" class="nav-item nav-link"
+                        <a href="staff?event=send-to-feedback" class="nav-item nav-link"
                            ><i class="far fa-file-alt me-2"></i>Feedback</a
-                        >
-                    </div>
-                    <div class="navbar-nav w-100 text-light">
-                        <a href="service?event=manage" class="nav-item nav-link"
-                           ><i class="fas fa-stethoscope"></i>Services</a
                         >
                     </div>
                 </nav>
@@ -106,7 +103,7 @@
             <div class="content <%if(curStaff==null){%>ms-0 w-100<%}%>">
                 <!-- Navbar Start -->
                 <nav class="navbar navbar-expand navbar-light sticky-top px-4 py-0" style="background-color: #1977cc;">
-                    
+
                     <a href="#" class="sidebar-toggler flex-shrink-0 text-decoration-none text-light">
                         <i class="fa fa-bars"></i>
                     </a>
@@ -169,20 +166,115 @@
                                 <a href="logout" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
-                         <%}else{%>
+                        <%}else{%>
                         <a href="staff?event=sent-to-login" id="login" class="btn btn-outline-primary ms-3 bg-light rounded-pill text-decoration-none"><span class="d-none d-md-inline">Login</a>
                         <%}%>
                     </div>
                 </nav>
                 <!-- Navbar End -->
 
+
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
                     <div
                         class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0"
                         >
-                        <div class="col-md-6 text-center">
-                            <h3>This is staff dashboard page</h3>
+                        <div class="col-md-12 p-0">
+                            <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
+                                <h4>MEDICAL RECORDS</h4>
+
+                                <a href="add-appointment.html" class="ms-text-primary font-weight-bold">Add Medical Record</a>
+                            </div>
+                            <div class="d-flex ">
+                                <div class="col-md-3 ">
+                                    <jsp:include page="../view/layout/fillter.jsp" />
+                                </div>
+                                <div class="col-md-9">
+                                    <form class="d-flex" action="feedback?event=searchfeedback" method="POST">
+                                        <input class="form-control me-2" type="search" name="search" value="" placeholder="Search" aria-label="Search">
+                                        <button class="btn btn-outline-success" type="submit">Search</button>
+                                    </form>
+                                </div>
+                            </div>
+
+
+                            <div class="table-responsive p-4">
+                                <%if(curStaff!=null){%>
+                                <form action="feedback" method="POST">
+                                    <table class="table table-striped table-hover">
+                                        <thead class="text-light" style="background: #1977cc;">
+                                            <tr>
+                                                <th scope="col">ID</th>
+                                                <th scope="col">Service Name</th>
+                                                <th scope="col">Full name</th>
+                                                <th scope="col">Feedback Date</th>
+                                                <th scope="col">Rate star</th>
+                                                <th scope="col">Content</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Detail</th>
+
+                                            </tr>
+                                        </thead>
+                                        <c:forEach var="feedback" items="${requestScope.feedbacks}">
+                                            <tbody>
+                                                <!-- get name service  -->
+                                                <c:set var="medicalID" value="${feedback.getMedicalID()}" />
+                                                <c:set var="medicalIDString" value="${medicalID.toString()}" />
+                                                <%
+                                                    FeedBackDAO dao = new FeedBackDAO();
+                                                    ServiceDAO serviceDAO = new ServiceDAO();
+                                                    int userserviceid = dao.getNameServiceFeed((String) pageContext.getAttribute("medicalIDString"));
+                                                    Service Uservice = serviceDAO.getServiceByID(String.valueOf(userserviceid));
+                                                    String userservice = Uservice.getTitle();
+                                                %>
+                                                <!-- get user  -->
+                                                <c:set var="userID" value="${feedback.getUserID()}" />
+                                                <%
+                                                    UserDAO u = new UserDAO();
+                                                    User user = u.getUserByID((int) pageContext.getAttribute("userID"));
+                                                %>
+                                                <tr>
+                                                    <td>${feedback.getFeedbackID()}</td>
+                                                    <td><%= userservice %></td>
+                                                    <td><%= user.getFirstName() +" "+ user.getLastName() %></td>
+                                                    <td>${feedback.getFeedbackdate()}</td>
+                                                    <td><c:forEach var="star" begin="1" end="${feedback.getRatestar()}" step="1">
+                                                            <img style="width: 24px" src="./resources/img/icon/star.png" alt="alt"/>
+                                                        </c:forEach></td>
+                                                    <td>${feedback.getContentSub()}</td>
+                                                    <td>${feedback.getFstatus()}</td>
+                                                    <td><a href="feedback?event=showdetailfeedback&FDid=${feedback.getFeedbackID()}">
+                                                            <img style="width: 24px" src="./resources/img/icon/detail.png" alt="alt"/>
+                                                        </a></td>
+                                                </tr>
+
+                                            </tbody>
+                                        </c:forEach>
+
+                                    </table>
+                                    <div style="" class="d-flex justify-content-center">
+                                        <nav aria-label="...">
+                                            <ul class="pagination pagination-sm">
+                                                <c:forEach begin="1" end="${requestScope.endP}" var="i">
+                                                    <c:set var="fillstatus" value="${requestScope.fillstatus}"/>
+                                                    <c:choose>
+                                                        <c:when test="${empty fill}">
+                                                            <li class="page-item"><a class="page-link" href="feedback?index=${i}">${i}</a></li>
+                                                            </c:when>
+                                                        </c:choose>
+                                                        <c:if test="${not empty fill}">
+                                                        <li class="page-item"><a class="page-link" href="feedback?index=${i}&event=${fillevent}&${fillparameter}=${fill}">${i}</a></li>
+                                                        </c:if>
+
+                                                </c:forEach>
+                                            </ul>
+                                        </nav>
+
+                                    </div>
+                                </form>
+
+                                <%}%>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -213,7 +305,7 @@
 
         <!-- Template Javascript -->
         <script>
-            document.querySelector('.sidebar-toggler').addEventListener('click', function() {
+            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
                 var sidebar = document.querySelector('.sidebar');
                 var content = document.querySelector('.content');
 
