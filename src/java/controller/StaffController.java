@@ -73,7 +73,10 @@ public class StaffController extends HttpServlet {
                 request.getRequestDispatcher("./view/medical-examination.jsp").forward(request, response);
                 break;
             case "send-to-edit":
+                String id = request.getParameter("id");
+                request.setAttribute(id, id);
                 request.getRequestDispatcher("./view/edit-medical-examination.jsp").forward(request, response);
+                break;
             case "send-to-feedback":
                 request.getRequestDispatcher("feedback").forward(request, response);
                 break;

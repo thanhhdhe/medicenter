@@ -91,6 +91,16 @@
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="feedback" class="nav-item nav-link"
+                           ><i class="far fa-file-alt"></i>Feedback</a
+                        >
+                    </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="service?event=manage" class="nav-item nav-link"
+                           ><i class="fas fa-stethoscope"></i>Services</a
+                        >
+                    </div>
                 </nav>
             </div>
             <!-- Sidebar End -->
@@ -172,7 +182,7 @@
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
                     <div
-                        class="medical-records row vh-100 bg-white rounded align-items-md-start justify-content-center mx-0"
+                        class="medical-records row bg-white rounded align-items-md-start justify-content-center mx-0"
                         >
                         <div class="col-md-12 p-0">
                             <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
@@ -196,6 +206,7 @@
                                     <tbody>
                                         <%
                                         List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getMedicalExaminationsByStaff(curStaff.getStaffID()+"");
+                                        if(listMedicalExamination!=null){
                                         for (MedicalExamination medicalExamination : listMedicalExamination) {%>
                                         <tr>
                                             <th scope="row"><%=medicalExamination.getMedicalExaminationID()%></th>
@@ -209,7 +220,7 @@
                                                 <a href="#" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
                                             </td>
                                         </tr>
-                                        <%}%>
+                                        <%}}%>
 
                                     </tbody>
                                 </table>
