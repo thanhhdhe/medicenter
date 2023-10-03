@@ -1,4 +1,4 @@
-﻿-- Drop the database if it exists
+-- Drop the database if it exists
 IF EXISTS (SELECT name FROM sys.databases WHERE name = N'ChildrenCare')
 BEGIN
     USE master;
@@ -125,13 +125,13 @@ CREATE TABLE Slider (
     Status VARCHAR(20)
 );
 
-
 CREATE TABLE Children (
     ChildID INT IDENTITY(1,1) PRIMARY KEY,
     UserID INT NOT NULL,
     ChildName NVARCHAR(100) COLLATE Vietnamese_CI_AS NOT NULL,
-    Age INT,
+    Birthday DATE,
 	Status TEXT,
+	Gender VARCHAR(10) NOT NULL,
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
@@ -313,24 +313,24 @@ INSERT INTO Users (Address, Email, Password, FirstName, LastName, Gender, PhoneN
 VALUES ('29HL', 'vietgame431@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', 'Viet', 'Can Quoc', 'Male', '123-456-7890', NULL, 'staff');
 
 -- Dữ liệu mẫu cho bảng Children
-INSERT INTO Children (UserID, ChildName, Age, Status)
-VALUES	(1, 'viet', 5, 'Healthy'),
-		(1, 'thanh', 5, 'Healthy'),
-		(3, 'thanhthut', 5, 'Healthy'),
-		(3, 'quan', 5, 'Healthy'),
-        (2, 'hiu', 8, 'Healthy');
+INSERT INTO Children (UserID, ChildName, Birthday, Status, Gender)
+VALUES	(1, 'viet', '2013-09-01', 'Healthy','Male'),
+		(1, 'thanh', '2011-09-01', 'Healthy','Female'),
+		(3, 'thanhthut', '2010-09-01', 'Healthy','Male'),
+		(3, 'quan', '2014-09-01', 'Healthy','Female'),
+        (2, 'hiu', '2013-09-01', 'Healthy','Male');
 
 
 -- Dữ liệu mẫu cho bảng MedicalExaminations
-INSERT INTO MedicalExaminations (UserID, ChildrenID, StaffID, ExaminationDate, ServiceID, MedicalPrescription)
+INSERT INTO MedicalExaminations (UserID, ChildrenID, StaffID, ExaminationDate, ServiceID, MedicalPrescription, Disease)
 VALUES
-(1, 1, 1, '2023-09-01 09:00:00', 1, 'Prescription 1'),
-(2, 2, 1, '2023-09-02 10:00:00', 2, 'Prescription 2'),
-(3, 2, 1, '2023-09-02 7:00:00', 2, 'Prescription 3'),
-(1, 2, 1, '2023-09-02 6:00:00', 2, 'Prescription 4'),
-(2, 2, 1, '2023-09-02 8:00:00', 2, 'Prescription 5'),
-(2, 2, 1, '2023-09-02 13:00:00', 2, 'Prescription 6'),
-(3, 3, 1, '2023-09-03 11:00:00', 3, 'Prescription 7');
+(1, 1, 1, '2023-09-01 09:00:00', 1, 'Prescription 1', 'Disease 1'),
+(2, 2, 1, '2023-09-02 10:00:00', 2, 'Prescription 2', 'Disease 2'),
+(3, 2, 1, '2023-09-02 07:00:00', 2, 'Prescription 3', 'Disease 3'),
+(3, 2, 1, '2023-09-02 06:00:00', 3, 'Prescription 4', 'Disease 4'),
+(3, 2, 1, '2023-09-02 08:00:00', 4, 'Prescription 5', 'Disease 5'),
+(3, 2, 1, '2023-09-02 13:00:00', 5, 'Prescription 6', 'Disease 6'),
+(3, 3, 1, '2023-09-03 11:00:00', 3, 'Prescription 7', 'Disease 7');
 
 -- Chèn 15 bản ghi ngẫu nhiên vào bảng Feedbacks
 INSERT INTO Feedbacks (UserID, MedicalExaminationID, Content, FeedbackDate, RatedStar, FStatus)
@@ -375,7 +375,3 @@ VALUES (1, 3, 3, 1, '10-01-2023 22:00:00', '10-12-2023', 3, 300.0, 'confirm'),
 (1, 6, 4, 1, '10-01-2023 22:25:30', '10-22-2023', 4, 1200.0, 'pending'),
 (1, 8, 5, 2, '10-01-2023 23:00:00', '10-17-2023', 5, 635.0, 'confirm'),
 (1, 10, 3, 2, '10-01-2023 23:20:00', '10-18-2023', 3, 1200.0, 'cancel');
-
-
-
-
