@@ -368,8 +368,8 @@ VALUES
 	
 -- Reservations
 INSERT INTO Reservations(UserID, ServiceID, StaffID, ChildID, CreatedDate, ReservationDate, ReservationSlot, Cost, Status) 
-VALUES (1, 3, 3, 1, '10-01-2023 22:00:00', '10-12-2023', 3, 300.0, 'confirm'),
-(1, 9, 1, 1, '10-01-2023 20:10:00', '10-15-2023', 1, 520.0, 'confirm'),
+VALUES (1, 3, 3, 1, '10-01-2023 22:00:00', '10-14-2023', 3, 300.0, 'confirm'),
+(1, 9, 1, 1, '10-01-2023 20:10:00', '10-13-2023', 1, 520.0, 'confirm'),
 (1, 6, 1, 2, '10-01-2023 22:15:00', '10-13-2023', 1, 1200.0, 'confirm'), 
 (1, 9, 3, 2, '10-01-2023 22:20:00', '10-26-2023', 3, 888.0, 'confirm'), 
 (1, 6, 4, 1, '10-01-2023 22:25:30', '10-22-2023', 4, 1200.0, 'pending'),
