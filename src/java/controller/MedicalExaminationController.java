@@ -5,6 +5,7 @@
 
 package controller;
 
+import Database.MedicalExaminationDAO;
 import Database.StaffDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,13 +14,15 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.Date;
+import model.MedicalExamination;
 import model.Staff;
 
 /**
  *
  * @author Admin
  */
-public class StaffController extends HttpServlet {
+public class MedicalExaminationController extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -28,6 +31,7 @@ public class StaffController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
      * Handles the HTTP <code>GET</code> method.
@@ -50,22 +54,8 @@ public class StaffController extends HttpServlet {
         }
         
         switch(event){
-            case "sent-to-home":
-                request.getRequestDispatcher("./view/staff-dashboard.jsp").forward(request, response);
-                break;
-            case "sent-to-login":
-                request.getRequestDispatcher("./view/login-staff.jsp").forward(request, response);
-                break;
-            case "send-to-medical-examination":
-                request.getRequestDispatcher("./view/medical-examination.jsp").forward(request, response);
-                break;
-            case "send-to-edit":
-                String id = request.getParameter("id");
-                request.setAttribute(id, id);
-                request.getRequestDispatcher("./view/edit-medical-examination.jsp").forward(request, response);
-                break;
-            case "send-to-feedback":
-                request.getRequestDispatcher("feedback").forward(request, response);
+            case "delete":
+                deleteMedicalExamination(request, response);
                 break;
         }
     } 
@@ -81,32 +71,45 @@ public class StaffController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         String event = request.getParameter("event");
+        HttpSession session = request.getSession(true);
+        String email = (String) session.getAttribute("email");
+        StaffDAO staffDAO = new StaffDAO();
+        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+        boolean isManager = false;
+        if(curStaff!=null){
+            if(curStaff.getRole().equals("manager")) isManager=true;
+        }
+        
         switch(event){
-            case "login":
-                login(request, response);
+            case "edit":
+                editMedicalExamination(request, response);
                 break;
+            
         }
     }
     
-    protected void login(HttpServletRequest request, HttpServletResponse response)
+    protected void editMedicalExamination(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String email = (String) request.getParameter("email");
-        String password = (String) request.getParameter("pass");
-        StaffDAO staffDAO = new StaffDAO();
-        Staff staff = staffDAO.getStaffByStaffEmail(email);
-        if(staff==null){
-            request.setAttribute("err", "Incorrect username or password!");
-            request.getRequestDispatcher("./view/login-staff.jsp").forward(request, response);
-        }else if(!staff.getPassword().equals(password)){
-            request.setAttribute("err", "Incorrect username or password!");
-            request.getRequestDispatcher("./view/login-staff.jsp").forward(request, response);
-        }else{
-            HttpSession session = request.getSession(true);
-            session.setAttribute("email", email);
-            request.getRequestDispatcher("./view/staff-dashboard.jsp").forward(request, response);
-        }
+        String id = request.getParameter("id");
+        MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
+        MedicalExamination medicalExamination = medicalExaminationDAO.getMedicalExaminationsByID(id);
+        String disease = request.getParameter("disease") + "";
+        String examinationDate = request.getParameter("examinationDate") + "";
+        String prescription = request.getParameter("prescription") + "";
+        medicalExamination.setDisease(disease);
+        medicalExamination.setExaminationDate(Date.valueOf(examinationDate));
+        medicalExamination.setMedicalPrescription(prescription);
+        medicalExaminationDAO.update(medicalExamination);
+        request.getRequestDispatcher("./view/medical-examination.jsp").forward(request, response);
     } 
 
+    protected void deleteMedicalExamination(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
+        String id = request.getParameter("id");
+        MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
+        medicalExaminationDAO.delete(id);
+        request.getRequestDispatcher("./view/medical-examination.jsp").forward(request, response);
+    } 
     /** 
      * Returns a short description of the servlet.
      * @return a String containing servlet description

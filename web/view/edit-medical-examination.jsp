@@ -54,10 +54,16 @@
         <%
        String email = (String) session.getAttribute("email");
        StaffDAO staffDAO = new StaffDAO();
+       MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
+       ChildrenDAO childrenDAO = new ChildrenDAO();
        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+       String meID = (request.getParameter("id") + "").equals("null") ? "" : (request.getParameter("id") + "");
+       MedicalExamination medicalExamination = medicalExaminationDAO.getMedicalExaminationsByID(meID);
+       boolean isManager = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
-            <%if(curStaff!=null){%>
+            <%if(curStaff!=null){
+            if(curStaff.getRole().equals("manager")) isManager=true;%>
             <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">
                 <nav class="navbar navbar-light">
@@ -174,19 +180,19 @@
                         <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
                                 <h4>MEDICAL EDIT</h4>
                             </div>
-                        <form class="needs-validation" novalidate="">
+                        <form class="needs-validation" action="medical-examination?event=edit" method="POST">
+                            <input type="text" name="id" value="<%=meID%>" hidden="">
                                 <div class="form-row">
                                     <div class="col-md-6 mb-3 px-3">
-                                        <label for="validationCustom001">First Name</label>
+                                        <label for="validationCustom001">Full Name</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" id="validationCustom001" placeholder="Enter First Name" required="">
-
+                                            <input type="text" class="form-control" value="<%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getChildName()%>" placeholder="Enter Full Name"  readonly="">
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3 px-3">
-                                        <label for="validationCustom002">Last name</label>
+                                        <label for="validationCustom008">Disease</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" id="validationCustom002" placeholder="Enter Last Name" required="">
+                                            <input type="text" class="form-control" value="<%=medicalExamination.getDisease()%>" name="disease" placeholder="Enter Disease" required="">
 
                                         </div>
                                     </div>
@@ -195,37 +201,42 @@
                                     <div class="col-md-6 mb-3 px-3">
                                         <label for="validationCustom007">Date of Birth</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" id="validationCustom007" placeholder="Enter Doctor Name" required="">
+                                            <input type="date" class="form-control" value="<%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getBirthday()%>" placeholder="Enter Date of Birth" readonly="">
 
                                         </div>
                                     </div>
                                     <div class="col-md-6 mb-3 px-3">
                                         <label for="validationCustom008">Appointment Date</label>
                                         <div class="input-group">
-                                            <input type="text" class="form-control" id="validationCustom008" placeholder="Enter Appointment Date" required="">
+                                            <input type="date" class="form-control" name="examinationDate" value="<%=medicalExamination.getExaminationDate()%>" placeholder="Enter Appointment Date" required="">
 
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-row">
-                                    <div class="col-md-6 mb-3 px-3">
-                                        <label for="validationCustom008">Disease</label>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" id="validationCustom008" placeholder="Enter Disease" required="">
-
-                                        </div>
-                                    </div>
+                                    
                                     <div class="col-md-6 mb-3 px-3">
                                         <label>Sex</label>
                                         <ul class="d-flex list-unstyled">
+                                            <%if(childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getGender().equals("Male")){%>
                                             <li class="ms-list-item ps-0">
-                                                <input type="radio" name="radioExample" value="">
+                                                <input type="radio" name="gender" value="male" checked="" disabled>
                                                 <span> Male </span>
                                             </li>
                                             <li class="ms-list-item">
-                                                    <input type="radio" name="radioExample" value="" checked="">
+                                                    <input type="radio" name="gender" value="female" disabled>
                                                 <span> Female </span>
                                             </li>
+                                            <%}else{%>
+                                            <li class="ms-list-item ps-0">
+                                                <input type="radio" name="gender" value="male" disabled>
+                                                <span> Male </span>
+                                            </li>
+                                            <li class="ms-list-item">
+                                                    <input type="radio" name="gender" value="female" checked="" disabled>
+                                                <span> Female </span>
+                                            </li>
+                                            <%}%>
                                         </ul>
                                     </div>
                                 </div>
@@ -233,12 +244,11 @@
                                     <div class="col-md-12 mb-2 px-3">
                                         <label>Medical Prescription</label>
                                         <div class="input-group">
-                                            <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
-
+                                            <textarea class="form-control" name="prescription" rows="3"><%=medicalExamination.getMedicalPrescription()%></textarea>
                                         </div>
                                     </div>
                                 </div>
-                                <button class="btn btn-warning mt-4 ms-3 me-2 d-inline w-20" type="submit">Reset</button>
+                            <button class="btn btn-warning mt-4 ms-3 me-2 d-inline w-20" type="reset">Reset</button>
                                 <button class="btn btn-primary mt-4 d-inline w-20" type="submit">Save</button>
                         </form>
                     </div>

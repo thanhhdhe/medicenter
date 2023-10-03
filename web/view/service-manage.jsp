@@ -56,9 +56,11 @@
        String email = (String) session.getAttribute("email");
        StaffDAO staffDAO = new StaffDAO();
        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+       boolean isManager = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
-            <%if(curStaff!=null){%>
+            <%if(curStaff!=null){
+            if(curStaff.getRole().equals("manager")) isManager=true;%>
             <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">
                 <nav class="navbar navbar-light">
@@ -89,6 +91,7 @@
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
+                        <%if(isManager){%>
                     <div class="navbar-nav w-100 text-light">
                         <a href="staff?event=send-to-feedback" class="nav-item nav-link"
                            ><i class="far fa-file-alt"></i>Feedback</a
@@ -99,6 +102,7 @@
                            ><i class="fas fa-stethoscope"></i>Services</a
                         >
                     </div>
+                    <%}%>
                 </nav>
             </div>
             <!-- Sidebar End -->

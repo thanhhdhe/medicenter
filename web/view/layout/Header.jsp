@@ -79,11 +79,7 @@
                     <li><a onclick="myFunction()" class="dropdown-item">Change Password</a></li>
 
                     <li><a class="dropdown-item" href="logout">Logout</a></li>
-                        <%if(curUser.getRole().equals("manager")){%>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="service?event=manage">Services Manage</a></li>
-                    <!--<li><hr class="dropdown-divider"></li>-->
-                    <%}%>
+                        
                 </ul>
             </div>
         </div>

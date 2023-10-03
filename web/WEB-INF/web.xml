@@ -68,6 +68,10 @@
         <servlet-name>PostManageController</servlet-name>
         <servlet-class>controller.PostManageController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>MedicalExaminationController</servlet-name>
+        <servlet-class>controller.MedicalExaminationController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServiceController</servlet-name>
         <url-pattern>/service</url-pattern>
@@ -135,6 +139,10 @@
     <servlet-mapping>
         <servlet-name>PostManageController</servlet-name>
         <url-pattern>/postManage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MedicalExaminationController</servlet-name>
+        <url-pattern>/medical-examination</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

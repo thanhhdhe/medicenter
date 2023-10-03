@@ -217,7 +217,7 @@
                                             <td><%=medicalExamination.getDisease()%></td>
                                             <td class="d-flex">
                                                 <a class="me-3" href="staff?event=send-to-edit&id=<%=medicalExamination.getMedicalExaminationID()%>"><i class="fas fa-pencil-alt ms-text-primary"></i></a>
-                                                <a href="#" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
+                                                <a href="medical-examination?event=delete&id=<%=medicalExamination.getMedicalExaminationID()%>" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
                                             </td>
                                         </tr>
                                         <%}}%>
