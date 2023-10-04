@@ -517,13 +517,13 @@ public class ServiceDAO extends MyDAO {
         ServiceDAO serviceDAO = new ServiceDAO();
         CategoryServiceDAO categoryServiceDAO = new CategoryServiceDAO();
 //        List<Service> list = serviceDAO.getSortedPagedServicesByOption(0, 20, "", "", "1");
-//List<Service> list = serviceDAO.getAllServices();
+List<Service> list = serviceDAO.getAllServices();
 //        List<Service> list = serviceDAO.getSortedPagedServicesBySearch(5, 5, "");
 //            List<Service> list = serviceDAO.getSortedPaged(0, 5);
 //        List<Service> list = serviceDAO.getPaginatedSortedAndFilteredServices(0, 10, "title", "");
-//        for (Service service : list) {
-//            System.out.println(service.getTitle());
-//        }
+        for (Service service : list) {
+            System.out.println(service.getStatus());
+        }
 //            System.out.println(serviceDAO.getServiceByID(15+"").getBrief());
 //        System.out.println((serviceDAO.getCountOfServicesUserChoose("", "", "")+4)/5);
 //        System.out.println((serviceDAO.getServiceCount()+4)/5);
@@ -531,11 +531,11 @@ public class ServiceDAO extends MyDAO {
 //            
 //        }
 
-        Service service = serviceDAO.getServiceByID(15+"");
-        System.out.println(serviceDAO.getServiceByID(String.valueOf(11)));
-        service.setTitle("sss");
-        serviceDAO.update(service);
-        System.out.println(service.getTitle());
+//        Service service = serviceDAO.getServiceByID(15+"");
+//        System.out.println(serviceDAO.getServiceByID(String.valueOf(11)));
+//        service.setTitle("sss");
+//        serviceDAO.update(service);
+//        System.out.println(service.getTitle());
 //        System.out.println(serviceDAO.getServiceByID(15+"").getStatus());
     }
 }

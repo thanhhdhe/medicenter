@@ -260,7 +260,7 @@ public class ServiceController extends HttpServlet {
         // Render the service list
         for (Service service : serviceList) {
             out.print("<tr id=\""+service.getServiceID()+"\" class=\"service p-3 ");
-            if(service.getStatus()){out.print("\"inactives\"");} 
+            if(!service.getStatus()){out.print("inactives\"");} 
             out.print("\">\n" +
 "                                                    <th scope=\"row\">"+service.getServiceID()+"</th>\n" +
 "                                                    <td><img src=\""+service.getThumbnail()+"\" alt=\"ìmg\" style=\"width: 12rem;height: 8rem;object-fit: cover;\" /></td>\n" +
