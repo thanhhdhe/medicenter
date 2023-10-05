@@ -64,7 +64,7 @@ public class MyReservationController extends HttpServlet {
         List<Reservation> reservations = rdao.getSortedPaged((pageNumber - 1) * numberPerPage, numberPerPage, Integer.toString(udao.getUser(email).getUserID()));
 
         StringBuilder sb = new StringBuilder();
-        SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");        
+        SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy");        
         SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
         ServiceDAO serviceDAO = new ServiceDAO();

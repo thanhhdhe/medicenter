@@ -18,7 +18,7 @@ public class Children {
     private Date birthday;
     private String status;
     private String gender;
-    private String avartar;
+    private String avatar;
 
     public Children() {
     }
@@ -32,14 +32,14 @@ public class Children {
         this.gender = gender;
     }
 
-    public Children(int childID, int userID, String childName, Date birthday, String status, String gender, String avartar) {
+    public Children(int childID, int userID, String childName, Date birthday, String status, String gender, String avatar) {
         this.childID = childID;
         this.userID = userID;
         this.childName = childName;
         this.birthday = birthday;
         this.status = status;
         this.gender = gender;
-        this.avartar = avartar;
+        this.avatar = avatar;
     }
 
     public Children(int userID, String childName, Date birthday, String status, String gender) {
@@ -50,12 +50,12 @@ public class Children {
         this.gender = gender;
     }
 
-    public String getAvartar() {
-        return avartar;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setAvartar(String avartar) {
-        this.avartar = avartar;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getGender() {

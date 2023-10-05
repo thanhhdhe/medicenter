@@ -377,6 +377,34 @@ public class ReservationDAO extends MyDAO {
         }
         return true;
     }
+    
+    public Reservation getReservationByID(int ReservationID) {
+        Reservation reservation = null;
+        xSql = "SELECT * from [dbo].[Reservations] where ReservationID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, ReservationID);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+//                int ReservationID = rs.getInt("ReservationID");
+                int UserID = rs.getInt("UserID");
+                int ServiceID = rs.getInt("ServiceID");
+                Date ReservationDate = rs.getDate("ReservationDate");
+                int ReservationSlot = rs.getInt("ReservationSlot");
+                Timestamp CreatedDate = rs.getTimestamp("CreatedDate");
+                float Cost = rs.getFloat("Cost");
+                String Status = rs.getString("Status");
+                int StaffID = rs.getInt("StaffID");
+                int ChildID = rs.getInt("ChildID");
+                reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return reservation;
+    }
 
     public static void main(String args[]) {
         ReservationDAO rd = new ReservationDAO();

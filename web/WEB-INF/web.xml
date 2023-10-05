@@ -144,6 +144,10 @@
         <servlet-name>PostManageController</servlet-name>
         <url-pattern>/postManage</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ReservationInformationController</servlet-name>
+        <url-pattern>/reservation</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
