@@ -68,6 +68,10 @@
         <servlet-name>PostManageController</servlet-name>
         <servlet-class>controller.PostManageController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ReservationInformationController</servlet-name>
+        <servlet-class>controller.ReservationInformationController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServiceController</servlet-name>
         <url-pattern>/service</url-pattern>
@@ -135,6 +139,10 @@
     <servlet-mapping>
         <servlet-name>PostManageController</servlet-name>
         <url-pattern>/postManage</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ReservationInformationController</servlet-name>
+        <url-pattern>/reservation</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
