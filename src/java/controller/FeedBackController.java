@@ -153,7 +153,7 @@ public class FeedBackController extends HttpServlet {
 
                     //fillter for status
                 } else if (event.equals("fillterstatus")) {
-                    
+
                     //get infor
                     String Fillstatus = request.getParameter("fillstatus");
                     //get total page
@@ -168,13 +168,16 @@ public class FeedBackController extends HttpServlet {
                         //get search
                         String search = request.getParameter("search");
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFill(1, Fillstatus, "FStatus");
-                        System.out.println(feedbacks.get(1).getContentSub());
+                        System.out.println(feedbacks.get(0).getFeedbackID());
                         // if search not null new list list contains feedback have search end send for jsp
-                        if(search != null){
-                            System.out.println(search);
+                        if (search != null) {
+
                             List<FeedBack> newfeedbacks = new ArrayList<>();
-                            for(FeedBack f : feedbacks){
-                                if(f.getContent().contains(search)){                                  
+                            for (FeedBack f : feedbacks) {
+                                // get name user
+                                User userser = userdao.getUserByID(f.getUserID());
+                                if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                        || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
                                     newfeedbacks.add(f);
                                 }
                             }
@@ -189,7 +192,7 @@ public class FeedBackController extends HttpServlet {
                         //set fill for url paging
                         request.setAttribute("fill", Fillstatus);
                         request.setAttribute("endP", endPage);
-                        
+
                         request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     } else {
                         //get search
@@ -201,13 +204,16 @@ public class FeedBackController extends HttpServlet {
                         //set fill for url paging
                         request.setAttribute("fill", Fillstatus);
                         int page = Integer.parseInt(index);
-                        
+
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFill(page, Fillstatus, "FStatus");
-                         // if search not null new list list contains feedback have search end send for jsp
-                        if(search != null){
+                        // if search not null new list list contains feedback have search end send for jsp
+                        if (search != null) {
                             List<FeedBack> newfeedbacks = new ArrayList<>();
-                            for(FeedBack f : feedbacks){
-                                if(f.getContent().contains(search)){
+                            for (FeedBack f : feedbacks) {
+                                // get name user
+                                User userser = userdao.getUserByID(f.getUserID());
+                                if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                        || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
                                     newfeedbacks.add(f);
                                 }
                             }
@@ -231,8 +237,27 @@ public class FeedBackController extends HttpServlet {
                         endPage++; // if endP not divide by 10 so that endPage + 1
                     }
                     String index = request.getParameter("index");
+
                     if (index == null) {
+                        //get search
+                        String search = request.getParameter("search");
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFill(1, Fillrate, "RatedStar");
+                        // if search not null new list list contains feedback have search end send for jsp
+                        if (search != null) {
+
+                            List<FeedBack> newfeedbacks = new ArrayList<>();
+                            for (FeedBack f : feedbacks) {
+                                // get name user
+                                User userser = userdao.getUserByID(f.getUserID());
+                                if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                        || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
+                                    newfeedbacks.add(f);
+                                }
+                            }
+                            request.setAttribute("feedbacks", newfeedbacks);
+                        } else {
+                            request.setAttribute("feedbacks", feedbacks);
+                        }
                         // set event for paging
                         request.setAttribute("fillevent", event);
                         //set name of fill parameter url paging                  
@@ -240,9 +265,10 @@ public class FeedBackController extends HttpServlet {
                         //set fill for url paging
                         request.setAttribute("fill", Fillrate);
                         request.setAttribute("endP", endPage);
-                        request.setAttribute("feedbacks", feedbacks);
                         request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     } else {
+                        //get search
+                        String search = request.getParameter("search");
                         // set event for paging
                         request.setAttribute("fillevent", event);
                         //set name of fill parameter url paging                  
@@ -251,8 +277,22 @@ public class FeedBackController extends HttpServlet {
                         request.setAttribute("fill", Fillrate);
                         int page = Integer.parseInt(index);
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFill(page, Fillrate, "RatedStar");
+                        // if search not null new list list contains feedback have search end send for jsp
+                        if (search != null) {
+                            List<FeedBack> newfeedbacks = new ArrayList<>();
+                            for (FeedBack f : feedbacks) {
+                                // get name user
+                                User userser = userdao.getUserByID(f.getUserID());
+                                if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                        || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
+                                    newfeedbacks.add(f);
+                                }
+                            }
+                            request.setAttribute("feedbacks", newfeedbacks);
+                        } else {
+                            request.setAttribute("feedbacks", feedbacks);
+                        }
                         request.setAttribute("endP", endPage);
-                        request.setAttribute("feedbacks", feedbacks);
                         request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     }
                 } // fillter for service 
@@ -266,9 +306,27 @@ public class FeedBackController extends HttpServlet {
                     if (endP % 10 != 0) {
                         endPage++; // if endP not divide by 10 so that endPage + 1
                     }
+                    //get search
+                    String search = request.getParameter("search");
                     String index = request.getParameter("index");
                     if (index == null) {
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFillSer(1, Fillservice);
+                        
+                        // if search not null new list list contains feedback have search end send for jsp
+                        if (search != null) {
+                            List<FeedBack> newfeedbacks = new ArrayList<>();
+                            for (FeedBack f : feedbacks) {
+                                // get name user
+                                User userser = userdao.getUserByID(f.getUserID());
+                                if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                        || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
+                                    newfeedbacks.add(f);
+                                }
+                            }
+                            request.setAttribute("feedbacks", newfeedbacks);
+                        } else {
+                            request.setAttribute("feedbacks", feedbacks);
+                        }
                         // set event for paging
                         request.setAttribute("fillevent", event);
                         //set name of fill parameter url paging                  
@@ -276,7 +334,6 @@ public class FeedBackController extends HttpServlet {
                         //set fill for url paging
                         request.setAttribute("fill", Fillservice);
                         request.setAttribute("endP", endPage);
-                        request.setAttribute("feedbacks", feedbacks);
                         request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     } else {
                         // set event for paging
@@ -287,8 +344,22 @@ public class FeedBackController extends HttpServlet {
                         request.setAttribute("fill", Fillservice);
                         int page = Integer.parseInt(index);
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFillSer(page, Fillservice);
+                        // if search not null new list list contains feedback have search end send for jsp
+                        if (search != null) {
+                            List<FeedBack> newfeedbacks = new ArrayList<>();
+                            for (FeedBack f : feedbacks) {
+                                // get name user
+                                User userser = userdao.getUserByID(f.getUserID());
+                                if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                        || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
+                                    newfeedbacks.add(f);
+                                }
+                            }
+                            request.setAttribute("feedbacks", newfeedbacks);
+                        } else {
+                            request.setAttribute("feedbacks", feedbacks);
+                        }
                         request.setAttribute("endP", endPage);
-                        request.setAttribute("feedbacks", feedbacks);
                         request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     }
                 } // search
