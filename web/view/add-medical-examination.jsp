@@ -192,7 +192,7 @@
                         >
                         <div class="row border-bottom justify-content-between">
                             <div class="col-md-4 d-flex align-items-center justify-content-center">
-                                <img class="rounded-circle object-cover me-3" src="<%=children.getAvartar()%>" width="150px" height="150px" alt="alt"/>
+                                <img class="rounded-circle object-cover me-3" src="<%=children.getAvatar()%>" width="150px" height="150px" alt="alt"/>
                                 <div><h3><%=children.getChildName()%></h3>
                                     <div><%=children.getBirthday()%></div>
                                     <div><%=children.getGender()%></div>
