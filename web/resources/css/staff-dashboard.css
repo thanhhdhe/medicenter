@@ -309,3 +309,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     margin-right: -5px;
     margin-left: -5px;
 }
+
+.object-cover{
+    object-fit: cover;
+}

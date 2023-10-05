@@ -47,7 +47,7 @@ public class FeedBackController extends HttpServlet {
         HttpSession session = request.getSession();
         String role = (String) session.getAttribute("email");
         StaffDAO staffDAO = new StaffDAO();
-        Staff staff= staffDAO.getStaffByStaffEmail(role);
+        Staff staff = staffDAO.getStaffByStaffEmail(role);
         UserDAO userdao = new UserDAO();
         User Arole = userdao.getUser(role);
         // check login
@@ -94,8 +94,8 @@ public class FeedBackController extends HttpServlet {
             out.println("</script>");
             out.println("</body></html>");
         } else {
-            String roleaccount="";
-            if(staff == null){
+            String roleaccount = "";
+            if (staff == null) {
                 roleaccount = Arole.getRole();
             } else {
                 roleaccount = staff.getRole();
@@ -137,7 +137,7 @@ public class FeedBackController extends HttpServlet {
                     String FDid = request.getParameter("FDid");
                     FeedBack feedback = dao.getFeedbackDetail(Integer.parseInt(FDid));
                     ServiceDAO serviceDAO = new ServiceDAO();
-                   
+
                     Service ser = serviceDAO.getServiceByID(feedback.getServiceName());
                     request.setAttribute("FDid", FDid);
                     request.setAttribute("ser", ser);
@@ -416,6 +416,48 @@ public class FeedBackController extends HttpServlet {
                     }
                 }
 
+            } else if (!roleaccount.equals("manager".trim()) && roleaccount.equals("doctor".trim()) && roleaccount.equals("nurse".trim())) {
+                out.println("<html><head><title>Login Required</title>");
+                out.println("<style>");
+                out.println("  .overlay {");
+                out.println("    position: fixed;");
+                out.println("    top: 0;");
+                out.println("    left: 0;");
+                out.println("    width: 100%;");
+                out.println("    height: 100%;");
+                out.println("    background-color: rgb(124 177 167 / 50%);");
+                out.println("    display: flex;");
+                out.println("    justify-content: center;");
+                out.println("    align-items: center;");
+                out.println("    z-index: 1;");
+                out.println("  }");
+                out.println("  .popup {");
+                out.println("    background-color: white;border-radius: 5px;");
+                out.println("    padding: 20px;");
+                out.println("    text-align: center;width: 300px;height: 150px;");
+                out.println("    z-index: 2;");
+                out.println("  }");
+                out.println("</style>");
+                out.println("</head><body>");
+                out.println("<div class='overlay'>");
+                out.println("  <div class='popup'>");
+                out.println("    <h2 style=\"color: red\">Login Required</h2>");
+                out.println("    <p>You must log in to access this page.</p>");
+                out.println("    <button style=\"padding: 10px;"
+                        + "background: #0089ff;"
+                        + "color: white;"
+                        + "border: 0px;"
+                        + "border-radius: 5px;\" onclick='closePopup()'>Cancel</button>");
+                out.println("  </div>");
+                out.println("</div>");
+                out.println("<script>");
+                out.println("  function closePopup() {");
+                out.println("    var overlay = document.querySelector('.overlay');");
+                out.println("    overlay.style.display = 'none';");
+                out.println("    window.location.href = 'home';");
+                out.println("  }");
+                out.println("</script>");
+                out.println("</body></html>");
             } else {
                 // Get the 'action' parameter from the request
                 String action = request.getParameter("action");

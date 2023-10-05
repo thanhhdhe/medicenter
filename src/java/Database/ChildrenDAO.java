@@ -26,7 +26,8 @@ public class ChildrenDAO extends MyDAO{
                 Date birthday = rs.getDate("Birthday");
                 String status = rs.getString("Status");
                 String gender = rs.getString("Gender");
-                children = new Children(childID, userID, childName, birthday, status, gender);
+                String avatar = rs.getString("Avatar");
+                children = new Children(childID, userID, childName, birthday, status, gender, avatar);
             }
             rs.close();
             ps.close();
@@ -55,6 +56,7 @@ public class ChildrenDAO extends MyDAO{
     }
     public static void main(String[] args) {
         ChildrenDAO childrenDAO = new ChildrenDAO();
+        
         System.out.println(childrenDAO.getChildrenByChildrenId(1+"").getChildName());
     }
 }

@@ -44,6 +44,17 @@ public class MedicalExamination {
         this.disease = disease;
     }
 
+    public MedicalExamination(int MuserID, int MchildrenID, int MstaffID, Date examinationDate, int serviceID, String medicalPrescription, String disease) {
+        this.MuserID = MuserID;
+        this.MchildrenID = MchildrenID;
+        this.MstaffID = MstaffID;
+        this.examinationDate = examinationDate;
+        this.serviceID = serviceID;
+        this.medicalPrescription = medicalPrescription;
+        this.disease = disease;
+    }
+
+    
 
     public int getMedicalExaminationID() {
         return MedicalExaminationID;

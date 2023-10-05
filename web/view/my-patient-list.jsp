@@ -48,15 +48,16 @@
         <!-- Customized Bootstrap Stylesheet -->
         <link href="css/bootstrap.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="./resources/css/staff-dashboard.css">
-        <link rel="stylesheet" href="./resources/css/services-style.css">
     </head>
 
     <body>
-        <%
-       String email = (String) session.getAttribute("email");
-       StaffDAO staffDAO = new StaffDAO();
-       Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-       boolean isManager = false;
+         <%
+        String email = (String) session.getAttribute("email");
+        StaffDAO staffDAO = new StaffDAO();
+        ReservationDAO reservationDAO = new ReservationDAO();
+        ChildrenDAO childrenDAO = new ChildrenDAO();
+        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+        boolean isManager = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){
@@ -91,14 +92,14 @@
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
-                        <%if(isManager){%>
+                    <%if(isManager){%>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="staff?event=send-to-feedback" class="nav-item nav-link"
+                        <a href="feedback" class="nav-item nav-link"
                            ><i class="far fa-file-alt"></i>Feedback</a
                         >
                     </div>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="service?event=manage" class="nav-item nav-link active"
+                        <a href="service?event=manage" class="nav-item nav-link"
                            ><i class="fas fa-stethoscope"></i>Services</a
                         >
                     </div>
@@ -111,7 +112,7 @@
             <div class="content <%if(curStaff==null){%>ms-0 w-100<%}%>">
                 <!-- Navbar Start -->
                 <nav class="navbar navbar-expand navbar-light sticky-top px-4 py-0" style="background-color: #1977cc;">
-
+                    
                     <a href="#" class="sidebar-toggler flex-shrink-0 text-decoration-none text-light">
                         <i class="fa fa-bars"></i>
                     </a>
@@ -174,7 +175,7 @@
                                 <a href="logout" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
-                        <%}else{%>
+                         <%}else{%>
                         <a href="staff?event=sent-to-login" id="login" class="btn btn-outline-primary ms-3 bg-light rounded-pill text-decoration-none"><span class="d-none d-md-inline">Login</a>
                         <%}%>
                     </div>
@@ -186,84 +187,48 @@
                     <div
                         class="row bg-light rounded align-items-center justify-content-center mx-0"
                         >
-                        <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
-                            <h4>SERVICES MANAGEMENT</h4>
-                            <a href="service?event=sent-to-add" class="ms-text-primary font-weight-bold">Add Service</a>
-                        </div>
-                        <div class="col-md-12">
-                            <%ServiceDAO serviceDAO = new ServiceDAO();
-                        CategoryServiceDAO categoryServiceDAO = new CategoryServiceDAO();%>
-                            <div class="d-flex flex-column align-items-center justify-content-center mt-2">
-                                <div class="container d-flex justify-content-between">
-                                    <input type="text" name="keywordSearch" placeholder="Search Title or Brief" class="form-control w-25 mx-3" />
-                                    <select class="form-select text-primary w-25 me-3" name="sortBy" >
-                                        <option selected value="">Sort By</option>
-                                        <option value="title">Title</option>
-                                        <option value="category">Category</option>
-                                        <option value="listPrice">List price</option>
-                                        <option value="salePrice">Sale price</option>
-                                        <option value="status">Status</option>
-                                    </select>
-                                </div>
-                                <div class="container row mt-5 mb-4">
-
-                                    <div class="col-md-12">
-
-                                        <!-- Services List -->
-                                        <table class="table">
-                                            <thead class="text-light" style="background: #1977cc;">
-                                                <tr>
-                                                    <th scope="col">ID</th>
-                                                    <th scope="col">Thumbnail</th>
-                                                    <th scope="col">Title</th>
-                                                    <th scope="col">Category</th>
-                                                    <th scope="col">Origin Price</th>
-                                                    <th scope="col">Sale Price</th>
-                                                    <th scope="col">Status</th>
-                                                    <th scope="col">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="service-list">
-                                                <%List<Service> list = serviceDAO.getSortedPaged(0, 10);
-            if(!list.isEmpty())   { for (Service service : list) {%>
-                                                <tr id="<%=service.getServiceID()%>" class="service p-3 <%=!service.getStatus()?"inactives":"" %>">
-                                                    <th scope="row"><%=service.getServiceID()%></th>
-                                                    <td><img src="<%=service.getThumbnail()%>" alt="ìmg" style="width: 12rem;height: 8rem;object-fit: cover;" /></td>
-                                                    <td><%=service.getTitle()%></td>
-                                                    <td><%=categoryServiceDAO.getCategoryServiceByID(service.getCategoryID()+"").getCategoryName()%></td>
-                                                    <td>$<%=service.getOriginalPrice()%></td>
-                                                    <td>$<%=service.getSalePrice()%> </td>
-                                                    <td><%if(service.getStatus()){%><p class="status text-success mt-2">Active</p> <%}else{%> <p class="status text-black-50 mt-2">Inactive</p><%}%></td>
-                                                    <td>
-                                                        <div class="d-flex h-50 align-content-center flex-wrap" >
-                                                            <div class="d-flex">
-                                                                <%if(service.getStatus()){%><button class="button-icon me-2 showhide hide-service-button" data-service-id="<%=service.getServiceID()%>"><img src="resources/img/icon/hide.png" alt="alt"/></button> 
-                                                                    <%}else{%>
-                                                                <button class="button-icon me-2 showhide show-service-button" data-service-id="<%=service.getServiceID()%>"><img src="resources/img/icon/visual.png" alt="alt"/></button> 
-                                                                    <%}%>
-                                                                <button class="button-icon me-2"><a href="service?event=to-detail-manage&id=<%=service.getServiceID()%>"><img src="resources/img/icon/detail.png" alt="alt"/></a></button>
-                                                                <button class="button-icon"><a href="service?event=edit&id=<%=service.getServiceID()%>"><img src="resources/img/icon/pen.png" alt="alt"/></a></button>
-                                                            </div></div>
-                                                    </td>
-                                                </tr>
-                                                <%}}%>
-
-                                            </tbody>
-                                        </table>
-                                        <div class="d-flex justify-content-center mb-5" id="pagination-container">
-                                            <button class="pagination-btn ms-2 active" data-page="1">1</button>
-                                            <%for (int i = 2; i <=(serviceDAO.getServiceCount()+9)/10; i++) {%>
-                                            <button class="pagination-btn ms-2 inactive" data-page="<%=i%>"><%=i%></button>
-                                            <%}%>
-                                        </div>
-
-
-
-
-                                    </div>
-                                </div>
+                        <div class="col-md-12 p-0">
+                            <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
+                                <h4>MY PATIENT LIST</h4>
                             </div>
+                            <div class="table-responsive p-4">
+                                <%if(curStaff!=null){%>
+                                <table class="table table-striped table-hover">
+                                    <thead class="text-light" style="background: #1977cc;">
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Patient Name</th>
+                                            <th scope="col">Date of birth</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Gender</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <%
+                                        List<Reservation> reservations = reservationDAO.getReservationByStaffID(curStaff.getStaffID()+"");
+        
+                                        if(reservations!=null){
+                                        for (Reservation reservation : reservations) {
+                                        Children children = childrenDAO.getChildrenByChildrenId(reservation.getChildID()+"");
+                                        %>
+                                        <tr>
+                                            <th scope="row"><%=children.getChildID()%></th>
+                                            <td class="d-flex align-items-center">
+                                                <img class="rounded-circle object-cover me-3" src="<%=children.getAvartar()%>" alt="alt" width="30px" height="30px"/>
+                                                <div><%=children.getChildName()%></div>
+                                            </td>
+                                            <td><%=children.getBirthday()%></td>
+                                            <td><%=children.getStatus()%></td>
+                                            <td><%=children.getGender()%></td>
+                                            <td><a href="staff?event=send-to-history-examination&childid=<%=children.getChildID()%>"><i class="fas fa-pencil-alt ms-text-primary"></i></a></td>
+                                        </tr>
+                                        <%}}%>
 
+                                    </tbody>
+                                </table>
+                                <%}%>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -280,8 +245,7 @@
         </div>
 
         <!-- JavaScript Libraries -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="./resources/js/services-manage-script.js"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
         <script
             src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
             integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
@@ -295,7 +259,7 @@
 
         <!-- Template Javascript -->
         <script>
-            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+            document.querySelector('.sidebar-toggler').addEventListener('click', function() {
                 var sidebar = document.querySelector('.sidebar');
                 var content = document.querySelector('.content');
 

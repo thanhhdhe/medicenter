@@ -28,23 +28,6 @@ public class StaffController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet StaffController</title>");  
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet StaffController at " + request.getContextPath () + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    } 
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /** 
      * Handles the HTTP <code>GET</code> method.
@@ -61,6 +44,10 @@ public class StaffController extends HttpServlet {
         String email = (String) session.getAttribute("email");
         StaffDAO staffDAO = new StaffDAO();
         Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+        boolean isManager = false;
+        if(curStaff!=null){
+            if(curStaff.getRole().equals("manager")) isManager=true;
+        }
         
         switch(event){
             case "sent-to-home":
@@ -80,6 +67,15 @@ public class StaffController extends HttpServlet {
             case "send-to-feedback":
                 request.getRequestDispatcher("feedback").forward(request, response);
                 break;
+            case "send-to-children-list":
+                request.getRequestDispatcher("./view/my-patient-list.jsp").forward(request, response);
+                break;
+            case "send-to-history-examination":
+                String childId = request.getParameter("childid");
+                request.setAttribute("childId", childId);
+                request.getRequestDispatcher("./view/add-medical-examination.jsp").forward(request, response);
+                break;
+            
         }
     } 
 
@@ -119,6 +115,8 @@ public class StaffController extends HttpServlet {
             request.getRequestDispatcher("./view/staff-dashboard.jsp").forward(request, response);
         }
     } 
+    
+    
 
     /** 
      * Returns a short description of the servlet.

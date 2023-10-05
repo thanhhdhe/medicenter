@@ -5,14 +5,20 @@
 package controller;
 
 import Database.PostDAO;
+import Database.StaffDAO;
+import Database.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import model.Post;
+import model.Staff;
+import model.User;
 
 /**
  *
@@ -58,6 +64,21 @@ public class PostManageController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+//        HttpSession session = request.getSession(true);
+//        String email = (String) session.getAttribute("email");
+        StaffDAO staffDAO = new StaffDAO();
+//        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+//        boolean isManager = false;
+//        if (curStaff != null) {
+//            if (curStaff.getRole().equals("manager")) {
+//                isManager = true;
+//            }
+//        }
+//        if (!isManager) {
+//            request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+//        }
+
         //get title
         String postTitle;
         try {
@@ -79,14 +100,23 @@ public class PostManageController extends HttpServlet {
             postCategory = "";
         }
         //get author
-        String postAuthor;
+        String postAuthorID;
         try {
-            postAuthor = request.getParameter("postAuthor");
-            if (postAuthor == null || postCategory.equals("Post Author")) {
+            postAuthorID = request.getParameter("postAuthor");
+            if (postAuthorID == null || postAuthorID.equals("-1")) {
                 throw new Exception();
             }
         } catch (Exception e) {
-            postAuthor = "";
+            postAuthorID = "";
+        }
+        String postStatus;
+        try {
+            postStatus = request.getParameter("postStatus");
+            if (postStatus == null || postStatus.equals("postStatus")) {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            postStatus = "";
         }
         //get page
         int page;
@@ -95,7 +125,17 @@ public class PostManageController extends HttpServlet {
         } catch (Exception e) {
             page = 1;
         }
-        
+        //get sortBy
+        String sortBy;
+        try {
+            sortBy = request.getParameter("sortBy");
+            if (sortBy == null) {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            sortBy = "Title";
+        }
+
         PostDAO postDao = new PostDAO();
         //get categorylist
         List<String> categoryList = postDao.allCategoryPost();
@@ -105,23 +145,47 @@ public class PostManageController extends HttpServlet {
             categoryList.add(0, postCategory);
         }
         //get authorlist
-        List<String> authorList= postDao.allAuthorPost();
-        authorList.add(0, "Post Author");
-        if (!postAuthor.isEmpty()) {
-            authorList.remove(postAuthor);
-            authorList.add(0, postAuthor);
+        List<Integer> authorIDList = postDao.allAuthorID();
+        List<User> authorList = new ArrayList<>();
+        User notuser = new User(-1, "", "", "", "Author", "Name", "", "", "", "");
+        authorList.add(notuser);
+        for (Integer ID : authorIDList) {
+            UserDAO userDao = new UserDAO();
+            User user = userDao.getUserByID(ID);
+            if (!postAuthorID.isEmpty() && ID == Integer.parseInt(postAuthorID)) {
+                authorList.add(0, user);
+            } else {
+                authorList.add(user);
+            }
         }
+
+        //get sortlist
+        List<String> sortList = new ArrayList<>();
+
+        sortList.add("Title");
+        sortList.add("CategoryPost");
+        sortList.add("AuthorID");
+        sortList.add("StatusPost");
+        sortList.remove(sortBy);
+        sortList.add(0, sortBy);
+
         //get number of page
-        int numOfPage = numOfPage(postTitle, postCategory);
-        //get list post
-        List<Post> list = postDao.getSortedPagedPostsByUserChoice((page - 1) * 6, 6, postTitle, postCategory);
-        
-        
+        int numOfPage = numOfPage(postTitle, postCategory, postAuthorID, postStatus);
+        //get list post  
+        List<Post> list = postDao.getSortedPagedPostsByManagerChoice((page - 1) * 6, 6, postTitle, postCategory, postAuthorID, postStatus, sortBy);
+
         request.setAttribute("postTitle", postTitle);
         request.setAttribute("categoryList", categoryList);
         request.setAttribute("authorList", authorList);
+
+        request.setAttribute("sortList", sortList);
         request.setAttribute("numOfPage", numOfPage);
         request.setAttribute("list", list);
+//        PrintWriter out = response.getWriter();
+//        out.println(postTitle);
+//        out.println(postCategory);
+//        out.println(postAuthorID);
+//        out.println(numOfPage);
         request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
     }
 
@@ -147,27 +211,19 @@ public class PostManageController extends HttpServlet {
                 doGet(request, response);
                 break;
             case "update":
-                request.getRequestDispatcher(event).forward(request, response);
+                request.getRequestDispatcher("./view/post-detail-manage.jsp").forward(request, response);
                 break;
             default:
-                throw new AssertionError();
+//                request.getRequestDispatcher("./view/post-detail-manage.jsp").forward(request, response);
         }
     }
 
-//    protected List<Post> getList(HttpServletRequest request, HttpServletResponse response,
-//            String postTitle, String postCategory, int page)
-//            throws ServletException, IOException {
-//        PostDAO postDAO = new PostDAO();
-//        if (postCategory == null || postCategory.isEmpty()) {
-////            return postDAO.getPostedPagedPostsBySearch((page - 1) * 6, 6, postTitle, "manager");
-//        } else {
-//            return postDAO.getSortedPagedPostsByUserChoice((page - 1) * 6, 6, postTitle, postCategory, "manager");
-//        }
-//    }
-    protected int numOfPage(String postTitle, String postCategory) {
+    protected int numOfPage(String postTitle, String postCategory, String AuthorID, String postStatus) {
         PostDAO postDAO = new PostDAO();
-        int numOfPage = postDAO.getCountOfPostsUserChoose(postTitle, postCategory) / 6;
-        if (postDAO.getCountOfPostsUserChoose(postTitle, postCategory) % 6 != 0) {
+        int numOfPage = postDAO.getCountOfPostsManagerChoose(postTitle, postCategory, AuthorID, postStatus) / 6;
+
+        if (postDAO.getCountOfPostsManagerChoose(postTitle, postCategory, AuthorID, postStatus)
+                % 6 != 0) {
             numOfPage += 1;
         }
         return numOfPage;

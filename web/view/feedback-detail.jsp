@@ -25,7 +25,7 @@
         <link rel="stylesheet" href="../resources/css/style.css">
     </head>
     <body>
-        <jsp:include page="../view/layout/Header.jsp" />
+        
         <div style="background-color: #e1dada">
             <div class="container pb-5">
                 <h1 class="mb-4">Feedback Details</h1>
@@ -95,7 +95,7 @@
                 </div>
             </div>
         </div>
-        <jsp:include page="layout/footer.jsp" />
+        
         <script
             src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
             integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"

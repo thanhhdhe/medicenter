@@ -48,11 +48,12 @@
                                                         <button class="button-icon me-2"value="show" name="event"><img src="resources/img/icon/visual.png" alt="alt"/></button> Show
                                                         </c:if>
                                                 </div>
+
                                                 <div>
                                                     <button class="button-icon me-2"><a href="postManage?event=to-detail-manage&id=${l.getPostID()}"><img src="resources/img/icon/detail.png" alt="alt"/></a></button> Detail
                                                 </div>
                                                 <div>
-                                                    <button class="button-icon me-2"><a href="postmanage?event=edit&id=${l.getPostID()}"><img src="resources/img/icon/pen.png" alt="alt"/></a></button>  Update
+                                                    <button class="button-icon me-2"><a href="postManage?event=update&id=${l.getPostID()}"><img src="resources/img/icon/pen.png" alt="alt"/></a></button>  Update
                                                 </div>
                                             </form>
                                         </div>
@@ -67,6 +68,7 @@
             <div class="container row mt-5 mb-4">
                 <div class="mb-5">
                     <form action="postManage">
+                        Search by:
                         <input type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3 search" value="${postTitle}"/>
                         <select class="form-select text-primary mt-3" name="postCategory">
                             <c:forEach var="c" items="${categoryList}">
@@ -75,7 +77,14 @@
                         </select>
                         <select class="form-select text-primary mt-3" name="postAuthor">
                             <c:forEach var="a" items="${authorList}">
-                                <option value="${a}">${a}</option>
+                                <option value="${a.getUserID()}">${a.getLastName()} ${a.getFirstName()}</option>
+                            </c:forEach>
+                        </select>
+                        <br>
+                        Sort by:
+                        <select class="form-select text-primary mt-3" name="sortBy">
+                            <c:forEach var="s" items="${sortList}">
+                                <option value="${s}">${s}</option>
                             </c:forEach>
                         </select>
                         <br>
