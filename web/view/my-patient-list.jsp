@@ -11,7 +11,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Medical examination</title>
+        <title>Staff dashboard</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <meta content="" name="keywords" />
         <meta content="" name="description" />
@@ -51,16 +51,17 @@
     </head>
 
     <body>
-        <%
-            ServiceDAO serviceDAO = new ServiceDAO();
-       String email = (String) session.getAttribute("email");
-       StaffDAO staffDAO = new StaffDAO();
-       Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-       ChildrenDAO childrenDAO = new ChildrenDAO();
-       MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
+         <%
+        String email = (String) session.getAttribute("email");
+        StaffDAO staffDAO = new StaffDAO();
+        ReservationDAO reservationDAO = new ReservationDAO();
+        ChildrenDAO childrenDAO = new ChildrenDAO();
+        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+        boolean isManager = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
-            <%if(curStaff!=null){%>
+            <%if(curStaff!=null){
+            if(curStaff.getRole().equals("manager")) isManager=true;%>
             <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">
                 <nav class="navbar navbar-light">
@@ -87,10 +88,11 @@
                         </div>
                     </div>
                     <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link active"
+                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
+                    <%if(isManager){%>
                     <div class="navbar-nav w-100 text-light">
                         <a href="feedback" class="nav-item nav-link"
                            ><i class="far fa-file-alt"></i>Feedback</a
@@ -101,6 +103,7 @@
                            ><i class="fas fa-stethoscope"></i>Services</a
                         >
                     </div>
+                    <%}%>
                 </nav>
             </div>
             <!-- Sidebar End -->
@@ -109,7 +112,7 @@
             <div class="content <%if(curStaff==null){%>ms-0 w-100<%}%>">
                 <!-- Navbar Start -->
                 <nav class="navbar navbar-expand navbar-light sticky-top px-4 py-0" style="background-color: #1977cc;">
-
+                    
                     <a href="#" class="sidebar-toggler flex-shrink-0 text-decoration-none text-light">
                         <i class="fa fa-bars"></i>
                     </a>
@@ -172,7 +175,7 @@
                                 <a href="logout" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
-                        <%}else{%>
+                         <%}else{%>
                         <a href="staff?event=sent-to-login" id="login" class="btn btn-outline-primary ms-3 bg-light rounded-pill text-decoration-none"><span class="d-none d-md-inline">Login</a>
                         <%}%>
                     </div>
@@ -182,12 +185,11 @@
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
                     <div
-                        class="medical-records row bg-white rounded align-items-md-start justify-content-center mx-0"
+                        class="row bg-light rounded align-items-center justify-content-center mx-0"
                         >
                         <div class="col-md-12 p-0">
                             <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
-                                <h4>MEDICAL RECORDS</h4>
-                                <a href="staff?event=send-to-children-list" class="ms-text-primary font-weight-bold">Add Medical Record</a>
+                                <h4>MY PATIENT LIST</h4>
                             </div>
                             <div class="table-responsive p-4">
                                 <%if(curStaff!=null){%>
@@ -197,28 +199,29 @@
                                             <th scope="col">ID</th>
                                             <th scope="col">Patient Name</th>
                                             <th scope="col">Date of birth</th>
-                                            <th scope="col">Service</th>
-                                            <th scope="col">Date</th>
-                                            <th scope="col">Disease</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Gender</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <%
-                                        List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getMedicalExaminationsByStaff(curStaff.getStaffID()+"");
-                                        if(listMedicalExamination!=null){
-                                        for (MedicalExamination medicalExamination : listMedicalExamination) {%>
+                                        List<Reservation> reservations = reservationDAO.getReservationByStaffID(curStaff.getStaffID()+"");
+        
+                                        if(reservations!=null){
+                                        for (Reservation reservation : reservations) {
+                                        Children children = childrenDAO.getChildrenByChildrenId(reservation.getChildID()+"");
+                                        %>
                                         <tr>
-                                            <th scope="row"><%=medicalExamination.getMedicalExaminationID()%></th>
-                                            <td><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getChildName()%></td>
-                                            <td><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getBirthday()%></td>
-                                            <td><%=serviceDAO.getServiceByID(medicalExamination.getMuserID()+"").getTitle()%></td>
-                                            <td><%=medicalExamination.getExaminationDate()%></td>
-                                            <td><%=medicalExamination.getDisease()%></td>
-                                            <td class="d-flex">
-                                                <a class="me-3" href="staff?event=send-to-edit&id=<%=medicalExamination.getMedicalExaminationID()%>"><i class="fas fa-pencil-alt ms-text-primary"></i></a>
-                                                <a href="medical-examination?event=delete&id=<%=medicalExamination.getMedicalExaminationID()%>" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
+                                            <th scope="row"><%=children.getChildID()%></th>
+                                            <td class="d-flex align-items-center">
+                                                <img class="rounded-circle object-cover me-3" src="<%=children.getAvartar()%>" alt="alt" width="30px" height="30px"/>
+                                                <div><%=children.getChildName()%></div>
                                             </td>
+                                            <td><%=children.getBirthday()%></td>
+                                            <td><%=children.getStatus()%></td>
+                                            <td><%=children.getGender()%></td>
+                                            <td><a href="staff?event=send-to-history-examination&childid=<%=children.getChildID()%>"><i class="fas fa-pencil-alt ms-text-primary"></i></a></td>
                                         </tr>
                                         <%}}%>
 
@@ -228,43 +231,44 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Blank End -->
-
-                    <!-- Footer Start -->
-                    <div class="mt-4">
-                        <jsp:include page="layout/footer.jsp" />
-                    </div>
-                    <!-- Footer End -->
                 </div>
-                <!-- Content End -->
+                <!-- Blank End -->
 
+                <!-- Footer Start -->
+                <div class="mt-4">
+                    <jsp:include page="layout/footer.jsp" />
+                </div>
+                <!-- Footer End -->
             </div>
+            <!-- Content End -->
 
-            <!-- JavaScript Libraries -->
-            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-            <script
-                src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-                integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-                crossorigin="anonymous"
-            ></script>
-            <script
-                src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-                integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-                crossorigin="anonymous"
-            ></script>
+        </div>
 
-            <!-- Template Javascript -->
-            <script>
-                document.querySelector('.sidebar-toggler').addEventListener('click', function () {
-                    var sidebar = document.querySelector('.sidebar');
-                    var content = document.querySelector('.content');
+        <!-- JavaScript Libraries -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+            crossorigin="anonymous"
+        ></script>
 
-                    sidebar.classList.toggle('open');
-                    content.classList.toggle('open');
+        <!-- Template Javascript -->
+        <script>
+            document.querySelector('.sidebar-toggler').addEventListener('click', function() {
+                var sidebar = document.querySelector('.sidebar');
+                var content = document.querySelector('.content');
 
-                    return false;
-                });
-            </script>
+                sidebar.classList.toggle('open');
+                content.classList.toggle('open');
+
+                return false;
+            });
+        </script>
     </body>
 </html>
 

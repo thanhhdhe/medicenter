@@ -132,6 +132,7 @@ CREATE TABLE Children (
     Birthday DATE,
 	Status TEXT,
 	Gender VARCHAR(10) NOT NULL,
+	Avatar VARCHAR(MAX),
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
@@ -313,12 +314,12 @@ INSERT INTO Users (Address, Email, Password, FirstName, LastName, Gender, PhoneN
 VALUES ('29HL', 'vietgame431@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', 'Viet', 'Can Quoc', 'Male', '123-456-7890', NULL, 'staff');
 
 -- Dữ liệu mẫu cho bảng Children
-INSERT INTO Children (UserID, ChildName, Birthday, Status, Gender)
-VALUES	(1, 'viet', '2013-09-01', 'Healthy','Male'),
-		(1, 'thanh', '2011-09-01', 'Healthy','Female'),
-		(3, 'thanhthut', '2010-09-01', 'Healthy','Male'),
-		(3, 'quan', '2014-09-01', 'Healthy','Female'),
-        (2, 'hiu', '2013-09-01', 'Healthy','Male');
+INSERT INTO Children (UserID, ChildName, Birthday, Status, Gender, Avatar)
+VALUES	(1, 'viet', '2013-09-01', 'Healthy','Male', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpmA-_2vvDLD4BjOCXyDfV2vXBD9KmqylfODng16S2u1xdsSrmIGFl1aPs5sKeCgB5CFo&usqp=CAU'),
+		(1, 'thanh', '2011-09-01', 'Healthy','Female', 'https://cdn-img.scalabs.com.au/uzjYWz5uFA99H9ilh_BLtPqAA1Dq0GhZ05-Iow7qAZM/aHR0cHM6Ly9zdy1o/aXQtcHJkLnNjYWRp/Z2l0YWwuaW8vbWVk/aWEvMTYyNjYvc2lk/ZS1leWUtY2hsb2Uu/anBnP3ByZXNldD1N/YWluSW1hZ2U'),
+		(3, 'thanhthut', '2010-09-01', 'Healthy','Male', 'https://www.meme-arsenal.com/memes/86be0b3ec5e7d4ef82860978308903dc.jpg'),
+		(3, 'quan', '2014-09-01', 'Healthy','Female', 'https://hips.hearstapps.com/hmg-prod/images/kailia-posey-dead-grinning-girl-meme-1651648895.jpg?crop=0.667xw:1.00xh;0.0898xw,0&resize=640:*'),
+        (2, 'hiu', '2013-09-01', 'Healthy','Male', 'https://i.redd.it/uuunx09z14b71.jpg');
 
 
 -- Dữ liệu mẫu cho bảng MedicalExaminations
@@ -327,10 +328,13 @@ VALUES
 (1, 1, 1, '2023-09-01 09:00:00', 1, 'Prescription 1', 'Disease 1'),
 (2, 2, 1, '2023-09-02 10:00:00', 2, 'Prescription 2', 'Disease 2'),
 (3, 2, 1, '2023-09-02 07:00:00', 2, 'Prescription 3', 'Disease 3'),
-(3, 2, 1, '2023-09-02 06:00:00', 3, 'Prescription 4', 'Disease 4'),
+(3, 5, 1, '2023-09-02 06:00:00', 3, 'Prescription 4', 'Disease 4'),
 (3, 2, 1, '2023-09-02 08:00:00', 4, 'Prescription 5', 'Disease 5'),
+(3, 3, 1, '2023-09-02 13:00:00', 5, 'Prescription 6', 'Disease 6'),
 (3, 2, 1, '2023-09-02 13:00:00', 5, 'Prescription 6', 'Disease 6'),
-(3, 3, 1, '2023-09-03 11:00:00', 3, 'Prescription 7', 'Disease 7');
+(3, 4, 1, '2023-09-02 13:00:00', 5, 'Prescription 6', 'Disease 7'),
+(3, 2, 1, '2023-09-02 13:00:00', 5, 'Prescription 6', 'Disease 8'),
+(3, 3, 1, '2023-09-03 11:00:00', 3, 'Prescription 7', 'Disease 9');
 
 -- Chèn 15 bản ghi ngẫu nhiên vào bảng Feedbacks
 INSERT INTO Feedbacks (UserID, MedicalExaminationID, Content, FeedbackDate, RatedStar, FStatus)

@@ -67,6 +67,15 @@ public class StaffController extends HttpServlet {
             case "send-to-feedback":
                 request.getRequestDispatcher("feedback").forward(request, response);
                 break;
+            case "send-to-children-list":
+                request.getRequestDispatcher("./view/my-patient-list.jsp").forward(request, response);
+                break;
+            case "send-to-history-examination":
+                String childId = request.getParameter("childid");
+                request.setAttribute("childId", childId);
+                request.getRequestDispatcher("./view/add-medical-examination.jsp").forward(request, response);
+                break;
+            
         }
     } 
 
@@ -106,6 +115,8 @@ public class StaffController extends HttpServlet {
             request.getRequestDispatcher("./view/staff-dashboard.jsp").forward(request, response);
         }
     } 
+    
+    
 
     /** 
      * Returns a short description of the servlet.

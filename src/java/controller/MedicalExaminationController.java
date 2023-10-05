@@ -5,6 +5,7 @@
 
 package controller;
 
+import Database.ChildrenDAO;
 import Database.MedicalExaminationDAO;
 import Database.StaffDAO;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
+import java.time.LocalDate;
 import model.MedicalExamination;
 import model.Staff;
 
@@ -84,7 +86,9 @@ public class MedicalExaminationController extends HttpServlet {
             case "edit":
                 editMedicalExamination(request, response);
                 break;
-            
+            case "add-medical-examination":
+                addMedicalExamination(request, response);
+                break;
         }
     }
     
@@ -108,6 +112,21 @@ public class MedicalExaminationController extends HttpServlet {
         String id = request.getParameter("id");
         MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
         medicalExaminationDAO.delete(id);
+        request.getRequestDispatcher("./view/medical-examination.jsp").forward(request, response);
+    } 
+    
+    protected void addMedicalExamination(HttpServletRequest request, HttpServletResponse response)
+    throws ServletException, IOException {
+        int childID = Integer.parseInt(request.getParameter("childID") + "");
+        int staffID = Integer.parseInt(request.getParameter("staffID") + "");
+        int serviceId = Integer.parseInt(request.getParameter("service") + "");
+        String disease = request.getParameter("disease") + "";
+        String prescription = request.getParameter("prescription") + "";
+        ChildrenDAO childrenDAO = new ChildrenDAO();
+        Date examinationDate = Date.valueOf(LocalDate.now());
+        MedicalExamination medicalExamination = new MedicalExamination(childrenDAO.getChildrenByChildrenId(childID+"").getUserID(), childID, staffID, examinationDate, serviceId, prescription, disease);
+        MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
+        medicalExaminationDAO.insert(medicalExamination);
         request.getRequestDispatcher("./view/medical-examination.jsp").forward(request, response);
     } 
     /** 

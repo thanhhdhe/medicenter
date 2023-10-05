@@ -68,6 +68,33 @@ public class MedicalExaminationDAO extends MyDAO{
         return medicalExaminationList;
     }
     
+    public List<MedicalExamination> getMedicalExaminationsByChild(String childID) {
+        List<MedicalExamination> medicalExaminationList = new ArrayList<>();
+        xSql = "SELECT *  FROM [dbo].[MedicalExaminations] WHERE ChildrenID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, childID);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int MedicalExaminationID = rs.getInt("MedicalExaminationID");
+                int MuserID = rs.getInt("UserID");
+                int MchildrenID = rs.getInt("ChildrenID");
+                int MstaffID = rs.getInt("StaffID");
+                Date examinationDate = rs.getDate("ExaminationDate");
+                int medicalExaminationID = rs.getInt("MedicalExaminationID");
+                String medicalPrescription = rs.getString("MedicalPrescription");
+                String disease = rs.getString("Disease");
+                MedicalExamination medicalExamination = new MedicalExamination(MedicalExaminationID, MuserID, MchildrenID, MstaffID, examinationDate, medicalExaminationID, medicalPrescription, disease);
+                medicalExaminationList.add(medicalExamination);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return medicalExaminationList;
+    }
+    
     public MedicalExamination getMedicalExaminationsByID(String id) {
         MedicalExamination medicalExamination = null;
         xSql = "SELECT *  FROM [dbo].[MedicalExaminations] WHERE MedicalExaminationID = ?";

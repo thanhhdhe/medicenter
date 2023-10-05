@@ -11,7 +11,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Medical examination</title>
+        <title>Staff dashboard</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <meta content="" name="keywords" />
         <meta content="" name="description" />
@@ -52,15 +52,19 @@
 
     <body>
         <%
-            ServiceDAO serviceDAO = new ServiceDAO();
        String email = (String) session.getAttribute("email");
        StaffDAO staffDAO = new StaffDAO();
+       ServiceDAO serviceDAO = new ServiceDAO();
        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-       ChildrenDAO childrenDAO = new ChildrenDAO();
        MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
+       ChildrenDAO childrenDAO = new ChildrenDAO();
+       String childID = request.getAttribute("childId") + "";
+       Children children = childrenDAO.getChildrenByChildrenId(childID);
+       boolean isManager = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
-            <%if(curStaff!=null){%>
+            <%if(curStaff!=null){
+            if(curStaff.getRole().equals("manager")) isManager=true;%>
             <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">
                 <nav class="navbar navbar-light">
@@ -87,10 +91,11 @@
                         </div>
                     </div>
                     <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link active"
+                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
+                    <%if(isManager){%>
                     <div class="navbar-nav w-100 text-light">
                         <a href="feedback" class="nav-item nav-link"
                            ><i class="far fa-file-alt"></i>Feedback</a
@@ -101,6 +106,7 @@
                            ><i class="fas fa-stethoscope"></i>Services</a
                         >
                     </div>
+                    <%}%>
                 </nav>
             </div>
             <!-- Sidebar End -->
@@ -182,13 +188,56 @@
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
                     <div
-                        class="medical-records row bg-white rounded align-items-md-start justify-content-center mx-0"
+                        class="bg-light rounded align-items-center justify-content-center mx-0"
                         >
-                        <div class="col-md-12 p-0">
-                            <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
-                                <h4>MEDICAL RECORDS</h4>
-                                <a href="staff?event=send-to-children-list" class="ms-text-primary font-weight-bold">Add Medical Record</a>
+                        <div class="row border-bottom justify-content-between">
+                            <div class="col-md-4 d-flex align-items-center justify-content-center">
+                                <img class="rounded-circle object-cover me-3" src="<%=children.getAvartar()%>" width="150px" height="150px" alt="alt"/>
+                                <div><h3><%=children.getChildName()%></h3>
+                                    <div><%=children.getBirthday()%></div>
+                                    <div><%=children.getGender()%></div>
+                                    <div><%=children.getStatus()%></div></div>
+
                             </div>
+                            <div class="col-md-8 pe-4">
+                                <form action="medical-examination?event=add-medical-examination" method="POST">
+                                    <div class="row align-items-center px-3">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="validationCustom008">Disease</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="disease" placeholder="Enter Disease" required="" required="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <select class="form-control mt-2" name="service" required>
+                                                <option value="">Select Service</option>
+                                                <%List<Service> list = serviceDAO.getAllServices();
+                                                for (Service service : list) {%>
+                                                <option value="<%=service.getServiceID()%>"><%=service.getTitle()%></option>
+                                                <%}%>
+
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12 mb-2 px-3">
+                                        <label>Medical Prescription</label>
+                                        <div class="input-group">
+                                            <textarea class="form-control" name="prescription" rows="3" required=""></textarea>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="childID" value="<%=children.getChildID()%>">
+                                    <input type="hidden" name="staffID" value="<%=curStaff.getStaffID()%>">
+                                    <div class="d-flex mb-3">
+                                        <button class="btn btn-warning mt-4 ms-3 me-2 d-inline w-20" type="reset">Reset</button>
+                                        <button class="btn btn-primary mt-4 d-inline w-20" type="submit">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 p-0">
+
                             <div class="table-responsive p-4">
                                 <%if(curStaff!=null){%>
                                 <table class="table table-striped table-hover">
@@ -205,7 +254,7 @@
                                     </thead>
                                     <tbody>
                                         <%
-                                        List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getMedicalExaminationsByStaff(curStaff.getStaffID()+"");
+                                        List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getMedicalExaminationsByChild(children.getChildID()+"");
                                         if(listMedicalExamination!=null){
                                         for (MedicalExamination medicalExamination : listMedicalExamination) {%>
                                         <tr>
@@ -226,45 +275,48 @@
                                 </table>
                                 <%}%>
                             </div>
-                        </div>
-                    </div>
-                    <!-- Blank End -->
+                        </div>       
 
-                    <!-- Footer Start -->
-                    <div class="mt-4">
-                        <jsp:include page="layout/footer.jsp" />
+
                     </div>
-                    <!-- Footer End -->
                 </div>
-                <!-- Content End -->
+                <!-- Blank End -->
 
+                <!-- Footer Start -->
+                <div class="mt-4">
+                    <jsp:include page="layout/footer.jsp" />
+                </div>
+                <!-- Footer End -->
             </div>
+            <!-- Content End -->
 
-            <!-- JavaScript Libraries -->
-            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-            <script
-                src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-                integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-                crossorigin="anonymous"
-            ></script>
-            <script
-                src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-                integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-                crossorigin="anonymous"
-            ></script>
+        </div>
 
-            <!-- Template Javascript -->
-            <script>
-                document.querySelector('.sidebar-toggler').addEventListener('click', function () {
-                    var sidebar = document.querySelector('.sidebar');
-                    var content = document.querySelector('.content');
+        <!-- JavaScript Libraries -->
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+            crossorigin="anonymous"
+        ></script>
 
-                    sidebar.classList.toggle('open');
-                    content.classList.toggle('open');
+        <!-- Template Javascript -->
+        <script>
+            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+                var sidebar = document.querySelector('.sidebar');
+                var content = document.querySelector('.content');
 
-                    return false;
-                });
-            </script>
+                sidebar.classList.toggle('open');
+                content.classList.toggle('open');
+
+                return false;
+            });
+        </script>
     </body>
 </html>
 

@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import model.Children;
 import model.Reservation;
 
 /**
@@ -56,6 +57,35 @@ public class ReservationDAO extends MyDAO {
             ps.setString(2, date);
             ps.setString(3, month);
             ps.setString(4, year);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int ReservationID = rs.getInt("ReservationID");
+                int UserID = rs.getInt("UserID");
+                int ServiceID = rs.getInt("ServiceID");
+                Date ReservationDate = rs.getDate("ReservationDate");
+                int ReservationSlot = rs.getInt("ReservationSlot");
+                Timestamp CreatedDate = rs.getTimestamp("CreatedDate");
+                float Cost = rs.getFloat("Cost");
+                String Status = rs.getString("Status");
+                int StaffID = rs.getInt("StaffID");
+                int ChildID = rs.getInt("ChildID");
+                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status);
+                list.add(reservation);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
+    public List<Reservation> getReservationByStaffID(String staffID) {
+        List<Reservation> list = new ArrayList<>();
+        xSql = "SELECT * from [dbo].[Reservations] where StaffID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, staffID);
             rs = ps.executeQuery();
             while (rs.next()) {
                 int ReservationID = rs.getInt("ReservationID");
@@ -370,7 +400,7 @@ public class ReservationDAO extends MyDAO {
         } catch (Exception e) {
 
         }
-//
+
 //        Reservation r = new Reservation();
 //        r.setCost(300);
 //        r.setCreatedDate(sqlTimestamp);
