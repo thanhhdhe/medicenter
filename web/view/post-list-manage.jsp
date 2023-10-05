@@ -35,6 +35,7 @@
                                 <div class="bg-light rounded overflow-hidden">
                                     <img class="img-fluid w-100" src="${l.getThumbnail()}" alt="">
                                     <div class="p-4">
+                                        Post ID: ${l.getPostID()}
                                         <a class="h3 d-block mb-3" href="/ChildrenCare/blogDetail?ID=${l.getPostID()}">${l.getTitle()}</a>
                                         <p class="m-0">${l.getBriefInfo()}</p>
                                         <div class="d-flex h-50 align-content-center flex-wrap d-flex" >
@@ -50,10 +51,10 @@
                                                 </div>
 
                                                 <div>
-                                                    <button class="button-icon me-2"><a href="postManage?event=to-detail-manage&id=${l.getPostID()}"><img src="resources/img/icon/detail.png" alt="alt"/></a></button> Detail
+                                                    <button class="button-icon me-2" value="view" name="event"><img src="resources/img/icon/detail.png" alt="alt"/></a></button> Detail
                                                 </div>
                                                 <div>
-                                                    <button class="button-icon me-2"><a href="postManage?event=update&id=${l.getPostID()}"><img src="resources/img/icon/pen.png" alt="alt"/></a></button>  Update
+                                                    <button class="button-icon me-2" value="update" name="event"><img src="resources/img/icon/pen.png" alt="alt"/></a></button>  Update
                                                 </div>
                                             </form>
                                         </div>
