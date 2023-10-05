@@ -79,6 +79,76 @@ public class PostManageController extends HttpServlet {
 //            request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
 //        }
 
+        loadPageWithChoice(request, response);
+        request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String event = request.getParameter("event");
+        switch (event) {
+            case "hide":
+                hideService(request, response);
+                doGet(request, response);
+                break;
+            case "show":
+                showService(request, response);
+                doGet(request, response);
+                break;
+            case "update":
+                request.getRequestDispatcher("./view/post-detail-manage.jsp").forward(request, response);
+                break;
+            case "view":
+                request.getRequestDispatcher("./view/post-detail-manage.jsp").forward(request, response);
+                break;
+            default:
+                request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
+        }
+    }
+
+    protected int numOfPage(String postTitle, String postCategory, String AuthorID, String postStatus) {
+        PostDAO postDAO = new PostDAO();
+        int numOfPage = postDAO.getCountOfPostsManagerChoose(postTitle, postCategory, AuthorID, postStatus) / 6;
+
+        if (postDAO.getCountOfPostsManagerChoose(postTitle, postCategory, AuthorID, postStatus)
+                % 6 != 0) {
+            numOfPage += 1;
+        }
+        return numOfPage;
+    }
+
+    protected void hideService(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        PostDAO postDAO = new PostDAO();
+        int ID = Integer.parseInt(request.getParameter("postId"));
+        Post post = postDAO.getPostByID(ID);
+        post.setStatusPost(false);
+        postDAO.update(ID, post);
+        PrintWriter out = response.getWriter();
+        out.print(post.isStatusPost() + " " + post.getPostID());
+        out.print(postDAO.getPostByID(ID).isStatusPost());
+    }
+
+    protected void showService(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        PostDAO postDAO = new PostDAO();
+        int ID = Integer.parseInt(request.getParameter("postId"));
+        Post post = postDAO.getPostByID(ID);
+        post.setStatusPost(true);
+        postDAO.update(ID, post);
+
+    }
+    
+    protected void loadPageWithChoice(HttpServletRequest request, HttpServletResponse response){
         //get title
         String postTitle;
         try {
@@ -109,6 +179,7 @@ public class PostManageController extends HttpServlet {
         } catch (Exception e) {
             postAuthorID = "";
         }
+        //get post status
         String postStatus;
         try {
             postStatus = request.getParameter("postStatus");
@@ -158,7 +229,6 @@ public class PostManageController extends HttpServlet {
                 authorList.add(user);
             }
         }
-
         //get sortlist
         List<String> sortList = new ArrayList<>();
 
@@ -177,78 +247,9 @@ public class PostManageController extends HttpServlet {
         request.setAttribute("postTitle", postTitle);
         request.setAttribute("categoryList", categoryList);
         request.setAttribute("authorList", authorList);
-
         request.setAttribute("sortList", sortList);
         request.setAttribute("numOfPage", numOfPage);
         request.setAttribute("list", list);
-//        PrintWriter out = response.getWriter();
-//        out.println(postTitle);
-//        out.println(postCategory);
-//        out.println(postAuthorID);
-//        out.println(numOfPage);
-        request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String event = request.getParameter("event");
-        switch (event) {
-            case "hide":
-                hideService(request, response);
-                doGet(request, response);
-                break;
-            case "show":
-                showService(request, response);
-                doGet(request, response);
-                break;
-            case "update":
-                request.getRequestDispatcher("./view/post-detail-manage.jsp").forward(request, response);
-                break;
-            default:
-//                request.getRequestDispatcher("./view/post-detail-manage.jsp").forward(request, response);
-        }
-    }
-
-    protected int numOfPage(String postTitle, String postCategory, String AuthorID, String postStatus) {
-        PostDAO postDAO = new PostDAO();
-        int numOfPage = postDAO.getCountOfPostsManagerChoose(postTitle, postCategory, AuthorID, postStatus) / 6;
-
-        if (postDAO.getCountOfPostsManagerChoose(postTitle, postCategory, AuthorID, postStatus)
-                % 6 != 0) {
-            numOfPage += 1;
-        }
-        return numOfPage;
-    }
-
-    protected void hideService(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        PostDAO postDAO = new PostDAO();
-        int ID = Integer.parseInt(request.getParameter("postId"));
-        Post post = postDAO.getPostByID(ID);
-        post.setStatusPost(false);
-        postDAO.update(ID, post);
-        PrintWriter out = response.getWriter();
-        out.print(post.isStatusPost() + " " + post.getPostID());
-        out.print(postDAO.getPostByID(ID).isStatusPost());
-    }
-
-    protected void showService(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        PostDAO postDAO = new PostDAO();
-        int ID = Integer.parseInt(request.getParameter("postId"));
-        Post post = postDAO.getPostByID(ID);
-        post.setStatusPost(true);
-        postDAO.update(ID, post);
-
     }
 
     /**

@@ -60,6 +60,7 @@ CREATE TABLE Posts (
     ServiceID INT NOT NULL,
     CreatedDate DATETIME NOT NULL,
     CategoryPost VARCHAR(100) NOT NULL,
+	StatusPost BIT NOT NULL DEFAULT 1
     FOREIGN KEY (AuthorID) REFERENCES Users(UserID),
     FOREIGN KEY (ServiceID) REFERENCES Services(ServiceID)
 );
@@ -291,19 +292,6 @@ VALUES ('hn','lethangd@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng
  INSERT INTO StaffSchedules(StaffID, Workday, Slot) VALUES
 (1, '2023-10-10', 1),(2, '2023-10-15', 2),(3, '2023-10-12', 3),(4, '2023-10-20', 4),(5, '2023-10-25', 5),(6, '2023-10-18', 6),(1, '2023-10-13', 1),(2, '2023-10-28', 2),(3, '2023-10-14', 3),(4, '2023-10-22', 4),(5, '2023-10-11', 5),(6, '2023-10-30', 6),(1, '2023-10-19', 1),(2, '2023-10-16', 2),(3, '2023-10-26', 3),(4, '2023-10-21', 4),(5, '2023-10-17', 5),(6, '2023-10-27', 6),(1, '2023-10-23', 1),(2, '2023-10-24', 2),(3, '2023-10-29', 3),(4, '2023-10-10', 4),(5, '2023-10-15', 5),(6, '2023-10-12', 6),(1, '2023-10-20', 1),(2, '2023-10-25', 2),(3, '2023-10-18', 3),(4, '2023-10-13', 4),(5, '2023-10-28', 5);
 
--- Insert data into the Posts table
-INSERT INTO Posts (Title, Content, Thumbnail, Counts ,AuthorID, ServiceID, CreatedDate, CategoryPost, BriefInfo)
-VALUES
-    ('Football Championship', 'Exciting football championship match highlights.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',100, 1, 1, '2023-09-10', 1, 'Football highlights'),
-    ('Concert Live Stream', 'Live stream of a famous band''s concert.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',20012, 1, 2, '2023-09-11', 2, 'Live music performance'),
-    ('New Smartphone Release', 'Announcement of the latest smartphone release.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',101, 1, 3, '2023-09-12', 3, 'Tech news update'),
-    ('Beach Vacation Guide', 'Explore the best beach destinations for your vacation.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',200, 1, 4, '2023-09-13', 4, 'Travel guide'),
-    ('Summer Fashion Trends', 'Discover the latest summer fashion trends.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',300, 1, 5, '2023-09-14', 5, 'Fashion updates'),
-    ('Healthy Eating Tips', 'Tips for maintaining a healthy diet and lifestyle.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',400, 1, 6, '2023-09-15', 6, 'Nutrition advice'),
-    ('Movie Review: Blockbuster', 'Review of the latest blockbuster movie.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',0, 1, 7, '2023-09-16', 7, 'Film critique'),
-    ('Mental Health Awareness', 'Promoting mental health awareness and self-care.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',10, 1, 8, '2023-09-17', 8, 'Mental wellness'),
-    ('Online Learning Tips', 'Effective tips for online learning and studying.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',90, 1, 9, '2023-09-18', 9, 'Education strategies'),
-    ('Gaming News Update', 'Latest gaming news and reviews for gamers.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',200, 1, 10, '2023-09-19', 10, 'Gaming updates');
 INSERT INTO [dbo].[Slider] ([Title], [Images], [Backlink], [status], [Brief])
 VALUES
     ('BOOK QUICK MEDICAL EXAMINATION', 'resources/img/image1.jpg', 'slider1-link', 'Active', 'Book your examination quickly and economically time, safety and convenience'),
@@ -379,3 +367,16 @@ VALUES (1, 3, 3, 1, '10-01-2023 22:00:00', '10-14-2023', 3, 300.0, 'confirm'),
 (1, 6, 4, 1, '10-01-2023 22:25:30', '10-22-2023', 4, 1200.0, 'pending'),
 (1, 8, 5, 2, '10-01-2023 23:00:00', '10-17-2023', 5, 635.0, 'confirm'),
 (1, 10, 3, 2, '10-01-2023 23:20:00', '10-18-2023', 3, 1200.0, 'cancel');
+-- Insert data into the Posts table
+INSERT INTO Posts (Title, Content, Thumbnail, Counts ,AuthorID, ServiceID, CreatedDate, CategoryPost, BriefInfo)
+VALUES
+    ('Football Championship', 'Exciting football championship match highlights.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',100, 1, 1, '2023-09-10', 1, 'Football highlights'),
+    ('Concert Live Stream', 'Live stream of a famous band''s concert.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',20012, 2, 2, '2023-09-11', 2, 'Live music performance'),
+    ('New Smartphone Release', 'Announcement of the latest smartphone release.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',101, 2, 3, '2023-09-12', 3, 'Tech news update'),
+    ('Beach Vacation Guide', 'Explore the best beach destinations for your vacation.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',200, 2, 4, '2023-09-13', 4, 'Travel guide'),
+    ('Summer Fashion Trends', 'Discover the latest summer fashion trends.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',300, 3, 5, '2023-09-14', 5, 'Fashion updates'),
+    ('Healthy Eating Tips', 'Tips for maintaining a healthy diet and lifestyle.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',400, 1, 6, '2023-09-15', 6, 'Nutrition advice'),
+    ('Movie Review: Blockbuster', 'Review of the latest blockbuster movie.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',0, 3, 7, '2023-09-16', 7, 'Film critique'),
+    ('Mental Health Awareness', 'Promoting mental health awareness and self-care.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',10, 3, 8, '2023-09-17', 8, 'Mental wellness'),
+    ('Online Learning Tips', 'Effective tips for online learning and studying.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',90, 1, 9, '2023-09-18', 9, 'Education strategies'),
+    ('Gaming News Update', 'Latest gaming news and reviews for gamers.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',200, 1, 10, '2023-09-19', 10, 'Gaming updates');

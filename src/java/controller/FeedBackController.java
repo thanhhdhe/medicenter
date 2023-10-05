@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import model.FeedBack;
 import model.Mail;
@@ -152,6 +153,7 @@ public class FeedBackController extends HttpServlet {
 
                     //fillter for status
                 } else if (event.equals("fillterstatus")) {
+                    
                     //get infor
                     String Fillstatus = request.getParameter("fillstatus");
                     //get total page
@@ -163,7 +165,23 @@ public class FeedBackController extends HttpServlet {
                     }
                     String index = request.getParameter("index");
                     if (index == null) {
+                        //get search
+                        String search = request.getParameter("search");
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFill(1, Fillstatus, "FStatus");
+                        System.out.println(feedbacks.get(1).getContentSub());
+                        // if search not null new list list contains feedback have search end send for jsp
+                        if(search != null){
+                            System.out.println(search);
+                            List<FeedBack> newfeedbacks = new ArrayList<>();
+                            for(FeedBack f : feedbacks){
+                                if(f.getContent().contains(search)){                                  
+                                    newfeedbacks.add(f);
+                                }
+                            }
+                            request.setAttribute("feedbacks", newfeedbacks);
+                        } else {
+                            request.setAttribute("feedbacks", feedbacks);
+                        }
                         // set event for paging
                         request.setAttribute("fillevent", event);
                         //set name of fill parameter url paging                  
@@ -171,9 +189,11 @@ public class FeedBackController extends HttpServlet {
                         //set fill for url paging
                         request.setAttribute("fill", Fillstatus);
                         request.setAttribute("endP", endPage);
-                        request.setAttribute("feedbacks", feedbacks);
+                        
                         request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     } else {
+                        //get search
+                        String search = request.getParameter("search");
                         // set event for paging
                         request.setAttribute("fillevent", event);
                         //set name of fill parameter url paging                  
@@ -181,7 +201,20 @@ public class FeedBackController extends HttpServlet {
                         //set fill for url paging
                         request.setAttribute("fill", Fillstatus);
                         int page = Integer.parseInt(index);
+                        
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFill(page, Fillstatus, "FStatus");
+                         // if search not null new list list contains feedback have search end send for jsp
+                        if(search != null){
+                            List<FeedBack> newfeedbacks = new ArrayList<>();
+                            for(FeedBack f : feedbacks){
+                                if(f.getContent().contains(search)){
+                                    newfeedbacks.add(f);
+                                }
+                            }
+                            request.setAttribute("feedbacks", newfeedbacks);
+                        } else {
+                            request.setAttribute("feedbacks", feedbacks);
+                        }
                         request.setAttribute("endP", endPage);
                         request.setAttribute("feedbacks", feedbacks);
                         request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);

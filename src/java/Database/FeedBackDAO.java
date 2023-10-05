@@ -99,7 +99,7 @@ public class FeedBackDAO extends MyDAO {
             rs = ps.executeQuery();
             while (rs.next()) {
                 feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
-                        rs.getString(4), rs.getString(5).substring(0, 10), rs.getInt(6),
+                        rs.getString(4), rs.getString(5), rs.getInt(6),
                         rs.getString(7)));
             }
         } catch (Exception e) {

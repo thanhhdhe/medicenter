@@ -57,7 +57,7 @@
        StaffDAO staffDAO = new StaffDAO();
        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
         %>
-        
+
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){%>
             <!-- Sidebar Start -->
@@ -188,12 +188,27 @@
                                 <div class="col-md-3 ">
                                     <jsp:include page="../view/layout/fillter.jsp" />
                                 </div>
-                                <div class="col-md-9">
-                                    <form class="d-flex" action="feedback?event=searchfeedback" method="POST">
-                                        <input class="form-control me-2" type="search" name="search" value="" placeholder="Search" aria-label="Search">
-                                        <button class="btn btn-outline-success" type="submit">Search</button>
-                                    </form>
-                                </div>
+                                <!-- search -->
+                                <c:choose>
+                                    <c:when test="${empty fill || fill eq 'searchfeedback'}">
+                                        <div class="col-md-9">
+                                            <form class="d-flex" action="feedback?event=searchfeedback" method="POST">
+                                                <input class="form-control me-2" type="search" name="search" value="" placeholder="Search" aria-label="Search">
+                                                <button class="btn btn-outline-success" type="submit">Search</button>
+                                            </form>
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>  
+                                        
+                                        <div class="col-md-9">
+                                            <form class="d-flex" action="feedback?event=${fillevent}&${fillparameter}=${fill}" method="POST">
+                                                <input class="form-control me-2" type="search" name="search" value="" placeholder="Search" aria-label="Search">
+                                                <button style="background-color: black" class="btn btn-outline-success" type="submit">Search</button>
+                                            </form>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
+
                             </div>
 
 

@@ -145,6 +145,10 @@
         <url-pattern>/postManage</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>MedicalExaminationController</servlet-name>
+        <url-pattern>/medical-examination</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>ReservationInformationController</servlet-name>
         <url-pattern>/reservation</url-pattern>
     </servlet-mapping>
