@@ -39,14 +39,21 @@
                                     <%}%>
                                 </select>
                             </div>
+                            <div id="service-list" class="overflow-auto" style="max-height: 56.4rem;">
+                            </div>
                         </div>
 
                         <div class="col-md-9 card mt-4 mb-4">
                             <div class="row p-4">
+                                <div class="col-md-6 mt-4">
+                                    <!-- Add your image here -->
+                                    <img src="${service.thumbnail}" class="img-fluid rounded" alt="">
+                                </div>
                                 <div class="col-md-6 mt-4 mt-sm-0 pt-2 pt-sm-0">
                                     <div class="section-title ">
                                         <h4 class="title mt-4">${service.title}</h4>
                                         <p class="text-muted">${service.serviceDetail}</p>
+                                        <h5 class="text-muted" style="text-decoration: line-through;">$${service.originalPrice}</h5>
                                         <h5 class="text-muted">$${service.salePrice}</h5>
                                         <ul class="list-unstyled text-warning h5 mb-0">
                                             <!-- Add list items here if needed -->
@@ -58,10 +65,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6 mt-4">
-                                    <!-- Add your image here -->
-                                    <img src="${service.thumbnail}" class="img-fluid rounded" alt="">
-                                </div>
+
                             </div>
                             <div class="row p-4 mt-sm-0">
                                 <h4 class="title mt-4 text-center"><strong>Doctor</strong></h4>
@@ -69,7 +73,7 @@
                                     <c:forEach items="${requestScope.doctor}" var="doc">
                                         <div class="col-lg-4 col-md-6 col-12 mb-4">
                                             <div class="custom-block bg-white shadow-lg">
-<!--                                                <input class="form-check-input" type="radio" name="doctorRadio" value="no1">-->
+                                                <!--                                                <input class="form-check-input" type="radio" name="doctorRadio" value="no1">-->
                                                 <img src="${doc.profileImage}" class="mt-0 custom-block-image img-fluid" alt="">
                                                 <div class="d-flex mt-4">
                                                     <div>
@@ -90,7 +94,9 @@
                                     </c:forEach>
                                 </div>
                             </div>
-
+                            <div class="text-center">
+                                <a id="bookNowLink" href="reservationdetail?serviceID=${service.serviceID}"><button class="btn btn-primary mb-4">Book an appointment now</button></a>
+                            </div>
 
                         </div>
 
@@ -104,7 +110,18 @@
         </section>
 
         <jsp:include page="./layout/footer.jsp"/>
-
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="./resources/js/services-details-script.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+            crossorigin="anonymous"
+        ></script>
     </body>
 
 </html>

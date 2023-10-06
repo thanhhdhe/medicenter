@@ -19,10 +19,13 @@
             <!-- Start  Slider  -->
             <div id="carouselExampleIndicators" class="carousel slide col-8 shadow" data-bs-ride="carousel">
                 <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    <c:forEach items="${requestScope.slider}" var="sli" varStatus="loop"> 
+                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="${loop.index}" 
+                                class="${loop.first ? 'active' : ''}" aria-current="${loop.first ? 'true' : 'false'}" 
+                                aria-label="Slide ${loop.index + 1}"></button>
+                    </c:forEach>
                 </div>
+
                 <div class="carousel-inner">
                     <c:forEach items="${requestScope.slider}" var="sli" varStatus="loop"> 
                         <div class="carousel-item ${loop.first ? 'active' : ''}">
@@ -49,9 +52,11 @@
             <!-- End  Slider  -->
             <!--Start sider -->
             <div class="sider col-4">
-                <h3 class="badge bg-success "> <strong>Lastest Post</strong></h3>
+
+                <h3 class="badge bg-success " style="margin-right: 6rem;"> <strong>Lastest Post</strong></h3>
+                <a href="service?event=to-contact-link" class="mt-3 ms-2 badge bg-secondary">Contact Us</a>
                 <c:forEach items="${requestScope.last3post}" var="p" varStatus="loopPost"> 
-                    <a class="card article shadow-lg" href="#">
+                    <a class="card article shadow-lg" href="/ChildrenCare/blogDetail?ID=${p.postID}">
                         <div >
                             <div class="row no-gutters">
                                 <div class="col-md-4">
@@ -111,7 +116,7 @@
                                                 <c:if test="${s.categoryID == cate.categoryID}">
                                                     <div class="col-lg-4 col-md-6 col-12 mb-4">
                                                         <div class="custom-block bg-white shadow-lg">
-                                                            <a href="service?event=detail&id=s.ServiceID">
+                                                            <a href="service?event=detail&id=${s.serviceID}">
                                                                 <div class="d-flex">
                                                                     <div>
                                                                         <h4><strong>${s.title}</strong></h4>
@@ -162,14 +167,14 @@
                         </div>
 
                         <div class="col-md-6 mb-4">
-                            <span class="badge bg-danger px-2 py-1 shadow-1-strong mb-3">News of the day</span>
-                            <h4><strong>Facilis consequatur eligendi</strong></h4>
-                            <p class="text-muted">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis consequatur
-                                eligendi quisquam doloremque vero ex debitis veritatis placeat unde animi laborum
-                                sapiente illo possimus, commodi dignissimos obcaecati illum maiores corporis.
+                            <span class="badge bg-danger px-2 py-1 shadow-1-strong mb-3">Hottest</span>
+                            <h4><strong>${requestScope.hotest.title}</strong></h4>
+                            <p class="text-muted overflow-hidden" style="
+                               max-height: 8.8rem;
+                               ">
+                                ${requestScope.hotest.content}
                             </p>
-                            <button type="button" class="appointment-btn">Read more</button>
+                            <a href="/ChildrenCare/blogDetail?ID=${hotest.postID}" class="btn btn-secondary btn-rounded">Readmore</a>
                         </div>
                     </div>
                 </section>
@@ -187,7 +192,7 @@
                                     <div class="bg-image hover-overlay shadow-1-strong ripple rounded-5 mb-4"
                                          data-mdb-ripple-color="light">
                                         <img src="${po.thumbnail}" class="img-fluid" />
-                                        <a href="/ChildrenCare/postDetail?ID=${po.postID}">
+                                        <a href="/ChildrenCare/blogDetail?ID=${po.postID}">
                                             <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
                                         </a>
                                     </div>
@@ -207,7 +212,7 @@
                                     </div>
 
                                     <!-- Article title and description -->
-                                    <a href="/ChildrenCare/postDetail?ID=${po.postID}" class="text-dark">
+                                    <a href="/ChildrenCare/blogDetail?ID=${po.postID}" class="text-dark">
                                         <h5>${po.title}</h5>
 
                                         <p>
@@ -231,7 +236,55 @@
 
         </div>
     </div>
+    <script>
+        $(document).ready(function () {
+            var url = window.location.href;
 
+            function getParameterByName(name) {
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                        results = regex.exec(url);
+                if (!results)
+                    return null;
+                if (!results[2])
+                    return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+
+            var showmodal = getParameterByName("showmodal");
+
+            var status = getParameterByName("status");
+
+            if (showmodal === "1") {
+                $("#exampleModal").modal('show');
+
+                if (status === "success") {
+                    showAlert("Success", "Profile updated successfully", "alert-success");
+                }
+                if (status === "error") {
+                    showAlert("Success", "Failed to update profile", "alert-danger");
+                }
+            }
+        });
+
+
+        function showAlert(title, message, alertClass) {
+            var alertHtml =
+                    '<div class="alert ' + alertClass + ' alert-dismissible fade show" role="alert">' +
+                    '<strong>' + title + '</strong> ' + message +
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                    '</div>';
+            $("#alert-container").html(alertHtml);
+
+            setTimeout(function () {
+                $(".alert").fadeOut('slow', function () {
+
+                });
+            }, 2000);
+        }
+
+
+    </script>
     <jsp:include page="view/layout/footer.jsp"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 

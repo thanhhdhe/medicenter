@@ -102,6 +102,10 @@ public class ServiceController extends HttpServlet {
                 request.setAttribute("doctor", staffList);
                 request.getRequestDispatcher("./view/servicedetail.jsp").forward(request, response);
                 break;
+            case "service-list-in-details":
+                // If 'event' is equal to "service-list-userchoose", call the renderServiceListByOption method
+                renderServiceListDetails(request, response);
+                break;
             case "manage":
                 if(!isManager){
                     request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
@@ -173,7 +177,7 @@ public class ServiceController extends HttpServlet {
             case "add-service":
                 addService(request, response);
                 break;
-                
+
         }
     }
 
@@ -187,6 +191,9 @@ public class ServiceController extends HttpServlet {
         String serviceType = (request.getParameter("serviceType") + "").equals("null") ? "" : (request.getParameter("serviceType") + "");
         String staff = (request.getParameter("staff") + "").equals("null") ? "" : (request.getParameter("staff") + "");
         int page = (request.getParameter("page") + "").equals("page") ? 1 : Integer.parseInt(request.getParameter("page") + "");
+        System.out.println("titel "+ serviceTitle);
+        System.out.println(serviceType);
+        System.out.println("end"+staff);
 
         // Get the sorted and paged services based on the options
         List<Service> serviceList = serviceDAO.getSortedPagedServicesByOption((page - 1) * 5, 5, serviceTitle, serviceType, staff);
@@ -229,6 +236,45 @@ public class ServiceController extends HttpServlet {
                     + "                            </p>\n"
                     + "                        </div>\n"
                     + "                    </div>");
+        }
+        out.flush();
+        out.close();
+    }
+
+    protected void renderServiceListDetails(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        ServiceDAO serviceDAO = new ServiceDAO();
+
+        // Get the values of the parameters and handle null values
+        String serviceTitle = (request.getParameter("serviceTitle") + "").equals("null") ? "" : (request.getParameter("serviceTitle") + "");
+        String serviceType = (request.getParameter("serviceType") + "").equals("null") ? "" : (request.getParameter("serviceType") + "");
+        String staff = (request.getParameter("staff") + "").equals("null") ? "" : (request.getParameter("staff") + "");
+        int page = (request.getParameter("page") + "").equals("page") ? 1 : Integer.parseInt(request.getParameter("page") + "");
+
+        // Get the sorted and paged services based on the options
+        List<Service> serviceList = serviceDAO.getSortedPagedServicesByOption(0, serviceDAO.getServiceCount(), serviceTitle, serviceType, staff);
+
+
+        // Render the service list
+        for (Service service : serviceList) {
+            out.print("<div class=\"card mb-3 mt-4\" style=\"max-width: 540px;\">\n"
+                    + "<a href=\"service?event=detail&id=" + service.getServiceID() + "\">\n"
+                    + "                                    <div class=\"row g-0 m-3\">\n"
+                    + "                                        <div class=\"col-md-4\">\n"
+                    + "                                            <img src=\"" + service.getThumbnail() + "\" />\n"
+                    + "                                        </div>\n"
+                    + "                                        <div class=\"col-md-8\">\n"
+                    + "                                            <div class=\"card-body\">\n"
+                    + "                                                <h5 class=\"card-title\">" + service.getTitle() + "</h5>\n"
+                    + "                                                <p class=\"card-text\">\n"
+                    + "                                                    <small class=\"text-muted\">" + service.getServiceDetail() + "</small>\n"
+                    + "                                                </p>\n"
+                    + "                                            </div>\n"
+                    + "                                        </div>\n"
+                    + "                                    </div>\n"
+                    + "                                    </a>\n"
+                    + "                                </div>");
         }
         out.flush();
         out.close();
@@ -327,7 +373,7 @@ public class ServiceController extends HttpServlet {
         request.setAttribute("ServiceID", id);
         request.getRequestDispatcher("./view/service-detail-manage.jsp").forward(request, response);
     }
-    
+
     protected void editService(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ServiceDAO serviceDAO = new ServiceDAO();
@@ -369,7 +415,7 @@ public class ServiceController extends HttpServlet {
                 imageURL = newImg;
             }
         }
-        
+
         //validate input
         boolean check = true;
         if (title.isEmpty()) {
@@ -400,7 +446,7 @@ public class ServiceController extends HttpServlet {
             response.sendRedirect("service?event=manage");
         }
     }
-    
+
     protected void addService(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ServiceDAO serviceDAO = new ServiceDAO();
@@ -411,7 +457,7 @@ public class ServiceController extends HttpServlet {
         String originalPrice = request.getParameter("OriginalPrice");
         String salePrice = request.getParameter("SalePrice");
         String description = request.getParameter("Description");
-        String newImg = request.getParameter("serviceURL")+"";
+        String newImg = request.getParameter("serviceURL") + "";
         String imageURL = "resources/img/image1.jpg";
         LocalDate currentDate = LocalDate.now();
 
@@ -477,7 +523,7 @@ public class ServiceController extends HttpServlet {
             response.sendRedirect("service?event=manage");
         }
     }
-    
+
     protected void onOffStatus(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String id = request.getParameter("id");
@@ -485,7 +531,7 @@ public class ServiceController extends HttpServlet {
         Service service = serviceDAO.getServiceByID(id);
         service.setStatus(!service.getStatus());
         serviceDAO.update(service);
-        request.getRequestDispatcher("service?event=to-detail-manage&id="+id).forward(request, response);
+        request.getRequestDispatcher("service?event=to-detail-manage&id=" + id).forward(request, response);
     }
 
     /**
