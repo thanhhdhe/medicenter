@@ -36,7 +36,7 @@ CREATE TABLE CategoryService (
 -- Create the Services table
 CREATE TABLE Services (
     ServiceID INT IDENTITY(1,1) PRIMARY KEY,
-    Title VARCHAR(100) COLLATE Vietnamese_CI_AS NOT NULL,
+    Title VARCHAR(100) COLLATE Vietnamese_CI_AS UNIQUE NOT NULL,
     Thumbnail NVARCHAR(MAX),
     CategoryID INT NOT NULL,
     OriginalPrice DECIMAL(10, 2) NOT NULL,

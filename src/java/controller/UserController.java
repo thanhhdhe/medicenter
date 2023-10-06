@@ -95,16 +95,29 @@ public class UserController extends HttpServlet {
                 User u = userdao.getUserByID(id);
                 System.out.println(id);
                 System.out.println(u.isStatus());
-                if (u.isStatus()) {
-                    u.setStatus(false);
-                    userdao.updateStatus(Boolean.FALSE, id);
-                    System.out.println("change to false");
-                } else {
-                    u.setStatus(true);
-                    userdao.updateStatus(Boolean.TRUE, id);
-                    System.out.println("change to true");
+                boolean status = u.isStatus();
+                try {
+                    if (status) {
+                        u.setStatus(false);
+                        userdao.updateStatus(Boolean.FALSE, id);
+                        System.out.println("change to false");
+                    } else {
+                        u.setStatus(true);
+                        userdao.updateStatus(Boolean.TRUE, id);
+                        System.out.println("change to true");
+                    }
+                    // Send back a JSON object with the new status
+                    response.setContentType("application/json");
+                    PrintWriter out = response.getWriter();
+                    out.print("{\"success\": true, \"status\": " + u.isStatus() + "}");
+                    out.flush();
+                } catch (Exception e) {
+                    // Send back a JSON object with an error message
+                    response.setContentType("application/json");
+                    PrintWriter out = response.getWriter();
+                    out.print("{\"success\": false, \"error\": \"" + e.getMessage() + "\"}");
+                    out.flush();
                 }
-                response.sendRedirect("user?action=all");
             }
 
             if (userList != null) {
@@ -119,7 +132,7 @@ public class UserController extends HttpServlet {
                 int page = 1; // Default to page 1 if not specified
                 String xpage = request.getParameter("page");
                 if (xpage != null) {
-                        page = Integer.parseInt(xpage);
+                    page = Integer.parseInt(xpage);
                 }
 
                 int start = (page - 1) * numPerPage;
