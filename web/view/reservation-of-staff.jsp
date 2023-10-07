@@ -54,6 +54,10 @@
          <%
         String email = (String) session.getAttribute("email");
         StaffDAO staffDAO = new StaffDAO();
+        ReservationDAO reservationDAO = new ReservationDAO();
+        ChildrenDAO childrenDAO = new ChildrenDAO();
+        ServiceDAO serviceDAO = new ServiceDAO();
+        UserDAO userDAO = new UserDAO();
         Staff curStaff = staffDAO.getStaffByStaffEmail(email);
         boolean isManager = false;
         %>
@@ -88,11 +92,6 @@
                     <div class="navbar-nav w-100  text-light">
                         <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
                            ><i class="far fa-check-square"></i>Medical examination</a
-                        >
-                    </div>
-                    <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link"
-                           ><i class="fas fa-list-alt"></i>Reservations List</a
                         >
                     </div>
                     <%if(isManager){%>
@@ -188,10 +187,53 @@
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
                     <div
-                        class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0"
+                        class="row bg-light rounded align-items-center justify-content-center mx-0"
                         >
-                        <div class="col-md-6 text-center">
-                            <h3>This is staff dashboard page</h3>
+                        <div class="col-md-12 p-0">
+                            <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
+                                <h4>RESERVATION LIST</h4>
+                            </div>
+                            <div class="table-responsive p-4">
+                                <%if(curStaff!=null){%>
+                                <table class="table table-striped table-hover">
+                                    <thead class="text-light" style="background: #1977cc;">
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Reserved date</th>
+                                            <th scope="col">Customer name</th>
+                                            <th scope="col">Service</th>
+                                            <th scope="col">Cost</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Detail</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <%
+                                        List<Reservation> reservations = reservationDAO.getReservationByStaffID(curStaff.getStaffID()+"");
+        
+                                        if(reservations!=null){
+                                        for (Reservation reservation : reservations) {
+                                        %>
+                                        <tr>
+                                            <th scope="row"><%=reservation.getReservationID()%></th>
+                                            <td><%=reservation.getReservationDate()%></td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img class="rounded-circle object-cover me-3" src="<%=userDAO.getUserByID(reservation.getUserID()).getProfileImage()%>" alt="alt" width="30px" height="30px"/>
+                                                    <div><%=userDAO.getUserByID(reservation.getUserID()).getFirstName()%></div>
+                                                </div>
+                                            </td>
+                                            <td><%=serviceDAO.getServiceByID(reservation.getServiceID()+"").getTitle()%></td>
+                                            <td><%=reservation.getCost()%></td>
+                                            <td><%=reservation.getStatus()%></td>
+                                            <td><a href="staff?event=send-to-reservation-detail&reserdid=<%=reservation.getReservationID()%>"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></a></td>
+                                        </tr>
+                                        <%}}%>
+
+                                    </tbody>
+                                </table>
+                                <%}%>
+                            </div>
                         </div>
                     </div>
                 </div>
