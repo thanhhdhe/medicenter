@@ -24,53 +24,63 @@
         <link rel="stylesheet" href="../resources/css/style.css">
     </head>
     <body>
-        <h1>Reservation Details</h1>
+        <jsp:include page="./layout/Header.jsp" />
+        
         <div class="container d-flex justify-content-center">
-            
+
 
             <!-- User Information -->
-            <div class="col-md-5">
-                <div>
+            <c:set var="user" value="${requestScope.user}" />
+            <div class="col-md-5 p-4 mb-3" style="background-color: #ffcc99;border-radius: 5px;">
+                <div class="mb-5">
                     <!-- Replace with user's image -->
-                    <img class="img-fluid rounded-circle w-50" style="box-shadow: 0px 0px 10px 0px #ffffff;" src="https://i.vgt.vn/2021/8/11/luu-diec-phi-canh-cao-dan-em-vuong-so-nhien-ngung-ke-fame-588-5951578.png" alt="User Image" class="img-fluid">
+                    <img class="img-fluid rounded-circle w-50" style="box-shadow: 0px 0px 10px 0px #ffffff; margin-bottom: 10px" src="https://i.vgt.vn/2021/8/11/luu-diec-phi-canh-cao-dan-em-vuong-so-nhien-ngung-ke-fame-588-5951578.png" alt="User Image" class="img-fluid">
                     <!-- Replace with user's name -->
-                    <h4 style="font-family: monospace">Vương Sở Nhiên</h4>
+                    <h4 style="font-family: monospace; margin-left: 40px">${user.getFirstName()} ${user.getLastName()}</h4>
                 </div>
-                <div>
-                    <h4>Receiver Information</h4>
-                    <form>
-                        <!-- Replace with dynamic data if user is logged in -->
-                        <div class="d-flex">
-                            <div class="col-md-5">
-                                <div class="mb-3">
-                                    <img class="img-fluid rounded-circle w-50" style="box-shadow: 0px 0px 10px 0px #ffffff;" src="https://i.vgt.vn/2021/8/11/luu-diec-phi-canh-cao-dan-em-vuong-so-nhien-ngung-ke-fame-588-5951578.png" alt="User Image" class="img-fluid">
+                <h4 style="font-family: monospace; margin-bottom: 40px">Receiver Information</h4>
+                <div class="d-flex justify-content-center">
+                    <div>
+                        
+                        <c:set var="userID" value="${user.getUserID()}" />
+                        <c:set var="userIDString" value="${userID.toString()}" />
+                        <% 
+                        ChildrenDAO childrenDAO = new ChildrenDAO();
+                        List<Children> children1= childrenDAO.getListChildrenByUserId((String) pageContext.getAttribute("userIDString"));
+                        for(Children children : children1){
+                        %>
+                        <form>
+                            <!-- Replace with dynamic data if user is logged in -->
+                            <div class="d-flex">
+                                <div class="m-lg-1">
+                                    <div class="mb-3">
+                                        <img class="img-fluid rounded-circle" style="box-shadow: 0px 0px 10px 0px #ffffff; width: 50px;height: 50px" src="<%= children.getAvatar() %>" alt="User Image" class="img-fluid">
+                                    </div>
                                 </div>
-
-                            </div>
-                            <div class="col-md-7">
-                                <div class="mb-3">
-                                    <h5>Name</h5>
+                                <div class="mb-3 m-lg-1">
+                                    <h5><%= children.getChildName() %></h5>
                                 </div>
-                                <div class="mb-3">
-                                    <h5>Gender</h5>
+                                <div class="mb-3 m-lg-1">
+                                    <h5><%= children.getGender() %></h5>
                                 </div> 
+                                <div class="mb-3 m-lg-1">
+                                    <h5><%= children.getBirthday() %></h5>
+                                </div>
+                                <div class="mb-3 m-lg-1">
+                                    <h5><%= children.getStatus() %></h5>
+                                </div>
                             </div>
-                        </div>
-                        <div class="d-flex">
-                            <div class="mb-3 col-md-6">
-                                <h5>Birth Day</h5>
-                            </div>
-                            <div class="mb-3 col-md-6">
-                                <h5>Status</h5>
-                            </div>
-                        </div>       
-                    </form>
+
+                        </form>
+                        <% }%>        
+                    </div>
                 </div>
+                
             </div>
 
             <!-- Selected Services -->
-            <div  class="col-md-7 m-lg-5">
-                <div class="col-md-6">
+            <div  class="col-md-7 mb-3 p-4" style="background-color: #e9f372; border-radius:5px">
+                <div class="col-md-12">
                     <h2>Selected Services</h2>
                     <table class="table">
                         <thead>
@@ -78,27 +88,35 @@
                                 <th>ID</th>
                                 <th>Title</th>
                                 <th>Price</th>
-                                <th>Quantity</th>
+                                <th>Children Name</th>
                                 <th>Total Cost</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- Replace with dynamic service data -->
-                            <tr>
-                                <td>1</td>
-                                <td>Service 1</td>
-                                <td>$50</td>
-                                <td>2</td>
-                                <td>$100</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Service 2</td>
-                                <td>$30</td>
-                                <td>1</td>
-                                <td>$30</td>
-                            </tr>
-                        </tbody>
+                        <c:forEach var="reservation" items="${requestScope.Reservation}">
+                            <tbody>
+                                <!-- Replace with dynamic service data -->
+                                <tr>
+                                    <td>${reservation.getServiceID()}</td>
+                                    <c:set var="ServiceID" value="${reservation.getServiceID()}" />
+                                    <c:set var="ServiceIDString" value="${ServiceID.toString()}" />
+                                    <% 
+                                    ServiceDAO serviceDAO = new ServiceDAO();
+                                    Service service= serviceDAO.getServiceByID((String) pageContext.getAttribute("ServiceIDString"));
+                                    %>
+                                    <td><%= service.getTitle() %></td>
+                                    <td>${reservation.getCost()}</td>
+                                    <c:set var="ChildID" value="${reservation.getChildID()}" />
+                                    <c:set var="ChildIDString" value="${ChildID.toString()}" />
+                                    <% 
+                                    ChildrenDAO childrenDAO1 = new ChildrenDAO();
+                                    Children children12= childrenDAO1.getChildrenByUserId((String) pageContext.getAttribute("userIDString"),(String) pageContext.getAttribute("ChildIDString"));
+                                    %>
+                                    <td><%= children12.getChildName() %></td>
+                                    <td>$100</td>
+                                </tr>                            
+                            </tbody>
+                        </c:forEach>
+
                     </table>
                     <p>Total Reservation Price: $130</p>
                     <a href="reservation-details.html" class="btn btn-primary">Change</a>
