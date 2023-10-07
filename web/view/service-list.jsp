@@ -84,7 +84,7 @@
                             <!-- info-price-detail // -->
                             <br />
                             <p>
-                            <form action="services?event=details" method="POST">
+                            <form action="service?event=detail" method="POST">
                                 <input type="hidden" name="serviceID" value="<%=service.getServiceID()%>">
                                 <input type="submit"  class="btn btn-primary btn-block" value="Details" />
                             </form>

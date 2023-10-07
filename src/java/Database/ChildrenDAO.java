@@ -110,7 +110,6 @@ public class ChildrenDAO extends MyDAO{
     }
     public static void main(String[] args) {
         ChildrenDAO childrenDAO = new ChildrenDAO();
-        
         System.out.println(childrenDAO.getChildrenByChildrenId(1+"").getChildName());
     }
 }
