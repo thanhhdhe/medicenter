@@ -19,13 +19,13 @@ public class User {
     private String gender;
     private String phoneNumber;
     private String profileImage; 
-    private String role;
+//    private String role;
     private boolean status;
 
     public User() {
     }
 
-    public User(int userID, String address, String email, String password, String firstName, String lastName, String gender, String phoneNumber, String profileImage, String role, boolean status) {
+    public User(int userID, String address, String email, String password, String firstName, String lastName, String gender, String phoneNumber, String profileImage, boolean status) {
         this.userID = userID;
         this.address = address;
         this.email = email;
@@ -35,11 +35,10 @@ public class User {
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.profileImage = profileImage;
-        this.role = role;
         this.status = status;
     }
 
-    public User(int userID, String address, String email, String password, String firstName, String lastName, String gender, String phoneNumber, String profileImage, String role) {
+    public User(int userID, String address, String email, String password, String firstName, String lastName, String gender, String phoneNumber, String profileImage) {
         this.userID = userID;
         this.address = address;
         this.email = email;
@@ -49,7 +48,6 @@ public class User {
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.profileImage = profileImage;
-        this.role = role;
     }
     
     public int getUserID() {
@@ -124,13 +122,13 @@ public class User {
         this.profileImage = profileImage;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
+//    public String getRole() {
+//        return role;
+//    }
+//
+//    public void setRole(String role) {
+//        this.role = role;
+//    }
 
     public boolean isStatus() {
         return status;

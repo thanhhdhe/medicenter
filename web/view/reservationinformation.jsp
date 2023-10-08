@@ -54,7 +54,7 @@
         <table class="table align-middle mb-0 bg-white table-hover">
             <thead class="bg-light table-dark ">
                 <tr class="text-center">
-                    <th>Avatar</th>
+                    <th>Image</th>
                     <th>Name</th>
                     <th>Birthday</th>
                     <th>Gender</th>
@@ -63,7 +63,7 @@
             </thead>
             <tbody>
                 <tr class="text-center"> 
-                    <th><img style="width:64px;height:64px;" src="<%=children.getAvatar()%>" alt="Children avatar"/></th>
+                    <th><img style="width:64px;height:64px;" src="<%=children.getImage()%>" alt="Children avatar"/></th>
                     <th><%=children.getChildName()%></th>
                     <th><%=sdf1.format(children.getBirthday())%></th>
                     <th><%=children.getGender()%></th>

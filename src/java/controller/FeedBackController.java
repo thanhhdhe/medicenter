@@ -97,7 +97,7 @@ public class FeedBackController extends HttpServlet {
         } else {
             String roleaccount = "";
             if (staff == null) {
-                roleaccount = Arole.getRole();
+                roleaccount = "";
             } else {
                 roleaccount = staff.getRole();
             }

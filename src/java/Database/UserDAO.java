@@ -36,8 +36,7 @@ public class UserDAO extends MyDAO {
                         rs.getString("Gender"),
                         rs.getString("PhoneNumber"),
                         rs.getString("ProfileImage"),
-                        rs.getString("Role"),
-                         rs.getBoolean("Status")
+                        rs.getBoolean("Status")
                 );
                 userList.add(user);
             }
@@ -73,8 +72,7 @@ public class UserDAO extends MyDAO {
                         rs.getString("Gender"),
                         rs.getString("PhoneNumber"),
                         rs.getString("ProfileImage"),
-                        rs.getString("Role"),
-                         rs.getBoolean("Status")
+                        rs.getBoolean("Status")
                 );
                 userList.add(user);
             }
@@ -87,7 +85,7 @@ public class UserDAO extends MyDAO {
         return userList;
     }
 
-    public void updateStatus(boolean status,int UserID) {
+    public void updateStatus(boolean status, int UserID) {
         String xSql = "UPDATE [dbo].[Users]\n"
                 + "   SET [Status] = ?\n"
                 + " WHERE UserID = ?";
@@ -149,8 +147,7 @@ public class UserDAO extends MyDAO {
             rs = ps.executeQuery();
             if (rs.next()) {
                 User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
-                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9),
-                        rs.getString(10));
+                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9));
                 return user;
             }
             ps.close();
@@ -169,8 +166,7 @@ public class UserDAO extends MyDAO {
             rs = ps.executeQuery();
             if (rs.next()) {
                 User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
-                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9),
-                        rs.getString(10));
+                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9));
                 return user;
             }
             ps.close();
@@ -198,9 +194,9 @@ public class UserDAO extends MyDAO {
     }
 
     public void insert(User x) {
-        xSql = "INSERT INTO [dbo].[Users]([Email],[FirstName],[LastName],[Password],[Gender],[Address],[PhoneNumber],[Role],[ProfileImage]) VALUES(N'"
+        xSql = "INSERT INTO [dbo].[Users]([Email],[FirstName],[LastName],[Password],[Gender],[Address],[PhoneNumber],[ProfileImage]) VALUES(N'"
                 + x.getEmail() + "',N'" + x.getFirstName() + "',N'" + x.getLastName() + "','" + x.getPassword() + "',N'"
-                + x.getGender() + "',N'" + x.getAddress() + "','" + x.getPhoneNumber() + "','" + x.getRole() + "','" + x.getProfileImage() + "')";
+                + x.getGender() + "',N'" + x.getAddress() + "','" + x.getPhoneNumber() + "','" + x.getProfileImage() + "')";
         try {
             ps = con.prepareStatement(xSql);
             ps.executeUpdate();
@@ -239,12 +235,12 @@ public class UserDAO extends MyDAO {
     public static void main(String[] args) {
         UserDAO u = new UserDAO();
         List<User> us = u.getAllUsers();
-        us=u.search("a");
+        us = u.search("a");
         for (User u1 : us) {
             System.out.println(u1.getFirstName());
         }
         u.updateStatus(Boolean.FALSE, 4);
         System.out.println(u.getUserByID(4).isStatus());
-        
+
     }
 }

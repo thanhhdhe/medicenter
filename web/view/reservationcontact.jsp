@@ -54,7 +54,7 @@
                             <div class="d-flex">
                                 <div class="m-lg-1">
                                     <div class="mb-3">
-                                        <img class="img-fluid rounded-circle" style="box-shadow: 0px 0px 10px 0px #ffffff; width: 50px;height: 50px" src="<%= children.getAvatar() %>" alt="User Image" class="img-fluid">
+                                        <img class="img-fluid rounded-circle" style="box-shadow: 0px 0px 10px 0px #ffffff; width: 50px;height: 50px" src="<%= children.getImage() %>" alt="User Image" class="img-fluid">
                                     </div>
                                 </div>
                                 <div class="mb-3 m-lg-1">

@@ -8,6 +8,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import model.Children;
+import model.User;
 
 /**
  *
@@ -25,12 +26,14 @@ public class ChildrenDAO extends MyDAO{
             while (rs.next()) {
                 int childID = rs.getInt("ChildID");
                 int userID = rs.getInt("UserID");
+                UserDAO userDao = new UserDAO();
+                User user = userDao.getUserByID(userID);
                 String childName = rs.getString("ChildName");
                 Date birthday = rs.getDate("Birthday");
                 String status = rs.getString("Status");
                 String gender = rs.getString("Gender");
                 String avatar = rs.getString("Avatar");
-                children.add(new Children(childID, userID, childName, birthday, status, gender, avatar));
+                children.add(new Children(user, childID, childName, birthday, status, gender, avatar));
             }
             rs.close();
             ps.close();
@@ -51,12 +54,14 @@ public class ChildrenDAO extends MyDAO{
             if (rs.next()) {
                 int childID = rs.getInt("ChildID");
                 int userID = rs.getInt("UserID");
+                UserDAO userDao = new UserDAO();
+                User user = userDao.getUserByID(userID);
                 String childName = rs.getString("ChildName");
                 Date birthday = rs.getDate("Birthday");
                 String status = rs.getString("Status");
                 String gender = rs.getString("Gender");
                 String avatar = rs.getString("Avatar");
-                children = new Children(childID, userID, childName, birthday, status, gender, avatar);
+                children = new Children(user, childID, childName, birthday, status, gender, avatar);
             }
             rs.close();
             ps.close();
@@ -76,12 +81,14 @@ public class ChildrenDAO extends MyDAO{
             if (rs.next()) {
                 int childID = rs.getInt("ChildID");
                 int userID = rs.getInt("UserID");
+                UserDAO userDao = new UserDAO();
+                User user = userDao.getUserByID(userID);
                 String childName = rs.getString("ChildName");
                 Date birthday = rs.getDate("Birthday");
                 String status = rs.getString("Status");
                 String gender = rs.getString("Gender");
                 String avatar = rs.getString("Avatar");
-                children = new Children(childID, userID, childName, birthday, status, gender, avatar);
+                children = new Children(user, childID, childName, birthday, status, gender, avatar);
             }
             rs.close();
             ps.close();
@@ -110,6 +117,6 @@ public class ChildrenDAO extends MyDAO{
     }
     public static void main(String[] args) {
         ChildrenDAO childrenDAO = new ChildrenDAO();
-        System.out.println(childrenDAO.getChildrenByChildrenId(1+"").getChildName());
+        System.out.println(childrenDAO.getChildrenByChildrenId(1+"").getImage());
     }
 }
