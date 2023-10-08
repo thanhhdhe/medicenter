@@ -28,7 +28,6 @@
         <jsp:include page="./layout/Header.jsp" />
         <div class="d-flex justify-content-center mt-5">
 
-            <%PostDAO postDAO= new PostDAO();%> 
             <div class="col-md-9" id="blog-list">
                 <div class="container py-5">
                     <div class="row g-5">

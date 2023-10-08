@@ -26,6 +26,10 @@
     </head>
     <body>
         <jsp:include page="./layout/Header.jsp" />
+        <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
+            <h4>Post MANAGEMENT</h4>
+            <a href="service?event=sent-to-add" class="ms-text-primary font-weight-bold">Add Post</a>
+        </div>
         <div class="d-flex justify-content-center mt-5">
             <div class="col-md-9" id="blog-list">
                 <div class="container py-5">

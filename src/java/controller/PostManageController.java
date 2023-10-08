@@ -97,36 +97,38 @@ public class PostManageController extends HttpServlet {
         String event = request.getParameter("event");
         switch (event) {
             case "hide":
-                hideService(request, response);
+                hidePost(request, response);
                 doGet(request, response);
                 break;
             case "show":
-                showService(request, response);
+                showPost(request, response);
                 doGet(request, response);
                 break;
             case "update":
+                getPostData(request, response);
                 request.getRequestDispatcher("./view/post-detail-manage.jsp").forward(request, response);
                 break;
             case "view":
-                request.getRequestDispatcher("./view/post-detail-manage.jsp").forward(request, response);
+                getPostData(request, response);
+//                request.getRequestDispatcher("./view/post-detail-manage.jsp").forward(request, response);
                 break;
             default:
                 request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
         }
     }
-
+    
     protected int numOfPage(String postTitle, String postCategory, String AuthorID, String postStatus) {
         PostDAO postDAO = new PostDAO();
         int numOfPage = postDAO.getCountOfPostsManagerChoose(postTitle, postCategory, AuthorID, postStatus) / 6;
-
+        
         if (postDAO.getCountOfPostsManagerChoose(postTitle, postCategory, AuthorID, postStatus)
                 % 6 != 0) {
             numOfPage += 1;
         }
         return numOfPage;
     }
-
-    protected void hideService(HttpServletRequest request, HttpServletResponse response)
+    
+    protected void hidePost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         PostDAO postDAO = new PostDAO();
         int ID = Integer.parseInt(request.getParameter("postId"));
@@ -137,18 +139,43 @@ public class PostManageController extends HttpServlet {
         out.print(post.isStatusPost() + " " + post.getPostID());
         out.print(postDAO.getPostByID(ID).isStatusPost());
     }
-
-    protected void showService(HttpServletRequest request, HttpServletResponse response)
+    
+    protected void showPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         PostDAO postDAO = new PostDAO();
         int ID = Integer.parseInt(request.getParameter("postId"));
         Post post = postDAO.getPostByID(ID);
         post.setStatusPost(true);
         postDAO.update(ID, post);
-
+        
     }
     
-    protected void loadPageWithChoice(HttpServletRequest request, HttpServletResponse response){
+    protected void getPostData(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        PostDAO postDAO = new PostDAO();
+        int ID = Integer.parseInt(request.getParameter("postId"));
+        Post post = postDAO.getPostByID(ID);
+        List<String> categoryList = postDAO.allCategoryPost();
+        categoryList.remove(post.getCategoryPost());
+        categoryList.add(0,post.getCategoryPost());
+//        request.setAttribute("title", post.getTitle());
+        request.setAttribute("author", postDAO.getNameByUserID(post.getAuthorID()));
+        request.setAttribute("avatar", postDAO.getAvatarByUserID(post.getAuthorID()));
+//        request.setAttribute("thumbnail", post.getThumbnail());
+//        request.setAttribute("update-date", post.getCreatedDate());
+
+//        request.setAttribute("postbrief", post.getBriefInfo());
+//        
+//        request.setAttribute("categoryP", post.getCategoryPost());
+//        request.setAttribute("postdetail", post.getContent());
+//        request.setAttribute("poststatus", post.isStatusPost());
+        request.setAttribute("categoryList", categoryList);
+        request.setAttribute("post", post);
+        PrintWriter out = response.getWriter();
+        out.print(post.getTitle());
+    }
+    
+    protected void loadPageWithChoice(HttpServletRequest request, HttpServletResponse response) {
         //get title
         String postTitle;
         try {
@@ -206,7 +233,7 @@ public class PostManageController extends HttpServlet {
         } catch (Exception e) {
             sortBy = "Title";
         }
-
+        
         PostDAO postDao = new PostDAO();
         //get categorylist
         List<String> categoryList = postDao.allCategoryPost();
@@ -231,7 +258,7 @@ public class PostManageController extends HttpServlet {
         }
         //get sortlist
         List<String> sortList = new ArrayList<>();
-
+        
         sortList.add("Title");
         sortList.add("CategoryPost");
         sortList.add("AuthorID");
@@ -243,7 +270,7 @@ public class PostManageController extends HttpServlet {
         int numOfPage = numOfPage(postTitle, postCategory, postAuthorID, postStatus);
         //get list post  
         List<Post> list = postDao.getSortedPagedPostsByManagerChoice((page - 1) * 6, 6, postTitle, postCategory, postAuthorID, postStatus, sortBy);
-
+        
         request.setAttribute("postTitle", postTitle);
         request.setAttribute("categoryList", categoryList);
         request.setAttribute("authorList", authorList);
