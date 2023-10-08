@@ -23,7 +23,8 @@ CREATE TABLE Users (
     Gender VARCHAR(10) NOT NULL,
     PhoneNumber VARCHAR(20) NOT NULL,
     ProfileImage VARCHAR(MAX),
-    Role VARCHAR(50) NOT NULL
+    Role VARCHAR(50) NOT NULL,
+	Status VARCHAR(50) NOT NULL
 );
 
 -- Create the CategoryService table
@@ -284,9 +285,9 @@ VALUES
     (2, 2),(6, 4), (7, 3), (8, 5), (9, 3), (10, 3),(2, 5),(11, 7),(12, 8),(13, 7),(14, 8),(15, 7),(16, 8);
 
 -- Insert data into Users
-INSERT INTO Users (Address, Email, Password, FirstName, LastName, Gender, PhoneNumber, ProfileImage, Role)
+INSERT INTO Users (Address, Email, Password, FirstName, LastName, Gender, PhoneNumber, ProfileImage, Role, Status)
 VALUES ('hn','lethangd@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 'manager'),
-	   ('hn','levandin16@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 'user');
+	   ('hn','levandin16@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 'user', 'active');
 
 
  INSERT INTO StaffSchedules(StaffID, Workday, Slot) VALUES
@@ -299,7 +300,7 @@ VALUES
     ('OUR SERVICE', 'resources/img/football.jpg', 'postPage?event=post-list', 'Active', 'Limited time offer: Get 20% off on selected products. Grab the deal now!');
 -- Dữ liệu mẫu cho bảng Users
 INSERT INTO Users (Address, Email, Password, FirstName, LastName, Gender, PhoneNumber, ProfileImage, Role)
-VALUES ('29HL', 'vietgame431@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', 'Viet', 'Can Quoc', 'Male', '123-456-7890', NULL, 'staff');
+VALUES ('29HL', 'vietgame431@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', 'Viet', 'Can Quoc', 'Male', '123-456-7890', NULL, 'staff',' active');
 
 -- Dữ liệu mẫu cho bảng Children
 INSERT INTO Children (UserID, ChildName, Birthday, Status, Gender, Avatar)
@@ -360,12 +361,12 @@ VALUES
 	
 -- Reservations
 INSERT INTO Reservations(UserID, ServiceID, StaffID, ChildID, CreatedDate, ReservationDate, ReservationSlot, Cost, Status) 
-VALUES (1, 3, 3, 1, '10-01-2023 22:00:00', '10-14-2023', 3, 300.0, 'confirm'),
-(1, 9, 1, 1, '10-01-2023 20:10:00', '10-13-2023', 1, 520.0, 'confirm'),
-(1, 6, 1, 2, '10-01-2023 22:15:00', '10-13-2023', 1, 1200.0, 'confirm'), 
-(1, 9, 3, 2, '10-01-2023 22:20:00', '10-26-2023', 3, 888.0, 'confirm'), 
+VALUES (1, 3, 3, 1, '10-01-2023 22:00:00', '10-14-2023', 3, 300.0, 'waiting for examination'),
+(1, 9, 1, 1, '10-01-2023 20:10:00', '10-13-2023', 1, 520.0, 'waiting for examination'),
+(1, 6, 1, 2, '10-01-2023 22:15:00', '10-13-2023', 1, 1200.0, 'waiting for examination'), 
+(1, 9, 3, 2, '10-01-2023 22:20:00', '10-26-2023', 3, 888.0, 'waiting for examination'), 
 (1, 6, 4, 1, '10-01-2023 22:25:30', '10-22-2023', 4, 1200.0, 'pending'),
-(1, 8, 5, 2, '10-01-2023 23:00:00', '10-17-2023', 5, 635.0, 'confirm'),
+(1, 8, 5, 2, '10-01-2023 23:00:00', '10-17-2023', 5, 635.0, 'waiting for examination'),
 (1, 10, 3, 2, '10-01-2023 23:20:00', '10-18-2023', 3, 1200.0, 'cancel');
 -- Insert data into the Posts table
 INSERT INTO Posts (Title, Content, Thumbnail, Counts ,AuthorID, ServiceID, CreatedDate, CategoryPost, BriefInfo)
