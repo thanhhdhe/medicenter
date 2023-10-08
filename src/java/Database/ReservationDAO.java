@@ -108,6 +108,7 @@ public class ReservationDAO extends MyDAO {
         }
         return list;
     }
+    
 
     public int countReservationsForService(String serviceID) {
         int reservationCount = 0;
@@ -428,8 +429,7 @@ public class ReservationDAO extends MyDAO {
         } catch (Exception e) {
 
         }
-
-                
+        
 
 //        Reservation r = new Reservation();
 //        r.setCost(300);

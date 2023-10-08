@@ -270,12 +270,12 @@ VALUES
 	(N'thắng', 'lethang@gmail.com', '1234', 'Lê Minh Thắng', 'Male', '0834398268', 'resources/img/thang.jpeg', 'manager'),
     ('john_doe', 'john@example.com', 'password123', 'John Doe', 'Male', '123456789', 'profile.jpg', 'doctor'),
     ('jane_smith', 'jane@example.com', 'password456', 'Jane Smith', 'Female', '987654321', 'avatar.jpg', 'nurse'),
-	('dr_smith', 'dr.smith@example.com', 'doctorpass', 'Dr. Smith', 'Male', '555123456', 'resources\img\bsHieu.jpg', 'doctor'),
-    ('dr_anderson', 'dr.anderson@example.com', 'doctorpass', 'Dr. Anderson', 'Female', '555987654', 'doctor.jpg', 'doctor'),
+	('dr_smith', 'dr.smith@example.com', 'doctorpass', 'Smith', 'Male', '555123456', 'resources\img\bsHieu.jpg', 'doctor'),
+    ('dr_anderson', 'dr.anderson@example.com', 'doctorpass', ' Anderson', 'Female', '555987654', 'doctor.jpg', 'doctor'),
 	('nurse_johnson', 'nurse.johnson@example.com', 'nursepass', 'Nurse Johnson', 'Female', '555111222', 'nurse.jpg', 'nurse'),
     ('nurse_brown', 'nurse.brown@example.com', 'nursepass', 'Nurse Brown', 'Male', '555333444', 'nurse.jpg', 'nurse'),
-	('dr_jackson', 'dr.jackson@example.com', 'doctorpass', 'Dr. Jackson', 'Male', '555111333', 'doctor.jpg', 'doctor'),
-    ('dr_wilson', 'dr.wilson@example.com', 'doctorpass', 'Dr. Wilson', 'Male', '555333555', 'doctor.jpg', 'doctor');
+	('dr_jackson', 'dr.jackson@example.com', 'doctorpass', 'Jackson', 'Male', '555111333', 'doctor.jpg', 'doctor'),
+    ('dr_wilson', 'dr.wilson@example.com', 'doctorpass', 'Wilson', 'Male', '555333555', 'doctor.jpg', 'doctor');
 
 -- Insert data into ServiceStaff
 INSERT INTO ServiceStaff (ServiceID, StaffID)
