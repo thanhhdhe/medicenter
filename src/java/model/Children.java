@@ -5,6 +5,8 @@
 package model;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.Period;
 
 /**
  *
@@ -88,6 +90,10 @@ public class Children {
         this.image = image;
     }
     
-    
+    public int getAge() {
+        LocalDate localBirthDate = this.birthday.toLocalDate();
+        LocalDate currentDate = LocalDate.now();
+        return Period.between(localBirthDate, currentDate).getYears();
+    }
     
 }
