@@ -47,20 +47,20 @@
                                                 <div>
                                                     <input type="text" name="postId" value="${l.getPostID()}" hidden=""/>
                                                     <c:if test="${l.isStatusPost()}">
-                                                        <button class="button-icon me-2" value="hide" name="event"><img src="resources/img/icon/hide.png" alt="alt" height="20" width="20"/></button> Hide
+                                                        <button class="button-icon me-2" value="hide" name="event"><img src="resources/img/icon/hide.png" alt="alt"/></button> Hide
                                                         </c:if>
                                                         <c:if test="${!l.isStatusPost()}">
                                                         <button class="button-icon me-2"value="show" name="event"><img src="resources/img/icon/visual.png" alt="alt"/></button> Show
                                                         </c:if>
                                                 </div>
-
-                                                <div>
-                                                    <button class="button-icon me-2" value="view" name="event"><img src="resources/img/icon/detail.png" alt="alt"/></a></button> Detail
-                                                </div>
-                                                <div>
-                                                    <button class="button-icon me-2" value="update" name="event"><img src="resources/img/icon/pen.png" alt="alt"/></a></button>  Update
-                                                </div>
                                             </form>
+
+                                            <div>
+                                                <button class="button-icon me-2" value="view" name="event" ><a href="postDetailManage?postId=${l.getPostID()}"><img src="resources/img/icon/detail.png" alt="alt"/></a></button> Detail
+                                            </div>
+                                            <div>
+                                                <button class="button-icon me-2" value="update" name="event"><img src="resources/img/icon/pen.png" alt="alt"/></a></button>  Update
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -70,9 +70,9 @@
                     </div>
                 </div>
             </div>
-            <div class="container row mt-5 mb-4">
-                <div class="mb-5">
-                    <form action="postManage">
+            <form action="postManage">
+                <div class="container row mt-5 mb-4">
+                    <div class="mb-5">
                         Search by:
                         <input type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3 search" value="${postTitle}"/>
                         <select class="form-select text-primary mt-3" name="postCategory">
@@ -94,8 +94,8 @@
                         </select>
                         <br>
                         <a href="service?event=to-contact-link" class="mt-3 ms-2">Contact Us</a>
+                    </div>
                 </div>
-            </div>
         </div>
         <div class="d-flex justify-content-center" id="pagination-container">
             <c:forEach var="p" begin="1" end="${numOfPage}">

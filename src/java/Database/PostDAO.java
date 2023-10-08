@@ -520,7 +520,11 @@ public class PostDAO extends MyDAO {
         //            System.out.println(post.getTitle() + " " + post.isStatusPost() + " " + post.getCategoryPost());
         //        }
         //        System.out.println("".isEmpty());
-        System.out.println(postDAO.getCountOfPostsManagerChoose("", "", "1", ""));
-
+//        System.out.println(postDAO.getCountOfPostsManagerChoose("", "", "1", ""));
+        Post post = postDAO.getPostByID(1);
+        Date date = Date.valueOf(LocalDate.now());
+        post.setBriefInfo("qqqqq");
+        postDAO.update(1, post);
+        System.out.println(postDAO.getPostByID(1).getBriefInfo());
     }
 }

@@ -80,6 +80,10 @@
         <servlet-name>ReservationContact</servlet-name>
         <servlet-class>controller.ReservationContact</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>postDetailManage</servlet-name>
+        <servlet-class>controller.PostDetailManage</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServiceController</servlet-name>
         <url-pattern>/service</url-pattern>
@@ -159,6 +163,10 @@
     <servlet-mapping>
         <servlet-name>ReservationContact</servlet-name>
         <url-pattern>/reservationcontact</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>postDetailManage</servlet-name>
+        <url-pattern>/postDetailManage</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
