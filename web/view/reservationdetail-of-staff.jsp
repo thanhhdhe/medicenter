@@ -229,7 +229,7 @@
                                     <p class="text-black-50"><%=thisStaff.getGender()%></p>
                                 </div>
                             </div>
-                            <div class="row px-4 justify-content-between mt-2">
+                            <div class="row px-4 justify-content-between mt-4">
                                 <div class="col-md-8">
                                     <p><strong>Service:</strong><%=serviceDAO.getServiceByID(reservation.getServiceID()+"").getTitle()%></p>
                                     <p><strong>Cost:</strong><%=serviceDAO.getServiceByID(reservation.getServiceID()+"").getSalePrice()>0 ? serviceDAO.getServiceByID(reservation.getServiceID()+"").getSalePrice() : serviceDAO.getServiceByID(reservation.getServiceID()+"").getOriginalPrice()%></p>
@@ -242,7 +242,7 @@
                                     <p><strong>Status: </strong><%=reservation.getStatus()%></p>
                                 </div>
                             </div>
-                            <div class="table-responsive p-4">
+                            <div class="table-responsive p-4 mt-2">
                                 <%if(curStaff!=null){%>
                                 <table class="table table-striped table-hover">
                                     <thead class="text-light" style="background: #1977cc;">
