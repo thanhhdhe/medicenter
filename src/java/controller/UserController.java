@@ -17,6 +17,10 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import model.Children;
 import model.User;
@@ -61,7 +65,6 @@ public class UserController extends HttpServlet {
                 String address = request.getParameter("address");
                 Part filePart = request.getPart("images");
 
-                // Kiểm tra loại của tệp tải lên
                 String contentType = filePart.getContentType();
                 if (contentType != null && contentType.startsWith("image")) {
                     String realPath = request.getServletContext().getRealPath("/resources/img");
@@ -84,6 +87,7 @@ public class UserController extends HttpServlet {
                     request.setAttribute("updateerror", "Uploaded file is not an image");
                     response.sendRedirect("home?showmodal=1&status=error");
                 }
+
             }
             if (action.equals("all")) {
                 url = "user?action=all";
@@ -95,35 +99,35 @@ public class UserController extends HttpServlet {
                 url = "user?action=search&txt=" + text;
                 userList = userdao.search(text);
             }
-            if (action.equals("status")) {
-                int id = Integer.parseInt(request.getParameter("userid"));
-                User u = userdao.getUserByID(id);
-                System.out.println(id);
-                System.out.println(u.isStatus());
-                boolean status = u.isStatus();
-                try {
-                    if (status) {
-                        u.setStatus(false);
-                        userdao.updateStatus(Boolean.FALSE, id);
-                        System.out.println("change to false");
-                    } else {
-                        u.setStatus(true);
-                        userdao.updateStatus(Boolean.TRUE, id);
-                        System.out.println("change to true");
-                    }
-                    // Send back a JSON object with the new status
-                    response.setContentType("application/json");
-                    PrintWriter out = response.getWriter();
-                    out.print("{\"success\": true, \"status\": " + u.isStatus() + "}");
-                    out.flush();
-                } catch (Exception e) {
-                    // Send back a JSON object with an error message
-                    response.setContentType("application/json");
-                    PrintWriter out = response.getWriter();
-                    out.print("{\"success\": false, \"error\": \"" + e.getMessage() + "\"}");
-                    out.flush();
-                }
-            }
+//            if (action.equals("status")) {
+//                int id = Integer.parseInt(request.getParameter("userid"));
+//                User u = userdao.getUserByID(id);
+//                System.out.println(id);
+//                System.out.println(u.isStatus());
+//                boolean status = u.isStatus();
+//                try {
+//                    if (status) {
+//                        u.setStatus(false);
+//                        userdao.updateStatus(Boolean.FALSE, id);
+//                        System.out.println("change to false");
+//                    } else {
+//                        u.setStatus(true);
+//                        userdao.updateStatus(Boolean.TRUE, id);
+//                        System.out.println("change to true");
+//                    }
+//                    // Send back a JSON object with the new status
+//                    response.setContentType("application/json");
+//                    PrintWriter out = response.getWriter();
+//                    out.print("{\"success\": true, \"status\": " + u.isStatus() + "}");
+//                    out.flush();
+//                } catch (Exception e) {
+//                    // Send back a JSON object with an error message
+//                    response.setContentType("application/json");
+//                    PrintWriter out = response.getWriter();
+//                    out.print("{\"success\": false, \"error\": \"" + e.getMessage() + "\"}");
+//                    out.flush();
+//                }
+//            }
 
             if (userList != null) {
                 int numPerPage = 15;
@@ -153,11 +157,61 @@ public class UserController extends HttpServlet {
             }
             if (action.equals("my-children")) {
                 int userID = users.getUserID();
-                System.out.println("user id la"+userID);
+                System.out.println("user id la" + userID);
                 ChildrenDAO cDao = new ChildrenDAO();
-                List<Children> childList= cDao.getListChildrenByUserId(userID+"");
-                request.setAttribute("child", childList);     
+                List<Children> childList = cDao.getListChildrenByUserId(userID + "");
+                request.setAttribute("child", childList);
                 request.getRequestDispatcher("./view/choose-children.jsp").forward(request, response);
+            }
+            if (action.equals("add-child")) {
+                ChildrenDAO childDAO = new ChildrenDAO();
+                String fullName = request.getParameter("fullname");
+                String year = request.getParameter("year");
+                String month = request.getParameter("month");
+                String day = request.getParameter("day");
+                String email = request.getParameter("email");
+                String address = request.getParameter("address");
+                String gender = request.getParameter("gender");
+                String phoneNumber = request.getParameter("phoneNumber");
+                String dfImage = "https://cdn-icons-png.flaticon.com/512/3177/3177440.png";
+                Part filePart = request.getPart("images");
+
+                Date sqlDOB = null;
+                try {
+                    String date = day + "-" + month + "-" + year;
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    java.util.Date utilDate = dateFormat.parse(date);
+                    sqlDOB = new Date(utilDate.getTime());
+                } catch (Exception e) {
+
+                }
+
+                String contentType = filePart.getContentType();
+                if (contentType != null && contentType.startsWith("image")) {
+                    String realPath = request.getServletContext().getRealPath("/resources/img");
+                    String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                    filePart.write(realPath + "/" + fileName);
+                    String newImg = "resources/img/" + fileName;
+                    System.out.println("anh la " + newImg);
+                    Children newChild = new Children(users, fullName, sqlDOB, gender, newImg);
+                    childDAO.createChildren(newChild);
+                    session.setAttribute("message", "Thông báo: Thêm trẻ em thành công!");
+                } else {
+                    Children newChild = new Children(users, fullName, sqlDOB, gender, dfImage);
+                    childDAO.createChildren(newChild);
+                    session.setAttribute("message", "Thông báo: Thêm trẻ em thành công!");
+                }
+                response.sendRedirect("user?action=my-children");
+//                request.getRequestDispatcher().forward(request, response);
+
+            }
+            if (action.equals("delete-child")) {
+                String childID = request.getParameter("childID");
+                System.out.println(childID);
+                ChildrenDAO childDAO = new ChildrenDAO();
+                childDAO.deleteChild(childID);
+               
+//                response.sendRedirect("user?action=my-children");
             }
         } catch (IOException | ServletException e) {
             System.out.println(e);

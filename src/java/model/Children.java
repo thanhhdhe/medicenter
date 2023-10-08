@@ -5,15 +5,14 @@
 package model;
 
 import java.sql.Date;
-import java.time.LocalDate;
-import java.time.Period;
 
 /**
  *
  * @author Admin
  */
 public class Children {
-    private User user; 
+
+    private User user;
     private int childID;
     private String childName;
     private Date birthday;
@@ -22,6 +21,23 @@ public class Children {
     private String image;
 
     public Children() {
+    }
+
+    public Children(User user, int childID, String childName, Date birthday, String gender, String image) {
+        this.user = user;
+        this.childID = childID;
+        this.childName = childName;
+        this.birthday = birthday;
+        this.gender = gender;
+        this.image = image;
+    }
+
+    public Children(User user, String childName, Date birthday, String gender, String image) {
+        this.user = user;
+        this.childName = childName;
+        this.birthday = birthday;
+        this.gender = gender;
+        this.image = image;
     }
 
     public Children(User user, int childID, String childName, Date birthday, String status, String gender, String image) {
@@ -89,11 +105,5 @@ public class Children {
     public void setImage(String image) {
         this.image = image;
     }
-    
-    public int getAge() {
-        LocalDate localBirthDate = this.birthday.toLocalDate();
-        LocalDate currentDate = LocalDate.now();
-        return Period.between(localBirthDate, currentDate).getYears();
-    }
-    
+
 }

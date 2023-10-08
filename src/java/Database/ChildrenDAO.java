@@ -14,8 +14,8 @@ import model.User;
  *
  * @author Admin
  */
-public class ChildrenDAO extends MyDAO{
-    
+public class ChildrenDAO extends MyDAO {
+
     public List<Children> getListChildrenByUserId(String id) {
         List<Children> children = new ArrayList<>();
         xSql = "select * from Children where UserID = ?";
@@ -42,7 +42,30 @@ public class ChildrenDAO extends MyDAO{
         }
         return children;
     }
-    
+
+    public boolean createChildren(Children children) {
+        boolean success = false;
+        xSql = "INSERT INTO Children (UserID, ChildName, Birthday, Gender, Avatar) VALUES (?, ?, ?, ?, ?)";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, children.getUser().getUserID()); // Lấy userID từ đối tượng User
+            ps.setString(2, children.getChildName());
+            ps.setDate(3, children.getBirthday());
+            ps.setString(4, children.getGender());
+            ps.setString(5, children.getImage());
+
+            int rowsInserted = ps.executeUpdate();
+            if (rowsInserted > 0) {
+                success = true;
+            }
+
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return success;
+    }
+
     public Children getChildrenByUserId(String id, String Cid) {
         Children children = null;
         xSql = "select * from Children where UserID = ? and ChildID = ?";
@@ -70,7 +93,7 @@ public class ChildrenDAO extends MyDAO{
         }
         return children;
     }
-    
+
     public Children getChildrenByChildrenId(String id) {
         Children children = null;
         xSql = "SELECT *  FROM [dbo].[Children] where ChildID = ?";
@@ -97,6 +120,7 @@ public class ChildrenDAO extends MyDAO{
         }
         return children;
     }
+
     public boolean validateChildren(String id, String userID) {
         boolean check = false;
         xSql = "SELECT *  FROM [dbo].[Children] where ChildID = ? and UserID = ?";
@@ -115,8 +139,27 @@ public class ChildrenDAO extends MyDAO{
         }
         return check;
     }
+
     public static void main(String[] args) {
         ChildrenDAO childrenDAO = new ChildrenDAO();
-        System.out.println(childrenDAO.getChildrenByChildrenId(1+"").getImage());
+        
+//        System.out.println("ketquadelete là : " + childrenDAO.deleteChild("5"));
+    }
+
+    public boolean deleteChild(String childID) {
+        boolean success = false;
+        xSql = "DELETE FROM [dbo].[Children] WHERE ChildID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, childID);
+            int rowsInserted = ps.executeUpdate();
+            if (rowsInserted > 0) {
+                success = true;
+            }
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return success;
     }
 }
