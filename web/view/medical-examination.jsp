@@ -212,7 +212,7 @@
                                             <th scope="row"><%=medicalExamination.getMedicalExaminationID()%></th>
                                             <td>
                                                 <div class="d-flex">
-                                                    <img class="rounded-circle object-cover me-3" src="<%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getAvatar()%>" alt="alt" width="30px" height="30px"/>
+                                                    <img class="rounded-circle object-cover me-3" src="<%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getImage()%>" alt="alt" width="30px" height="30px"/>
                                                     <div><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getChildName()%></div>
                                                 </div>
                                             </td>

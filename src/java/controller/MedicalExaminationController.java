@@ -124,7 +124,7 @@ public class MedicalExaminationController extends HttpServlet {
         String prescription = request.getParameter("prescription") + "";
         ChildrenDAO childrenDAO = new ChildrenDAO();
         Date examinationDate = Date.valueOf(LocalDate.now());
-        MedicalExamination medicalExamination = new MedicalExamination(childrenDAO.getChildrenByChildrenId(childID+"").getUserID(), childID, staffID, examinationDate, serviceId, prescription, disease);
+        MedicalExamination medicalExamination = new MedicalExamination(childrenDAO.getChildrenByChildrenId(childID+"").getUser().getUserID(), childID, staffID, examinationDate, serviceId, prescription, disease);
         MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
         medicalExaminationDAO.insert(medicalExamination);
         request.getRequestDispatcher("./view/medical-examination.jsp").forward(request, response);

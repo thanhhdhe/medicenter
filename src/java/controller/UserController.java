@@ -4,6 +4,7 @@
  */
 package controller;
 
+import Database.ChildrenDAO;
 import Database.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,10 +13,12 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import model.Children;
 import model.User;
 
 /**
@@ -37,6 +40,8 @@ public class UserController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         UserDAO userdao = new UserDAO();
+        HttpSession session = request.getSession();
+        User users = (User) session.getAttribute("user");
         String action = request.getParameter("action");
         List<User> userList = null;
         String url = null;
@@ -145,6 +150,14 @@ public class UserController extends HttpServlet {
                 request.setAttribute("num", numPages);
                 request.setAttribute("user", user);
                 request.getRequestDispatcher("./view/user-list.jsp").forward(request, response);
+            }
+            if (action.equals("my-children")) {
+                int userID = users.getUserID();
+                System.out.println("user id la"+userID);
+                ChildrenDAO cDao = new ChildrenDAO();
+                List<Children> childList= cDao.getListChildrenByUserId(userID+"");
+                request.setAttribute("child", childList);     
+                request.getRequestDispatcher("./view/choose-children.jsp").forward(request, response);
             }
         } catch (IOException | ServletException e) {
             System.out.println(e);

@@ -11,59 +11,33 @@ import java.sql.Date;
  * @author Admin
  */
 public class Children {
-
+    private User user; 
     private int childID;
-    private int userID;
     private String childName;
     private Date birthday;
     private String status;
     private String gender;
-    private String avatar;
+    private String image;
 
     public Children() {
     }
 
-    public Children(int childID, int userID, String childName, Date birthday, String status, String gender) {
+    public Children(User user, int childID, String childName, Date birthday, String status, String gender, String image) {
+        this.user = user;
         this.childID = childID;
-        this.userID = userID;
         this.childName = childName;
         this.birthday = birthday;
         this.status = status;
         this.gender = gender;
+        this.image = image;
     }
 
-    public Children(int childID, int userID, String childName, Date birthday, String status, String gender, String avatar) {
-        this.childID = childID;
-        this.userID = userID;
-        this.childName = childName;
-        this.birthday = birthday;
-        this.status = status;
-        this.gender = gender;
-        this.avatar = avatar;
+    public User getUser() {
+        return user;
     }
 
-    public Children(int userID, String childName, Date birthday, String status, String gender) {
-        this.userID = userID;
-        this.childName = childName;
-        this.birthday = birthday;
-        this.status = status;
-        this.gender = gender;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getChildID() {
@@ -72,14 +46,6 @@ public class Children {
 
     public void setChildID(int childID) {
         this.childID = childID;
-    }
-
-    public int getUserID() {
-        return userID;
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
     }
 
     public String getChildName() {
@@ -106,4 +72,22 @@ public class Children {
         this.status = status;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+    
+    
+    
 }
