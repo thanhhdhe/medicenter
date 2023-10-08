@@ -197,10 +197,10 @@
                                 <h4>RESERVATION DETAIL</h4>
                                 <a href="staff?event=send-to-children-list" class="ms-text-primary font-weight-bold">Add Medical Record</a>
                             </div>
-                            <div class="row px-4 justify-content-between mb-3">
-                                <div class="col-md-6 d-flex flex-column justify-content-center align-items-start">
+                            <div class="row px-4 justify-content-between">
+                                <div class="col-md-5 d-flex flex-column justify-content-center align-items-start">
                                     <%User thisUser = userDAO.getUserByID(reservation.getUserID());%>
-                                    <div class="col-md-5 d-flex justify-content-center"><h4>Customer</h4></div>
+                                    <div class="d-flex justify-content-center"><h3>Customer</h3></div>
 
                                     <div class="d-flex">
                                         <img src="<%=thisUser.getProfileImage()%>" alt="dr" class="rounded-3 object-cover me-3" width="100px" height="100px"/>
@@ -211,7 +211,7 @@
                                         </div>
                                     </div>
                                     <%Children thisChild = childrenDAO.getChildrenByChildrenId(reservation.getChildID()+"");%>
-                                    <div class="col-md-5 d-flex justify-content-center"><h4 class="mt-3">Patient</h4></div>
+                                    <div class="d-flex justify-content-center"><h3 class="mt-3">Patient</h3></div>
                                     <div class="d-flex">
                                         <img src="<%=thisChild.getImage()%>" alt="dr" class="rounded-3 object-cover me-3" width="100px" height="100px"/>
                                         <div>
@@ -265,7 +265,7 @@
                                         <tr>
                                             <th scope="row">
                                                 <div class="d-flex align-items-center">
-                                                    <img src="<%=serviceDAO.getServiceByID(reser.getServiceID()+"").getThumbnail()%>" class="me-2 rounded-circle" width="20px" height="20px"/>
+                                                    <img src="<%=serviceDAO.getServiceByID(reser.getServiceID()+"").getThumbnail()%>" class="me-2 rounded-3 object-cover" width="30px" height="30px"/>
                                                     <p class="m-0"><%=serviceDAO.getServiceByID(reser.getServiceID()+"").getTitle()%></p>
                                                 </div>
                                             </th>
