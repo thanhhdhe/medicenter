@@ -35,8 +35,13 @@
         %>
 
         <main>  
+
             <section>
                 <h1 class="text-center">User Reservations</h1>
+                <div class="form-outline mb-4">
+                    <input type="search" class="form-control" id="datatable-search-input">
+                    <label class="form-label" for="datatable-search-input">Search</label>
+                </div>
                 <table class="table align-middle mb-0 bg-white table-hover">
                     <thead class="bg-light table-dark ">
                         <tr class="text-center">
@@ -90,7 +95,7 @@
             document.getElementById("previousPageButton").addEventListener('click', function () {
                 changePage(pageNumber - 1);
             });
-            
+
             // Add event listner for next page button
             document.getElementById("nextPageButton").addEventListener('click', function () {
                 changePage(pageNumber + 1);
@@ -165,7 +170,7 @@
                             if (index === 0) {
                                 // First attribute: Create an <a> element with href
                                 const link = document.createElement("a");
-                                link.href = `reservationinformation?id=` + attribute;
+                                link.href = `reservation?id=` + attribute;
                                 link.textContent = attribute;
                                 cell.appendChild(link);
                             } else if (index === 7) {

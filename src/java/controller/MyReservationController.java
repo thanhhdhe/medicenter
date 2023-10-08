@@ -53,8 +53,8 @@ public class MyReservationController extends HttpServlet {
         UserDAO udao = new UserDAO();
         HttpSession session = request.getSession(true);
         String email = (String) session.getAttribute("email");
-
         String page = (String) request.getParameter("page");
+        
         int numberPerPage = 5;
         int pageNumber = 1;
         if (page != null) {

@@ -12,6 +12,11 @@
         <title>JSP Page</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
         <jsp:include page="layout/Head.jsp"/>
+        <style> 
+            #groupButton button {
+                margin: 0px 5px;
+            }
+        </style>
     </head>
     <body>  
         <%@ page import="java.text.SimpleDateFormat"%>
@@ -55,7 +60,7 @@
         <table class="table align-middle mb-0 bg-white table-hover">
             <thead class="bg-light table-dark ">
                 <tr class="text-center">
-                    <th>Image</th>
+                    <th>Avatar</th>
                     <th>Name</th>
                     <th>Birthday</th>
                     <th>Gender</th>
@@ -99,19 +104,117 @@
                 </tr>
             </tbody>
         </table>
-        <div class="text-center">
-            <!--Button to re-reserve-->
-            <button id="re-reserve" class="btn btn-info">Re-reserve</button>
-            <!--Button submit or update ( redirect to ReservationDetail with status : edit ) or cancel-->
-            <button id="cancel" class="btn btn-warning">Cancel</button>
-            <button id="edit" class="btn btn-success">Edit</button>
-            <button id="exit" class="btn btn-danger">Exit</button>
+        <div id="groupButton" class="text-center" style="margin:30px;">
+            
         </div>
         <footer>
             <jsp:include page="layout/footer.jsp"/>
         </footer>
         <script>
-            
+            var groupButton = document.getElementById("groupButton");
+            var status = "<%=reservation.getStatus()%>";
+            switch (status) {
+                case "pending" :
+                {
+                    // Button checkout
+                    var button = document.createElement("button");
+                    button.className = "btn btn-warning";
+                    button.textContent = "Checkout";
+                    button.id = "checkout";
+                    groupButton.appendChild(button);
+                    // Button cancel
+                    button.className = "btn btn-warning";
+                    button.textContent = "Cancel";
+                    button.id = "cancel";
+                    groupButton.appendChild(button);
+                    document.getElementById("cancel").addEventListener('click', function () {
+                        // Go back to the previous page
+                        window.location.href = "reservation?id=" + <%=reservation.getReservationID()%> + "&action=cancel";
+                    });
+                    // Button update
+                    button.className = "btn btn-success";
+                    button.textContent = "Update";
+                    button.id = "update";
+                    groupButton.appendChild(button);
+                    document.getElementById("update").addEventListener('click', function () {
+                        window.location.href = "reservationdetail?serviceID=";
+                    });
+                    break;
+                }
+                case "awaiting confirmation" :
+                {
+                    // Button cancel
+                    var button = document.createElement("button");
+                    button.className = "btn btn-warning";
+                    button.textContent = "Cancel";
+                    button.id = "cancel";
+                    groupButton.appendChild(button);
+                    document.getElementById("cancel").addEventListener('click', function () {
+                        window.location.href = "reservation?id=" + <%=reservation.getReservationID()%> + "&action=cancel";
+                    });
+                    // Button update
+                    button.className = "btn btn-success";
+                    button.textContent = "Update";
+                    button.id = "update";
+                    groupButton.appendChild(button);
+                    document.getElementById("update").addEventListener('click', function () {
+                        window.location.href = "reservationdetail?serviceID=";
+                    });
+                    break;
+                }
+                case "waiting for examination" :
+                {
+                    // Button cancel
+                    var button = document.createElement("button");
+                    button.className = "btn btn-warning";
+                    button.textContent = "Cancel";
+                    button.id = "cancel";
+                    groupButton.appendChild(button);
+                    document.getElementById("cancel").addEventListener('click', function () {
+                        window.location.href = "reservation?id=" + <%=reservation.getReservationID()%> + "&action=cancel";
+                    });
+                    break;
+                }
+                case "done" :
+                {
+                    // Button re-reserve
+                    var button = document.createElement("button");
+                    button.className = "btn btn-info";
+                    button.textContent = "Re-reserve";
+                    button.id = "re-reserve";
+                    groupButton.appendChild(button);
+                    document.getElementById("re-reserve").addEventListener('click', function () {
+                        window.location.href = "reservationdetail?serviceID=" + <%=service.getServiceID()%> + "staffID=";
+                    });
+                    break;
+                }
+                case "cancel" :
+                {
+                    // Button re-reserve
+                    var button = document.createElement("button");
+                    button.className = "btn btn-info";
+                    button.textContent = "Re-reserve";
+                    button.id = "re-reserve";
+                    groupButton.appendChild(button);
+                    document.getElementById("re-reserve").addEventListener('click', function () {
+                        window.location.href = "reservationdetail?serviceID=" + <%=service.getServiceID()%> + "staffID=";
+                    });
+                    break;
+                }
+                default :
+                {
+                }
+            }
+            // Back button
+            var backButton = document.createElement("button");
+            backButton.className = "btn btn-danger";
+            backButton.textContent = "Back";
+            backButton.id = "back";
+            groupButton.appendChild(backButton);
+            document.getElementById("back").addEventListener('click', function () {
+                // Go back to the previous page
+                window.history.back();
+            });
         </script>
     </body>
 
