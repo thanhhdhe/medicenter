@@ -79,7 +79,7 @@ public class ReservationDAO extends MyDAO {
         }
         return list;
     }
-    
+
     public List<Reservation> getReservationByStaffID(String staffID) {
         List<Reservation> list = new ArrayList<>();
         xSql = "SELECT * from [dbo].[Reservations] where StaffID = ?";
@@ -108,7 +108,6 @@ public class ReservationDAO extends MyDAO {
         }
         return list;
     }
-    
 
     public int countReservationsForService(String serviceID) {
         int reservationCount = 0;
@@ -167,9 +166,104 @@ public class ReservationDAO extends MyDAO {
         return reservationList;
     }
 
+    public List<Reservation> getSortedSpecificPaged(int offSetPage, int numberOfPage, String userID, String condition, String value) {
+        List<Reservation> reservationList = new ArrayList<>();
+        if (condition.equals("staffName")) {
+            xSql = "SELECT r.* FROM [dbo].[Reservations] r "
+                    + "JOIN Staff s ON s.StaffID = r.StaffID "
+                    + "WHERE UserID = ? AND s.StaffName = '" + value + "' "
+                    + "ORDER BY CreatedDate DESC "
+                    + "OFFSET ? ROWS "
+                    + "FETCH NEXT ? ROWS ONLY";
+        } else if (condition.equals("serviceTitle")) {
+            xSql = "SELECT r.* FROM [dbo].[Reservations] r "
+                    + "JOIN Service s ON s.ServiceID = r.ServiceID "
+                    + "WHERE UserID = ? AND s.Title = '" + value + "' "
+                    + "ORDER BY CreatedDate DESC "
+                    + "OFFSET ? ROWS "
+                    + "FETCH NEXT ? ROWS ONLY";
+        } else {
+            xSql = "SELECT * FROM [dbo].[Reservations]  "
+                + "WHERE UserID = ? AND ReservationID = " + value + " "
+                + "ORDER BY CreatedDate DESC "
+                + "OFFSET ? ROWS "
+                + "FETCH NEXT ? ROWS ONLY";
+        }
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, userID);
+            ps.setInt(2, offSetPage);
+            ps.setInt(3, numberOfPage);
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int ReservationID = rs.getInt("ReservationID");
+                int UserID = rs.getInt("UserID");
+                int ServiceID = rs.getInt("ServiceID");
+                Date ReservationDate = rs.getDate("ReservationDate");
+                int ReservationSlot = rs.getInt("ReservationSlot");
+                Timestamp CreatedDate = rs.getTimestamp("CreatedDate");
+                float Cost = rs.getFloat("Cost");
+                String Status = rs.getString("Status");
+                int StaffID = rs.getInt("StaffID");
+                int ChildID = rs.getInt("ChildID");
+                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status);
+                reservationList.add(reservation);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return reservationList;
+    }
+
     public int getTotalPagination(String userID, int number) {
         int count = 0;
         xSql = "SELECT COUNT(*) AS totalNumber FROM [dbo].[Reservations] WHERE UserID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, userID);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                count = rs.getInt("totalNumber");
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (count == 0) {
+            return count;
+        }
+        if (count % number != 0) {
+            count /= number;
+            count++;
+        } else {
+            count /= number;
+        }
+        return count;
+    }
+
+    public int getTotalPaginationWithCondition(String userID, int number, String condition, String conditionValue) {
+        int count = 0;
+        switch (condition) {
+            case "staffName":
+                xSql = "SELECT COUNT(*) AS totalNumber FROM [dbo].[Reservations] r "
+                        + "JOIN Staff s ON r.StaffID = s.StaffID "
+                        + "WHERE r.UserID = ? AND s.StaffName = '" + conditionValue + "'";
+                break;
+            case "serviceTitle":
+                xSql = "SELECT COUNT(*) AS totalNumber FROM [dbo].[Reservations] r "
+                        + "JOIN Service s ON r.ServiceID = s.ServiceID "
+                        + "WHERE r.UserID = ? AND s.Title = '" + conditionValue + "'";
+                break;
+            default:
+                xSql = "SELECT COUNT(*) AS totalNumber FROM [dbo].[Reservations] r "
+                        + "WHERE r.UserID = ? AND r.ReservationID = " + conditionValue;
+                break;
+        }
+
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, userID);
@@ -378,7 +472,7 @@ public class ReservationDAO extends MyDAO {
         }
         return true;
     }
-    
+
     public Reservation getReservationByID(int ReservationID) {
         Reservation reservation = null;
         xSql = "SELECT * from [dbo].[Reservations] where ReservationID = ?";
@@ -429,7 +523,6 @@ public class ReservationDAO extends MyDAO {
         } catch (Exception e) {
 
         }
-        
 
 //        Reservation r = new Reservation();
 //        r.setCost(300);

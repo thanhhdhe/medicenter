@@ -38,10 +38,15 @@
 
             <section>
                 <h1 class="text-center">User Reservations</h1>
-                <div class="form-outline mb-4">
-                    <input type="search" class="form-control" id="datatable-search-input">
-                    <label class="form-label" for="datatable-search-input">Search</label>
-                </div>
+                <form id="ReservationSearch" style="margin: 5px;" class="text-lg-end" onsubmit="return false;">
+                    <input type="text" id="userInput" placeholder="Leave blank to see all" maxlength="30" onkeyup="checkEnter(event)" autocomplete="off">
+                    <select id="selectOption">
+                        <option value="reservationID">Reservation ID</option>
+                        <option value="staffName">Staff name</option>
+                        <option value="serviceTitle">Service title</option>
+                    </select>
+                </form>
+
                 <table class="table align-middle mb-0 bg-white table-hover">
                     <thead class="bg-light table-dark ">
                         <tr class="text-center">
@@ -64,12 +69,8 @@
                     <div class="d-flex justify-content-center align-items-center">
                         <button class="btn btn-outline-secondary btn-sm border-0" type="button" id="previousPageButton">&lt;&lt;</button>
 
-                        <select class="pagination justify-content-center" name="pageOption" id="pageOption">
-                            <% for (int i = 1;i<= rdao.getTotalPagination(userID,5);i++) { %>
-                            <option class="text-lg-start" id="Page <%=i%>">Page <%=i%></option>
-                            <% } %>
+                        <select class="pagination justify-content-center " name="pageOption" id="pageOption">
                         </select>
-
                         <button class="btn btn-outline-secondary btn-sm border-0" type="button" id="nextPageButton">&gt;&gt;</button>
 
                     </div>
@@ -85,11 +86,33 @@
             <jsp:include page="layout/footer.jsp"/>
         </footer>
         <script>
-            const totalPagePagination = <%=rdao.getTotalPagination("1",5)%>;
+            let totalPagePagination = <%=rdao.getTotalPagination(userID,5)%>;
             const reservationPerPage = 5;
             let pageNumber = <%=myReservationPage%>;
+            let action = "viewAll";
+            // Variable using for search
+            let userInput = null;
+            let selectedOption = null;
 
             const selectElement = document.getElementById('pageOption');
+            //  Check if user enter
+            function checkEnter(event) {
+                if (event.keyCode === 13) { // Enter key pressed
+                    processInput();
+                }
+            }
+            function processInput() {
+                userInput = document.getElementById("userInput").value;
+                if (userInput.trim() === "") {
+                    action = "viewAll";
+                    totalPagePagination = <%=rdao.getTotalPagination(userID,5)%>;
+                    getReservationsAndDisplayTable();
+                    return;
+                }
+                selectedOption = document.getElementById("selectOption").value;
+                action = "viewOthers";
+                getSpecificPagination();
+            }
 
             // Add event listner for previous page button
             document.getElementById("previousPageButton").addEventListener('click', function () {
@@ -118,8 +141,50 @@
                 getReservationsAndDisplayTable();
             }
 
+            async function getSpecificPagination() {
+                const url = "/ChildrenCare/myreservation?action=paginationNumber&condition=" + selectedOption + "&value=" + userInput;
+
+                const response = await fetch(url, {
+                    method: "POST",
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                number = await response.text();
+                if (number == 0) {
+                    alert("There are nothing like that");
+                } else {
+                    totalPagePagination = parseInt(number);
+                    pageNumber = 1;
+                    getReservationsAndDisplayTable();
+                }
+            }
+
             async function getReservationsAndDisplayTable() {
-                const url = "/ChildrenCare/myreservation?page=" + pageNumber;
+                let url = null;
+                if (action === "viewAll") {
+                    url = "/ChildrenCare/myreservation?page=" + pageNumber;
+                    selectElement.textContent = "";
+            <% for (int i = 1;i<= rdao.getTotalPagination(userID,5);i++) { %>
+                    var option = document.createElement("option");
+                    option.className = "text-lg-start";
+                    option.textContent = "Page <%=i%>";
+                    selectElement.appendChild(option);
+            <% } %>
+                } else {
+                    url = "/ChildrenCare/myreservation?page=" + pageNumber + "&condition=" + selectedOption + "&value=" + userInput;
+                    selectElement.textContent = "";
+                    for (let i = 1; i <= totalPagePagination; i++) {
+                        var option = document.createElement("option");
+                        option.className = "text-lg-start";
+                        option.textContent = "Page " + i;
+                        selectElement.appendChild(option);
+                    }
+                }
+
+
                 const response = await fetch(url, {
                     method: "POST",
                 });
@@ -142,7 +207,10 @@
                 tbody.innerHTML = "";
 
                 // Enable the next and previous button
-                if (pageNumber === 1) {
+                if (pageNumber === 1 && pageNumber === totalPagePagination) {
+                    document.getElementById("previousPageButton").disabled = true;
+                    document.getElementById("nextPageButton").disabled = true;
+                } else if (pageNumber === 1) {
                     document.getElementById("previousPageButton").disabled = true;
                     document.getElementById("nextPageButton").disabled = false;
                 } else if (pageNumber === totalPagePagination) {
@@ -152,7 +220,6 @@
                     document.getElementById("previousPageButton").disabled = false;
                     document.getElementById("nextPageButton").disabled = false;
                 }
-                console.log(pageNumber);
                 selectElement.selectedIndex = pageNumber - 1;
 
 

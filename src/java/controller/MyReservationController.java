@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import model.Reservation;
 
@@ -53,35 +54,49 @@ public class MyReservationController extends HttpServlet {
         UserDAO udao = new UserDAO();
         HttpSession session = request.getSession(true);
         String email = (String) session.getAttribute("email");
-        String page = (String) request.getParameter("page");
-        
-        int numberPerPage = 5;
-        int pageNumber = 1;
-        if (page != null) {
-            pageNumber = Integer.parseInt(page);
+        String action = (String) request.getParameter("action");
+        if (action == null) {
+            String page = (String) request.getParameter("page");
+            int numberPerPage = 5;
+            int pageNumber = 1;
+            if (page != null) {
+                pageNumber = Integer.parseInt(page);
+            }
+            List<Reservation> reservations = new ArrayList<>();
+            // Check if there is an condition for that pagination
+            String condition = (String) request.getParameter("condition");
+            String value = (String) request.getParameter("value");
+            if (condition == null) {
+                reservations = rdao.getSortedPaged((pageNumber - 1) * numberPerPage, numberPerPage, Integer.toString(udao.getUser(email).getUserID()));
+            } else {
+                reservations = rdao.getSortedSpecificPaged((pageNumber - 1) * numberPerPage, numberPerPage, Integer.toString(udao.getUser(email).getUserID()), condition, value);
+            }
+
+            StringBuilder sb = new StringBuilder();
+            SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+
+            ServiceDAO serviceDAO = new ServiceDAO();
+            StaffDAO staffDAO = new StaffDAO();
+
+            for (Reservation reservation : reservations) {
+                sb.append(reservation.getReservationID()).append(",");
+                sb.append(sdf2.format(reservation.getCreatedDate())).append(",");
+                sb.append(sdf1.format(reservation.getReservationDate())).append(",");
+                sb.append(reservation.getReservationSlot()).append(",");
+                sb.append(serviceDAO.getServiceByID(Integer.toString(reservation.getServiceID())).getTitle()).append(",");
+                sb.append(staffDAO.getStaffByStaffId(reservation.getStaffID()).getStaffName()).append(",");
+                sb.append(reservation.getCost()).append(",");
+                sb.append(reservation.getStatus());
+                sb.append("\n");
+            }
+            out.println(sb.toString());
+        } else if (action.equals("paginationNumber")) {
+            // Get the number of pagination page
+            String condition = (String) request.getParameter("condition");
+            String value = (String) request.getParameter("value");
+            out.println(rdao.getTotalPaginationWithCondition(Integer.toString(udao.getUser(email).getUserID()), 5, condition, value));
         }
-
-        List<Reservation> reservations = rdao.getSortedPaged((pageNumber - 1) * numberPerPage, numberPerPage, Integer.toString(udao.getUser(email).getUserID()));
-
-        StringBuilder sb = new StringBuilder();
-        SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy");        
-        SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-
-        ServiceDAO serviceDAO = new ServiceDAO();
-        StaffDAO staffDAO = new StaffDAO();
-        
-        for (Reservation reservation : reservations) {
-            sb.append(reservation.getReservationID()).append(",");
-            sb.append(sdf2.format(reservation.getCreatedDate())).append(",");
-            sb.append(sdf1.format(reservation.getReservationDate())).append(",");
-            sb.append(reservation.getReservationSlot()).append(",");
-            sb.append(serviceDAO.getServiceByID(Integer.toString(reservation.getServiceID())).getTitle()).append(",");
-            sb.append(staffDAO.getStaffByStaffId(reservation.getStaffID()).getStaffName()).append(",");
-            sb.append(reservation.getCost()).append(",");
-            sb.append(reservation.getStatus());
-            sb.append("\n");
-        }
-        out.println(sb.toString());
     }
 
     /**
