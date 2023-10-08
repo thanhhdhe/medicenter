@@ -192,7 +192,9 @@
                 <p>
                     <a class="btn-submit" style="text-decoration: none" href="home">Home</a>
                 <p>
-
+                <h4 style="color: red">
+                    ${requestScope.notify}
+                </h4>    
 
             </form>
         </div>

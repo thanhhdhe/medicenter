@@ -524,6 +524,7 @@ List<Service> list = serviceDAO.getAllServices();
         for (Service service : list) {
             System.out.println(service.getStatus());
         }
+        
 //            System.out.println(serviceDAO.getServiceByID(15+"").getBrief());
 //        System.out.println((serviceDAO.getCountOfServicesUserChoose("", "", "")+4)/5);
 //        System.out.println((serviceDAO.getServiceCount()+4)/5);

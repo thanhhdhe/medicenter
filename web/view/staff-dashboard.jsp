@@ -90,6 +90,11 @@
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations List</a
+                        >
+                    </div>
                     <%if(isManager){%>
                     <div class="navbar-nav w-100 text-light">
                         <a href="feedback" class="nav-item nav-link"

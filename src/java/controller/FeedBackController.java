@@ -97,7 +97,7 @@ public class FeedBackController extends HttpServlet {
         } else {
             String roleaccount = "";
             if (staff == null) {
-                roleaccount = Arole.getRole();
+                roleaccount = "";
             } else {
                 roleaccount = staff.getRole();
             }
@@ -153,7 +153,7 @@ public class FeedBackController extends HttpServlet {
 
                     //fillter for status
                 } else if (event.equals("fillterstatus")) {
-                    
+
                     //get infor
                     String Fillstatus = request.getParameter("fillstatus");
                     //get total page
@@ -168,13 +168,16 @@ public class FeedBackController extends HttpServlet {
                         //get search
                         String search = request.getParameter("search");
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFill(1, Fillstatus, "FStatus");
-                        System.out.println(feedbacks.get(1).getContentSub());
+                        System.out.println(feedbacks.get(0).getFeedbackID());
                         // if search not null new list list contains feedback have search end send for jsp
-                        if(search != null){
-                            System.out.println(search);
+                        if (search != null) {
+
                             List<FeedBack> newfeedbacks = new ArrayList<>();
-                            for(FeedBack f : feedbacks){
-                                if(f.getContent().contains(search)){                                  
+                            for (FeedBack f : feedbacks) {
+                                // get name user
+                                User userser = userdao.getUserByID(f.getUserID());
+                                if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                        || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
                                     newfeedbacks.add(f);
                                 }
                             }
@@ -189,7 +192,7 @@ public class FeedBackController extends HttpServlet {
                         //set fill for url paging
                         request.setAttribute("fill", Fillstatus);
                         request.setAttribute("endP", endPage);
-                        
+
                         request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     } else {
                         //get search
@@ -201,13 +204,16 @@ public class FeedBackController extends HttpServlet {
                         //set fill for url paging
                         request.setAttribute("fill", Fillstatus);
                         int page = Integer.parseInt(index);
-                        
+
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFill(page, Fillstatus, "FStatus");
-                         // if search not null new list list contains feedback have search end send for jsp
-                        if(search != null){
+                        // if search not null new list list contains feedback have search end send for jsp
+                        if (search != null) {
                             List<FeedBack> newfeedbacks = new ArrayList<>();
-                            for(FeedBack f : feedbacks){
-                                if(f.getContent().contains(search)){
+                            for (FeedBack f : feedbacks) {
+                                // get name user
+                                User userser = userdao.getUserByID(f.getUserID());
+                                if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                        || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
                                     newfeedbacks.add(f);
                                 }
                             }
@@ -231,8 +237,27 @@ public class FeedBackController extends HttpServlet {
                         endPage++; // if endP not divide by 10 so that endPage + 1
                     }
                     String index = request.getParameter("index");
+
                     if (index == null) {
+                        //get search
+                        String search = request.getParameter("search");
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFill(1, Fillrate, "RatedStar");
+                        // if search not null new list list contains feedback have search end send for jsp
+                        if (search != null) {
+
+                            List<FeedBack> newfeedbacks = new ArrayList<>();
+                            for (FeedBack f : feedbacks) {
+                                // get name user
+                                User userser = userdao.getUserByID(f.getUserID());
+                                if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                        || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
+                                    newfeedbacks.add(f);
+                                }
+                            }
+                            request.setAttribute("feedbacks", newfeedbacks);
+                        } else {
+                            request.setAttribute("feedbacks", feedbacks);
+                        }
                         // set event for paging
                         request.setAttribute("fillevent", event);
                         //set name of fill parameter url paging                  
@@ -240,9 +265,10 @@ public class FeedBackController extends HttpServlet {
                         //set fill for url paging
                         request.setAttribute("fill", Fillrate);
                         request.setAttribute("endP", endPage);
-                        request.setAttribute("feedbacks", feedbacks);
                         request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     } else {
+                        //get search
+                        String search = request.getParameter("search");
                         // set event for paging
                         request.setAttribute("fillevent", event);
                         //set name of fill parameter url paging                  
@@ -251,8 +277,22 @@ public class FeedBackController extends HttpServlet {
                         request.setAttribute("fill", Fillrate);
                         int page = Integer.parseInt(index);
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFill(page, Fillrate, "RatedStar");
+                        // if search not null new list list contains feedback have search end send for jsp
+                        if (search != null) {
+                            List<FeedBack> newfeedbacks = new ArrayList<>();
+                            for (FeedBack f : feedbacks) {
+                                // get name user
+                                User userser = userdao.getUserByID(f.getUserID());
+                                if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                        || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
+                                    newfeedbacks.add(f);
+                                }
+                            }
+                            request.setAttribute("feedbacks", newfeedbacks);
+                        } else {
+                            request.setAttribute("feedbacks", feedbacks);
+                        }
                         request.setAttribute("endP", endPage);
-                        request.setAttribute("feedbacks", feedbacks);
                         request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     }
                 } // fillter for service 
@@ -266,9 +306,27 @@ public class FeedBackController extends HttpServlet {
                     if (endP % 10 != 0) {
                         endPage++; // if endP not divide by 10 so that endPage + 1
                     }
+                    //get search
+                    String search = request.getParameter("search");
                     String index = request.getParameter("index");
                     if (index == null) {
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFillSer(1, Fillservice);
+                        
+                        // if search not null new list list contains feedback have search end send for jsp
+                        if (search != null) {
+                            List<FeedBack> newfeedbacks = new ArrayList<>();
+                            for (FeedBack f : feedbacks) {
+                                // get name user
+                                User userser = userdao.getUserByID(f.getUserID());
+                                if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                        || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
+                                    newfeedbacks.add(f);
+                                }
+                            }
+                            request.setAttribute("feedbacks", newfeedbacks);
+                        } else {
+                            request.setAttribute("feedbacks", feedbacks);
+                        }
                         // set event for paging
                         request.setAttribute("fillevent", event);
                         //set name of fill parameter url paging                  
@@ -276,7 +334,6 @@ public class FeedBackController extends HttpServlet {
                         //set fill for url paging
                         request.setAttribute("fill", Fillservice);
                         request.setAttribute("endP", endPage);
-                        request.setAttribute("feedbacks", feedbacks);
                         request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     } else {
                         // set event for paging
@@ -287,8 +344,22 @@ public class FeedBackController extends HttpServlet {
                         request.setAttribute("fill", Fillservice);
                         int page = Integer.parseInt(index);
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFillSer(page, Fillservice);
+                        // if search not null new list list contains feedback have search end send for jsp
+                        if (search != null) {
+                            List<FeedBack> newfeedbacks = new ArrayList<>();
+                            for (FeedBack f : feedbacks) {
+                                // get name user
+                                User userser = userdao.getUserByID(f.getUserID());
+                                if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                        || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
+                                    newfeedbacks.add(f);
+                                }
+                            }
+                            request.setAttribute("feedbacks", newfeedbacks);
+                        } else {
+                            request.setAttribute("feedbacks", feedbacks);
+                        }
                         request.setAttribute("endP", endPage);
-                        request.setAttribute("feedbacks", feedbacks);
                         request.getRequestDispatcher("/view/feedback-list-manager.jsp").forward(request, response);
                     }
                 } // search
@@ -523,58 +594,74 @@ public class FeedBackController extends HttpServlet {
                     System.out.println(user.getUserID());
                     FeedBackDAO dao = new FeedBackDAO();
                     String ratestar = request.getParameter("rate");
-                    int rate = Integer.parseInt(ratestar);
+                    if(ratestar == null){
+                        request.setAttribute("notify", "You have to choose the number of stars");
+                        request.getRequestDispatcher("/feedback?action=accessfeedback").forward(request, response);
+                    }
+                    
 
                     String content = request.getParameter("content");
                     String medicalID = request.getParameter("medical");
 
                     int medicalId = Integer.parseInt(medicalID);
-                    // Insert the feedback into the database
-                    dao.InsertFeedBack(user.getUserID(), medicalId, content, rate);
-                    out.println("<!DOCTYPE html>\n"
-                            + "<html>\n"
-                            + "<head>\n"
-                            + "    <meta charset=\"UTF-8\">\n"
-                            + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
-                            + "    <style>\n"
-                            + "        body {\n"
-                            + "            background-color: #f2f2f2;\n"
-                            + "            font-family: Arial, sans-serif;\n"
-                            + "            display: flex;\n"
-                            + "            justify-content: center;\n"
-                            + "            align-items: center;\n"
-                            + "            height: 100vh;\n"
-                            + "            margin: 0;\n"
-                            + "        }\n"
-                            + "        \n"
-                            + "        .container {\n"
-                            + "            text-align: center;\n"
-                            + "            background-color: #ffffff;\n"
-                            + "            border-radius: 10px;\n"
-                            + "            padding: 20px;\n"
-                            + "            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n"
-                            + "        }\n"
-                            + "        \n"
-                            + "        h1 {\n"
-                            + "            font-size: 36px;\n"
-                            + "            color: #333;\n"
-                            + "        }\n"
-                            + "        \n"
-                            + "        p {\n"
-                            + "            font-size: 18px;\n"
-                            + "            color: #666;\n"
-                            + "        }\n"
-                            + "    </style>\n"
-                            + "</head>\n"
-                            + "<body>\n"
-                            + "    <div class=\"container\">\n"
-                            + "        <h1>Thank you</h1>\n"
-                            + "        <p>FeedBack have been sent.</p>\n"
-                            + " <button style=\" background-color: blue; border: 0px; border-radius: 5px;padding: 10px;\"> "
-                            + " <a style=\"color: white; padding: 10px;text-decoration: none;\" href=\"http://localhost:9999/ChildrenCare/\">HOME</a> </button>"
-                            + "    </div>\n"
-                            + "</body>\n"
-                            + "</html>");
+                    if(content.length() >= 6 && content.length() <= 2000){
+                        int rate = Integer.parseInt(ratestar);
+                        // Insert the feedback into the database
+                        dao.InsertFeedBack(user.getUserID(), medicalId, content, rate);
+                        out.println("<!DOCTYPE html>\n"
+                                + "<html>\n"
+                                + "<head>\n"
+                                + "    <meta charset=\"UTF-8\">\n"
+                                + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+                                + "    <style>\n"
+                                + "        body {\n"
+                                + "            background-color: #f2f2f2;\n"
+                                + "            font-family: Arial, sans-serif;\n"
+                                + "            display: flex;\n"
+                                + "            justify-content: center;\n"
+                                + "            align-items: center;\n"
+                                + "            height: 100vh;\n"
+                                + "            margin: 0;\n"
+                                + "        }\n"
+                                + "        \n"
+                                + "        .container {\n"
+                                + "            text-align: center;\n"
+                                + "            background-color: #ffffff;\n"
+                                + "            border-radius: 10px;\n"
+                                + "            padding: 20px;\n"
+                                + "            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n"
+                                + "        }\n"
+                                + "        \n"
+                                + "        h1 {\n"
+                                + "            font-size: 36px;\n"
+                                + "            color: #333;\n"
+                                + "        }\n"
+                                + "        \n"
+                                + "        p {\n"
+                                + "            font-size: 18px;\n"
+                                + "            color: #666;\n"
+                                + "        }\n"
+                                + "    </style>\n"
+                                + "</head>\n"
+                                + "<body>\n"
+                                + "    <div class=\"container\">\n"
+                                + "        <h1>Thank you</h1>\n"
+                                + "        <p>FeedBack have been sent.</p>\n"
+                                + " <button style=\" background-color: blue; border: 0px; border-radius: 5px;padding: 10px;\"> "
+                                + " <a style=\"color: white; padding: 10px;text-decoration: none;\" href=\"http://localhost:9999/ChildrenCare/\">HOME</a> </button>"
+                                + "    </div>\n"
+                                + "</body>\n"
+                                + "</html>");
+                    } else {
+                        // notification
+                        String notify="";
+                        if(content.length() <= 6 || content.length() >= 2000){
+                            notify="You must enter content with a length greater than 6 characters and less than 2000 characters";
+                        }
+                        request.setAttribute("notify", notify);
+                        request.getRequestDispatcher("/feedback?action=accessfeedback").forward(request, response);
+                    }
+                    
                 } else {
                     // Get user's email from the session
 

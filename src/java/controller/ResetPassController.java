@@ -243,7 +243,14 @@ public class ResetPassController extends HttpServlet {
             } else {
                 request.setAttribute("ID", ID);
                 request.setAttribute("phoneNumber", phoneNumber);
-                request.setAttribute("notify", "Passwords do not match.");
+                String notify ;
+                //validate password
+                if(newpassword.length() >=6 && newpassword.length() <= 100){
+                    notify = "You must enter password more than 6 and less than 100 character.";
+                } else {
+                    notify = "Passwords do not match.";
+                }
+                request.setAttribute("notify", notify);
                 request.getRequestDispatcher("/view/resetPassword.jsp").forward(request, response);
             }
         } else {

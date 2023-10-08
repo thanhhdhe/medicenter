@@ -245,7 +245,7 @@
                                     <ul class="nav nav-tabs m-0 justify-content-start" id="ex1" role="tablist">
                                         <li class="nav-item" role="presentation">
                                             <a
-                                                class="nav-link active"
+                                                class="nav-link other active"
                                                 id="ex1-tab-1"
                                                 data-mdb-toggle="tab"
                                                 href="#ex1-tabs-1"
@@ -255,7 +255,7 @@
                                         </li>
                                         <li class="nav-item" role="presentation">
                                             <a
-                                                class="nav-link"
+                                                class="nav-link other"
                                                 id="ex1-tab-2"
                                                 data-mdb-toggle="tab"
                                                 href="#ex1-tabs-2"
@@ -265,7 +265,7 @@
                                         </li>
                                         <li class="nav-item" role="presentation">
                                             <a
-                                                class="nav-link"
+                                                class="nav-link other"
                                                 id="ex1-tab-3"
                                                 data-mdb-toggle="tab"
                                                 href="#ex1-tabs-3"

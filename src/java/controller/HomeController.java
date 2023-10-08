@@ -15,8 +15,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import model.CategoryService;
 import model.Post;
@@ -70,7 +68,7 @@ public class HomeController extends HttpServlet {
 //        processRequest(request, response);
 
         SliderDAO sliderDAO = new SliderDAO();
-        List<Slider> listSlide = sliderDAO.getAllSlide();
+        List<Slider> listSlide = sliderDAO.getAllSlideActive();
         request.setAttribute("slider", listSlide);
 
         PostDAO postDAO = new PostDAO();
@@ -78,21 +76,23 @@ public class HomeController extends HttpServlet {
 
         List<Post> latestPosts = new ArrayList<>();
         if (listPost.size() < 3) {
-            for (int i = 0; i < latestPosts.size(); i++) {
+            for (int i = listPost.size() - 1; i >= 0; i--) {
                 latestPosts.add(listPost.get(i));
             }
         } else {
-            for (int i = 0; i < 3; i++) {
+            for (int i = listPost.size() - 1; i >= listPost.size() - 3; i--) {
                 latestPosts.add(listPost.get(i));
             }
         }
         request.setAttribute("last3post", latestPosts);
+
+        Post hotest = postDAO.getHotestPost();
+        request.setAttribute("hotest", hotest);
         List<Post> get3hotpost = postDAO.get3HotestPost();
         request.setAttribute("hot3pot", get3hotpost);
-        
+
         CategoryServiceDAO categoryServiceDAO = new CategoryServiceDAO();
         List<CategoryService> listCategoryService = categoryServiceDAO.getAllCategoryServices();
-//        List<CategoryService> listCategoryServiceHasService = new ArrayList<>();
         request.setAttribute("category", listCategoryService);
 
         ServiceDAO serviceDAO = new ServiceDAO();

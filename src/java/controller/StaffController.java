@@ -75,6 +75,14 @@ public class StaffController extends HttpServlet {
                 request.setAttribute("childId", childId);
                 request.getRequestDispatcher("./view/add-medical-examination.jsp").forward(request, response);
                 break;
+            case "send-to-reservations-list":
+                request.getRequestDispatcher("./view/reservation-of-staff.jsp").forward(request, response);
+                break;
+            case "send-to-reservation-detail":
+                String reserdId = request.getParameter("reserdid");
+                request.setAttribute("reserdid", reserdId);
+                request.getRequestDispatcher("./view/reservationdetail-of-staff.jsp").forward(request, response);
+                break;
             
         }
     } 

@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.User;
 import org.apache.commons.codec.digest.DigestUtils;
 
 /**
@@ -41,6 +42,8 @@ public class LoginController extends HttpServlet {
             response.getWriter().write("reload");
         } else if (u.loginAccount(email, DigestUtils.md5Hex(password))) {
             session.setAttribute("email", email);
+            User users = u.getUser(email);
+            session.setAttribute("user", users);
             response.getWriter().write("success");
         } else {
             response.getWriter().write("fail");

@@ -51,16 +51,15 @@
     </head>
 
     <body>
-        <%
-       String email = (String) session.getAttribute("email");
-       StaffDAO staffDAO = new StaffDAO();
-       ServiceDAO serviceDAO = new ServiceDAO();
-       Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-       MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
-       ChildrenDAO childrenDAO = new ChildrenDAO();
-       String childID = request.getAttribute("childId") + "";
-       Children children = childrenDAO.getChildrenByChildrenId(childID);
-       boolean isManager = false;
+         <%
+        String email = (String) session.getAttribute("email");
+        StaffDAO staffDAO = new StaffDAO();
+        ReservationDAO reservationDAO = new ReservationDAO();
+        ChildrenDAO childrenDAO = new ChildrenDAO();
+        ServiceDAO serviceDAO = new ServiceDAO();
+        UserDAO userDAO = new UserDAO();
+        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+        boolean isManager = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){
@@ -115,7 +114,7 @@
             <div class="content <%if(curStaff==null){%>ms-0 w-100<%}%>">
                 <!-- Navbar Start -->
                 <nav class="navbar navbar-expand navbar-light sticky-top px-4 py-0" style="background-color: #1977cc;">
-
+                    
                     <a href="#" class="sidebar-toggler flex-shrink-0 text-decoration-none text-light">
                         <i class="fa fa-bars"></i>
                     </a>
@@ -178,7 +177,7 @@
                                 <a href="logout" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
-                        <%}else{%>
+                         <%}else{%>
                         <a href="staff?event=sent-to-login" id="login" class="btn btn-outline-primary ms-3 bg-light rounded-pill text-decoration-none"><span class="d-none d-md-inline">Login</a>
                         <%}%>
                     </div>
@@ -188,86 +187,46 @@
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
                     <div
-                        class="bg-light rounded align-items-center justify-content-center mx-0"
+                        class="row bg-light rounded align-items-center justify-content-center mx-0"
                         >
-                        <div class="row border-bottom justify-content-between">
-                            <div class="col-md-4 d-flex align-items-center justify-content-center">
-                                <img class="rounded-circle object-cover me-3" src="<%=children.getImage()%>" width="150px" height="150px" alt="alt"/>
-                                <div><h3><%=children.getChildName()%></h3>
-                                    <div><%=children.getBirthday()%></div>
-                                    <div><%=children.getGender()%></div>
-                                    <div><%=children.getStatus()%></div></div>
-
-                            </div>
-                            <div class="col-md-8 pe-4">
-                                <form action="medical-examination?event=add-medical-examination" method="POST">
-                                    <div class="row align-items-center px-3">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="validationCustom008">Disease</label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" name="disease" placeholder="Enter Disease" required="" required="">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <select class="form-control mt-2" name="service" required>
-                                                <option value="">Select Service</option>
-                                                <%List<Service> list = serviceDAO.getAllServices();
-                                                for (Service service : list) {%>
-                                                <option value="<%=service.getServiceID()%>"><%=service.getTitle()%></option>
-                                                <%}%>
-
-                                            </select>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-12 mb-2 px-3">
-                                        <label>Medical Prescription</label>
-                                        <div class="input-group">
-                                            <textarea class="form-control" name="prescription" rows="3" required=""></textarea>
-                                        </div>
-                                    </div>
-                                    <input type="hidden" name="childID" value="<%=children.getChildID()%>">
-                                    <input type="hidden" name="staffID" value="<%=curStaff.getStaffID()%>">
-                                    <div class="d-flex mb-3">
-                                        <button class="btn btn-warning mt-4 ms-3 me-2 d-inline w-20" type="reset">Reset</button>
-                                        <button class="btn btn-primary mt-4 d-inline w-20" type="submit">Save</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
                         <div class="col-md-12 p-0">
-
+                            <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
+                                <h4>RESERVATION LIST</h4>
+                            </div>
                             <div class="table-responsive p-4">
                                 <%if(curStaff!=null){%>
                                 <table class="table table-striped table-hover">
                                     <thead class="text-light" style="background: #1977cc;">
                                         <tr>
                                             <th scope="col">ID</th>
-                                            <th scope="col">Patient Name</th>
-                                            <th scope="col">Date of birth</th>
+                                            <th scope="col">Reserved date</th>
+                                            <th scope="col">Customer name</th>
                                             <th scope="col">Service</th>
-                                            <th scope="col">Date</th>
-                                            <th scope="col">Disease</th>
-                                            <th scope="col">Action</th>
+                                            <th scope="col">Cost</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Detail</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <%
-                                        List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getMedicalExaminationsByChild(children.getChildID()+"");
-                                        if(listMedicalExamination!=null){
-                                        for (MedicalExamination medicalExamination : listMedicalExamination) {%>
+                                        List<Reservation> reservations = reservationDAO.getReservationByStaffID(curStaff.getStaffID()+"");
+        
+                                        if(reservations!=null){
+                                        for (Reservation reservation : reservations) {
+                                        %>
                                         <tr>
-                                            <th scope="row"><%=medicalExamination.getMedicalExaminationID()%></th>
-                                            <td><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getChildName()%></td>
-                                            <td><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getBirthday()%></td>
-                                            <td><%=serviceDAO.getServiceByID(medicalExamination.getMuserID()+"").getTitle()%></td>
-                                            <td><%=medicalExamination.getExaminationDate()%></td>
-                                            <td><%=medicalExamination.getDisease()%></td>
-                                            <td class="d-flex">
-                                                <a class="me-3" href="staff?event=send-to-edit&id=<%=medicalExamination.getMedicalExaminationID()%>"><i class="fas fa-pencil-alt ms-text-primary"></i></a>
-                                                <a href="medical-examination?event=delete&id=<%=medicalExamination.getMedicalExaminationID()%>" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
+                                            <th scope="row"><%=reservation.getReservationID()%></th>
+                                            <td><%=reservation.getReservationDate()%></td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img class="rounded-circle object-cover me-3" src="<%=userDAO.getUserByID(reservation.getUserID()).getProfileImage()%>" alt="alt" width="30px" height="30px"/>
+                                                    <div><%=userDAO.getUserByID(reservation.getUserID()).getFirstName()%></div>
+                                                </div>
                                             </td>
+                                            <td><%=serviceDAO.getServiceByID(reservation.getServiceID()+"").getTitle()%></td>
+                                            <td><%=reservation.getCost()%></td>
+                                            <td><%=reservation.getStatus()%></td>
+                                            <td><a href="staff?event=send-to-reservation-detail&reserdid=<%=reservation.getReservationID()%>"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></a></td>
                                         </tr>
                                         <%}}%>
 
@@ -275,9 +234,7 @@
                                 </table>
                                 <%}%>
                             </div>
-                        </div>       
-
-
+                        </div>
                     </div>
                 </div>
                 <!-- Blank End -->
@@ -307,7 +264,7 @@
 
         <!-- Template Javascript -->
         <script>
-            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+            document.querySelector('.sidebar-toggler').addEventListener('click', function() {
                 var sidebar = document.querySelector('.sidebar');
                 var content = document.querySelector('.content');
 

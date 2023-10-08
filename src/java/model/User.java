@@ -4,7 +4,6 @@
  */
 package model;
 
-import java.sql.Date;
 
 /**
  *
@@ -12,19 +11,45 @@ import java.sql.Date;
  */
 public class User {
     private int userID;
-    private String password;
-    private String Email;
+    private String address;
+    private String email;
+    private String password; 
     private String firstName;
     private String lastName;
     private String gender;
     private String phoneNumber;
-    private String profileImage;
-    private String role;
-    private String address;
+    private String profileImage; 
+//    private String role;
+    private boolean status;
 
     public User() {
     }
 
+    public User(int userID, String address, String email, String password, String firstName, String lastName, String gender, String phoneNumber, String profileImage, boolean status) {
+        this.userID = userID;
+        this.address = address;
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
+        this.profileImage = profileImage;
+        this.status = status;
+    }
+
+    public User(int userID, String address, String email, String password, String firstName, String lastName, String gender, String phoneNumber, String profileImage) {
+        this.userID = userID;
+        this.address = address;
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
+        this.profileImage = profileImage;
+    }
+    
     public int getUserID() {
         return userID;
     }
@@ -33,20 +58,28 @@ public class User {
         this.userID = userID;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getEmail() {
-        return Email;
-    }
-
-    public void setEmail(String Email) {
-        this.Email = Email;
     }
 
     public String getFirstName() {
@@ -89,34 +122,20 @@ public class User {
         this.profileImage = profileImage;
     }
 
-    public String getRole() {
-        return role;
+//    public String getRole() {
+//        return role;
+//    }
+//
+//    public void setRole(String role) {
+//        this.role = role;
+//    }
+
+    public boolean isStatus() {
+        return status;
     }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public User(int userID, String address, String Email, String password, String firstName, String lastName, String gender, String phoneNumber, String profileImage, String role) {
-        this.userID = userID;
-        this.address = address;
-        this.Email = Email;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.gender = gender;
-        this.phoneNumber = phoneNumber;
-        this.profileImage = profileImage;
-        this.role = role;
-        
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
 }

@@ -29,7 +29,6 @@ public class ActivateAccount extends HttpServlet {
             user.setPassword(value[4]);
             user.setAddress(value[5]);
             user.setGender(value[6]);
-            user.setRole("user");
             user.setProfileImage("resources/img/avatar.png");
 
             String token = value[7]; // Get the token from the data

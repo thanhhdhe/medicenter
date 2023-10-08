@@ -210,14 +210,21 @@
                                         for (MedicalExamination medicalExamination : listMedicalExamination) {%>
                                         <tr>
                                             <th scope="row"><%=medicalExamination.getMedicalExaminationID()%></th>
-                                            <td><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getChildName()%></td>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <img class="rounded-circle object-cover me-3" src="<%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getImage()%>" alt="alt" width="30px" height="30px"/>
+                                                    <div><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getChildName()%></div>
+                                                </div>
+                                            </td>
                                             <td><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getBirthday()%></td>
                                             <td><%=serviceDAO.getServiceByID(medicalExamination.getMuserID()+"").getTitle()%></td>
                                             <td><%=medicalExamination.getExaminationDate()%></td>
                                             <td><%=medicalExamination.getDisease()%></td>
-                                            <td class="d-flex">
-                                                <a class="me-3" href="staff?event=send-to-edit&id=<%=medicalExamination.getMedicalExaminationID()%>"><i class="fas fa-pencil-alt ms-text-primary"></i></a>
-                                                <a href="medical-examination?event=delete&id=<%=medicalExamination.getMedicalExaminationID()%>" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <a class="me-3" href="staff?event=send-to-edit&id=<%=medicalExamination.getMedicalExaminationID()%>"><i class="fas fa-pencil-alt ms-text-primary"></i></a>
+                                                    <a href="medical-examination?event=delete&id=<%=medicalExamination.getMedicalExaminationID()%>" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
+                                                </div>
                                             </td>
                                         </tr>
                                         <%}}%>

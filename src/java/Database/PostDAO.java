@@ -50,7 +50,7 @@ public class PostDAO extends MyDAO {
         List<Post> postList = new ArrayList<>();
         xSql = "SELECT *\n"
                 + "FROM\n"
-                + "    Posts\n"
+                + "    Posts WHERE StatusPost = 1\n"
                 + "ORDER BY\n"
                 + "    Counts DESC\n"
                 + "OFFSET 1 ROWS \n"
@@ -147,9 +147,7 @@ public class PostDAO extends MyDAO {
 
     public Post getHotestPost() {
         Post post = null;
-        xSql = "SELECT TOP 1 *\n"
-                + "FROM Posts\n"
-                + "ORDER BY Counts DESC;";
+        xSql = " SELECT TOP 1 * FROM Posts where StatusPost = 1 ORDER BY Counts DESC;";
         try {
             ps = con.prepareStatement(xSql);
             rs = ps.executeQuery();

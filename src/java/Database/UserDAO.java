@@ -7,6 +7,8 @@ package Database;
 import java.awt.BorderLayout;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import model.User;
 
 /**
@@ -14,6 +16,99 @@ import model.User;
  * @author pc
  */
 public class UserDAO extends MyDAO {
+
+    public List<User> getAllUsers() {
+        List<User> userList = new ArrayList<>();
+        String xSql = "SELECT * FROM [dbo].[Users]";
+
+        try {
+            ps = con.prepareStatement(xSql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                User user = new User(
+                        rs.getInt("UserID"),
+                        rs.getString("Address"),
+                        rs.getString("Email"),
+                        rs.getString("Password"),
+                        rs.getString("FirstName"),
+                        rs.getString("LastName"),
+                        rs.getString("Gender"),
+                        rs.getString("PhoneNumber"),
+                        rs.getString("ProfileImage"),
+                        rs.getBoolean("Status")
+                );
+                userList.add(user);
+            }
+
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return userList;
+    }
+
+    public List<User> search(String searchValue) {
+        List<User> userList = new ArrayList<>();
+        String xSql = "SELECT * FROM [dbo].[Users] where FirstName LIKE ? OR LastName LIKE ?  OR Email LIKE ? OR PhoneNumber LIKE ?";
+
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, "%" + searchValue + "%");
+            ps.setString(2, "%" + searchValue + "%");
+            ps.setString(3, "%" + searchValue + "%");
+            ps.setString(4, "%" + searchValue + "%");
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                User user = new User(
+                        rs.getInt("UserID"),
+                        rs.getString("Address"),
+                        rs.getString("Email"),
+                        rs.getString("Password"),
+                        rs.getString("FirstName"),
+                        rs.getString("LastName"),
+                        rs.getString("Gender"),
+                        rs.getString("PhoneNumber"),
+                        rs.getString("ProfileImage"),
+                        rs.getBoolean("Status")
+                );
+                userList.add(user);
+            }
+
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return userList;
+    }
+
+    public void updateStatus(boolean status, int UserID) {
+        String xSql = "UPDATE [dbo].[Users]\n"
+                + "   SET [Status] = ?\n"
+                + " WHERE UserID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            System.out.println(xSql);
+            ps.setInt(2, UserID);
+            ps.setBoolean(1, status);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<User> getListByPage(List<User> list,
+            int start, int end) {
+        ArrayList<User> user = new ArrayList<>();
+        for (int i = start; i < end; i++) {
+            user.add(list.get(i));
+        }
+        return user;
+    }
 
     //reset password by User ID(ten dang nhap)
     public void resetPassword(String newPassword, int UserID) {
@@ -52,8 +147,7 @@ public class UserDAO extends MyDAO {
             rs = ps.executeQuery();
             if (rs.next()) {
                 User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
-                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9),
-                        rs.getString(10));
+                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9));
                 return user;
             }
             ps.close();
@@ -72,8 +166,7 @@ public class UserDAO extends MyDAO {
             rs = ps.executeQuery();
             if (rs.next()) {
                 User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
-                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9),
-                        rs.getString(10));
+                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9));
                 return user;
             }
             ps.close();
@@ -101,9 +194,9 @@ public class UserDAO extends MyDAO {
     }
 
     public void insert(User x) {
-        xSql = "INSERT INTO [dbo].[Users]([Email],[FirstName],[LastName],[Password],[Gender],[Address],[PhoneNumber],[Role],[ProfileImage]) VALUES(N'"
+        xSql = "INSERT INTO [dbo].[Users]([Email],[FirstName],[LastName],[Password],[Gender],[Address],[PhoneNumber],[ProfileImage]) VALUES(N'"
                 + x.getEmail() + "',N'" + x.getFirstName() + "',N'" + x.getLastName() + "','" + x.getPassword() + "',N'"
-                + x.getGender() + "',N'" + x.getAddress() + "','" + x.getPhoneNumber() + "','" + x.getRole() + "','" + x.getProfileImage() + "')";
+                + x.getGender() + "',N'" + x.getAddress() + "','" + x.getPhoneNumber() + "','" + x.getProfileImage() + "')";
         try {
             ps = con.prepareStatement(xSql);
             ps.executeUpdate();
@@ -140,17 +233,14 @@ public class UserDAO extends MyDAO {
     }
 
     public static void main(String[] args) {
-//            UserDAO u = new UserDAO();
-//            User user = u.getUserByID(0);
-//         user.setEmail("HieuBui");
-//            user.setFirstName("Hieu");
-//            user.setLastName("BUI");
-//            user.setPhoneNumber("0123123");
-//            user.setPassword("12312124");
-//            user.setAddress("HAHA");
-//            user.setGender("MALE");
-//            user.setRole("user");   
-//            System.out.println(user.getUserID());
-//        u.insert(user);
+        UserDAO u = new UserDAO();
+        List<User> us = u.getAllUsers();
+        us = u.search("a");
+        for (User u1 : us) {
+            System.out.println(u1.getFirstName());
+        }
+        u.updateStatus(Boolean.FALSE, 4);
+        System.out.println(u.getUserByID(4).isStatus());
+
     }
 }

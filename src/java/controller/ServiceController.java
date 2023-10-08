@@ -79,8 +79,10 @@ public class ServiceController extends HttpServlet {
         StaffDAO staffDAO = new StaffDAO();
         Staff curStaff = staffDAO.getStaffByStaffEmail(email);
         boolean isManager = false;
-        if(curStaff!=null){
-            if(curStaff.getRole().equals("manager")) isManager=true;
+        if (curStaff != null) {
+            if (curStaff.getRole().equals("manager")) {
+                isManager = true;
+            }
         }
 
         // Check the value of 'event'
@@ -93,42 +95,39 @@ public class ServiceController extends HttpServlet {
                 // If 'event' is equal to "service-list-userchoose", call the renderServiceListByOption method
                 renderServiceListByOption(request, response);
                 break;
-            case "detail":
-                String id = request.getParameter("id");
-                ServiceDAO serviceDAO = new ServiceDAO();
-                Service services = serviceDAO.getServiceByID(id);
-                request.setAttribute("service", services);
-                List<Staff> staffList = staffDAO.getDoctorByServices(id);
-                request.setAttribute("doctor", staffList);
-                request.getRequestDispatcher("./view/servicedetail.jsp").forward(request, response);
+            case "service-list-in-details":
+                // If 'event' is equal to "service-list-userchoose", call the renderServiceListByOption method
+                renderServiceListDetails(request, response);
                 break;
             case "manage":
-                if(!isManager){
+                if (!isManager) {
                     request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
                     break;
                 }
                 request.getRequestDispatcher("./view/service-manage.jsp").forward(request, response);
                 break;
             case "service-list-managerchoose":
-                if(!isManager)break;
+                if (!isManager) {
+                    break;
+                }
                 renderServiceListByManagerOption(request, response);
                 break;
             case "edit":
-                if(!isManager){
+                if (!isManager) {
                     request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
                     break;
                 }
                 edit(request, response);
                 break;
             case "sent-to-add":
-                if(!isManager){
+                if (!isManager) {
                     request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
                     break;
                 }
                 request.getRequestDispatcher("./view/add-service.jsp").forward(request, response);
                 break;
             case "to-detail-manage":
-                if(!isManager){
+                if (!isManager) {
                     request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
                     break;
                 }
@@ -138,7 +137,9 @@ public class ServiceController extends HttpServlet {
                 request.getRequestDispatcher("./view/contact.jsp").forward(request, response);
                 break;
             case "onoff-status":
-                if(!isManager)break;
+                if (!isManager) {
+                    break;
+                }
                 onOffStatus(request, response);
                 break;
             default:
@@ -173,7 +174,9 @@ public class ServiceController extends HttpServlet {
             case "add-service":
                 addService(request, response);
                 break;
-                
+            case "detail":
+                viewDetails(request, response);
+                break;
         }
     }
 
@@ -187,6 +190,9 @@ public class ServiceController extends HttpServlet {
         String serviceType = (request.getParameter("serviceType") + "").equals("null") ? "" : (request.getParameter("serviceType") + "");
         String staff = (request.getParameter("staff") + "").equals("null") ? "" : (request.getParameter("staff") + "");
         int page = (request.getParameter("page") + "").equals("page") ? 1 : Integer.parseInt(request.getParameter("page") + "");
+        System.out.println("titel " + serviceTitle);
+        System.out.println(serviceType);
+        System.out.println("end" + staff);
 
         // Get the sorted and paged services based on the options
         List<Service> serviceList = serviceDAO.getSortedPagedServicesByOption((page - 1) * 5, 5, serviceTitle, serviceType, staff);
@@ -225,10 +231,53 @@ public class ServiceController extends HttpServlet {
             out.print("</div>\n"
                     + "                            <br />\n"
                     + "                            <p>\n"
-                    + "                                <a href=\"service?event=detail&id=" + service.getServiceID() + "\" class=\"btn btn-primary btn-block\"> Details </a>\n"
+                    + "                                <form action=\"service?event=detail\" method=\"POST\">\n"
+                    + "                                <input type=\"hidden\" name=\"serviceID\" value=\"" + service.getServiceID() + "\">\n"
+                    + "                                <input type=\"submit\"  class=\"btn btn-primary btn-block\" value=\"Details\" />\n"
+                    + "                            </form>\n"
                     + "                            </p>\n"
                     + "                        </div>\n"
                     + "                    </div>");
+        }
+        out.flush();
+        out.close();
+    }
+
+    protected void renderServiceListDetails(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        ServiceDAO serviceDAO = new ServiceDAO();
+
+        // Get the values of the parameters and handle null values
+        String serviceTitle = (request.getParameter("serviceTitle") + "").equals("null") ? "" : (request.getParameter("serviceTitle") + "");
+        String serviceType = (request.getParameter("serviceType") + "").equals("null") ? "" : (request.getParameter("serviceType") + "");
+        String staff = (request.getParameter("staff") + "").equals("null") ? "" : (request.getParameter("staff") + "");
+        int page = (request.getParameter("page") + "").equals("page") ? 1 : Integer.parseInt(request.getParameter("page") + "");
+
+        // Get the sorted and paged services based on the options
+        List<Service> serviceList = serviceDAO.getSortedPagedServicesByOption(0, serviceDAO.getServiceCount(), serviceTitle, serviceType, staff);
+
+        // Render the service list
+        for (Service service : serviceList) {
+            out.print("<div class=\"card mb-3 mt-4\" style=\"max-width: 540px;\">\n"
+                    + "                                    <div class=\"row g-0 m-3\">\n"
+                    + "                                        <div class=\"col-md-4\">\n"
+                    + "                                            <img src=\"" + service.getThumbnail() + "\" />\n"
+                    + "                                        </div>\n"
+                    + "                                        <div class=\"col-md-8\">\n"
+                    + "                                            <div class=\"card-body\">\n"
+                    + "                                                <h5 class=\"card-title\">" + service.getTitle() + "</h5>\n"
+                    + "                                                <p class=\"card-text\">\n"
+                    + "                                                    <small class=\"text-muted\">" + service.getServiceDetail() + "</small>\n"
+                    + "                                                </p>\n"
+                    + " <form action=\"service?event=detail\" method=\"POST\">\n"
+                    + "                                <input type=\"hidden\" name=\"serviceID\" value=\"" + service.getServiceID() + "\">\n"
+                    + "                                <input type=\"submit\"  class=\"btn btn-primary btn-block\" value=\"Details\" />\n"
+                    + "                            </form>\n"
+                    + "                                            </div>\n"
+                    + "                                        </div>\n"
+                    + "                                    </div>\n"
+                    + "                                </div>");
         }
         out.flush();
         out.close();
@@ -259,32 +308,42 @@ public class ServiceController extends HttpServlet {
 
         // Render the service list
         for (Service service : serviceList) {
-            out.print("<tr id=\""+service.getServiceID()+"\" class=\"service p-3 ");
-            if(!service.getStatus()){out.print("inactives\"");} 
-            out.print("\">\n" +
-"                                                    <th scope=\"row\">"+service.getServiceID()+"</th>\n" +
-"                                                    <td><img src=\""+service.getThumbnail()+"\" alt=\"ìmg\" style=\"width: 12rem;height: 8rem;object-fit: cover;\" /></td>\n" +
-"                                                    <td>"+service.getTitle()+"</td>\n" +
-"                                                    <td>"+categoryServiceDAO.getCategoryServiceByID(service.getCategoryID()+"").getCategoryName()+"</td>\n" +
-"                                                    <td>$"+service.getOriginalPrice()+"</td>\n" +
-"                                                    <td>$"+service.getSalePrice()+" </td>\n" +
-"                                                    <td>");
-            if(service.getStatus()){out.print("<p class=\"status text-success mt-2\">Active</p> ");}else{out.print(" <p class=\"status text-black-50 mt-2\">Inactive</p>");}
-            out.print("</td>\n" +
-"                                                    <td>\n" +
-"                                                        <div class=\"d-flex h-50 align-content-center flex-wrap\" >\n" +
-"                                                            <div class=\"d-flex\">\n");
-            if(service.getStatus()){out.print("<button class=\"button-icon me-2 showhide hide-service-button\" data-service-id=\""+service.getServiceID()+"\"  onclick=\"handleUpdate()\"  ><img src=\"resources/img/icon/hide.png\" alt=\"alt\"/></button> \n" +
-"                                                                    ");}else{out.print("\n" +
-"                                                                <button class=\"button-icon me-2 showhide show-service-button\" data-service-id=\""+service.getServiceID()+"\"   onclick=\"handleUpdate()\"  ><img src=\"resources/img/icon/visual.png\" alt=\"alt\"/></button> \n" +
-"                                                                    ");}
-            out.print("\n" +
-"                                                                <button class=\"button-icon me-2\"><a href=\"service?event=to-detail-manage&id="+service.getServiceID()+"\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\"/></a></button>\n" +
-"                                                                <button class=\"button-icon\"><a href=\"service?event=edit&id="+service.getServiceID()+"\"><img src=\"resources/img/icon/pen.png\" alt=\"alt\"/></a></button>\n" +
-"                                                            </div></div>\n" +
-"                                                    </td>\n" +
-"                                                </tr>");
-            
+            out.print("<tr id=\"" + service.getServiceID() + "\" class=\"service p-3 ");
+            if (!service.getStatus()) {
+                out.print("inactives\"");
+            }
+            out.print("\">\n"
+                    + "                                                    <th scope=\"row\">" + service.getServiceID() + "</th>\n"
+                    + "                                                    <td><img src=\"" + service.getThumbnail() + "\" alt=\"ìmg\" style=\"width: 12rem;height: 8rem;object-fit: cover;\" /></td>\n"
+                    + "                                                    <td>" + service.getTitle() + "</td>\n"
+                    + "                                                    <td>" + categoryServiceDAO.getCategoryServiceByID(service.getCategoryID() + "").getCategoryName() + "</td>\n"
+                    + "                                                    <td>$" + service.getOriginalPrice() + "</td>\n"
+                    + "                                                    <td>$" + service.getSalePrice() + " </td>\n"
+                    + "                                                    <td>");
+            if (service.getStatus()) {
+                out.print("<p class=\"status text-success mt-2\">Active</p> ");
+            } else {
+                out.print(" <p class=\"status text-black-50 mt-2\">Inactive</p>");
+            }
+            out.print("</td>\n"
+                    + "                                                    <td>\n"
+                    + "                                                        <div class=\"d-flex h-50 align-content-center flex-wrap\" >\n"
+                    + "                                                            <div class=\"d-flex\">\n");
+            if (service.getStatus()) {
+                out.print("<button class=\"button-icon me-2 showhide hide-service-button\" data-service-id=\"" + service.getServiceID() + "\"  onclick=\"handleUpdate()\"  ><img src=\"resources/img/icon/hide.png\" alt=\"alt\"/></button> \n"
+                        + "                                                                    ");
+            } else {
+                out.print("\n"
+                        + "                                                                <button class=\"button-icon me-2 showhide show-service-button\" data-service-id=\"" + service.getServiceID() + "\"   onclick=\"handleUpdate()\"  ><img src=\"resources/img/icon/visual.png\" alt=\"alt\"/></button> \n"
+                        + "                                                                    ");
+            }
+            out.print("\n"
+                    + "                                                                <button class=\"button-icon me-2\"><a href=\"service?event=to-detail-manage&id=" + service.getServiceID() + "\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\"/></a></button>\n"
+                    + "                                                                <button class=\"button-icon\"><a href=\"service?event=edit&id=" + service.getServiceID() + "\"><img src=\"resources/img/icon/pen.png\" alt=\"alt\"/></a></button>\n"
+                    + "                                                            </div></div>\n"
+                    + "                                                    </td>\n"
+                    + "                                                </tr>");
+
         }
         out.flush();
         out.close();
@@ -308,6 +367,19 @@ public class ServiceController extends HttpServlet {
         serviceDAO.update(service);
     }
 
+    protected void viewDetails(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        StaffDAO staffDAO = new StaffDAO();
+        String id = request.getParameter("serviceID");
+        System.out.println("id cua services" + id);
+        ServiceDAO serviceDAO = new ServiceDAO();
+        Service services = serviceDAO.getServiceByID(id);
+        request.setAttribute("service", services);
+        List<Staff> staffList = staffDAO.getDoctorByServices(id);
+        request.setAttribute("doctor", staffList);
+        request.getRequestDispatcher("./view/servicedetail.jsp").forward(request, response);
+    }
+
     protected void edit(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String id = request.getParameter("id");
@@ -327,7 +399,7 @@ public class ServiceController extends HttpServlet {
         request.setAttribute("ServiceID", id);
         request.getRequestDispatcher("./view/service-detail-manage.jsp").forward(request, response);
     }
-    
+
     protected void editService(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ServiceDAO serviceDAO = new ServiceDAO();
@@ -369,7 +441,7 @@ public class ServiceController extends HttpServlet {
                 imageURL = newImg;
             }
         }
-        
+
         //validate input
         boolean check = true;
         if (title.isEmpty()) {
@@ -400,7 +472,7 @@ public class ServiceController extends HttpServlet {
             response.sendRedirect("service?event=manage");
         }
     }
-    
+
     protected void addService(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         ServiceDAO serviceDAO = new ServiceDAO();
@@ -411,7 +483,7 @@ public class ServiceController extends HttpServlet {
         String originalPrice = request.getParameter("OriginalPrice");
         String salePrice = request.getParameter("SalePrice");
         String description = request.getParameter("Description");
-        String newImg = request.getParameter("serviceURL")+"";
+        String newImg = request.getParameter("serviceURL") + "";
         String imageURL = "resources/img/image1.jpg";
         LocalDate currentDate = LocalDate.now();
 
@@ -477,7 +549,7 @@ public class ServiceController extends HttpServlet {
             response.sendRedirect("service?event=manage");
         }
     }
-    
+
     protected void onOffStatus(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String id = request.getParameter("id");
@@ -485,7 +557,7 @@ public class ServiceController extends HttpServlet {
         Service service = serviceDAO.getServiceByID(id);
         service.setStatus(!service.getStatus());
         serviceDAO.update(service);
-        request.getRequestDispatcher("service?event=to-detail-manage&id="+id).forward(request, response);
+        request.getRequestDispatcher("service?event=to-detail-manage&id=" + id).forward(request, response);
     }
 
     /**

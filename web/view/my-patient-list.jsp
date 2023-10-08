@@ -215,7 +215,7 @@
                                         <tr>
                                             <th scope="row"><%=children.getChildID()%></th>
                                             <td class="d-flex align-items-center">
-                                                <img class="rounded-circle object-cover me-3" src="<%=children.getAvartar()%>" alt="alt" width="30px" height="30px"/>
+                                                <img class="rounded-circle object-cover me-3" src="<%=children.getImage()%>" alt="alt" width="30px" height="30px"/>
                                                 <div><%=children.getChildName()%></div>
                                             </td>
                                             <td><%=children.getBirthday()%></td>

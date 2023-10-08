@@ -4,23 +4,28 @@
  */
 package controller;
 
+import Database.ChildrenDAO;
 import Database.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import jakarta.servlet.http.Part;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import model.Children;
 import model.User;
 
 /**
  *
  * @author Admin
  */
+@MultipartConfig()
 public class UserController extends HttpServlet {
 
     /**
@@ -34,34 +39,125 @@ public class UserController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        HttpSession session = request.getSession();
         UserDAO userdao = new UserDAO();
-        String alert = null;
-        String message = null;
+        HttpSession session = request.getSession();
+        User users = (User) session.getAttribute("user");
         String action = request.getParameter("action");
-        User p = (User) session.getAttribute("user");
+        List<User> userList = null;
+        String url = null;
+
         try {
             if (action.equals("profile")) {
                 request.getRequestDispatcher("./view/profile.jsp").forward(request, response);
             }
 
             if (action.equals("updateprofile")) {
-                int userId = Integer.parseInt(request.getParameter("curID"));
+                int userId = Integer.parseInt(request.getParameter("userId"));
+                User u = userdao.getUserByID(userId);
                 String lastname = request.getParameter("lastname_raw");
                 String firstname = request.getParameter("firstname_raw");
                 String phone = request.getParameter("phone_raw");
                 String gender = request.getParameter("gender");
                 String address = request.getParameter("address");
-                String img = request.getParameter("images");
+                Part filePart = request.getPart("images");
 
-                if (lastname != null && firstname != null && phone != null && gender != null && address != null && img != null) {
+                // Kiểm tra loại của tệp tải lên
+                String contentType = filePart.getContentType();
+                if (contentType != null && contentType.startsWith("image")) {
+                    String realPath = request.getServletContext().getRealPath("/resources/img");
+                    String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+
+                    String newImg = null;
+
+                    if (!filePart.getSubmittedFileName().isEmpty()) {
+                        filePart.write(realPath + "/" + fileName);
+                        newImg = "resources/img/" + fileName;
+                    } else {
+                        newImg = u.getProfileImage();
+                    }
+
                     System.out.println("Name is" + lastname + " " + firstname);
-                    request.setAttribute("updatesuccess", "Updated profile successfully");
-                    userdao.UpdateProfile(firstname, lastname, phone, gender, img, address, userId);
-                    
-                    response.sendRedirect("home");
+                    userdao.UpdateProfile(firstname, lastname, phone, gender, newImg, address, userId);
+                    response.sendRedirect("home?showmodal=1&status=success");
+                } else {
+                    // Loại tệp tải lên không phải là hình ảnh
+                    request.setAttribute("updateerror", "Uploaded file is not an image");
+                    response.sendRedirect("home?showmodal=1&status=error");
                 }
+            }
+            if (action.equals("all")) {
+                url = "user?action=all";
+                userList = userdao.getAllUsers();
+            }
+            if (action.equals("search")) {
+                String text = request.getParameter("txt");
+                text = text.replaceFirst("^0+(?!$)", "");
+                url = "user?action=search&txt=" + text;
+                userList = userdao.search(text);
+            }
+            if (action.equals("status")) {
+                int id = Integer.parseInt(request.getParameter("userid"));
+                User u = userdao.getUserByID(id);
+                System.out.println(id);
+                System.out.println(u.isStatus());
+                boolean status = u.isStatus();
+                try {
+                    if (status) {
+                        u.setStatus(false);
+                        userdao.updateStatus(Boolean.FALSE, id);
+                        System.out.println("change to false");
+                    } else {
+                        u.setStatus(true);
+                        userdao.updateStatus(Boolean.TRUE, id);
+                        System.out.println("change to true");
+                    }
+                    // Send back a JSON object with the new status
+                    response.setContentType("application/json");
+                    PrintWriter out = response.getWriter();
+                    out.print("{\"success\": true, \"status\": " + u.isStatus() + "}");
+                    out.flush();
+                } catch (Exception e) {
+                    // Send back a JSON object with an error message
+                    response.setContentType("application/json");
+                    PrintWriter out = response.getWriter();
+                    out.print("{\"success\": false, \"error\": \"" + e.getMessage() + "\"}");
+                    out.flush();
+                }
+            }
+
+            if (userList != null) {
+                int numPerPage = 15;
+                if (request.getParameter("itemsPerPage") != null) {
+                    numPerPage = Integer.parseInt(request.getParameter("itemsPerPage"));
+                }
+                int size = userList.size();
+                int numPages = (size % numPerPage == 0) ? (size / numPerPage) : (size / numPerPage) + 1;
+
+                // Get the current page from the request parameter
+                int page = 1; // Default to page 1 if not specified
+                String xpage = request.getParameter("page");
+                if (xpage != null) {
+                    page = Integer.parseInt(xpage);
+                }
+
+                int start = (page - 1) * numPerPage;
+                int end = Math.min(page * numPerPage, size);
+
+                List<User> user = userdao.getListByPage(userList, start, end);
+
+                request.setAttribute("url", url);
+                request.setAttribute("page", page);
+                request.setAttribute("num", numPages);
+                request.setAttribute("user", user);
+                request.getRequestDispatcher("./view/user-list.jsp").forward(request, response);
+            }
+            if (action.equals("my-children")) {
+                int userID = users.getUserID();
+                System.out.println("user id la"+userID);
+                ChildrenDAO cDao = new ChildrenDAO();
+                List<Children> childList= cDao.getListChildrenByUserId(userID+"");
+                request.setAttribute("child", childList);     
+                request.getRequestDispatcher("./view/choose-children.jsp").forward(request, response);
             }
         } catch (IOException | ServletException e) {
             System.out.println(e);
@@ -96,6 +192,7 @@ public class UserController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+
     }
 
     /**

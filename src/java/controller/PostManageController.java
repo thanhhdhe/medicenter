@@ -218,7 +218,7 @@ public class PostManageController extends HttpServlet {
         //get authorlist
         List<Integer> authorIDList = postDao.allAuthorID();
         List<User> authorList = new ArrayList<>();
-        User notuser = new User(-1, "", "", "", "Author", "Name", "", "", "", "");
+        User notuser = new User(-1, "", "", "", "Author", "Name", "", "", "");
         authorList.add(notuser);
         for (Integer ID : authorIDList) {
             UserDAO userDao = new UserDAO();
