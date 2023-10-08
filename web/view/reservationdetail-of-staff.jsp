@@ -51,18 +51,18 @@
     </head>
 
     <body>
-         <%
-        String email = (String) session.getAttribute("email");
-        StaffDAO staffDAO = new StaffDAO();
-        ReservationDAO reservationDAO = new ReservationDAO();
-        ChildrenDAO childrenDAO = new ChildrenDAO();
-        ServiceDAO serviceDAO = new ServiceDAO();
-        UserDAO userDAO = new UserDAO();
-        String reserdId = request.getAttribute("reserdid") + "";
-        Reservation reservation = reservationDAO.getReservationByID(Integer.parseInt(reserdId));
-        CategoryServiceDAO categoryServiceDAO = new CategoryServiceDAO();
-        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-        boolean isManager = false;
+        <%
+       String email = (String) session.getAttribute("email");
+       StaffDAO staffDAO = new StaffDAO();
+       ReservationDAO reservationDAO = new ReservationDAO();
+       ChildrenDAO childrenDAO = new ChildrenDAO();
+       ServiceDAO serviceDAO = new ServiceDAO();
+       UserDAO userDAO = new UserDAO();
+       String reserdId = request.getAttribute("reserdid") + "";
+       Reservation reservation = reservationDAO.getReservationByID(Integer.parseInt(reserdId));
+       CategoryServiceDAO categoryServiceDAO = new CategoryServiceDAO();
+       Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+       boolean isManager = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){
@@ -117,7 +117,7 @@
             <div class="content <%if(curStaff==null){%>ms-0 w-100<%}%>">
                 <!-- Navbar Start -->
                 <nav class="navbar navbar-expand navbar-light sticky-top px-4 py-0" style="background-color: #1977cc;">
-                    
+
                     <a href="#" class="sidebar-toggler flex-shrink-0 text-decoration-none text-light">
                         <i class="fa fa-bars"></i>
                     </a>
@@ -180,7 +180,7 @@
                                 <a href="logout" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
-                         <%}else{%>
+                        <%}else{%>
                         <a href="staff?event=sent-to-login" id="login" class="btn btn-outline-primary ms-3 bg-light rounded-pill text-decoration-none"><span class="d-none d-md-inline">Login</a>
                         <%}%>
                     </div>
@@ -193,20 +193,40 @@
                         class="row bg-light rounded align-items-center justify-content-center mx-0"
                         >
                         <div class="col-md-12 p-0">
-                            <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
+                            <div class="d-flex mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
                                 <h4>RESERVATION DETAIL</h4>
+                                <a href="staff?event=send-to-children-list" class="ms-text-primary font-weight-bold">Add Medical Record</a>
                             </div>
-                            <div class="row px-4 justify-content-between">
-                                <div class="col-md-8">
-                                    <p><strong>Customer name:</strong><%=userDAO.getUserByID(reservation.getUserID()).getLastName()+" " +userDAO.getUserByID(reservation.getUserID()).getFirstName()%></p>
-                                    <p><strong>Email:</strong><%=userDAO.getUserByID(reservation.getUserID()).getEmail()%></p>
-                                    <p><strong>Mobile:</strong><%=userDAO.getUserByID(reservation.getUserID()).getPhoneNumber()%></p>
+                            <div class="row px-4 justify-content-between mb-3">
+                                <div class="col-md-6 d-flex flex-column justify-content-center align-items-start">
+                                    <%User thisUser = userDAO.getUserByID(reservation.getUserID());%>
+                                    <div class="col-md-5 d-flex justify-content-center"><h4>Customer</h4></div>
+
+                                    <div class="d-flex">
+                                        <img src="<%=thisUser.getProfileImage()%>" alt="dr" class="rounded-3 object-cover me-3" width="100px" height="100px"/>
+                                        <div>
+                                            <h5><%=thisUser.getLastName()+" " +thisUser.getFirstName()%></h5>
+                                            <p class="m-0 text-black-50"><i class="fas fa-envelope"></i>  <%=thisUser.getEmail()%></p>
+                                            <p class="m-0 text-black-50"><i class="fas fa-phone"></i>  <%=thisUser.getPhoneNumber()%></p>
+                                        </div>
+                                    </div>
+                                    <%Children thisChild = childrenDAO.getChildrenByChildrenId(reservation.getChildID()+"");%>
+                                    <div class="col-md-5 d-flex justify-content-center"><h4 class="mt-3">Patient</h4></div>
+                                    <div class="d-flex">
+                                        <img src="<%=thisChild.getImage()%>" alt="dr" class="rounded-3 object-cover me-3" width="100px" height="100px"/>
+                                        <div>
+                                            <h5><%=thisChild.getChildName()%></h5>
+                                            <p class="m-0 text-black-50"><%=thisChild.getAge()%> years old</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <p><strong>Dr:</strong> <%=staffDAO.getStaffByStaffId(reservation.getStaffID()).getFullName()%></p>
-                                    <p><strong>Email:</strong> <%=staffDAO.getStaffByStaffId(reservation.getStaffID()).getEmail()%></p>
-                                    <p><strong>Gender:</strong> <%=staffDAO.getStaffByStaffId(reservation.getStaffID()).getGender()%></p>
-                                    <p><strong>Mobile:</strong> <%=staffDAO.getStaffByStaffId(reservation.getStaffID()).getPhoneNumber()%></p>
+                                <div class="col-md-4 d-flex flex-column justify-content-center align-items-center">
+                                    <%Staff thisStaff = staffDAO.getStaffByStaffId(reservation.getStaffID());%>
+                                    <img src="<%=thisStaff.getProfileImage()%>" alt="dr" class="rounded-circle object-cover" width="100px" height="100px"/>
+                                    <h4>Dr: <%=thisStaff.getFullName()%></h4>
+                                    <p class="m-0 text-black-50"><i class="fas fa-envelope"></i>  <%=thisStaff.getEmail()%></p>
+                                    <p class="m-0 text-black-50"><i class="fas fa-phone"></i>  <%=thisStaff.getPhoneNumber()%></p>
+                                    <p class="text-black-50"><%=thisStaff.getGender()%></p>
                                 </div>
                             </div>
                             <div class="row px-4 justify-content-between mt-2">
@@ -244,9 +264,9 @@
                                         %>
                                         <tr>
                                             <th scope="row">
-                                                <div class="d-flex">
-                                                    <img src="<%=serviceDAO.getServiceByID(reser.getServiceID()+"").getThumbnail()%>" class="rounded-circle" width="20px" height="20px"/>
-                                                    <p><%=serviceDAO.getServiceByID(reser.getServiceID()+"").getTitle()%></p>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="<%=serviceDAO.getServiceByID(reser.getServiceID()+"").getThumbnail()%>" class="me-2 rounded-circle" width="20px" height="20px"/>
+                                                    <p class="m-0"><%=serviceDAO.getServiceByID(reser.getServiceID()+"").getTitle()%></p>
                                                 </div>
                                             </th>
                                             <td><%=categoryServiceDAO.getCategoryServiceByID(serviceDAO.getServiceByID(reser.getServiceID()+"").getCategoryID()+"").getCategoryName()%></td>
@@ -291,7 +311,7 @@
 
         <!-- Template Javascript -->
         <script>
-            document.querySelector('.sidebar-toggler').addEventListener('click', function() {
+            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
                 var sidebar = document.querySelector('.sidebar');
                 var content = document.querySelector('.content');
 
