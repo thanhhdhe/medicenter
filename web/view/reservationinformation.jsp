@@ -11,12 +11,13 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>JSP Page</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
-
+        <jsp:include page="layout/Head.jsp"/>
     </head>
     <body>  
         <%@ page import="java.text.SimpleDateFormat"%>
         <%@ page import="model.Reservation,model.Service,model.Children"%>
         <header>
+            <jsp:include page="layout/Header.jsp"/>
             <link rel="stylesheet" href="./resources/css/mdb.min.css" />
         </header>
         <% 
@@ -98,9 +99,20 @@
                 </tr>
             </tbody>
         </table>
-        <!--Button to re-reserve or feed back-->
-
-        <!--Button submit or update ( redirect to ReservationDetail with status ) or cancel-->
-        
+        <div class="text-center">
+            <!--Button to re-reserve-->
+            <button id="re-reserve" class="btn btn-info">Re-reserve</button>
+            <!--Button submit or update ( redirect to ReservationDetail with status : edit ) or cancel-->
+            <button id="cancel" class="btn btn-warning">Cancel</button>
+            <button id="edit" class="btn btn-success">Edit</button>
+            <button id="exit" class="btn btn-danger">Exit</button>
+        </div>
+        <footer>
+            <jsp:include page="layout/footer.jsp"/>
+        </footer>
+        <script>
+            
+        </script>
     </body>
+
 </html>
