@@ -501,6 +501,41 @@ public class ReservationDAO extends MyDAO {
         return reservation;
     }
 
+    public List<Reservation> getReservationSearchAndFillter(String userID, String title, int carId) {
+        List<Reservation> list = new ArrayList<>();
+        xSql = "SELECT r.*\n"
+                + "FROM Reservations r\n"
+                + "INNER JOIN Services s ON s.ServiceID = r.ServiceID\n"
+                + "INNER JOIN Users u ON u.UserID = r.UserID\n"
+                + "WHERE r.UserID = ? AND (s.Title LIKE ? OR s.CategoryID = ?);";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, userID);
+            ps.setString(2, "%"+title+"%");
+            ps.setInt(3, carId);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int ReservationID = rs.getInt("ReservationID");
+                int UserID = rs.getInt("UserID");
+                int ServiceID = rs.getInt("ServiceID");
+                Date ReservationDate = rs.getDate("ReservationDate");
+                int ReservationSlot = rs.getInt("ReservationSlot");
+                Timestamp CreatedDate = rs.getTimestamp("CreatedDate");
+                float Cost = rs.getFloat("Cost");
+                String Status = rs.getString("Status");
+                int StaffID = rs.getInt("StaffID");
+                int ChildID = rs.getInt("ChildID");
+                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status);
+                list.add(reservation);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
     public static void main(String args[]) {
         ReservationDAO rd = new ReservationDAO();
 //        String dateString = "2023-10-01 22:20:00";

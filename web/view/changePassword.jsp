@@ -127,7 +127,7 @@
                         </div>
                         <p>
                         <div class="button1">
-                            <input type="button" value="CANCEL" onclick="myFunction()" />
+                            <input type="button" value="CANCEL" onclick="changePassowrd()" />
                         </div> 
                         <p>
                         <div id="error" style="color: red;"></div>
@@ -146,7 +146,7 @@
         <script>
 // When the user clicks on div, open the popup
 
-            function myFunction() {
+            function changePassowrd() {
                 var popup = document.getElementById("myPopup");
                 var overlay = document.getElementById("overlay"); // Get the overlay
 
@@ -178,7 +178,7 @@
                             errorMessage.innerHTML = responseText;
 
                             if (responseText.indexOf("Notify:") === 1) {
-                                myFunction(); // Hiển thị pop-up
+                                changePassowrd(); // Hiển thị pop-up
                             }
                         }
                     }

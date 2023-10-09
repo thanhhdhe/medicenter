@@ -69,17 +69,8 @@ public class PostDetailManage extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PostDAO postDAO = new PostDAO();
         int ID = Integer.parseInt(request.getParameter("postId"));
-        Post post = postDAO.getPostByID(ID);
-        List<String> categoryList = postDAO.allCategoryPost();
-        categoryList.remove(post.getCategoryPost());
-        categoryList.add(0, post.getCategoryPost());
-        request.setAttribute("author", postDAO.getNameByUserID(post.getAuthorID()));
-        request.setAttribute("avatar", postDAO.getAvatarByUserID(post.getAuthorID()));
-        request.setAttribute("categoryList", categoryList);
-        request.setAttribute("post", post);
-        PrintWriter out = response.getWriter();
+        loadPostDetail(request, response, ID);
         request.getRequestDispatcher("/view/post-detail-manage.jsp").forward(request, response);
     }
 
@@ -105,40 +96,63 @@ public class PostDetailManage extends HttpServlet {
         Date createdDate = Date.valueOf(LocalDate.now());
         String categoryPost = request.getParameter("postCategory");
         String status = request.getParameter("status");
-        if (title.isEmpty()) {
-            //thong bao
-        } else {
-            post.setTitle(title);
-        }
+
+        boolean isUpdate = true;
         if (content.isEmpty()) {
-            //thong bao
-        } else {
-            post.setContent(content);
+            String errorMessage3 = "content can't be empty";
+            request.setAttribute("errorMessage3", errorMessage3);
+            isUpdate = false;
+
+        }
+        if (title.isEmpty()) {
+            String errorMessage1 = "title can't be empty";
+            request.setAttribute("errorMessage1", errorMessage1);
+            isUpdate = false;
+
         }
         if (briefInfo.isEmpty()) {
-            //thong bao
-        } else {
+            String errorMessage2 = "brief can't be empty";
+            request.setAttribute("errorMessage2", errorMessage2);
+            isUpdate = false;
+
+        }
+        if (isUpdate) {
+            post.setTitle(title);
+            post.setContent(content);
             post.setBriefInfo(briefInfo);
-        }
-
-        if (thumbnail.isEmpty()) {
-            //thong bao
-        } else {
             post.setThumbnail(thumbnail);
+            post.setCreatedDate(createdDate);
+            post.setCategoryPost(categoryPost);
+            if (status.equals("true")) {
+                post.setStatusPost(true);
+            }
+            if (status.equals(false)) {
+                post.setStatusPost(false);
+            }
+            postDAO.update(id, post);
+            request.getRequestDispatcher("/postManage?event=").forward(request, response);
+        } else {
+            loadPostDetail(request, response, id);
+            request.getRequestDispatcher("/view/post-detail-manage.jsp").forward(request, response);
         }
 
-        post.setCreatedDate(createdDate);
-        post.setCategoryPost(categoryPost);
+//        if (thumbnail.isEmpty()) {
+//            String errorMessage = "can't file pic";
+//        } else {
+//
+//        }
+    }
 
-        if (status.equals("true")) {
-            post.setStatusPost(true);
-        }
-        if (status.equals(false)) {
-            post.setStatusPost(false);
-        }
-        postDAO.update(id, post);
-        request.getRequestDispatcher("/postManage?event=").forward(request, response);
-
+    protected void loadPostDetail(HttpServletRequest request, HttpServletResponse response, int ID) {
+        PostDAO postDAO = new PostDAO();
+        Post post = postDAO.getPostByID(ID);
+        List<String> categoryList = postDAO.allCategoryPost();
+        categoryList.remove(post.getCategoryPost());
+        categoryList.add(0, post.getCategoryPost());
+        request.setAttribute("author", postDAO.getNameByUserID(post.getAuthorID()));
+        request.setAttribute("avatar", postDAO.getAvatarByUserID(post.getAuthorID()));
+        request.setAttribute("categoryList", categoryList);
+        request.setAttribute("post", post);
     }
 
     /**

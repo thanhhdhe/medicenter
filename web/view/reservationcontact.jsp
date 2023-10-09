@@ -24,24 +24,25 @@
         <link rel="stylesheet" href="../resources/css/style.css">
     </head>
     <body>
-        <jsp:include page="./layout/Header.jsp" />
         
-        <div class="container d-flex justify-content-center">
+
+
+        <div class="container d-flex ">
 
 
             <!-- User Information -->
             <c:set var="user" value="${requestScope.user}" />
-            <div class="col-md-5 p-4 mb-3" style="background-color: #ffcc99;border-radius: 5px;">
+            <div class="col-md-4 p-4 mb-3" style="background-color: #ffcc99;border-radius: 5px;">
                 <div class="mb-5">
                     <!-- Replace with user's image -->
-                    <img class="img-fluid rounded-circle w-50" style="box-shadow: 0px 0px 10px 0px #ffffff; margin-bottom: 10px" src="https://i.vgt.vn/2021/8/11/luu-diec-phi-canh-cao-dan-em-vuong-so-nhien-ngung-ke-fame-588-5951578.png" alt="User Image" class="img-fluid">
+                    <img class="img-fluid rounded-circle w-50" style="box-shadow: 0px 0px 10px 0px #ffffff; margin-bottom: 10px" src="https://i.vgt.vn/2021/8/11/luu-diec-phi-canh-cao-dan-em-vuong-so-nhien-ngung-ke-fame-588-5951578.png" alt="User Image" >
                     <!-- Replace with user's name -->
                     <h4 style="font-family: monospace; margin-left: 40px">${user.getFirstName()} ${user.getLastName()}</h4>
                 </div>
                 <h4 style="font-family: monospace; margin-bottom: 40px">Receiver Information</h4>
                 <div class="d-flex justify-content-center">
                     <div>
-                        
+
                         <c:set var="userID" value="${user.getUserID()}" />
                         <c:set var="userIDString" value="${userID.toString()}" />
                         <% 
@@ -54,7 +55,7 @@
                             <div class="d-flex">
                                 <div class="m-lg-1">
                                     <div class="mb-3">
-                                        <img class="img-fluid rounded-circle" style="box-shadow: 0px 0px 10px 0px #ffffff; width: 50px;height: 50px" src="<%= children.getImage() %>" alt="User Image" class="img-fluid">
+                                        <img class="img-fluid rounded-circle" style="box-shadow: 0px 0px 10px 0px #ffffff; width: 50px;height: 50px" src="<%= children.getImage() %>" alt="User Image" >
                                     </div>
                                 </div>
                                 <div class="mb-3 m-lg-1">
@@ -75,11 +76,11 @@
                         <% }%>        
                     </div>
                 </div>
-                
+
             </div>
 
             <!-- Selected Services -->
-            <div  class="col-md-7 mb-3 p-4" style="background-color: #e9f372; border-radius:5px">
+            <div  class="col-md-6 mb-3 p-4" style="background-color: #e9f372; border-radius:5px">
                 <div class="col-md-12">
                     <h2>Selected Services</h2>
                     <table class="table">
@@ -92,8 +93,9 @@
                                 <th>Total Cost</th>
                             </tr>
                         </thead>
-                        <c:forEach var="reservation" items="${requestScope.Reservation}">
-                            <tbody>
+
+                        <tbody>                        
+                            <c:forEach var="reservation" items="${requestScope.Reservation}">
                                 <!-- Replace with dynamic service data -->
                                 <tr>
                                     <td>${reservation.getServiceID()}</td>
@@ -113,18 +115,37 @@
                                     %>
                                     <td><%= children12.getChildName() %></td>
                                     <td>$100</td>
-                                </tr>                            
-                            </tbody>
-                        </c:forEach>
+                                </tr>
+                            </c:forEach>                            
+                        </tbody>
+
 
                     </table>
-                    <p>Total Reservation Price: $130</p>
+                    <p>Total Reservation Price: ${requestScope.total}</p>
                     <a href="reservation-details.html" class="btn btn-primary">Change</a>
                     <button class="btn btn-success">Submit</button>
                 </div>
             </div>
+            <%ServiceDAO serviceDAO = new ServiceDAO();
+            CategoryServiceDAO categoryServiceDAO = new CategoryServiceDAO();
+            StaffDAO staffDAO = new StaffDAO();  %>
+
+            <div class="card p-3 col-md-2 h-25">
+                <form action="reservationcontactmanager?event=searchandfill" method="POST">
+                    <input type="text" name="serviceTitle" placeholder="Search" class="form-control" />
+                    <select class="form-select text-primary mt-3" name="serviceType" >
+                        <option selected value="">Service Type</option>
+                        <%List<CategoryService> categoryServiceList = categoryServiceDAO.getAllCategoryServices();
+            for (CategoryService categoryService : categoryServiceList) {%>
+                        <option value="<%=categoryService.getCategoryID()%>"><%=categoryService.getCategoryName()%></option>
+                        <%}%>
+                    </select>
+                    <input type="submit" value="submit"/>
+                </form>   
+                <a href="service?event=to-contact-link" class="mt-3 ms-2">Contact Us</a>
+            </div>
         </div>
-        <jsp:include page="layout/footer.jsp" />
+        
         <script
             src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
             integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
@@ -135,5 +156,6 @@
             integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
             crossorigin="anonymous"
         ></script>
+
     </body>
 </html>
