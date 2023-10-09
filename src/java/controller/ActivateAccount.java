@@ -7,8 +7,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Base64;
 import java.util.Map;
-import model.User;
 
 public class ActivateAccount extends HttpServlet {
 
@@ -19,47 +19,35 @@ public class ActivateAccount extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try ( PrintWriter out = response.getWriter()) {
             String data = request.getParameter("data");
-            String decode_data = java.net.URLDecoder.decode(data, "UTF-8");
-            String[] value = decode_data.split("&");
-            User user = new User();
-            user.setEmail(value[0]);
-            user.setFirstName(value[1]);
-            user.setLastName(value[2]);
-            user.setPhoneNumber(value[3]);
-            user.setPassword(value[4]);
-            user.setAddress(value[5]);
-            user.setGender(value[6]);
-            user.setProfileImage("resources/img/avatar.png");
-
-            String token = value[7]; // Get the token from the data
+            String email = new String(Base64.getDecoder().decode(data));
 
             // Check if the token exists and is not expired
-            if (activationLinks.containsKey(token)) {
-                long timestamp = activationLinks.get(token);
+            if (activationLinks.containsKey(data)) {
+                long timestamp = activationLinks.get(data);
                 long currentTime = System.currentTimeMillis();
                 long expirationTime = timestamp + (6 * 60 * 60 * 1000); // 6 hours in milliseconds
 
                 // Check the Token is expired or not
                 if (currentTime <= expirationTime) {
-                    // Insert the User
+                    // Set the status of user is active
                     UserDAO u = new UserDAO();
-                    u.insert(user);
+                    u.getUser(email).setStatus(true);
 
                     // Remove the tokens from list
-                    activationLinks.remove(token);
+                    activationLinks.remove(data);
 
-                    request.setAttribute("email", value[0]);
+                    request.setAttribute("email", email);
                     request.setAttribute("verifyStatus", "You have successfully verified and you can login right now.");
                     request.getRequestDispatcher("view/verification-popup.jsp").include(request, response);
                 } else {
                     // Token is expired
-                    request.setAttribute("email", value[0]);
+                    request.setAttribute("email", email);
                     request.setAttribute("verifyStatus", "Activation link has expired.");
                     request.getRequestDispatcher("view/verification-popup.jsp").include(request, response);
                 }
             } else {
                 // Token is not found
-                request.setAttribute("email", value[0]);
+                request.setAttribute("email", email);
                 request.setAttribute("verifyStatus", "Activation link is invalid.");
                 request.getRequestDispatcher("view/verification-popup.jsp").include(request, response);
             }

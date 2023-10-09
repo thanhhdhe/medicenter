@@ -12,7 +12,7 @@
         <title>JSP Page</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
         <jsp:include page="layout/Head.jsp"/>
-        <style> 
+        <style>
             #groupButton button {
                 margin: 0px 5px;
             }
@@ -33,7 +33,7 @@
         SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
         %>
 
-        <h1>Reservation Information</h1>
+        <h1>Reservation information</h1>
         <table class="table align-middle mb-0 bg-white table-hover">
             <thead class="bg-light table-dark ">
                 <tr class="text-center">
@@ -77,7 +77,7 @@
                 </tr>
             </tbody>
         </table>
-        <h1>Service Information</h1>
+        <h1>Service information</h1>
         <table class="table align-middle mb-0 bg-white table-hover">
             <thead class="bg-light table-dark ">
                 <tr class="text-center">
@@ -105,7 +105,7 @@
             </tbody>
         </table>
         <div id="groupButton" class="text-center" style="margin:30px;">
-            
+
         </div>
         <footer>
             <jsp:include page="layout/footer.jsp"/>
@@ -124,12 +124,11 @@
                     groupButton.appendChild(button);
                     // Button cancel
                     button.className = "btn btn-warning";
-                    button.textContent = "Cancel";
+                    button.textContent = "Cancel this examination";
                     button.id = "cancel";
                     groupButton.appendChild(button);
                     document.getElementById("cancel").addEventListener('click', function () {
-                        // Go back to the previous page
-                        window.location.href = "reservation?id=" + <%=reservation.getReservationID()%> + "&action=cancel";
+                        cancel();
                     });
                     // Button update
                     button.className = "btn btn-success";
@@ -146,11 +145,11 @@
                     // Button cancel
                     var button = document.createElement("button");
                     button.className = "btn btn-warning";
-                    button.textContent = "Cancel";
+                    button.textContent = "Cancel this examination";
                     button.id = "cancel";
                     groupButton.appendChild(button);
                     document.getElementById("cancel").addEventListener('click', function () {
-                        window.location.href = "reservation?id=" + <%=reservation.getReservationID()%> + "&action=cancel";
+                        cancel();
                     });
                     // Button update
                     button.className = "btn btn-success";
@@ -167,11 +166,11 @@
                     // Button cancel
                     var button = document.createElement("button");
                     button.className = "btn btn-warning";
-                    button.textContent = "Cancel";
+                    button.textContent = "Cancel this examination";
                     button.id = "cancel";
                     groupButton.appendChild(button);
                     document.getElementById("cancel").addEventListener('click', function () {
-                        window.location.href = "reservation?id=" + <%=reservation.getReservationID()%> + "&action=cancel";
+                        cancel();
                     });
                     break;
                 }
@@ -215,6 +214,16 @@
                 // Go back to the previous page
                 window.history.back();
             });
+
+            function cancel() {
+                var userChoice = confirm("Are you sure to cancel this examination ?");
+                if (userChoice === true) {
+                    window.location.href = "reservation?id=" + <%=reservation.getReservationID()%> + "&action=cancel";
+                } else {
+                    
+                }
+            }
+
         </script>
     </body>
 

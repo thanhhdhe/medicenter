@@ -63,14 +63,18 @@ function attemptLogin() {
                     loginStatus = true;
                     // Reset login attempts if login is successful
                     resetLoginAttempts();
-
-                } else {
+                } else if (result === "wronginformation") {
                     // Display the messasge
                     document.getElementById("loginResult").textContent = "Wrong email or password. You have " + (3 - loginAttempts) + " times to wrong";
                     document.getElementById("loginResult").style.color = "red";
                     document.getElementById("loginResult").style.fontWeight = "bold";
                     // Increment login attempts on failed login
                     loginAttempts++;
+                } else if (result === "inactive"){
+                    // Display the messasge
+                    document.getElementById("loginResult").textContent = "Your account is not active. Please click in activate link";
+                    document.getElementById("loginResult").style.color = "red";
+                    document.getElementById("loginResult").style.fontWeight = "bold";
                 }
             }
         };

@@ -19,11 +19,11 @@
                         <option value="Female">Female</option>
                         <option value="Others">Others</option>
                     </select>
-                    <input placeholder="Your email address" type="email" id="remail" name="remail" required>
-                    <input placeholder="Your phone number" type="text" id="rphonenumber" name="rphonenumber" required>
-                    <input placeholder="Your address" type="text" id="raddress" name="raddress" required>
-                    <input placeholder="Password" type="password" id="rpassword" name="rpassword" required>
-                    <input placeholder="Repeat Password" type="password" id="rrepeat_password" name="rrepeat_password" required>
+                    <input maxlength="30" placeholder="Your email address" type="email" id="remail" name="remail" required>
+                    <input maxlength="30" placeholder="Your phone number" type="text" id="rphonenumber" name="rphonenumber" required>
+                    <input maxlength="40" placeholder="Your address" type="text" id="raddress" name="raddress" required>
+                    <input maxlength="30" placeholder="Password" type="password" id="rpassword" name="rpassword" required>
+                    <input maxlength="30" placeholder="Repeat Password" type="password" id="rrepeat_password" name="rrepeat_password" required>
                     <button class="Register-button" onclick="attemptRegister()">Register</button> <br>
                     <p id="registerResult" value=""></p>
                     Already have an account, <a onclick="showLoginPopup()" href="#">login now!</a><br>
