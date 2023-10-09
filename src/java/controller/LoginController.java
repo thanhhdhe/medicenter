@@ -44,6 +44,8 @@ public class LoginController extends HttpServlet {
             User user = u.getUser(email);
             if (user.isStatus() == true) {
                 session.setAttribute("email", email);
+                User users = u.getUser(email);
+                session.setAttribute("user", users);
                 response.getWriter().write("success");
             } else {
                 response.getWriter().write("inactive");
