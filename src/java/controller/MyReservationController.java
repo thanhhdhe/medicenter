@@ -95,6 +95,7 @@ public class MyReservationController extends HttpServlet {
             // Get the number of pagination page
             String condition = (String) request.getParameter("condition");
             String value = (String) request.getParameter("value");
+//            value = value.replaceAll("%20", " ");
             out.println(reservationDAO.getTotalPaginationWithCondition(Integer.toString(userDAO.getUser(email).getUserID()), 5, condition, value));
         }
     }

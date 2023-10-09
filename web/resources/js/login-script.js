@@ -61,6 +61,8 @@ function attemptLogin() {
                     document.getElementById("loginResult").style.color = "gold";
                     document.getElementById("loginResult").style.fontWeight = "normal";
                     loginStatus = true;
+                    hideLoginPopup();
+                    location.href = "homepage";
                     // Reset login attempts if login is successful
                     resetLoginAttempts();
                 } else if (result === "wronginformation") {
@@ -120,7 +122,7 @@ function hideLoginPopup() {
     // Hide the popup
     document.getElementById('loginPopup').style.display = 'none';
     if (loginStatus === true) {
-        location.reload();
+//        location.reload();
     }
 }
 

@@ -23,14 +23,14 @@
         <%@ page import="model.Reservation,model.Service,model.Children"%>
         <header>
             <jsp:include page="layout/Header.jsp"/>
-            <link rel="stylesheet" href="./resources/css/mdb.min.css" />
         </header>
         <% 
         Reservation reservation = (Reservation) request.getAttribute("reservation");
         Children children = (Children) request.getAttribute("children");
         Service service = (Service) request.getAttribute("service");
-        SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy");        
-        SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        SimpleDateFormat createdDateFormat = new SimpleDateFormat("dd/MM/yyyy");        
+        SimpleDateFormat reservationDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        String message = (String) request.getAttribute("message");
         %>
 
         <h1>Reservation information</h1>
@@ -48,8 +48,8 @@
             <tbody>
                 <tr class="text-center"> 
                     <th><%=reservation.getReservationID()%></th>
-                    <th><%=sdf2.format(reservation.getCreatedDate())%></th>
-                    <th><%=sdf1.format(reservation.getReservationDate())%></th>
+                    <th><%=createdDateFormat.format(reservation.getCreatedDate())%></th>
+                    <th><%=reservationDateFormat.format(reservation.getReservationDate())%></th>
                     <th><%=reservation.getReservationSlot()%></th>
                     <th><%=reservation.getCost()%></th>
                     <th><%=reservation.getStatus()%></th>
@@ -71,7 +71,7 @@
                 <tr class="text-center"> 
                     <th><img style="width:64px;height:64px;" src="<%=children.getImage()%>" alt="Children avatar"/></th>
                     <th><%=children.getChildName()%></th>
-                    <th><%=sdf1.format(children.getBirthday())%></th>
+                    <th><%=reservationDateFormat.format(children.getBirthday())%></th>
                     <th><%=children.getGender()%></th>
                     <th><%=children.getStatus()%></th>
                 </tr>
@@ -223,8 +223,18 @@
                     
                 }
             }
+            
+            function alertMessage() {
+                alert("<%=message%>");
+            }
+            
+            <% if (message != null) { %>
+                alertMessage();
+            <% } %>
 
-        </script>
+        </script>        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
     </body>
 
 </html>

@@ -193,7 +193,7 @@ public class UserDAO extends MyDAO {
     public void insert(User x) {
         xSql = "INSERT INTO [dbo].[Users]([Email],[FirstName],[LastName],[Password],[Gender],[Address],[PhoneNumber],[ProfileImage],[Status]) VALUES(N'"
                 + x.getEmail() + "',N'" + x.getFirstName() + "',N'" + x.getLastName() + "','" + x.getPassword() + "',N'"
-                + x.getGender() + "',N'" + x.getAddress() + "','" + x.getPhoneNumber() + "','" + x.getProfileImage() + "','" + (x.isStatus() ? "Active" : "Inactive") + "')";
+                + x.getGender() + "',N'" + x.getAddress() + "','" + x.getPhoneNumber() + "','" + x.getProfileImage() + "','" + (x.isStatus() ? Integer.toString(1) : Integer.toString(0)) + "')";
         try {
             ps = con.prepareStatement(xSql);
             ps.executeUpdate();
@@ -232,12 +232,10 @@ public class UserDAO extends MyDAO {
     public static void main(String[] args) {
         UserDAO u = new UserDAO();
         List<User> us = u.getAllUsers();
-        us = u.search("a");
+        
         for (User u1 : us) {
-            System.out.println(u1.getFirstName());
+            System.out.println(u1.isStatus());
         }
-        u.updateStatus(Boolean.FALSE, 4);
-        System.out.println(u.getUserByID(4).isStatus());
 
     }
 }

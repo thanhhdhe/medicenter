@@ -5,6 +5,7 @@
 --%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%--<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>--%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -22,13 +23,12 @@
         <%@ page import="Database.ReservationDAO,Database.ServiceDAO,Database.StaffDAO,Database.UserDAO"%>
         <header>
             <jsp:include page="layout/Header.jsp"/>
-            <link rel="stylesheet" href="./resources/css/mdb.min.css" />
         </header>
 
         <%  UserDAO userDAO = new UserDAO();
             User user = userDAO.getUser((String) session.getAttribute("email"));
             String userID = Integer.toString(user.getUserID());
-            ReservationDAO rdao = new ReservationDAO();
+            ReservationDAO reservationDAO = new ReservationDAO();
             ServiceDAO serviceDAO = new ServiceDAO();
             StaffDAO staffDAO = new StaffDAO();
             String myReservationPage = (String) request.getAttribute("page");
@@ -86,7 +86,7 @@
             <jsp:include page="layout/footer.jsp"/>
         </footer>
         <script>
-            let totalPagePagination = <%=rdao.getTotalPagination(userID,5)%>;
+            let totalPagePagination = <%=reservationDAO.getTotalPagination(userID,5)%>;
             const reservationPerPage = 5;
             let pageNumber = <%=myReservationPage%>;
             let action = "viewAll";
@@ -105,7 +105,7 @@
                 userInput = document.getElementById("userInput").value;
                 if (userInput.trim() === "") {
                     action = "viewAll";
-                    totalPagePagination = <%=rdao.getTotalPagination(userID,5)%>;
+                    totalPagePagination = <%=reservationDAO.getTotalPagination(userID,5)%>;
                     getReservationsAndDisplayTable();
                     return;
                 }
@@ -142,8 +142,8 @@
             }
 
             async function getSpecificPagination() {
-                const url = "/ChildrenCare/myreservation?action=paginationNumber&condition=" + selectedOption + "&value=" + userInput;
-
+                const url = "/ChildrenCare/myreservation?action=paginationNumber&condition=" + selectedOption + "&value=" + encodeURIComponent(userInput);
+                console.log(url);
                 const response = await fetch(url, {
                     method: "POST",
                 });
@@ -167,14 +167,14 @@
                 if (action === "viewAll") {
                     url = "/ChildrenCare/myreservation?page=" + pageNumber;
                     selectElement.textContent = "";
-            <% for (int i = 1;i<= rdao.getTotalPagination(userID,5);i++) { %>
+            <% for (int i = 1;i<= reservationDAO.getTotalPagination(userID,5);i++) { %>
                     var option = document.createElement("option");
                     option.className = "text-lg-start";
                     option.textContent = "Page <%=i%>";
                     selectElement.appendChild(option);
             <% } %>
                 } else {
-                    url = "/ChildrenCare/myreservation?page=" + pageNumber + "&condition=" + selectedOption + "&value=" + userInput;
+                    url = "/ChildrenCare/myreservation?page=" + pageNumber + "&condition=" + selectedOption + "&value=" + encodeURIComponent(userInput);
                     selectElement.textContent = "";
                     for (let i = 1; i <= totalPagePagination; i++) {
                         var option = document.createElement("option");
@@ -244,16 +244,22 @@
                                 const paragraph = document.createElement("span");
                                 switch (attribute) {
                                     case "done" :
-                                        paragraph.classList.add("badge", "badge-success", "rounded-pill", "d-inline");
+                                        paragraph.classList.add("badge", "bg-success", "rounded-pill");
                                         break;
                                     case "cancel" :
-                                        paragraph.classList.add("badge", "badge-warning", "rounded-pill", "d-inline");
+                                        paragraph.classList.add("badge", "bg-warning", "rounded-pill");
                                         break;
                                     case "pending" :
-                                        paragraph.classList.add("badge", "badge-primary", "rounded-pill", "d-inline");
+                                        paragraph.classList.add("badge", "bg-secondary", "rounded-pill");
+                                        break;
+                                    case "awaiting confirmation" :
+                                        paragraph.classList.add("badge", "bg-info", "rounded-pill");
+                                        break;
+                                    case "waiting for examination" :
+                                        paragraph.classList.add("badge", "bg-primary", "rounded-pill");
                                         break;
                                     default :
-                                        paragraph.classList.add("badge", "badge-primary", "rounded-pill", "d-inline");
+                                        paragraph.classList.add("badge", "bg-primary", "rounded-pill");
                                         break;
                                 }
                                 paragraph.textContent = attribute;
@@ -275,6 +281,8 @@
             }
 
             window.onload = getReservationsAndDisplayTable();
-        </script>
+        </script>    
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
     </body>
 </html>

@@ -41,10 +41,9 @@ public class LoginController extends HttpServlet {
         if (check != null) {
             response.getWriter().write("reload");
         } else if (u.loginAccount(email, DigestUtils.md5Hex(password))) {
-            session.setAttribute("email", email);
             User user = u.getUser(email);
-            if (user.isStatus()) {
-                session.setAttribute("user", user);
+            if (user.isStatus() == true) {
+                session.setAttribute("email", email);
                 response.getWriter().write("success");
             } else {
                 response.getWriter().write("inactive");

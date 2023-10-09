@@ -32,13 +32,13 @@ public class ReservationInformationController extends HttpServlet {
         try ( PrintWriter out = response.getWriter()) {
             String id = (String) request.getParameter("id");
             String action = (String) request.getParameter("action");
-            ReservationDAO rdao = new ReservationDAO();
+            ReservationDAO reservationDAO = new ReservationDAO();
             int ReservationID = -1;
             if (action == null) {
                 try {
                     // ReservationID, CreatedDate, ReservationDate, Cost, Status
                     ReservationID = Integer.parseInt(id);
-                    Reservation reservation = rdao.getReservationByID(ReservationID);
+                    Reservation reservation = reservationDAO.getReservationByID(ReservationID);
                     request.setAttribute("reservation", reservation);
 
                     // Prevent others user see the reservation
@@ -65,8 +65,14 @@ public class ReservationInformationController extends HttpServlet {
                 } catch (Exception e) {
                     response.sendRedirect("home");
                 }
-            } else {
-                
+            } else if (action.equals("cancel")) {
+                ReservationID = Integer.parseInt(id);
+                Reservation reservation = reservationDAO.getReservationByID(ReservationID);
+                if (!reservation.getStatus().equals("done")) {
+                    reservation.setStatus("cancel");
+                }
+                request.setAttribute("message", "success");
+                response.sendRedirect("reservation?id="+ id);
             }
         }
     }
