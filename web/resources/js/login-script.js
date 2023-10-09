@@ -1,6 +1,5 @@
 var loginAttempts = 0; // Track login attempts
 var loginTimeout; // Store login timeout reference
-var loginStatus = false; // Track login status
 
 function attemptLogin() {
     var email = document.getElementById("lemail").value;
@@ -52,7 +51,6 @@ function attemptLogin() {
                 var result = xhr.responseText;
                 if (result === "reload") {
                     // Prevent user login into 2 account at the same time in one device
-                    loginStatus = true;
                     resetLoginAttempts();
                     location.reload();
                 } else if (result === "success") {
@@ -60,9 +58,8 @@ function attemptLogin() {
                     document.getElementById("loginResult").textContent = "Login successful!";
                     document.getElementById("loginResult").style.color = "gold";
                     document.getElementById("loginResult").style.fontWeight = "normal";
-                    loginStatus = true;
                     hideLoginPopup();
-                    location.href = "homepage";
+                    location.href = "home";
                     // Reset login attempts if login is successful
                     resetLoginAttempts();
                 } else if (result === "wronginformation") {
@@ -77,6 +74,8 @@ function attemptLogin() {
                     document.getElementById("loginResult").textContent = "Your account is not active. Please click in activate link";
                     document.getElementById("loginResult").style.color = "red";
                     document.getElementById("loginResult").style.fontWeight = "bold";
+                } else {
+                    
                 }
             }
         };
@@ -121,9 +120,6 @@ function hideLoginPopup() {
     document.getElementById("lpassword").value = "";
     // Hide the popup
     document.getElementById('loginPopup').style.display = 'none';
-    if (loginStatus === true) {
-//        location.reload();
-    }
 }
 
 
