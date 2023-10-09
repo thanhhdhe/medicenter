@@ -131,7 +131,7 @@
             StaffDAO staffDAO = new StaffDAO();  %>
 
             <div class="card p-3 col-md-2 h-25">
-                <form action="reservationcontact?event=searchandfill" method="POST">
+                <form action="reservationcontactmanager?event=searchandfill" method="POST">
                     <input type="text" name="serviceTitle" placeholder="Search" class="form-control" />
                     <select class="form-select text-primary mt-3" name="serviceType" >
                         <option selected value="">Service Type</option>
