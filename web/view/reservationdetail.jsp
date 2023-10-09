@@ -4,6 +4,7 @@
     <head>
         <title>Reservation Detail</title>
         <link rel="stylesheet" href="./resources/css/reservation-detail-style.css">
+        <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
         <jsp:include page="layout/Head.jsp"/>
     </head>
     <body>
@@ -334,7 +335,7 @@
                                     alert("Duplicate reservation. Please choose again.");
                                 } else if (responseText === "Choose date again") {
                                     alert("This slot is no longer available. Please choose again.");
-                                } else if (responseText === "Double book at one time"){
+                                } else if (responseText === "Double book at one time") {
                                     alert("This children cannot duplicate slots with other services. Please choose again.");
                                 } else {
                                     const url = "ReservationContact?reservationID=" + responseText;

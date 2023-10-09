@@ -50,8 +50,8 @@ public class MyReservationController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        ReservationDAO rdao = new ReservationDAO();
-        UserDAO udao = new UserDAO();
+        ReservationDAO reservationDAO = new ReservationDAO();
+        UserDAO userDAO = new UserDAO();
         HttpSession session = request.getSession(true);
         String email = (String) session.getAttribute("email");
         String action = (String) request.getParameter("action");
@@ -67,35 +67,36 @@ public class MyReservationController extends HttpServlet {
             String condition = (String) request.getParameter("condition");
             String value = (String) request.getParameter("value");
             if (condition == null) {
-                reservations = rdao.getSortedPaged((pageNumber - 1) * numberPerPage, numberPerPage, Integer.toString(udao.getUser(email).getUserID()));
+                reservations = reservationDAO.getSortedPaged((pageNumber - 1) * numberPerPage, numberPerPage, Integer.toString(userDAO.getUser(email).getUserID()));
             } else {
-                reservations = rdao.getSortedSpecificPaged((pageNumber - 1) * numberPerPage, numberPerPage, Integer.toString(udao.getUser(email).getUserID()), condition, value);
+                reservations = reservationDAO.getSortedSpecificPaged((pageNumber - 1) * numberPerPage, numberPerPage, Integer.toString(userDAO.getUser(email).getUserID()), condition, value);
             }
 
-            StringBuilder sb = new StringBuilder();
-            SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy");
-            SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+            StringBuilder stringBuilder = new StringBuilder();
+            SimpleDateFormat reservationDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat createdDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
             ServiceDAO serviceDAO = new ServiceDAO();
             StaffDAO staffDAO = new StaffDAO();
 
             for (Reservation reservation : reservations) {
-                sb.append(reservation.getReservationID()).append(",");
-                sb.append(sdf2.format(reservation.getCreatedDate())).append(",");
-                sb.append(sdf1.format(reservation.getReservationDate())).append(",");
-                sb.append(reservation.getReservationSlot()).append(",");
-                sb.append(serviceDAO.getServiceByID(Integer.toString(reservation.getServiceID())).getTitle()).append(",");
-                sb.append(staffDAO.getStaffByStaffId(reservation.getStaffID()).getStaffName()).append(",");
-                sb.append(reservation.getCost()).append(",");
-                sb.append(reservation.getStatus());
-                sb.append("\n");
+                stringBuilder.append(reservation.getReservationID()).append(",");
+                stringBuilder.append(createdDateFormat.format(reservation.getCreatedDate())).append(",");
+                stringBuilder.append(reservationDateFormat.format(reservation.getReservationDate())).append(",");
+                stringBuilder.append(reservation.getReservationSlot()).append(",");
+                stringBuilder.append(serviceDAO.getServiceByID(Integer.toString(reservation.getServiceID())).getTitle()).append(",");
+                stringBuilder.append(staffDAO.getStaffByStaffId(reservation.getStaffID()).getStaffName()).append(",");
+                stringBuilder.append(reservation.getCost()).append(",");
+                stringBuilder.append(reservation.getStatus());
+                stringBuilder.append("\n");
             }
-            out.println(sb.toString());
+            out.println(stringBuilder.toString());
         } else if (action.equals("paginationNumber")) {
             // Get the number of pagination page
             String condition = (String) request.getParameter("condition");
             String value = (String) request.getParameter("value");
-            out.println(rdao.getTotalPaginationWithCondition(Integer.toString(udao.getUser(email).getUserID()), 5, condition, value));
+//            value = value.replaceAll("%20", " ");
+            out.println(reservationDAO.getTotalPaginationWithCondition(Integer.toString(userDAO.getUser(email).getUserID()), 5, condition, value));
         }
     }
 

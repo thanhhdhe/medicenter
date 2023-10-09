@@ -37,16 +37,19 @@ public class LoginController extends HttpServlet {
         String password = (String) request.getParameter("lpassword");
         UserDAO u = new UserDAO();
         HttpSession session = request.getSession(true);
-        String check = (String)session.getAttribute("email");
+        String check = (String) session.getAttribute("email");
         if (check != null) {
             response.getWriter().write("reload");
         } else if (u.loginAccount(email, DigestUtils.md5Hex(password))) {
-            session.setAttribute("email", email);
-            User users = u.getUser(email);
-            session.setAttribute("user", users);
-            response.getWriter().write("success");
+            User user = u.getUser(email);
+            if (user.isStatus() == true) {
+                session.setAttribute("email", email);
+                response.getWriter().write("success");
+            } else {
+                response.getWriter().write("inactive");
+            }
         } else {
-            response.getWriter().write("fail");
+            response.getWriter().write("wronginformation");
         }
     }
 }

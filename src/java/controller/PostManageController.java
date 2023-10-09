@@ -104,16 +104,8 @@ public class PostManageController extends HttpServlet {
                 showPost(request, response);
                 doGet(request, response);
                 break;
-            case "update":
-                getPostData(request, response);
-                request.getRequestDispatcher("./view/post-detail-manage.jsp").forward(request, response);
-                break;
-            case "view":
-                getPostData(request, response);
-//                request.getRequestDispatcher("./view/post-detail-manage.jsp").forward(request, response);
-                break;
             default:
-                request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
+                doGet(request, response);
         }
     }
     
@@ -150,30 +142,6 @@ public class PostManageController extends HttpServlet {
         
     }
     
-    protected void getPostData(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        PostDAO postDAO = new PostDAO();
-        int ID = Integer.parseInt(request.getParameter("postId"));
-        Post post = postDAO.getPostByID(ID);
-        List<String> categoryList = postDAO.allCategoryPost();
-        categoryList.remove(post.getCategoryPost());
-        categoryList.add(0,post.getCategoryPost());
-//        request.setAttribute("title", post.getTitle());
-        request.setAttribute("author", postDAO.getNameByUserID(post.getAuthorID()));
-        request.setAttribute("avatar", postDAO.getAvatarByUserID(post.getAuthorID()));
-//        request.setAttribute("thumbnail", post.getThumbnail());
-//        request.setAttribute("update-date", post.getCreatedDate());
-
-//        request.setAttribute("postbrief", post.getBriefInfo());
-//        
-//        request.setAttribute("categoryP", post.getCategoryPost());
-//        request.setAttribute("postdetail", post.getContent());
-//        request.setAttribute("poststatus", post.isStatusPost());
-        request.setAttribute("categoryList", categoryList);
-        request.setAttribute("post", post);
-        PrintWriter out = response.getWriter();
-        out.print(post.getTitle());
-    }
     
     protected void loadPageWithChoice(HttpServletRequest request, HttpServletResponse response) {
         //get title

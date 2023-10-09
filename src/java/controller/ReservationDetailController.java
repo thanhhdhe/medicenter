@@ -46,8 +46,8 @@ public class ReservationDetailController extends HttpServlet {
         UserDAO userDAO = new UserDAO();
 
         // Update database
-        ReservationDAO rdao = new ReservationDAO();
-        rdao.updateDatabase();
+        ReservationDAO reservationDAO = new ReservationDAO();
+        reservationDAO.updateDatabase();
 
         // Get the values
         String selectedDate = (String) request.getParameter("selectedDate");

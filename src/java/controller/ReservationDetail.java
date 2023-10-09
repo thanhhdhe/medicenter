@@ -40,8 +40,8 @@ public class ReservationDetail extends HttpServlet {
             }
 
             // Update the database to cancel the pending reservation exceeds 5 minutes
-            ReservationDAO rdao = new ReservationDAO();
-            rdao.updateDatabase();
+            ReservationDAO reservationDAO = new ReservationDAO();
+            reservationDAO.updateDatabase();
 
             // Receive serviceID and staffID 
             String serviceID = (String) request.getParameter("serviceID");
@@ -54,9 +54,9 @@ public class ReservationDetail extends HttpServlet {
                 return;
             }
             UserDAO userDAO = new UserDAO();
-            ChildrenDAO cdao = new ChildrenDAO();
+            ChildrenDAO childrenDAO = new ChildrenDAO();
             String email = (String) session.getAttribute("email");
-            if (!cdao.validateChildren(childID, Integer.toString(userDAO.getUser(email).getUserID()))) {
+            if (!childrenDAO.validateChildren(childID, Integer.toString(userDAO.getUser(email).getUserID()))) {
                 response.sendRedirect("home");
                 return;
             }
@@ -68,8 +68,8 @@ public class ReservationDetail extends HttpServlet {
             int currentMonthValue = currentDate.getMonthValue();
             int currentYearValue = currentDate.getYear();
 
-            StaffDAO sd = new StaffDAO();
-            StaffScheduleDAO ssd = new StaffScheduleDAO();
+            StaffDAO staffDAO = new StaffDAO();
+            StaffScheduleDAO staffscheduleDAO = new StaffScheduleDAO();
             ServiceDAO serviceDAO = new ServiceDAO();
 
             if (staffID == null) {
@@ -83,8 +83,8 @@ public class ReservationDetail extends HttpServlet {
                     request.setAttribute("ChildID", childID);
 
                     // Process the service schedule for all staff available
-                    List<Integer> Workday = ssd.getWorkdayByServiceID(serviceID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue));
-                    List<Integer> fullDay = ssd.getFullDayByServiceID(serviceID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue));
+                    List<Integer> Workday = staffscheduleDAO.getWorkdayByServiceID(serviceID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue));
+                    List<Integer> fullDay = staffscheduleDAO.getFullDayByServiceID(serviceID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue));
                     request.setAttribute("Workday", Workday);
                     request.setAttribute("fullDay", fullDay);
 
@@ -94,7 +94,7 @@ public class ReservationDetail extends HttpServlet {
                 }
             } else {
                 // Check the existence of the staff and services
-                if (sd.getStaffByStaffId(Integer.parseInt(staffID)) != null && serviceDAO.getServiceByID(serviceID) != null) {
+                if (staffDAO.getStaffByStaffId(Integer.parseInt(staffID)) != null && serviceDAO.getServiceByID(serviceID) != null) {
 
                     // Check if the Staff is correctly working for the service
                     ServiceStaffDAO servicestaffDAO = new ServiceStaffDAO();
@@ -104,7 +104,7 @@ public class ReservationDetail extends HttpServlet {
                     }
 
                     // Get the staff
-                    Staff staff = sd.getStaffByStaffId(Integer.parseInt(staffID));
+                    Staff staff = staffDAO.getStaffByStaffId(Integer.parseInt(staffID));
 
                     // Set attribute to send to the page
                     Service service = serviceDAO.getServiceByID(serviceID);
@@ -113,18 +113,18 @@ public class ReservationDetail extends HttpServlet {
                     request.setAttribute("ChildID", childID);
 
                     // Process staff schedule
-                    List<Integer> Workday = ssd.getWorkDay(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue)); // The variable will contain the number of workdays
+                    List<Integer> Workday = staffscheduleDAO.getWorkDay(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue)); // The variable will contain the number of workdays
 
                     // List of slot and day in the reservation of that staff ID
-                    List<Integer> temp = ssd.getWorkDay(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue));
-                    List<Integer> fullDay = ssd.getWorkDay(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue));
+                    List<Integer> temp = staffscheduleDAO.getWorkDay(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue));
+                    List<Integer> fullDay = staffscheduleDAO.getWorkDay(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue));
                     // Loop in workday
                     for (int day : temp) {
                         // Boolean to check if the slot is available
                         boolean check = false;
                         // Select all the slot have in that day
-                        for (int slot : ssd.getWorkSlots(Integer.toString(day), Integer.toString(currentMonthValue), Integer.toString(currentYearValue), staffID)) {
-                            if (rdao.checkSlotForAvailable(Integer.toString(slot), staffID, Integer.toString(day), Integer.toString(currentMonthValue), Integer.toString(currentYearValue)) == true) {
+                        for (int slot : staffscheduleDAO.getWorkSlots(Integer.toString(day), Integer.toString(currentMonthValue), Integer.toString(currentYearValue), staffID)) {
+                            if (reservationDAO.checkSlotForAvailable(Integer.toString(slot), staffID, Integer.toString(day), Integer.toString(currentMonthValue), Integer.toString(currentYearValue)) == true) {
                                 check = true;
                                 break;
                             }

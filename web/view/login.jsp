@@ -15,8 +15,8 @@
                 <br>
                 <div>
                     <!-- Email and password input fields -->
-                    <input placeholder="Your email address" type="text" id="lemail" name="lemail" required><br><br>
-                    <input placeholder="Password" type="password" id="lpassword" name="lpassword" required><br><br>
+                    <input maxlength="30" placeholder="Your email address" type="text" id="lemail" name="lemail" required><br><br>
+                    <input maxlength="30" placeholder="Password" type="password" id="lpassword" name="lpassword" required><br><br>
                     <!-- Forgot password link -->
                     <a href="resetpassword?action=forgetpassword">Forgot password?</a><br><br>
                     <!-- Login button -->

@@ -32,35 +32,52 @@
             <div class="row g-5" >
                 <div class="col-lg-8">
                     <!-- Blog Detail Start -->
-                    <form action="postDetailManage" method="POST">
+                    <form action="postDetailManage" method="Post">
 
                         <div class="mb-5">
                             <div class="form-group mt-3">
-                                <label for="postImage">Post Image:</label>
-                                <input type="file" class="form-control-file" id="postImage" name="postImage">
+                                <label for="Thumbnail">Post Thumbnail:</label>
+                                <input type="text" class="form-control" id="Thumbnail" name="Thumbnail" value="${post.getThumbnail()}">
                             </div>
                             <img class="img-fluid w-100 rounded mb-5" src="${post.getThumbnail()}" alt="thumbnail">
-                            
+
                             <div>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-muted me-2">ID: </p>
-                                    <input class="form-control text-muted" type="text"  value="${post.getPostID()}" readonly  />
+                                    <input class="form-control text-muted" type="text" name="postID" value="${post.getPostID()}" readonly  />
                                 </div>
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-muted me-2">Title: </p>
                                     <input class="form-control" type="text" name="Title" value="${post.getTitle()}"  />
+
                                 </div>
+                                <c:if test="${! empty errorMessage1}">
+                                    <h5  class="text-danger text-start fw-bold">${errorMessage1}</h5>
+                                </c:if>
                                 <div>
                                     <p class="text-muted">Brief: </p>
                                     <textarea class="form-control text-muted" rows="4" cols="50" name="Brief" value="${post.getBriefInfo()}">${post.getBriefInfo()}</textarea>
                                 </div>
+                                <c:if test="${! empty errorMessage2}">
+                                    <h5  class="text-danger text-start fw-bold">${errorMessage2}</h5>
+                                </c:if>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
-                                    <select class="form-select text-primary mt-3 mb-4 w-75" name="status" >
-                                        <option value="${post.getBriefInfo()}" selected>Active</option>
-                                        <option value="${post.getBriefInfo()}">Inactive</option>
-                                    </select>
+                                    <c:if test="${post.isStatusPost()}">
+
+                                        <select class="form-select text-primary mt-3 mb-4 w-75" name="status" >
+                                            <option value="true" selected>Active</option>
+                                            <option value="false">Inactive</option>
+                                        </select>
+                                    </c:if>
+                                    <c:if test="${!post.isStatusPost()}">
+
+                                        <select class="form-select text-primary mt-3 mb-4 w-75" name="status" >
+                                            <option value="false">Inactive</option>
+                                            <option value="true" selected>Active</option>
+                                        </select>
+                                    </c:if>
                                 </div>
                                 <div class="col-md-4">
                                     <select class="form-select text-primary mt-3 mb-4 w-75" name="postCategory"  class="form-select">
@@ -71,12 +88,17 @@
                                 </div>   
                             </div>
                             <div>
-                                <p class="text-muted">Description: </p>
-                                <textarea class="form-control text-muted" rows="6" cols="50" value="${post.getContent()}" name="Description">${post.getContent()}</textarea>
+                                <p class="text-muted">Content: </p>
+                                <textarea class="form-control text-muted" rows="6" cols="50" value="${post.getContent()}" name="Content">${post.getContent()}</textarea>
                             </div>
+                            <c:if test="${! empty errorMessage2}">
+                                <h5  class="text-danger text-start fw-bold">${errorMessage3}</h5>
+                            </c:if>
+
                             <div class="d-flex justify-content-center">
                                 <input class="btn btn-primary mt-3 w-25" type="submit" value="Update" />
                             </div>
+
                             <div class="d-flex justify-content-between bg-light rounded p-4 mt-4 mb-4">
                                 <div class="d-flex align-items-center">
                                     <img class="rounded-circle me-2 avatar" src="${avatar}" alt="">
@@ -87,29 +109,6 @@
                     </form>
                     <!-- Blog Detail End -->
                 </div>
-
-                <!-- Sidebar Start -->
-                <div class="col-lg-4">
-                    <!-- Category Start -->
-                    <%PostDAO postDAO = new PostDAO();%>
-                    <%UserDAO userDAO = new UserDAO();%>
-                    <div class="mb-5">
-                        <form action="postManage">
-                            <input type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3 search" value="${postTitle}"/>
-                            <select class="form-select text-primary mt-3" name="postCategory">
-                                <option selected value="">Post Category</option>
-                                <%List<String> categoryPostList = postDAO.allCategoryPost();
-            for (String categoryPost : categoryPostList) {%>
-                                <option value="<%=categoryPost%>"><%=categoryPost%></option>
-                                <%}%>
-                            </select>
-                        </form>
-                        <br>
-                        <a href="service?event=to-contact-link" class="mt-3 ms-2">Contact Us</a>
-                    </div>
-                    <!-- Category End -->
-                </div>
-                <!-- Sidebar End -->
             </div>
         </div>
 

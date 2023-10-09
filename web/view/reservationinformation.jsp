@@ -12,7 +12,7 @@
         <title>JSP Page</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
         <jsp:include page="layout/Head.jsp"/>
-        <style> 
+        <style>
             #groupButton button {
                 margin: 0px 5px;
             }
@@ -23,17 +23,17 @@
         <%@ page import="model.Reservation,model.Service,model.Children"%>
         <header>
             <jsp:include page="layout/Header.jsp"/>
-            <link rel="stylesheet" href="./resources/css/mdb.min.css" />
         </header>
         <% 
         Reservation reservation = (Reservation) request.getAttribute("reservation");
         Children children = (Children) request.getAttribute("children");
         Service service = (Service) request.getAttribute("service");
-        SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy");        
-        SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        SimpleDateFormat createdDateFormat = new SimpleDateFormat("dd/MM/yyyy");        
+        SimpleDateFormat reservationDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+        String message = (String) request.getAttribute("message");
         %>
 
-        <h1>Reservation Information</h1>
+        <h1>Reservation information</h1>
         <table class="table align-middle mb-0 bg-white table-hover">
             <thead class="bg-light table-dark ">
                 <tr class="text-center">
@@ -48,8 +48,8 @@
             <tbody>
                 <tr class="text-center"> 
                     <th><%=reservation.getReservationID()%></th>
-                    <th><%=sdf2.format(reservation.getCreatedDate())%></th>
-                    <th><%=sdf1.format(reservation.getReservationDate())%></th>
+                    <th><%=createdDateFormat.format(reservation.getCreatedDate())%></th>
+                    <th><%=reservationDateFormat.format(reservation.getReservationDate())%></th>
                     <th><%=reservation.getReservationSlot()%></th>
                     <th><%=reservation.getCost()%></th>
                     <th><%=reservation.getStatus()%></th>
@@ -71,13 +71,13 @@
                 <tr class="text-center"> 
                     <th><img style="width:64px;height:64px;" src="<%=children.getImage()%>" alt="Children avatar"/></th>
                     <th><%=children.getChildName()%></th>
-                    <th><%=sdf1.format(children.getBirthday())%></th>
+                    <th><%=reservationDateFormat.format(children.getBirthday())%></th>
                     <th><%=children.getGender()%></th>
                     <th><%=children.getStatus()%></th>
                 </tr>
             </tbody>
         </table>
-        <h1>Service Information</h1>
+        <h1>Service information</h1>
         <table class="table align-middle mb-0 bg-white table-hover">
             <thead class="bg-light table-dark ">
                 <tr class="text-center">
@@ -105,7 +105,7 @@
             </tbody>
         </table>
         <div id="groupButton" class="text-center" style="margin:30px;">
-            
+
         </div>
         <footer>
             <jsp:include page="layout/footer.jsp"/>
@@ -124,12 +124,11 @@
                     groupButton.appendChild(button);
                     // Button cancel
                     button.className = "btn btn-warning";
-                    button.textContent = "Cancel";
+                    button.textContent = "Cancel this examination";
                     button.id = "cancel";
                     groupButton.appendChild(button);
                     document.getElementById("cancel").addEventListener('click', function () {
-                        // Go back to the previous page
-                        window.location.href = "reservation?id=" + <%=reservation.getReservationID()%> + "&action=cancel";
+                        cancel();
                     });
                     // Button update
                     button.className = "btn btn-success";
@@ -146,11 +145,11 @@
                     // Button cancel
                     var button = document.createElement("button");
                     button.className = "btn btn-warning";
-                    button.textContent = "Cancel";
+                    button.textContent = "Cancel this examination";
                     button.id = "cancel";
                     groupButton.appendChild(button);
                     document.getElementById("cancel").addEventListener('click', function () {
-                        window.location.href = "reservation?id=" + <%=reservation.getReservationID()%> + "&action=cancel";
+                        cancel();
                     });
                     // Button update
                     button.className = "btn btn-success";
@@ -167,11 +166,11 @@
                     // Button cancel
                     var button = document.createElement("button");
                     button.className = "btn btn-warning";
-                    button.textContent = "Cancel";
+                    button.textContent = "Cancel this examination";
                     button.id = "cancel";
                     groupButton.appendChild(button);
                     document.getElementById("cancel").addEventListener('click', function () {
-                        window.location.href = "reservation?id=" + <%=reservation.getReservationID()%> + "&action=cancel";
+                        cancel();
                     });
                     break;
                 }
@@ -215,7 +214,27 @@
                 // Go back to the previous page
                 window.history.back();
             });
-        </script>
+
+            function cancel() {
+                var userChoice = confirm("Are you sure to cancel this examination ?");
+                if (userChoice === true) {
+                    window.location.href = "reservation?id=" + <%=reservation.getReservationID()%> + "&action=cancel";
+                } else {
+                    
+                }
+            }
+            
+            function alertMessage() {
+                alert("<%=message%>");
+            }
+            
+            <% if (message != null) { %>
+                alertMessage();
+            <% } %>
+
+        </script>        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
     </body>
 
 </html>

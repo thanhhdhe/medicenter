@@ -7,12 +7,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.Date;
 import java.util.Base64;
 import model.Mail;
 import org.apache.commons.codec.digest.DigestUtils;
 import java.util.HashMap;
 import java.util.Map;
+import model.User;
 
 public class RegisterController extends HttpServlet {
 
@@ -30,12 +30,24 @@ public class RegisterController extends HttpServlet {
         String password = request.getParameter("rpassword");
         String gender = request.getParameter("rgender");
         String address = request.getParameter("raddress");
-        UserDAO u = new UserDAO();
+        UserDAO userDAO = new UserDAO();
 
-        if (u.getUser(email) != null) {
+        if (userDAO.getUser(email) != null) {
             response.getWriter().write("email existed");
             return;
         }
+        // Insert user into database
+        User user = new User();
+        user.setEmail(email);
+        user.setFirstName(firstname);
+        user.setLastName(lastname);
+        user.setPhoneNumber(phonenumber);
+        user.setPassword(DigestUtils.md5Hex(password));
+        user.setGender(gender);
+        user.setAddress(address);
+        user.setStatus(false);
+        user.setProfileImage("resources/img/avatar.png");
+        userDAO.insert(user);
 
         // Encoding the email
         byte[] encodedBytes = Base64.getEncoder().encode(email.getBytes());
@@ -46,16 +58,10 @@ public class RegisterController extends HttpServlet {
         } else {
             activationLinks.put(encodedMessage, System.currentTimeMillis());
         }
-
-        String newPword = DigestUtils.md5Hex(password);
-        String data = email + "&" + firstname + "&" + lastname + "&" + phonenumber + "&"
-                + newPword + "&" + address + "&" + gender + "&" + encodedMessage;
-        data = java.net.URLEncoder.encode(data, "UTF-8");
         response.getWriter().write("success");
-        
         String message = "Dear " + firstname + " " + lastname + ",<br>"
                 + "We are delighted to welcome you to Medilab. To ensure the security of your account and to provide you with the best possible experience, we kindly request your cooperation in verifying your email address.<br>"
-                + "Please click on the link below to complete the verification process: http://localhost:9999/ChildrenCare/ActivateAccount?data=" + data + "<br>"
+                + "Please click on the link below to complete the verification process: http://localhost:9999/ChildrenCare/ActivateAccount?data=" + encodedMessage + "<br>"
                 + "Verification Link Expiry: 6 hours<br>"
                 + "Please note that this link is valid for a limited time, so we encourage you to complete the verification process at your earliest convenience.<br>"
                 + "If you did not register for an account with Medilab, or if you believe this email was sent in error, please disregard it. Your account will not be activated until you click the verification link above.<br>"

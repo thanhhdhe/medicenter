@@ -41,7 +41,7 @@ public class Post {
         this.statusPost = statusPost;
     }
 
-    public Post(String title, String content, String briefInfo, String thumbnail,int serviceID, Date createdDate, String categoryPost) {
+    public Post(String title, String content, String briefInfo, String thumbnail, int serviceID, Date createdDate, String categoryPost, boolean statusPost) {
         this.title = title;
         this.content = content;
         this.briefInfo = briefInfo;
@@ -49,6 +49,7 @@ public class Post {
         this.serviceID = serviceID;
         this.createdDate = createdDate;
         this.categoryPost = categoryPost;
+        this.statusPost = statusPost;
     }
 
     public int getPostID() {
