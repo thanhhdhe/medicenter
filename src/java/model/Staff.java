@@ -19,11 +19,14 @@ public class Staff {
     private String phoneNumber;
     private String profileImage;
     private String role;
+    private String rank;
+    private String specialty;
+    private String introduction;
 
     public Staff() {
     }
 
-    public Staff(int staffID, String staffName, String password, String email, String fullName, String gender, String phoneNumber, String profileImage, String role) {
+    public Staff(int staffID, String staffName, String password, String email, String fullName, String gender, String phoneNumber, String profileImage, String role, String rank, String specialty, String introduction) {
         this.staffID = staffID;
         this.staffName = staffName;
         this.password = password;
@@ -33,9 +36,12 @@ public class Staff {
         this.phoneNumber = phoneNumber;
         this.profileImage = profileImage;
         this.role = role;
+        this.rank = rank;
+        this.specialty = specialty;
+        this.introduction = introduction;
     }
 
-    public Staff(String staffName, String password, String email, String fullName, String gender, String phoneNumber, String profileImage, String role) {
+    public Staff(String staffName, String password, String email, String fullName, String gender, String phoneNumber, String profileImage, String role, String rank, String specialty, String introduction) {
         this.staffName = staffName;
         this.password = password;
         this.email = email;
@@ -44,7 +50,35 @@ public class Staff {
         this.phoneNumber = phoneNumber;
         this.profileImage = profileImage;
         this.role = role;
+        this.rank = rank;
+        this.specialty = specialty;
+        this.introduction = introduction;
     }
+
+    public String getRank() {
+        return rank;
+    }
+
+    public void setRank(String rank) {
+        this.rank = rank;
+    }
+
+    public String getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(String specialty) {
+        this.specialty = specialty;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
 
     public int getStaffID() {
         return staffID;

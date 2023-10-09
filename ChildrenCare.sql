@@ -87,14 +87,17 @@ CREATE TABLE Cart (
 -- Create the Staff table
 CREATE TABLE Staff (
     StaffID INT PRIMARY KEY IDENTITY(1,1),
-    StaffName NVARCHAR(255) COLLATE Vietnamese_CI_AS ,
+    StaffName NVARCHAR(255) COLLATE Vietnamese_CI_AS,
     Email VARCHAR(100) NOT NULL UNIQUE,
     Password VARCHAR(50) NOT NULL,
-    FullName NVARCHAR(50) COLLATE Vietnamese_CI_AS  NOT NULL ,
+    FullName NVARCHAR(50) COLLATE Vietnamese_CI_AS NOT NULL,
     Gender VARCHAR(10) NOT NULL,
     PhoneNumber VARCHAR(20) NOT NULL,
     ProfileImage VARCHAR(MAX),
-    StaffRole VARCHAR(50) NOT NULL
+    StaffRole VARCHAR(50) NOT NULL,
+    Rank NVARCHAR(50),
+    Specialty NVARCHAR(50),
+	Introduction NVARCHAR(MAX)
 );
 
 -- Create the CartItems table
@@ -264,18 +267,18 @@ Pediatric vaccinations, also known as childhood immunizations or vaccines, are a
 
 	GO
 -- Insert data into Staff
-INSERT INTO Staff (StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole)
+INSERT INTO Staff (StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole, Rank, Specialty, Introduction)
 VALUES
-	(N'thắng', 'lethanglrf@gmail.com', '1234', 'Lê Minh Thắng', 'Male', '0834398268', 'resources/img/thang.jpeg', 'doctor'),
-	(N'thắng', 'lethang@gmail.com', '1234', 'Lê Minh Thắng', 'Male', '0834398268', 'resources/img/thang.jpeg', 'manager'),
-    ('john_doe', 'john@example.com', 'password123', 'John Doe', 'Male', '123456789', 'profile.jpg', 'doctor'),
-    ('jane_smith', 'jane@example.com', 'password456', 'Jane Smith', 'Female', '987654321', 'avatar.jpg', 'nurse'),
-	('dr_smith', 'dr.smith@example.com', 'doctorpass', 'Smith', 'Male', '555123456', 'resources\img\bsHieu.jpg', 'doctor'),
-    ('dr_anderson', 'dr.anderson@example.com', 'doctorpass', ' Anderson', 'Female', '555987654', 'doctor.jpg', 'doctor'),
-	('nurse_johnson', 'nurse.johnson@example.com', 'nursepass', 'Nurse Johnson', 'Female', '555111222', 'nurse.jpg', 'nurse'),
-    ('nurse_brown', 'nurse.brown@example.com', 'nursepass', 'Nurse Brown', 'Male', '555333444', 'nurse.jpg', 'nurse'),
-	('dr_jackson', 'dr.jackson@example.com', 'doctorpass', 'Jackson', 'Male', '555111333', 'doctor.jpg', 'doctor'),
-    ('dr_wilson', 'dr.wilson@example.com', 'doctorpass', 'Wilson', 'Male', '555333555', 'doctor.jpg', 'doctor');
+    ('thang', 'lethanglrf@gmail.com', '1234', 'Lê Minh Thắng', 'Male', '0834398268', 'resources/img/thang.jpeg', 'doctor', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for the first staff member.'),
+    ('thang', 'lethang@gmail.com', '1234', 'Lê Minh Thắng', 'Male', '0834398268', 'resources/img/thang.jpeg', 'manager', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for the second staff member.'),
+    ('john_doe', 'john@example.com', 'password123', 'John Doe', 'Male', '123456789', 'profile.jpg', 'doctor', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for John Doe.'),
+    ('jane_smith', 'jane@example.com', 'password456', 'Jane Smith', 'Female', '987654321', 'avatar.jpg', 'nurse', 'Meritorious Doctor', 'Internal Medicine Department', 'Introduction for Jane Smith.'),
+    ('dr_smith', 'dr.smith@example.com', 'doctorpass', 'Smith', 'Male', '555123456', 'resources\img\bsHieu.jpg', 'doctor', 'Associate Doctor', 'Internal Medicine Department', 'Introduction for Dr. Smith.'),
+    ('dr_anderson', 'dr.anderson@example.com', 'doctorpass', 'Anderson', 'Female', '555987654', 'doctor.jpg', 'doctor', 'Associate Doctor', 'Internal Medicine Department', 'Introduction for Dr. Anderson.'),
+    ('nurse_johnson', 'nurse.johnson@example.com', 'nursepass', 'Nurse Johnson', 'Female', '555111222', 'nurse.jpg', 'nurse', 'Associate Doctor', 'Dermatology Department', 'Introduction for Nurse Johnson.'),
+    ('nurse_brown', 'nurse.brown@example.com', 'nursepass', 'Nurse Brown', 'Male', '555333444', 'nurse.jpg', 'nurse', 'Meritorious Doctor', 'Dermatology Department', 'Introduction for Nurse Brown.'),
+    ('dr_jackson', 'dr.jackson@example.com', 'doctorpass', 'Jackson', 'Male', '555111333', 'doctor.jpg', 'doctor', 'Meritorious Doctor', 'Internal Medicine Department', 'Introduction for Dr. Jackson.'),
+    ('dr_wilson', 'dr.wilson@example.com', 'doctorpass', 'Wilson', 'Male', '555333555', 'doctor.jpg', 'doctor', 'Meritorious Doctor', 'Internal Medicine Department', 'Introduction for Dr. Wilson.');
 
 -- Insert data into ServiceStaff
 INSERT INTO ServiceStaff (ServiceID, StaffID)
