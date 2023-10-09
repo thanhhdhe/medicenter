@@ -26,7 +26,7 @@
                 flex: 1 1;
                 min-width: 0;
                 padding-left: 5px;
-                color: var(--primary-body-text, #003553);
+                color: #003553;
                 font-size: 16px;
                 font-style: normal;
                 font-weight: 500;
@@ -107,15 +107,16 @@
     </head>
 
     <body>
+        <jsp:include page="./layout/Header.jsp" />
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-6 choose-user mt-5">
                     <h1 class="text-center">Choose Your Children Profile</h1>
-                    <%-- Kiểm tra xem có thông báo không và hiển thị nếu có --%>
                     <% String message = (String) session.getAttribute("message"); %>
                     <% if (message != null) { %>
-                    <div class="alert alert-success">
-                        <%= message %>
+                    <div class="alert alert-warning alert-dismissible show" role="alert">
+                        <strong> <%= message %></strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     <% session.removeAttribute("message"); 
                         }%>
@@ -225,7 +226,7 @@
                     </c:forEach>
                 </div>
             </div>
-            <div class="row justify-content-center">
+            <div class="row justify-content-center mb-5">
                 <div class="footer-nav mt-5 col-md-6">
                     <div class="row">
                         <div class="col-md-3">
@@ -274,7 +275,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="patientName">Fullname:</label>
-                                        <input required type="text" class="form-control" id="patientName" name="fullname" placeholder="Enter fullname of your child">
+                                        <input required type="text" class="form-control" oninvalid="CheckFullName(this);" oninput="CheckFullName(this);"
+                                               id="patientName" name="fullname" placeholder="Enter fullname of your child">
                                     </div>
                                     <div class="row">
                                         <div class="form-group mx-3">
@@ -318,6 +320,7 @@
                                     <div class="form-group">
                                         <label for="patientPhoneNumber">Parent's phone:</label>
                                         <input type="text" class="form-control" id="patientPhoneNumber" 
+                                               oninvalid="CheckPhone(this);" oninput="CheckPhone(this);"
                                                name="phoneNumber" placeholder="Enter phone number" value="${sessionScope.user.phoneNumber}">
                                     </div>
                                     <div class="form-group">
@@ -347,8 +350,8 @@
                     </form>
                 </div>
             </div>
-
         </div>
+        <jsp:include page="layout/footer.jsp" />
 
         <!-- Thêm script của Bootstrap JS và JavaScript tùy chỉnh -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -476,7 +479,25 @@
                                                     }
                                                 }
                                             });
+                                            function CheckFullName(text) {
+                                                var name = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ ]{4,}(?:[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+){0,2}$/;
+                                                if (!name.test(text.value)) {
+                                                    text.setCustomValidity('Name is not valid');
+                                                } else {
+                                                    text.setCustomValidity('');
+                                                }
+                                                return true;
+                                            }
 
+                                            function CheckPhone(text) {
+                                                var phone = /(84|0[3|5|7|8|9])+([0-9]{8})\b/;
+                                                if (!phone.test(text.value)) {
+                                                    text.setCustomValidity('Phone is not valid');
+                                                } else {
+                                                    text.setCustomValidity('');
+                                                }
+                                                return true;
+                                            }
 
 
         </script>

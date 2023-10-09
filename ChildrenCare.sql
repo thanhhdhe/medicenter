@@ -23,8 +23,7 @@ CREATE TABLE Users (
     Gender VARCHAR(10) NOT NULL,
     PhoneNumber VARCHAR(20) NOT NULL,
     ProfileImage VARCHAR(MAX),
-    Role VARCHAR(50) NOT NULL,
-	Status VARCHAR(50) NOT NULL
+	Status bit default 0
 );
 
 -- Create the CategoryService table
@@ -285,9 +284,9 @@ VALUES
     (2, 2),(6, 4), (7, 3), (8, 5), (9, 3), (10, 3),(2, 5),(11, 7),(12, 8),(13, 7),(14, 8),(15, 7),(16, 8);
 
 -- Insert data into Users
-INSERT INTO Users (Address, Email, Password, FirstName, LastName, Gender, PhoneNumber, ProfileImage, Role, Status)
-VALUES ('hn','lethangd@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 'manager'),
-	   ('hn','levandin16@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 'user', 'active');
+INSERT INTO Users (Address, Email, Password, FirstName, LastName, Gender, PhoneNumber, ProfileImage, Status)
+VALUES ('hn','lethangd@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 1),
+	   ('hn','levandin16@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 1);
 
 
  INSERT INTO StaffSchedules(StaffID, Workday, Slot) VALUES
@@ -299,8 +298,8 @@ VALUES
     ('SPECIAL OFFER: 20% OFF', 'resources/img/image2.jpg', 'service?event=service-list', 'Active', 'Limited time offer: Get 20% off on selected products. Grab the deal now!'),
     ('OUR SERVICE', 'resources/img/football.jpg', 'postPage?event=post-list', 'Active', 'Limited time offer: Get 20% off on selected products. Grab the deal now!');
 -- Dữ liệu mẫu cho bảng Users
-INSERT INTO Users (Address, Email, Password, FirstName, LastName, Gender, PhoneNumber, ProfileImage, Role)
-VALUES ('29HL', 'vietgame431@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', 'Viet', 'Can Quoc', 'Male', '123-456-7890', NULL, 'staff',' active');
+INSERT INTO Users (Address, Email, Password, FirstName, LastName, Gender, PhoneNumber, ProfileImage, Status)
+VALUES ('29HL', 'vietgame431@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', 'Viet', 'Can Quoc', 'Male', '123-456-7890', NULL, 1);
 
 -- Dữ liệu mẫu cho bảng Children
 INSERT INTO Children (UserID, ChildName, Birthday, Status, Gender, Avatar)
