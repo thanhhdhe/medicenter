@@ -84,9 +84,14 @@
 
                                                     <span class="badge bg-design rounded-pill ms-auto">14</span>
                                                 </div>
-                                                <div class="text-center">
-                                                    <a id="bookNowLink" href="reservationdetail?serviceID=${service.serviceID}&staffID=${doc.staffID}"><button class="btn btn-primary mb-4">Book Now</button></a>
-                                                </div>
+                                                <form method="post" action="user?action=my-children">
+                                                    <input type="hidden" name="serviceID" value="${service.serviceID}">
+                                                    <input type="hidden" name="staffID" value="${doc.staffID}">
+                                                    <div class="text-center">
+                                                        <button type="submit" class="btn btn-primary mb-4">Book Now</button>
+                                                    </div>
+                                                </form>
+
 
 
                                             </div>
@@ -95,7 +100,7 @@
                                 </div>
                             </div>
                             <div class="text-center">
-                                <a id="bookNowLink" href="reservationdetail?serviceID=${service.serviceID}"><button class="btn btn-primary mb-4">Book an appointment now</button></a>
+                                <a id="bookNowLink" href="user?action=my-children&serviceID=${service.serviceID}"><button class="btn btn-primary mb-4">Book an appointment now</button></a>
                             </div>
 
                         </div>

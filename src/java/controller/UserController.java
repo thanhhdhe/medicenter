@@ -5,6 +5,8 @@
 package controller;
 
 import Database.ChildrenDAO;
+import Database.ServiceDAO;
+import Database.StaffDAO;
 import Database.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -23,6 +25,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import model.Children;
+import model.Service;
+import model.Staff;
 import model.User;
 
 /**
@@ -157,6 +161,15 @@ public class UserController extends HttpServlet {
             }
             if (action.equals("my-children")) {
                 int userID = users.getUserID();
+                String serviceID = request.getParameter("serviceID");
+                ServiceDAO serviceDAO = new ServiceDAO();
+                Service service = serviceDAO.getServiceByID(serviceID);
+                String staffIDstr = request.getParameter("staffID");
+                int staffID = Integer.parseInt(staffIDstr);
+                StaffDAO staffDAO= new StaffDAO();
+                Staff staff = staffDAO.getStaffByStaffId(staffID);
+                request.setAttribute("staff",staff );
+                request.setAttribute("service",service);
                 System.out.println("user id la" + userID);
                 ChildrenDAO cDao = new ChildrenDAO();
                 List<Children> childList = cDao.getListChildrenByUserId(userID + "");
@@ -210,8 +223,6 @@ public class UserController extends HttpServlet {
                 System.out.println(childID);
                 ChildrenDAO childDAO = new ChildrenDAO();
                 childDAO.deleteChild(childID);
-               
-//                response.sendRedirect("user?action=my-children");
             }
         } catch (IOException | ServletException e) {
             System.out.println(e);
