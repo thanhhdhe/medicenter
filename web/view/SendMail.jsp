@@ -90,9 +90,14 @@
                 <h1 style="text-align: left; margin-bottom: 2rem; border-bottom: solid 1px black">Find Your Account </h1>
                 <h5>Please enter your email address to search for your account.</h5>
                 <input type="text" name="Mail" value="" placeholder="Email"/>
-                <div style="display: flex;">
-                    <input type="submit"  value="Send" />
-                    <a href="home"><input type="button"  value="Cancel" /></a>
+                <div class="d-flex w-50" >
+                    <div class="col-md-6">
+                        <input style="width: 100%" type="submit"  value="Send" />
+                    </div>
+                    <div class="col-md-6">
+                        <a href="home"><input style="width: 100%" type="button"  value="Cancel" /></a>
+                    </div>
+                    
                 </div>
                 
                 <h2>${requestScope.notify}</h2>
