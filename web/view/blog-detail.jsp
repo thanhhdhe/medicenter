@@ -46,39 +46,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Blog Detail End -->
-
-                    <!--                     Comment List Start 
-                                        <div class="mb-5">
-                                            <h4 class="d-inline-block text-primary text-uppercase border-bottom border-5 mb-4">Comments</h4>
-                                            <div class="d-flex mb-4">
-                                                <img src="img/user.jpg" class="img-fluid rounded-circle" style="width: 45px; height: 45px;">
-                                                <div class="ps-3">
-                                                    <h6><a href="">author</a> <small><i>date</i></small></h6>
-                                                    <p>comment</p>
-                                                    <button class="btn btn-sm btn-light">Reply</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                         Comment List End -->
-
-                    <!--                     Comment Form Start 
-                                        <div class="bg-light rounded p-5">
-                                            <h4 class="d-inline-block text-primary text-uppercase border-bottom border-5 border-white mb-4">Leave a comment</h4>
-                                            <form>
-                                                <div class="row g-3">
-                                                    <div class="col-12">
-                                                        <textarea class="form-control bg-white border-0" rows="5" placeholder="Comment"></textarea>
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <button class="btn btn-primary w-100 py-3" type="submit">Leave Your Comment</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                         Comment Form End -->
                 </div>
-
                 <!-- Sidebar Start -->
                 <div class="col-lg-4">
                     <!-- Category Start -->

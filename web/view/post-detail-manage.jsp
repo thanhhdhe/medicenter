@@ -1,3 +1,4 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%-- 
     Document   : newjsp
     Created on : Sep 17, 2023, 6:27:42 PM
@@ -7,6 +8,8 @@
 <%@page import = "model.*" %>
 <%@page import = "Database.*" %>
 <%@page import = "java.util.*" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -29,79 +32,76 @@
             <div class="row g-5" >
                 <div class="col-lg-8">
                     <!-- Blog Detail Start -->
-                    <div class="mb-5">
-                        <img class="img-fluid w-100 rounded mb-5" src="${thumbnail}" alt="thumbnail">
-                        <h1 class="mb-4">${title}</h1>
-                        <p>
-                            ${postdetail}
-                        </p>
-                        <div class="d-flex justify-content-between bg-light rounded p-4 mt-4 mb-4">
-                            <div class="d-flex align-items-center">
-                                <img class="rounded-circle me-2 avatar" src="${avatar}" alt="">
-                                <span>${author}</span>
+                    <form action="postDetailManage" method="Post">
+
+                        <div class="mb-5">
+                            <div class="form-group mt-3">
+                                <label for="Thumbnail">Post Thumbnail:</label>
+                                <input type="text" class="form-control" id="Thumbnail" name="Thumbnail">
                             </div>
-                            <div class="d-flex align-items-center">
-                                <!--                            <span class="ms-3"><i class="far fa-eye text-primary me-1"></i>12345</span>
-                                                            <span class="ms-3"><i class="far fa-comment text-primary me-1"></i>123</span>-->
+                            <img class="img-fluid w-100 rounded mb-5" src="${post.getThumbnail()}" alt="thumbnail">
+
+                            <div>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-muted me-2">ID: </p>
+                                    <input class="form-control text-muted" type="text" name="postID" value="${post.getPostID()}" readonly  />
+                                </div>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-muted me-2">Title: </p>
+                                    <input class="form-control" type="text" name="Title" value="${post.getTitle()}"  />
+                                </div>
+                                <div>
+                                    <p class="text-muted">Brief: </p>
+                                    <textarea class="form-control text-muted" rows="4" cols="50" name="Brief" value="${post.getBriefInfo()}">${post.getBriefInfo()}</textarea>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <c:if test="${post.isStatusPost()}">
+
+                                        <select class="form-select text-primary mt-3 mb-4 w-75" name="status" >
+                                            <option value="true" selected>Active</option>
+                                            <option value="false">Inactive</option>
+                                        </select>
+                                    </c:if>
+                                    <c:if test="${!post.isStatusPost()}">
+
+                                        <select class="form-select text-primary mt-3 mb-4 w-75" name="status" >
+                                            <option value="false">Inactive</option>
+                                            <option value="true" selected>Active</option>
+                                        </select>
+                                    </c:if>
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-select text-primary mt-3 mb-4 w-75" name="postCategory"  class="form-select">
+                                        <c:forEach var="c" items="${categoryList}">
+                                            <option value="${c}">${c}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>   
+                            </div>
+                            <div>
+                                <p class="text-muted">Content: </p>
+                                <textarea class="form-control text-muted" rows="6" cols="50" value="${post.getContent()}" name="Content">${post.getContent()}</textarea>
+                            </div>
+
+                            <div class="d-flex justify-content-center">
+                                <input class="btn btn-primary mt-3 w-25" type="submit" value="Update" />
+                            </div>
+
+                            <div class="d-flex justify-content-between bg-light rounded p-4 mt-4 mb-4">
+                                <div class="d-flex align-items-center">
+                                    <img class="rounded-circle me-2 avatar" src="${avatar}" alt="">
+                                    <span>${author}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                     <!-- Blog Detail End -->
-
-                    <!--                     Comment List Start 
-                                        <div class="mb-5">
-                                            <h4 class="d-inline-block text-primary text-uppercase border-bottom border-5 mb-4">Comments</h4>
-                                            <div class="d-flex mb-4">
-                                                <img src="img/user.jpg" class="img-fluid rounded-circle" style="width: 45px; height: 45px;">
-                                                <div class="ps-3">
-                                                    <h6><a href="">author</a> <small><i>date</i></small></h6>
-                                                    <p>comment</p>
-                                                    <button class="btn btn-sm btn-light">Reply</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                         Comment List End -->
-
-                    <!--                     Comment Form Start 
-                                        <div class="bg-light rounded p-5">
-                                            <h4 class="d-inline-block text-primary text-uppercase border-bottom border-5 border-white mb-4">Leave a comment</h4>
-                                            <form>
-                                                <div class="row g-3">
-                                                    <div class="col-12">
-                                                        <textarea class="form-control bg-white border-0" rows="5" placeholder="Comment"></textarea>
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <button class="btn btn-primary w-100 py-3" type="submit">Leave Your Comment</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                         Comment Form End -->
                 </div>
-
-                <!-- Sidebar Start -->
-                <div class="col-lg-4">
-                    <!-- Category Start -->
-                    <div class="mb-5">
-                        <%PostDAO postDAO = new PostDAO();%>
-                        <form action="blogPage">
-                            <input id="post-title" type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3 search"/>
-                            <select class="form-select text-primary mt-3" name="postCategory">
-                                <option selected value="">Post Category</option>
-                                <%List<String> categoryPostList = postDAO.allCategoryPost();
-            for (String categoryPost : categoryPostList) {%>
-                                <option value="<%=categoryPost%>"><%=categoryPost%></option>
-                                <%}%>
-                            </select>
-                        </form>
-                        <br>
-                        <a href="service?event=to-contact-link" class="mt-3 ms-2">Contact Us</a>
-                    </div>
-                    <!-- Category End -->
-                </div>
-                <!-- Sidebar End -->
             </div>
         </div>
+
         <!-- Blog End -->
         <jsp:include page="layout/footer.jsp" />
     </body>
