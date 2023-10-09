@@ -106,27 +106,30 @@ public class PostDetailManage extends HttpServlet {
         String categoryPost = request.getParameter("postCategory");
         String status = request.getParameter("status");
         if (title.isEmpty()) {
-            //thong bao
+            String errorMessage1 = "title can't be empty";
         } else {
-            post.setTitle(title);
+            
         }
         if (content.isEmpty()) {
-            //thong bao
+            String errorMessage2 = "content can't be empty";
         } else {
-            post.setContent(content);
+
         }
         if (briefInfo.isEmpty()) {
-            //thong bao
+            String errorMessage3 = "brief can't be empty";
         } else {
-            post.setBriefInfo(briefInfo);
+
         }
 
-        if (thumbnail.isEmpty()) {
-            //thong bao
-        } else {
-            post.setThumbnail(thumbnail);
-        }
-
+//        if (thumbnail.isEmpty()) {
+//            String errorMessage = "can't file pic";
+//        } else {
+//
+//        }
+        post.setTitle(title);
+        post.setContent(content);
+        post.setBriefInfo(briefInfo);
+        post.setThumbnail(thumbnail);
         post.setCreatedDate(createdDate);
         post.setCategoryPost(categoryPost);
 

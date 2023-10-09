@@ -37,7 +37,7 @@
                         <div class="mb-5">
                             <div class="form-group mt-3">
                                 <label for="Thumbnail">Post Thumbnail:</label>
-                                <input type="text" class="form-control" id="Thumbnail" name="Thumbnail">
+                                <input type="text" class="form-control" id="Thumbnail" name="Thumbnail" value="${post.getThumbnail()}">
                             </div>
                             <img class="img-fluid w-100 rounded mb-5" src="${post.getThumbnail()}" alt="thumbnail">
 
