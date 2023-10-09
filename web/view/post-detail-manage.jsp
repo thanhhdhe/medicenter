@@ -49,11 +49,18 @@
                                 <div class="d-flex align-items-baseline">
                                     <p class="text-muted me-2">Title: </p>
                                     <input class="form-control" type="text" name="Title" value="${post.getTitle()}"  />
+
                                 </div>
+                                <c:if test="${! empty errorMessage1}">
+                                    <h5  class="text-danger text-start fw-bold">${errorMessage1}</h5>
+                                </c:if>
                                 <div>
                                     <p class="text-muted">Brief: </p>
                                     <textarea class="form-control text-muted" rows="4" cols="50" name="Brief" value="${post.getBriefInfo()}">${post.getBriefInfo()}</textarea>
                                 </div>
+                                <c:if test="${! empty errorMessage2}">
+                                    <h5  class="text-danger text-start fw-bold">${errorMessage2}</h5>
+                                </c:if>
                             </div>
                             <div class="row">
                                 <div class="col-md-4">
@@ -84,6 +91,9 @@
                                 <p class="text-muted">Content: </p>
                                 <textarea class="form-control text-muted" rows="6" cols="50" value="${post.getContent()}" name="Content">${post.getContent()}</textarea>
                             </div>
+                            <c:if test="${! empty errorMessage2}">
+                                <h5  class="text-danger text-start fw-bold">${errorMessage3}</h5>
+                            </c:if>
 
                             <div class="d-flex justify-content-center">
                                 <input class="btn btn-primary mt-3 w-25" type="submit" value="Update" />
