@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Base64;
 import java.util.Map;
+import model.User;
 
 public class ActivateAccount extends HttpServlet {
 
@@ -30,8 +31,9 @@ public class ActivateAccount extends HttpServlet {
                 // Check the Token is expired or not
                 if (currentTime <= expirationTime) {
                     // Set the status of user is active
-                    UserDAO u = new UserDAO();
-                    u.getUser(email).setStatus(true);
+                    UserDAO userDAO = new UserDAO();
+                    User user = userDAO.getUser(email);
+                    userDAO.updateStatus(true, user.getUserID());
 
                     // Remove the tokens from list
                     activationLinks.remove(data);

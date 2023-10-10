@@ -28,9 +28,8 @@
         Reservation reservation = (Reservation) request.getAttribute("reservation");
         Children children = (Children) request.getAttribute("children");
         Service service = (Service) request.getAttribute("service");
-        SimpleDateFormat createdDateFormat = new SimpleDateFormat("dd/MM/yyyy");        
-        SimpleDateFormat reservationDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-        String message = (String) request.getAttribute("message");
+        SimpleDateFormat reservationDateFormat = new SimpleDateFormat("dd/MM/yyyy");        
+        SimpleDateFormat createdDateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
         %>
 
         <h1>Reservation information</h1>
@@ -117,58 +116,64 @@
                 case "pending" :
                 {
                     // Button checkout
-                    var button = document.createElement("button");
-                    button.className = "btn btn-warning";
-                    button.textContent = "Checkout";
-                    button.id = "checkout";
-                    groupButton.appendChild(button);
+                    var checkoutButton = document.createElement("button");
+                    checkoutButton.className = "btn btn-warning";
+                    checkoutButton.textContent = "Checkout";
+                    checkoutButton.id = "checkout";
+                    groupButton.appendChild(checkoutButton);
+                    document.getElementById("checkout").addEventListener('click', function () {
+                        checkout();
+                    });
                     // Button cancel
-                    button.className = "btn btn-warning";
-                    button.textContent = "Cancel this examination";
-                    button.id = "cancel";
-                    groupButton.appendChild(button);
+                    var buttonCancel = document.createElement("button");
+                    buttonCancel.className = "btn btn-warning";
+                    buttonCancel.textContent = "Cancel this examination";
+                    buttonCancel.id = "cancel";
+                    groupButton.appendChild(buttonCancel);
                     document.getElementById("cancel").addEventListener('click', function () {
                         cancel();
                     });
                     // Button update
-                    button.className = "btn btn-success";
-                    button.textContent = "Update";
-                    button.id = "update";
-                    groupButton.appendChild(button);
+                    var updateButton = document.createElement("button");
+                    updateButton.className = "btn btn-success";
+                    updateButton.textContent = "Update";
+                    updateButton.id = "update";
+                    groupButton.appendChild(updateButton);
                     document.getElementById("update").addEventListener('click', function () {
-                        window.location.href = "reservationdetail?serviceID=";
+                        update();
                     });
                     break;
                 }
                 case "awaiting confirmation" :
                 {
                     // Button cancel
-                    var button = document.createElement("button");
-                    button.className = "btn btn-warning";
-                    button.textContent = "Cancel this examination";
-                    button.id = "cancel";
-                    groupButton.appendChild(button);
+                    var cancelButton = document.createElement("button");
+                    cancelButton.className = "btn btn-warning";
+                    cancelButton.textContent = "Cancel this examination";
+                    cancelButton.id = "cancel";
+                    groupButton.appendChild(cancelButton);
                     document.getElementById("cancel").addEventListener('click', function () {
                         cancel();
                     });
                     // Button update
-                    button.className = "btn btn-success";
-                    button.textContent = "Update";
-                    button.id = "update";
-                    groupButton.appendChild(button);
+                    var updateButton = document.createElement("button");
+                    updateButton.className = "btn btn-success";
+                    updateButton.textContent = "Update";
+                    updateButton.id = "update";
+                    groupButton.appendChild(updateButton);
                     document.getElementById("update").addEventListener('click', function () {
-                        window.location.href = "reservationdetail?serviceID=";
+                        update();
                     });
                     break;
                 }
                 case "waiting for examination" :
                 {
                     // Button cancel
-                    var button = document.createElement("button");
-                    button.className = "btn btn-warning";
-                    button.textContent = "Cancel this examination";
-                    button.id = "cancel";
-                    groupButton.appendChild(button);
+                    var cancelButton = document.createElement("button");
+                    cancelButton.className = "btn btn-warning";
+                    cancelButton.textContent = "Cancel this examination";
+                    cancelButton.id = "cancel";
+                    groupButton.appendChild(cancelButton);
                     document.getElementById("cancel").addEventListener('click', function () {
                         cancel();
                     });
@@ -177,26 +182,26 @@
                 case "done" :
                 {
                     // Button re-reserve
-                    var button = document.createElement("button");
-                    button.className = "btn btn-info";
-                    button.textContent = "Re-reserve";
-                    button.id = "re-reserve";
-                    groupButton.appendChild(button);
+                    var rereserveButton = document.createElement("button");
+                    rereserveButton.className = "btn btn-info";
+                    rereserveButton.textContent = "Re-reserve";
+                    rereserveButton.id = "re-reserve";
+                    groupButton.appendChild(rereserveButton);
                     document.getElementById("re-reserve").addEventListener('click', function () {
-                        window.location.href = "reservationdetail?serviceID=" + <%=service.getServiceID()%> + "staffID=";
+                        reReserve();
                     });
                     break;
                 }
                 case "cancel" :
                 {
                     // Button re-reserve
-                    var button = document.createElement("button");
-                    button.className = "btn btn-info";
-                    button.textContent = "Re-reserve";
-                    button.id = "re-reserve";
-                    groupButton.appendChild(button);
+                    var rereserveButton = document.createElement("button");
+                    rereserveButton.className = "btn btn-info";
+                    rereserveButton.textContent = "Re-reserve";
+                    rereserveButton.id = "re-reserve";
+                    groupButton.appendChild(rereserveButton);
                     document.getElementById("re-reserve").addEventListener('click', function () {
-                        window.location.href = "reservationdetail?serviceID=" + <%=service.getServiceID()%> + "staffID=";
+                        reReserve();
                     });
                     break;
                 }
@@ -218,20 +223,27 @@
             function cancel() {
                 var userChoice = confirm("Are you sure to cancel this examination ?");
                 if (userChoice === true) {
-                    window.location.href = "reservation?id=" + <%=reservation.getReservationID()%> + "&action=cancel";
-                } else {
-                    
+                    var xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            var result = xhr.responseText;
+                            if (result === "success") {
+                                alert("You have been successfully cancel this reservation");
+                                location.reload();
+                            }
+                        }
+                    };
+                    xhr.open("POST", "reservation", true);
+                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    xhr.send("id=" + <%=reservation.getReservationID()%> + "&action=cancel");
                 }
             }
-            
-            function alertMessage() {
-                alert("<%=message%>");
+            function update() {
+                location.href = "reservationdetail?serviceID=" + <%=reservation.getServiceID()%> + "&staffID=" + <%=reservation.getStaffID()%> + "&childID=" + <%=reservation.getChildID()%> + "&action=update&reservationID=" + <%=reservation.getReservationID()%>;
             }
-            
-            <% if (message != null) { %>
-                alertMessage();
-            <% } %>
-
+            function reReserve() {
+                location.href = "reservationdetail?serviceID=" + <%=reservation.getServiceID()%> + "&staffID=" + <%=reservation.getStaffID()%> + "&childID=" + <%=reservation.getChildID()%>;
+            }
         </script>        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 

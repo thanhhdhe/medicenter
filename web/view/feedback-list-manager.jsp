@@ -184,7 +184,7 @@
 
                                 <a href="add-appointment.html" class="ms-text-primary font-weight-bold">Add Medical Record</a>
                             </div>
-                            <div class="d-flex ">
+                            <div class="d-flex justify-content-around">
                                 <div class="col-md-3 ">
                                     <jsp:include page="../view/layout/fillter.jsp" />
                                 </div>
@@ -192,7 +192,7 @@
                                 <c:choose>
                                     <c:when test="${empty fill || fill eq 'searchfeedback'}">
                                         <div class="col-md-9">
-                                            <form class="d-flex" action="feedback?event=searchfeedback" method="POST">
+                                            <form class="d-flex" style="width: 50%; margin-left: 430px; margin-top: 20px" action="feedback?event=searchfeedback" method="POST">
                                                 <input class="form-control me-2" type="search" name="search" value="" placeholder="Search" aria-label="Search">
                                                 <button class="btn btn-outline-success" type="submit">Search</button>
                                             </form>

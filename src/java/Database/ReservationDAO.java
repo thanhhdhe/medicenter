@@ -19,6 +19,70 @@ import model.Reservation;
  */
 public class ReservationDAO extends MyDAO {
 
+    //update status
+    public void updateStatus(String status, String reservationID) {
+        xSql = "UPDATE Reservations\n"
+                + "SET Status = ?\n"
+                + "WHERE ReservationID = ?; ";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, status);
+            ps.setString(2, reservationID);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //get total Reservation
+    public int getTotalReservation() {
+        xSql = "select COUNT(*) from Reservations\n"
+                + "where Status = 'pending' or Status = 'cancel';";
+        try {
+            ps = con.prepareStatement(xSql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+
+        }
+        return 0;
+    }
+
+    public List<Reservation> getReservationAllByPaging(int page) {
+        List<Reservation> list = new ArrayList<>();
+        xSql = "select * from Reservations\n"
+                + "where Status = 'pending' or Status = 'cancel'\n"
+                + "ORDER BY ReservationID\n"
+                + "OFFSET ? Rows fetch next 10 rows ONLY; ";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, (page - 1) * 10);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int ReservationID = rs.getInt("ReservationID");
+                int UserID = rs.getInt("UserID");
+                int ServiceID = rs.getInt("ServiceID");
+                Date ReservationDate = rs.getDate("ReservationDate");
+                int ReservationSlot = rs.getInt("ReservationSlot");
+                Timestamp CreatedDate = rs.getTimestamp("CreatedDate");
+                float Cost = rs.getFloat("Cost");
+                String Status = rs.getString("Status");
+                int StaffID = rs.getInt("StaffID");
+                int ChildID = rs.getInt("ChildID");
+                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status);
+                list.add(reservation);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public List<Reservation> getReservationByUserID(String userID) {
         List<Reservation> list = new ArrayList<>();
         xSql = "SELECT * from [dbo].[Reservations] where UserID = ?";
@@ -80,14 +144,89 @@ public class ReservationDAO extends MyDAO {
         return list;
     }
 
-    public List<Reservation> getReservationByStaffID(String staffID) {
+    public List<Reservation> getFilteredReservationsOfStaff(String staffId, String status, String reservationId, String customerName, String fromDate, String toDate, String sortBy, int page) {
         List<Reservation> list = new ArrayList<>();
-        xSql = "SELECT * from [dbo].[Reservations] WHERE StaffID = ? AND Status <> 'pending' ";
+        int pageSize = 10; // Kích thước của mỗi trang
+        int offset = (page - 1) * pageSize; // Vị trí bắt đầu của dữ liệu trên trang hiện tại
+
+        String sql = "SELECT * FROM Reservations "
+                + "INNER JOIN Users ON Reservations.UserID = Users.UserID "
+                + "WHERE StaffID = ? AND Reservations.Status <> ? ";
+        if (status != null && !status.isEmpty()) {
+            sql += "AND Reservations.Status = ? ";
+        }
+        if (reservationId != null && !reservationId.isEmpty()) {
+            sql += "AND Reservations.ReservationID = ? ";
+        }
+        if (customerName != null && !customerName.isEmpty()) {
+            sql += "AND (Users.FirstName COLLATE Vietnamese_CI_AI LIKE ?"
+                    + "   OR Users.LastName COLLATE Vietnamese_CI_AI LIKE ?)";
+        }
+        if (fromDate != null && !fromDate.isEmpty()) {
+            sql += "AND Reservations.CreatedDate >= ? ";
+        }
+        if (toDate != null && !toDate.isEmpty()) {
+            sql += "AND Reservations.CreatedDate <= ? ";
+        }
+
+        sql += "ORDER BY ";
+        if (sortBy != null && !sortBy.isEmpty()) {
+            switch (sortBy) {
+                case "customername":
+                    sql += "Users.FirstName ";
+                    break;
+                case "status":
+                    sql += "Reservations.Status ";
+                    break;
+                case "price-high":
+                    sql += "Reservations.Cost DESC ";
+                    break;
+                case "price-low":
+                    sql += "Reservations.Cost ";
+                    break;
+                case "date-latest":
+                    sql += "Reservations.CreatedDate DESC ";
+                    break;
+                case "date-earliest":
+                    sql += "Reservations.CreatedDate ";
+                    break;
+                default:
+                    sql += "Reservations.ReservationID ";
+                    break;
+            }
+        } else {
+            sql += "Reservations.CreatedDate DESC ";
+        }
+
+        sql += "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
         try {
-            ps = con.prepareStatement(xSql);
-            ps.setString(1, staffID);
+            ps = con.prepareStatement(sql);
+            int paramIndex = 1;
+            ps.setString(paramIndex++, staffId);
+            ps.setString(paramIndex++, "pending");
+            if (status != null && !status.isEmpty()) {
+                ps.setString(paramIndex++, status);
+            }
+            if (reservationId != null && !reservationId.isEmpty()) {
+                ps.setString(paramIndex++, reservationId);
+            }
+            if (customerName != null && !customerName.isEmpty()) {
+                ps.setNString(paramIndex++, "%" + customerName + "%");
+                ps.setNString(paramIndex++, "%" + customerName + "%");
+            }
+            if (fromDate != null && !fromDate.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(fromDate));
+            }
+            if (toDate != null && !toDate.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(toDate));
+            }
+
+            ps.setInt(paramIndex++, offset);
+            ps.setInt(paramIndex++, pageSize);
             rs = ps.executeQuery();
             while (rs.next()) {
+                // Lấy thông tin đặt chỗ từ ResultSet và thêm vào danh sách
                 int ReservationID = rs.getInt("ReservationID");
                 int UserID = rs.getInt("UserID");
                 int ServiceID = rs.getInt("ServiceID");
@@ -107,6 +246,118 @@ public class ReservationDAO extends MyDAO {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public int countFilteredReservationsOfStaff(String staffId, String status, String reservationId, String customerName, String fromDate, String toDate) {
+        int count = 0;
+
+        String sql = "SELECT COUNT(*) FROM Reservations "
+                + "INNER JOIN Users ON Reservations.UserID = Users.UserID "
+                + "WHERE StaffID = ? AND Reservations.Status <> ? ";
+        if (status != null && !status.isEmpty()) {
+            sql += "AND Reservations.Status = ? ";
+        }
+        if (reservationId != null && !reservationId.isEmpty()) {
+            sql += "AND Reservations.ReservationID = ? ";
+        }
+        if (customerName != null && !customerName.isEmpty()) {
+            sql += "AND (Users.FirstName LIKE ? OR Users.LastName LIKE ?) ";
+        }
+        if (fromDate != null && !fromDate.isEmpty()) {
+            sql += "AND Reservations.CreatedDate >= ? ";
+        }
+        if (toDate != null && !toDate.isEmpty()) {
+            sql += "AND Reservations.CreatedDate <= ? ";
+        }
+
+        try {
+            ps = con.prepareStatement(sql);
+            int paramIndex = 1;
+            ps.setString(paramIndex++, staffId);
+            ps.setString(paramIndex++, "pending");
+            if (status != null && !status.isEmpty()) {
+                ps.setString(paramIndex++, status);
+            }
+            if (reservationId != null && !reservationId.isEmpty()) {
+                ps.setString(paramIndex++, reservationId);
+            }
+            if (customerName != null && !customerName.isEmpty()) {
+                ps.setString(paramIndex++, "%" + customerName + "%");
+                ps.setString(paramIndex++, "%" + customerName + "%");
+            }
+            if (fromDate != null && toDate != null && !fromDate.isEmpty() && !toDate.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(fromDate));
+                ps.setDate(paramIndex++, Date.valueOf(toDate));
+            }
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+
+    public List<Reservation> getReservationByStaffID(String staffID, int page, int pageSize) {
+        List<Reservation> list = new ArrayList<>();
+        String sql = "SELECT * FROM [dbo].[Reservations] WHERE StaffID = ? AND Status <> ? "
+                + "ORDER BY ReservationID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        int offset = (page - 1) * pageSize;
+
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setString(1, staffID);
+            ps.setString(2, "pending");
+            ps.setInt(3, offset);
+            ps.setInt(4, pageSize);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                // Lấy dữ liệu từ ResultSet và thêm vào danh sách
+                int ReservationID = rs.getInt("ReservationID");
+                int UserID = rs.getInt("UserID");
+                int ServiceID = rs.getInt("ServiceID");
+                Date ReservationDate = rs.getDate("ReservationDate");
+                int ReservationSlot = rs.getInt("ReservationSlot");
+                Timestamp CreatedDate = rs.getTimestamp("CreatedDate");
+                float Cost = rs.getFloat("Cost");
+                String Status = rs.getString("Status");
+                int StaffID = rs.getInt("StaffID");
+                int ChildID = rs.getInt("ChildID");
+                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status);
+                list.add(reservation);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public int countReservationsByStaffID(String staffID) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM [dbo].[Reservations] WHERE StaffID = ? AND Status <> ?";
+
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setString(1, staffID);
+            ps.setString(2, "pending");
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return count;
     }
 
     public int countReservationsForService(String serviceID) {
@@ -184,10 +435,10 @@ public class ReservationDAO extends MyDAO {
                     + "FETCH NEXT ? ROWS ONLY";
         } else {
             xSql = "SELECT * FROM [dbo].[Reservations]  "
-                + "WHERE UserID = ? AND ReservationID = " + value + " "
-                + "ORDER BY CreatedDate DESC "
-                + "OFFSET ? ROWS "
-                + "FETCH NEXT ? ROWS ONLY";
+                    + "WHERE UserID = ? AND ReservationID = " + value + " "
+                    + "ORDER BY CreatedDate DESC "
+                    + "OFFSET ? ROWS "
+                    + "FETCH NEXT ? ROWS ONLY";
         }
         try {
             ps = con.prepareStatement(xSql);
@@ -511,7 +762,7 @@ public class ReservationDAO extends MyDAO {
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, userID);
-            ps.setString(2, "%"+title+"%");
+            ps.setString(2, "%" + title + "%");
             ps.setInt(3, carId);
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -535,28 +786,56 @@ public class ReservationDAO extends MyDAO {
         }
         return list;
     }
-    
+
+    public void update(Reservation reservation) {
+        xSql = "update [dbo].[Reservations] set UserID = ?, ServiceID = ?, StaffID = ? "
+                + " ,ChildID = ?, ReservationDate = ?, ReservationSlot = ?, CreatedDate = ?, Cost = ?, Status = ?  where ReservationID = ? ";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(10, reservation.getReservationID());
+            ps.setInt(1, reservation.getUserID());
+            ps.setInt(2, reservation.getServiceID());
+            ps.setInt(3, reservation.getStaffID());
+            ps.setInt(4, reservation.getChildID());
+            ps.setDate(5, reservation.getReservationDate());
+            ps.setInt(6, reservation.getReservationSlot());
+            ps.setTimestamp(7, reservation.getCreatedDate());
+            ps.setFloat(8, reservation.getCost());
+            ps.setString(9, reservation.getStatus());
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String args[]) {
         ReservationDAO rd = new ReservationDAO();
 //        String dateString = "2023-10-01 22:20:00";
 //        Timestamp sqlTimestamp = Timestamp.valueOf(dateString);
 //        System.out.println(rd.checkSlotForAvailable("4", "3", "26", "10", "2023"));
-        for (int i : rd.getListSelfBookedSlot("1", "15", "10", "2023")) {
-            System.out.println(i);
-        }
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        Timestamp sqlTimestamp = Timestamp.valueOf(currentDateTime);
-        Date sqlDate = null;
-        try {
-            // Define a date format for parsing
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+//        for (int i : rd.getListSelfBookedSlot("1", "15", "10", "2023")) {
+//            System.out.println(i);
+//        }
+//        LocalDateTime currentDateTime = LocalDateTime.now();
+//        Timestamp sqlTimestamp = Timestamp.valueOf(currentDateTime);
+//        Date sqlDate = null;
+//        try {
+//            // Define a date format for parsing
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+//
+//            // Parse the string into a java.util.Date object
+//            java.util.Date utilDate = dateFormat.parse("10-26-2023");
+//            // Convert java.util.Date to java.sql.Date
+//            sqlDate = new Date(utilDate.getTime());
+//        } catch (Exception e) {
+//
+//        }
 
-            // Parse the string into a java.util.Date object
-            java.util.Date utilDate = dateFormat.parse("10-26-2023");
-            // Convert java.util.Date to java.sql.Date
-            sqlDate = new Date(utilDate.getTime());
-        } catch (Exception e) {
-
+        ReservationDAO reservationDAO = new ReservationDAO();
+        List<Reservation> reservations = reservationDAO.getFilteredReservationsOfStaff("1", "", "", "t", "", "", "", 1);
+        for (Reservation reservation : reservations) {
+            System.out.println(reservation.getUserID());
         }
 
 //        Reservation r = new Reservation();

@@ -80,16 +80,67 @@ public class ReservationDetailController extends HttpServlet {
                 saveData(selectedDate, selectedMonth, selectedYear, staffID, slot, serviceID, userDAO.getUser(email), ChildID, request, response);
                 break;
             }
+            case "update": {
+                String serviceID = (String) request.getParameter("serviceID");
+                String slot = (String) request.getParameter("slot");
+                String ChildID = (String) request.getParameter("ChildID");
+                String reservationID = (String) request.getParameter("reservationID");
+                updateData(staffID, selectedDate, selectedMonth, selectedYear, slot, reservationID, request, response);
+                break;
+            }
             default:
                 break;
         }
 
     }
 
+    public boolean validateSlot(String slot, String selectedDate, String selectedMonth, String selectedYear, String staffID, String childID) {
+        ReservationDAO reservationDAO = new ReservationDAO();
+        // This is slot that booked
+        List<Integer> bookedSlots = new ArrayList<>();
+        // If database fall, everything fall 
+        for (Reservation reservation : reservationDAO.getSpecificReservation(staffID, selectedDate, selectedMonth, selectedYear)) {
+            // Check if the reservation of the slot is not cancel
+            if (!reservation.getStatus().equals("cancel")) {
+                bookedSlots.add(reservation.getReservationSlot());
+            }
+        }
+        return bookedSlots.contains(Integer.valueOf(slot));
+    }
+
+    synchronized private void updateData(String staffID, String selectedDate, String selectedMonth, String selectedYear, String slot, String reservationID, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // Validate slot if it booked or not
+        if (validateSlot(slot, selectedDate, selectedMonth, selectedYear, staffID, staffID)) {
+            response.setContentType("text/plain");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("Choose date again");
+        } else {
+            ReservationDAO reservationDAO = new ReservationDAO();
+            // Get the date
+            Date sqlDate = null;
+            try {
+                String date = selectedMonth + "-" + selectedDate + "-" + selectedYear;
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+                java.util.Date utilDate = dateFormat.parse(date);
+                sqlDate = new Date(utilDate.getTime());
+            } catch (Exception e) {
+
+            }
+            Reservation reservation = reservationDAO.getReservationByID(Integer.parseInt(reservationID));
+            reservation.setReservationDate(sqlDate);
+            reservation.setReservationSlot(Integer.parseInt(slot));
+            reservationDAO.update(reservation);
+            // Send the reservation id to the jsp
+            response.setContentType("text/plain");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("success");
+        }
+    }
+
     synchronized private void saveData(String selectedDate, String selectedMonth, String selectedYear, String staffID, String slot, String serviceID, User user, String ChildID, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ReservationDAO rd = new ReservationDAO();
+        ReservationDAO reservationDAO = new ReservationDAO();
         ServiceDAO serviceDAO = new ServiceDAO();
-        ServiceStaffDAO ssd = new ServiceStaffDAO();
+        ServiceStaffDAO servicestaffDAO = new ServiceStaffDAO();
         Service service = serviceDAO.getServiceByID(serviceID);
         // Get the current time
         LocalDateTime currentDateTime = LocalDateTime.now();
@@ -106,68 +157,76 @@ public class ReservationDetailController extends HttpServlet {
         }
         // Check duplicate if user click two times or user book for that chilren 2 service at one slot
         try {
-            if (rd.findReservationID(user.getUserID(), ChildID, serviceID, sqlDate, Integer.parseInt(slot)) != -1) {
+            if (reservationDAO.findReservationID(user.getUserID(), ChildID, serviceID, sqlDate, Integer.parseInt(slot)) != -1) {
                 response.setContentType("text/plain");
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write("Duplicate reservation");
                 return;
             }
-            if (!rd.validateReservationByChildrenID(ChildID, Integer.parseInt(slot), sqlDate)) {
+            if (!reservationDAO.validateReservationByChildrenID(ChildID, Integer.parseInt(slot), sqlDate)) {
                 response.setContentType("text/plain");
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write("Double book at one time");
                 return;
             }
-            
+
         } catch (Exception e) {
             return;
         }
-        Reservation r = new Reservation();
+        Reservation reservation = new Reservation();
         if (staffID.equals("all") || staffID == null) {
             // Double check if there is no staff for this service
-            List<Integer> listStaff = ssd.getListStaffIDCanWork(selectedDate, selectedMonth, selectedYear, slot, serviceID);
-            
+            List<Integer> listStaff = servicestaffDAO.getListStaffIDCanWork(selectedDate, selectedMonth, selectedYear, slot, serviceID);
+
             if (listStaff == null) {
                 response.setContentType("text/plain");
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write("Choose date again");
                 return;
             }
-            
+
             // Create an reservation
-            r.setCreatedDate(sqlTimestamp);
-            r.setReservationDate(sqlDate);
-            r.setReservationSlot(Integer.parseInt(slot));
-            r.setServiceID(Integer.parseInt(serviceID));
-            
-            r.setStaffID(ssd.getListStaffIDCanWork(selectedDate, selectedMonth, selectedYear, slot, serviceID).get(0));
+            reservation.setCreatedDate(sqlTimestamp);
+            reservation.setReservationDate(sqlDate);
+            reservation.setReservationSlot(Integer.parseInt(slot));
+            reservation.setServiceID(Integer.parseInt(serviceID));
+
+            reservation.setStaffID(servicestaffDAO.getListStaffIDCanWork(selectedDate, selectedMonth, selectedYear, slot, serviceID).get(0));
 
             if (service.getSalePrice() > 0) {
-                r.setCost((float) service.getSalePrice());
+                reservation.setCost((float) service.getSalePrice());
             } else {
-                r.setCost((float) service.getOriginalPrice());
+                reservation.setCost((float) service.getOriginalPrice());
             }
-            r.setStatus("pending");
-            r.setUserID(user.getUserID());
-            r.setChildID(Integer.parseInt(ChildID));
-            rd.insert(r);
+            reservation.setStatus("pending");
+            reservation.setUserID(user.getUserID());
+            reservation.setChildID(Integer.parseInt(ChildID));
+            reservationDAO.insert(reservation);
         } else {
-            r.setCreatedDate(sqlTimestamp);
-            r.setReservationDate(sqlDate);
-            r.setReservationSlot(Integer.parseInt(slot));
-            r.setServiceID(Integer.parseInt(serviceID));
-            r.setStaffID(Integer.parseInt(staffID));
-            if (service.getSalePrice() > 0) {
-                r.setCost((float) service.getSalePrice());
+            // Validate slot
+            if (validateSlot(slot, selectedDate, selectedMonth, selectedYear, staffID, ChildID)) {
+                response.setContentType("text/plain");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write("Choose date again");
+                return;
             } else {
-                r.setCost((float) service.getOriginalPrice());
+                reservation.setCreatedDate(sqlTimestamp);
+                reservation.setReservationDate(sqlDate);
+                reservation.setReservationSlot(Integer.parseInt(slot));
+                reservation.setServiceID(Integer.parseInt(serviceID));
+                reservation.setStaffID(Integer.parseInt(staffID));
+                if (service.getSalePrice() > 0) {
+                    reservation.setCost((float) service.getSalePrice());
+                } else {
+                    reservation.setCost((float) service.getOriginalPrice());
+                }
+                reservation.setStatus("pending");
+                reservation.setUserID(user.getUserID());
+                reservation.setChildID(Integer.parseInt(ChildID));
+                reservationDAO.insert(reservation);
             }
-            r.setStatus("pending");
-            r.setUserID(user.getUserID());
-            r.setChildID(Integer.parseInt(ChildID));
-            rd.insert(r);
         }
-        int Id = rd.findReservationID(user.getUserID(), ChildID, serviceID, sqlDate, Integer.parseInt(slot));
+        int Id = reservationDAO.findReservationID(user.getUserID(), ChildID, serviceID, sqlDate, Integer.parseInt(slot));
         // Send the reservation id to the jsp
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");
@@ -175,39 +234,39 @@ public class ReservationDetailController extends HttpServlet {
     }
 
     private void changeMonth(String selectedMonth, String selectedYear, String staffID, String serviceID, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        StaffScheduleDAO ssd = new StaffScheduleDAO();
+        StaffScheduleDAO staffscheduleDAO = new StaffScheduleDAO();
         List<Integer> Workday = null;
         List<Integer> fullDay = null;
         if (staffID.equals("all")) {
-            Workday = ssd.getWorkdayByServiceID(serviceID, selectedMonth, selectedYear);
-            fullDay = ssd.getFullDayByServiceID(serviceID, selectedMonth, selectedYear);
+            Workday = staffscheduleDAO.getWorkdayByServiceID(serviceID, selectedMonth, selectedYear);
+            fullDay = staffscheduleDAO.getFullDayByServiceID(serviceID, selectedMonth, selectedYear);
         } else {
-            Workday = ssd.getWorkDay(staffID, selectedMonth, selectedYear);
-            fullDay = ssd.getListDayFullSlot(staffID, selectedMonth, selectedYear);
+            Workday = staffscheduleDAO.getWorkDay(staffID, selectedMonth, selectedYear);
+            fullDay = staffscheduleDAO.getListDayFullSlot(staffID, selectedMonth, selectedYear);
         }
         // Build the string that contain work day and day that fully booked
-        StringBuilder sb = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
         // Append elements from the first ArrayList 
-        for (int i = 0; i < Workday.size(); i++) {
-            sb.append(Workday.get(i));
+        for (int day = 0; day < Workday.size(); day++) {
+            stringBuilder.append(Workday.get(day));
             // Add a comma if it's not the last element
-            if (i < Workday.size() - 1) {
-                sb.append(",");
+            if (day < Workday.size() - 1) {
+                stringBuilder.append(",");
             }
         }
 
         // Append "&" to separate the two ArrayLists
-        sb.append("&");
+        stringBuilder.append("&");
 
         // Append elements from the second ArrayList 
-        for (int i = 0; i < fullDay.size(); i++) {
-            sb.append(fullDay.get(i));
+        for (int day = 0; day < fullDay.size(); day++) {
+            stringBuilder.append(fullDay.get(day));
             // Add a comma if it's not the last element
-            if (i < fullDay.size() - 1) {
-                sb.append(",");
+            if (day < fullDay.size() - 1) {
+                stringBuilder.append(",");
             }
         }
-        String result = sb.toString();
+        String result = stringBuilder.toString();
 
         // Response to the jsp
         response.setContentType("text/plain");
@@ -216,60 +275,60 @@ public class ReservationDetailController extends HttpServlet {
     }
 
     private void checkSlot(String selectedDate, String selectedMonth, String selectedYear, String staffID, String childID, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        StaffScheduleDAO ssd = new StaffScheduleDAO();
+        StaffScheduleDAO staffscheduleDAO = new StaffScheduleDAO();
         // Get the data of the work slots
-        List<Integer> workSlots = ssd.getWorkSlots(selectedDate, selectedMonth, selectedYear, staffID);
+        List<Integer> workSlots = staffscheduleDAO.getWorkSlots(selectedDate, selectedMonth, selectedYear, staffID);
 
-        ReservationDAO rd = new ReservationDAO();
+        ReservationDAO reservationDAO = new ReservationDAO();
         // This is slot that booked
         List<Integer> bookedSlots = new ArrayList<>();
 
-        for (Reservation r : rd.getSpecificReservation(staffID, selectedDate, selectedMonth, selectedYear)) {
+        for (Reservation reservation : reservationDAO.getSpecificReservation(staffID, selectedDate, selectedMonth, selectedYear)) {
             // Check if the reservation of the slot is not cancel
-            if (!r.getStatus().equals("cancel")) {
-                bookedSlots.add(r.getReservationSlot());
+            if (!reservation.getStatus().equals("cancel")) {
+                bookedSlots.add(reservation.getReservationSlot());
             }
         }
 
         // Get the list that self booking
-        List<Integer> selfBooked = rd.getListSelfBookedSlot(childID, selectedDate, selectedMonth, selectedYear);
+        List<Integer> selfBooked = reservationDAO.getListSelfBookedSlot(childID, selectedDate, selectedMonth, selectedYear);
 
         // Build the string that contain work slot and booked slot
-        StringBuilder sb = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
         // Append elements from the first ArrayList (workSlots)
-        for (int i = 0; i < workSlots.size(); i++) {
-            sb.append(workSlots.get(i));
+        for (int slot = 0; slot < workSlots.size(); slot++) {
+            stringBuilder.append(workSlots.get(slot));
             // Add a comma if it's not the last element
-            if (i < workSlots.size() - 1) {
-                sb.append(",");
+            if (slot < workSlots.size() - 1) {
+                stringBuilder.append(",");
             }
         }
 
         // Append "&" to separate the ArrayLists
-        sb.append("&");
+        stringBuilder.append("&");
 
         // Append elements from the second ArrayList (bookedSlots)
-        for (int i = 0; i < bookedSlots.size(); i++) {
-            sb.append(bookedSlots.get(i));
+        for (int slot = 0; slot < bookedSlots.size(); slot++) {
+            stringBuilder.append(bookedSlots.get(slot));
             // Add a comma if it's not the last element
-            if (i < bookedSlots.size() - 1) {
-                sb.append(",");
+            if (slot < bookedSlots.size() - 1) {
+                stringBuilder.append(",");
             }
         }
 
         // Append "&" to separate the ArrayLists
-        sb.append("&");
+        stringBuilder.append("&");
 
         // Append elements from the second ArrayList (selfBooked)
-        for (int i = 0; i < selfBooked.size(); i++) {
-            sb.append(selfBooked.get(i));
+        for (int slot = 0; slot < selfBooked.size(); slot++) {
+            stringBuilder.append(selfBooked.get(slot));
             // Add a comma if it's not the last element
-            if (i < selfBooked.size() - 1) {
-                sb.append(",");
+            if (slot < selfBooked.size() - 1) {
+                stringBuilder.append(",");
             }
         }
 
-        String result = sb.toString();
+        String result = stringBuilder.toString();
 
         // Response to the jsp
         response.setContentType("text/plain");
@@ -278,16 +337,16 @@ public class ReservationDetailController extends HttpServlet {
     }
 
     private void checkSlotForService(String selectedDate, String selectedMonth, String selectedYear, String serviceID, String childID, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        StaffScheduleDAO ssd = new StaffScheduleDAO();
-        ReservationDAO rdao = new ReservationDAO();
+        StaffScheduleDAO staffscheduleDAO = new StaffScheduleDAO();
+        ReservationDAO reservationDAO = new ReservationDAO();
         // Store list of slot that staff can work
-        List<Integer> slotAvailable = ssd.getWorkSlotsByService(selectedDate, selectedMonth, selectedYear, serviceID);
+        List<Integer> slotAvailable = staffscheduleDAO.getWorkSlotsByService(selectedDate, selectedMonth, selectedYear, serviceID);
         // Variable store list reservation of that service ID in that date
-        List<Reservation> listReservation = rdao.getListReservationByServiceID(serviceID, selectedDate, selectedMonth, selectedYear);
+        List<Reservation> listReservation = reservationDAO.getListReservationByServiceID(serviceID, selectedDate, selectedMonth, selectedYear);
         // Clone an new array to process the slots that fully booking
         List<Integer> temp = new ArrayList<>();
-        for (int i : slotAvailable) {
-            temp.add(i);
+        for (int slot : slotAvailable) {
+            temp.add(slot);
         }
         // Remove slot have been booked from the list
         for (Reservation reservation : listReservation) {
@@ -295,50 +354,50 @@ public class ReservationDetailController extends HttpServlet {
         }
         // Create an variable to store the slot don't have any slot for book
         List<Integer> fullBookSlot = new ArrayList<>();
-        for (int i : slotAvailable) {
-            if (!temp.contains(i)) {
-                fullBookSlot.add(i);
+        for (int slot : slotAvailable) {
+            if (!temp.contains(slot)) {
+                fullBookSlot.add(slot);
             }
         }
         // Get the list that self booking
-        List<Integer> selfBooked = rdao.getListSelfBookedSlot(childID, selectedDate, selectedMonth, selectedYear);
+        List<Integer> selfBooked = reservationDAO.getListSelfBookedSlot(childID, selectedDate, selectedMonth, selectedYear);
 
         // Create to string and send to the jsp
-        StringBuilder sb = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
         // Append elements from the first ArrayList
-        for (int i = 0; i < slotAvailable.size(); i++) {
-            sb.append(slotAvailable.get(i).toString());
+        for (int slot = 0; slot < slotAvailable.size(); slot++) {
+            stringBuilder.append(slotAvailable.get(slot).toString());
             // Add a comma if it's not the last element
-            if (i < slotAvailable.size() - 1) {
-                sb.append(",");
+            if (slot < slotAvailable.size() - 1) {
+                stringBuilder.append(",");
             }
         }
 
         // Append "&" to separate between arraylist
-        sb.append("&");
+        stringBuilder.append("&");
 
         // Append elements from the second ArrayList
-        for (int i = 0; i < fullBookSlot.size(); i++) {
-            sb.append(fullBookSlot.get(i));
+        for (int slot = 0; slot < fullBookSlot.size(); slot++) {
+            stringBuilder.append(fullBookSlot.get(slot));
             // Add a comma if it's not the last element
-            if (i < fullBookSlot.size() - 1) {
-                sb.append(",");
+            if (slot < fullBookSlot.size() - 1) {
+                stringBuilder.append(",");
             }
         }
 
         // Append "&" to separate between arraylist
-        sb.append("&");
+        stringBuilder.append("&");
 
         // Append elements from the third ArrayList
-        for (int i = 0; i < selfBooked.size(); i++) {
-            sb.append(selfBooked.get(i).toString());
+        for (int slot = 0; slot < selfBooked.size(); slot++) {
+            stringBuilder.append(selfBooked.get(slot).toString());
             // Add a comma if it's not the last element
-            if (i < selfBooked.size() - 1) {
-                sb.append(",");
+            if (slot < selfBooked.size() - 1) {
+                stringBuilder.append(",");
             }
         }
 
-        String result = sb.toString();
+        String result = stringBuilder.toString();
         // Response to the jsp
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");

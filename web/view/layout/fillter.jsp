@@ -29,7 +29,7 @@
     </head>
     <body>
         <!-- Fillter -->
-        <div class="d-flex justify-content-center">
+        <div class="d-flex justify-content">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container-fluid">
 
