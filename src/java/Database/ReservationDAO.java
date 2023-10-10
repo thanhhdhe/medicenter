@@ -82,7 +82,7 @@ public class ReservationDAO extends MyDAO {
 
     public List<Reservation> getReservationByStaffID(String staffID) {
         List<Reservation> list = new ArrayList<>();
-        xSql = "SELECT * from [dbo].[Reservations] where StaffID = ?";
+        xSql = "SELECT * from [dbo].[Reservations] WHERE StaffID = ? AND Status <> 'pending' ";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, staffID);
