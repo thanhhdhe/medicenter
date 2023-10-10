@@ -186,7 +186,8 @@
                     </div>
                 </nav>
                 <!-- Navbar End -->
-
+                <%Children thisChild = childrenDAO.getChildrenByChildrenId(reservation.getChildID()+"");
+                User thisUser = userDAO.getUserByID(reservation.getUserID());%>
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
                     <div
@@ -195,11 +196,11 @@
                         <div class="col-md-12 p-0">
                             <div class="d-flex mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
                                 <h4>RESERVATION DETAIL</h4>
-                                <a href="staff?event=send-to-children-list" class="ms-text-primary font-weight-bold">Add Medical Record</a>
+                                <a href="staff?event=send-to-history-examination&childid=<%=thisChild.getChildID()%>" class="ms-text-primary font-weight-bold">Add Medical Record</a>
                             </div>
                             <div class="row px-4 justify-content-between">
                                 <div class="col-md-5 d-flex flex-column justify-content-center align-items-start">
-                                    <%User thisUser = userDAO.getUserByID(reservation.getUserID());%>
+                                    
                                     <div class="d-flex justify-content-center"><h3>Customer</h3></div>
 
                                     <div class="d-flex">
@@ -210,7 +211,7 @@
                                             <p class="m-0 text-black-50"><i class="fas fa-phone"></i>  <%=thisUser.getPhoneNumber()%></p>
                                         </div>
                                     </div>
-                                    <%Children thisChild = childrenDAO.getChildrenByChildrenId(reservation.getChildID()+"");%>
+                                    
                                     <div class="d-flex justify-content-center"><h3 class="mt-3">Patient</h3></div>
                                     <div class="d-flex">
                                         <img src="<%=thisChild.getImage()%>" alt="dr" class="rounded-3 object-cover me-3" width="100px" height="100px"/>
@@ -249,31 +250,31 @@
                                         <tr>
                                             <th scope="col">Service name</th>
                                             <th scope="col">Category</th>
-                                            <th scope="col">Date</th>
                                             <th scope="col">Cost</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Detail</th>
+                                            <th scope="col">Number Of Person</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <%
-                                        List<Reservation> reservations = reservationDAO.getReservationByUserID(reservation.getUserID()+"");
-        
-                                        if(reservations!=null){
-                                        for (Reservation reser : reservations) {
+                                        List<Integer> serviceIDList = reservationDAO.getListServiceIDByUserAndStaff(reservation.getUserID()+"",curStaff.getStaffID()+"");
+                                        if(serviceIDList!=null){
+                                        for (Integer integer : serviceIDList) {
+                                        Service service = serviceDAO.getServiceByID(integer+"");
                                         %>
                                         <tr>
                                             <th scope="row">
                                                 <div class="d-flex align-items-center">
-                                                    <img src="<%=serviceDAO.getServiceByID(reser.getServiceID()+"").getThumbnail()%>" class="me-2 rounded-3 object-cover" width="30px" height="30px"/>
-                                                    <p class="m-0"><%=serviceDAO.getServiceByID(reser.getServiceID()+"").getTitle()%></p>
+                                                    <img src="<%=service.getThumbnail()%>" class="me-2 rounded-3 object-cover" width="30px" height="30px"/>
+                                                    <p class="m-0"><%=service.getTitle()%></p>
                                                 </div>
                                             </th>
-                                            <td><%=categoryServiceDAO.getCategoryServiceByID(serviceDAO.getServiceByID(reser.getServiceID()+"").getCategoryID()+"").getCategoryName()%></td>
-                                            <td><%=reser.getReservationDate()%></td>
-                                            <td><%=reser.getCost()%></td>
-                                            <td><%=reser.getStatus()%></td>
-                                            <td><a href="staff?event=send-to-reservation-detail&reserdid=<%=reser.getReservationID()%>"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></a></td>
+                                            <td><%=categoryServiceDAO.getCategoryServiceByID(service.getCategoryID()+"").getCategoryName()%></td>
+                                            <td><%if(service.getSalePrice()<=0){%>
+                                                <span class="price"> $<%=service.getOriginalPrice()%> </span>
+                                                <%}else{%>
+                                                <span class="price"> $<%=service.getSalePrice()%> </span>
+                                                <%}%></td>
+                                            <td><%=reservationDAO.countReservationsByStaffAndService(curStaff.getStaffID()+"",service.getServiceID()+"")%></td>
                                         </tr>
                                         <%}}%>
 
