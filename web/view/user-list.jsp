@@ -25,39 +25,21 @@
         <div class="container-fluid">
             <div class="layout-specing">
                 <div class="row">
-                    <div class="col-md-5 row">
-                        <div class="col-md-4">
-                            <h5 class="mb-0">Account</h5>
-                        </div>
-                        <div class="col-md-7">
-                            <div class="search-bar p-0 d-lg-block ms-2">                                                        
-                                <div id="search" class="menu-search mb-0">
-                                    <form action="user?action=search" method="POST" id="searchform" class="searchform">
-                                        <div>
-                                            <input type="text" value="${text}" class="form-control border rounded-pill" name="txt" id="search" placeholder="Search...">
-                                            <input type="submit" id="searchsubmit" value="Search">
-                                        </div>
-                                    </form>
-                                </div>
-                            </div> 
+                    <div class="col-md-5 row mt-4">
+                        <div class="search-bar p-0 d-lg-block mx-3">                                                        
+                            <div id="search" class="menu-search mb-0">
+                                <form action="user?action=search" method="POST" id="searchform" class="searchform">
+                                    <div class="input-group">
+                                        <input type="text" value="${text}" class="form-control border rounded-pill" name="txt" id="search" placeholder="Search...">
+                                        <button class="btn btn-block btn-primary mx-3" type="submit">Search</button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-7">
-                        <form action="account?action=filter" method="POST" onSubmit="document.getElementById('submit').disabled = true;">
+                    <div class="col-md-7 mt-4">
+                        <form action="user?action=filter" method="POST" onSubmit="document.getElementById('submit').disabled = true;">
                             <div class="justify-content-md-end row">
-                                <div class="col-md-5 row align-items-center">
-                                    <div class="col-md-3">
-                                        <label class="form-label">Role</label>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <select name="role_id" class="form-select" aria-label="Default select example">
-                                            <option <c:if test="${role_id == 'all'}">selected</c:if> value="all">All</option>
-                                            <c:forEach items="${role}" var="r">
-                                                <option <c:if test="${role_id == r.role_id}">selected</c:if> value="${r.role_id}">${r.name}</option>
-                                            </c:forEach>
-                                        </select>  
-                                    </div>
-                                </div>
                                 <div class="col-md-5 row align-items-center">
                                     <div class="col-md-4">
                                         <label class="form-label">Status</label>
@@ -80,18 +62,16 @@
 
 
                     <div class="row">
-                        <div class="row mb-3">
-                            <div class="col-md-2">
-                                <label for="itemsPerPage" class="form-label">Items per Page:</label>
-                                <select name="itemsPerPage" id="itemsPerPage" class="form-select">
-                                    <option value="15" <c:if test="${itemsPerPage == 15}">selected</c:if>>15</option>
-                                <option value="25" <c:if test="${itemsPerPage == 25}">selected</c:if>>25</option>
-                                <option value="50" <c:if test="${itemsPerPage == 50}">selected</c:if>>50</option>
-                                </select>
-                            </div>
-                        </div>
                         <div class="col-12 mt-4">
                             <div class="table-responsive bg-white shadow rounded">
+                                <div class="col-md-2 mx-3 mt-3">
+                                    <label for="itemsPerPage" class="form-label">Items per Page:</label>
+                                    <select name="itemsPerPage" id="itemsPerPage" class="form-select">
+                                        <option value="15" <c:if test="${itemsPerPage == 15}">selected</c:if>>15</option>
+                                    <option value="25" <c:if test="${itemsPerPage == 25}">selected</c:if>>25</option>
+                                    <option value="50" <c:if test="${itemsPerPage == 50}">selected</c:if>>50</option>
+                                    </select>
+                                </div>
                                 <table id="example" class="table table-striped nowrap" style="width:100%">
                                     <thead>
                                         <tr>
@@ -100,7 +80,6 @@
                                             <th class="border-bottom p-3" >Gender</th>
                                             <th class="border-bottom p-3" >Email</th>
                                             <th class="border-bottom p-3" >Phone number</th>
-                                            <th class="border-bottom p-3" >Role</th>
                                             <th class="border-bottom p-3" >Status</th>
                                             <th class="border-bottom p-3" ></th>
                                         </tr>
@@ -118,13 +97,11 @@
                                             </c:if>
                                             <td class="p-3">${a.email}</td>
                                             <td class="p-3">${a.phoneNumber}</td>
-                                            <td class="p-3">${a.role}</td>
                                             <td class="p-3">
                                                 <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" role="switch" 
-                                                           id="flexSwitchCheckDefault" 
+                                                    <input class="form-check-input" type="checkbox" role="switch" disabled
                                                            data-userid="${a.userID}"
-                                                           <c:if test="${a.status == true}">checked</c:if>/>
+                                                           <c:if test="${a.status == true}">checked value="1"</c:if>/>
                                                     </div>
                                                 </td>
 
@@ -265,35 +242,18 @@
 
         <!-- Custom JS -->
         <script>
+                                        document.getElementById("itemsPerPage").addEventListener("change", function () {
+                                            var selectedValue = this.value;
+                                            // Cập nhật URL với số lượng bản ghi mới được chọn
+                                            window.location.href = "${url}&itemsPerPage=" + selectedValue;
+                                        });
                                         $("#example").DataTable({
                                             "search": false,
                                             "paging": false,
                                             dom: '<"clear">lfrtp'
                                         });
-                                       
-                                        $(document).ready(function () {
-                                                // Lắng nghe sự kiện thay đổi của checkbox
-                                                $('input[type="checkbox"]').click(function (){
-                                                    console.log('cu');
-                                        // Lấy userID từ thuộc tính data
-                                        var userID = $(this).data('userid');
-                                               
-                                                // Sử dụng Ajax để gọi về servlet và cập nhật trạng thái
-                                                $.ajax({
-                                                type: 'POST',
-                                                        url: '/ChildrenCare/user?action=status&userid=' + userID, // Sử dụng URL của servlet
-                                                        success: function (response) {
-                                                        // Xử lý phản hồi từ servlet nếu cần
-                                                        },
-                                                        error: function (xhr, status, error) {
-                                                        // Xử lý lỗi nếu có
-                                                        console.error(error);
-                                                        }
-                                                });
-                                        });
-                                });
-                                </script>
+        </script>
 
-</body>
+    </body>
 
 </html>

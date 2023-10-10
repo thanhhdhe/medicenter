@@ -103,35 +103,16 @@ public class UserController extends HttpServlet {
                 url = "user?action=search&txt=" + text;
                 userList = userdao.search(text);
             }
-//            if (action.equals("status")) {
-//                int id = Integer.parseInt(request.getParameter("userid"));
-//                User u = userdao.getUserByID(id);
-//                System.out.println(id);
-//                System.out.println(u.isStatus());
-//                boolean status = u.isStatus();
-//                try {
-//                    if (status) {
-//                        u.setStatus(false);
-//                        userdao.updateStatus(Boolean.FALSE, id);
-//                        System.out.println("change to false");
-//                    } else {
-//                        u.setStatus(true);
-//                        userdao.updateStatus(Boolean.TRUE, id);
-//                        System.out.println("change to true");
-//                    }
-//                    // Send back a JSON object with the new status
-//                    response.setContentType("application/json");
-//                    PrintWriter out = response.getWriter();
-//                    out.print("{\"success\": true, \"status\": " + u.isStatus() + "}");
-//                    out.flush();
-//                } catch (Exception e) {
-//                    // Send back a JSON object with an error message
-//                    response.setContentType("application/json");
-//                    PrintWriter out = response.getWriter();
-//                    out.print("{\"success\": false, \"error\": \"" + e.getMessage() + "\"}");
-//                    out.flush();
-//                }
-//            }
+            if (action.equals("filter")) {
+                String status = request.getParameter("status");
+                request.setAttribute("status", status);
+                if (status.equals("all")) {
+                    response.sendRedirect("user?action=all");
+                } else {
+                    url = "user?action=filter&status=" + status;
+                    userList = userdao.getFilterByStatus(status);
+                }
+            }
 
             if (userList != null) {
                 int numPerPage = 15;
@@ -152,7 +133,7 @@ public class UserController extends HttpServlet {
                 int end = Math.min(page * numPerPage, size);
 
                 List<User> user = userdao.getListByPage(userList, start, end);
-
+                request.setAttribute("itemsPerPage", numPerPage);
                 request.setAttribute("url", url);
                 request.setAttribute("page", page);
                 request.setAttribute("num", numPages);
@@ -166,11 +147,10 @@ public class UserController extends HttpServlet {
                 Service service = serviceDAO.getServiceByID(serviceID);
                 String staffIDstr = request.getParameter("staffID");
                 int staffID = Integer.parseInt(staffIDstr);
-                StaffDAO staffDAO= new StaffDAO();
+                StaffDAO staffDAO = new StaffDAO();
                 Staff staff = staffDAO.getStaffByStaffId(staffID);
-                request.setAttribute("staff",staff );
-                request.setAttribute("service",service);
-                System.out.println("user id la" + userID);
+                request.setAttribute("staff", staff);
+                request.setAttribute("service", service);
                 ChildrenDAO cDao = new ChildrenDAO();
                 List<Children> childList = cDao.getListChildrenByUserId(userID + "");
                 request.setAttribute("child", childList);
