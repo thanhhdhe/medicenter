@@ -13,7 +13,7 @@ import model.Staff;
  * @author Admin
  */
 public class StaffDAO extends MyDAO {
-
+    
     public List<Staff> getAllStaffs() {
         List<Staff> staffList = new ArrayList<>();
         xSql = "SELECT *  FROM [dbo].[Staff]";
@@ -30,7 +30,10 @@ public class StaffDAO extends MyDAO {
                 String phoneNumber = rs.getString("PhoneNumber");
                 String profileImage = rs.getString("ProfileImage");
                 String role = rs.getString("StaffRole");
-                Staff staff = new Staff(staffName, password, email, fullName, gender, phoneNumber, profileImage, role);
+                String rank = rs.getString("Rank");
+                String specialty = rs.getString("Specialty");
+                String introduction = rs.getString("Introduction");
+                Staff staff = new Staff(staffID, staffName, password, email, fullName, gender, phoneNumber, profileImage, role, rank, specialty, introduction);
                 staffList.add(staff);
             }
             rs.close();
@@ -40,7 +43,7 @@ public class StaffDAO extends MyDAO {
         }
         return staffList;
     }
-
+    
     public List<Staff> getDoctorByServices(String id) {
         List<Staff> doctorList = new ArrayList<>();
         xSql = "select s.StaffID, s.StaffName, s.Email, s.Email, s.Password, s.FullName,s.Gender, s.PhoneNumber, s.ProfileImage, s.StaffRole\n"
@@ -59,7 +62,10 @@ public class StaffDAO extends MyDAO {
                 String phoneNumber = rs.getString("PhoneNumber");
                 String profileImage = rs.getString("ProfileImage");
                 String role = rs.getString("StaffRole");
-                Staff staff = new Staff(staffID,staffName, password, email, fullName, gender, phoneNumber, profileImage, role);
+                String rank = rs.getString("Rank");
+                String specialty = rs.getString("Specialty");
+                String introduction = rs.getString("Introduction");
+                Staff staff = new Staff(staffID, staffName, password, email, fullName, gender, phoneNumber, profileImage, role, rank, specialty, introduction);
                 doctorList.add(staff);
             }
             rs.close();
@@ -69,7 +75,7 @@ public class StaffDAO extends MyDAO {
         }
         return doctorList;
     }
-
+    
     public List<Staff> getStaffsByRole(String staffRole) {
         List<Staff> staffList = new ArrayList<>();
         xSql = "SELECT *  FROM [dbo].[Staff] where StaffRole = ?";
@@ -87,7 +93,10 @@ public class StaffDAO extends MyDAO {
                 String phoneNumber = rs.getString("PhoneNumber");
                 String profileImage = rs.getString("ProfileImage");
                 String role = rs.getString("StaffRole");
-                Staff staff = new Staff(staffID, staffName, password, email, fullName, gender, phoneNumber, profileImage, role);
+                String rank = rs.getString("Rank");
+                String specialty = rs.getString("Specialty");
+                String introduction = rs.getString("Introduction");
+                Staff staff = new Staff(staffID, staffName, password, email, fullName, gender, phoneNumber, profileImage, role, rank, specialty, introduction);
                 staffList.add(staff);
             }
             rs.close();
@@ -97,7 +106,7 @@ public class StaffDAO extends MyDAO {
         }
         return staffList;
     }
-
+    
     public Staff getStaffByStaffEmail(String staffEmail) {
         Staff staff = null;
         xSql = "SELECT *  FROM [dbo].[Staff] where Email = ?";
@@ -115,7 +124,10 @@ public class StaffDAO extends MyDAO {
                 String phoneNumber = rs.getString("PhoneNumber");
                 String profileImage = rs.getString("ProfileImage");
                 String role = rs.getString("StaffRole");
-                staff = new Staff(staffID, staffName, password, email, fullName, gender, phoneNumber, profileImage, role);
+                String rank = rs.getString("Rank");
+                String specialty = rs.getString("Specialty");
+                String introduction = rs.getString("Introduction");
+                staff = new Staff(staffID, staffName, password, email, fullName, gender, phoneNumber, profileImage, role, rank, specialty, introduction);
             }
             rs.close();
             ps.close();
@@ -141,7 +153,10 @@ public class StaffDAO extends MyDAO {
                 String phoneNumber = rs.getString("PhoneNumber");
                 String profileImage = rs.getString("ProfileImage");
                 String role = rs.getString("StaffRole");
-                staff = new Staff(staffID, staffName, password, email, fullName, gender, phoneNumber, profileImage, role);
+                String rank = rs.getString("Rank");
+                String specialty = rs.getString("Specialty");
+                String introduction = rs.getString("Introduction");
+                staff = new Staff(staffID, staffName, password, email, fullName, gender, phoneNumber, profileImage, role, rank, specialty, introduction);
             }
             rs.close();
             ps.close();
@@ -150,14 +165,14 @@ public class StaffDAO extends MyDAO {
         }
         return staff;
     }
-
+    
     public static void main(String[] args) {
         StaffDAO staffDAO = new StaffDAO();
 //        List<Staff> staffList = staffDAO.getDoctorByServices("3");
 //        for (Staff staff : staffList) {
 //            System.out.println(staff.getFullName());
 //        }
-        System.out.println(staffDAO.getStaffByStaffEmail("staff2@example.com").getFullName());
+        System.out.println(staffDAO.getStaffByStaffEmail("lethanglrf@gmail.com").getFullName());
         
     }
 }

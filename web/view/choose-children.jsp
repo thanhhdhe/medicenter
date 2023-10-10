@@ -26,7 +26,7 @@
                 flex: 1 1;
                 min-width: 0;
                 padding-left: 5px;
-                color: var(--primary-body-text, #003553);
+                color: #003553;
                 font-size: 16px;
                 font-style: normal;
                 font-weight: 500;
@@ -107,125 +107,173 @@
     </head>
 
     <body>
+        <%--<jsp:include page="./layout/Header.jsp" />--%>
         <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-6 choose-user mt-5">
-                    <h1 class="text-center">Choose Your Children Profile</h1>
-                    <%-- Kiểm tra xem có thông báo không và hiển thị nếu có --%>
-                    <% String message = (String) session.getAttribute("message"); %>
-                    <% if (message != null) { %>
-                    <div class="alert alert-success">
-                        <%= message %>
+            <div class="justify-content-center mt-5">
+
+                <!-- Đây là hàng (row) chứa hai cột (columns) -->
+                <div class="row">
+                    <!-- Cột cho thẻ card hiện có -->
+                    <div class="col-md-4 mt-5">
+                        <div class="card mt-4 border-m shadow">
+                            <div class="card-body">
+                                <h5 class="card-title">Info of examination</h5>
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td><i class="fas fa-user-md"></i></td>
+                                            <td><strong>Dr:</strong></td>
+                                            <td>${staff.staffName}</td>
+                                        </tr>
+<!--                                        <tr>
+                                            <td><i class="fas fa-hospital"></i></td>
+                                            <td><strong>Bệnh Viện:</strong></td>
+                                            <td>Bệnh Viện XYZ</td>
+                                        </tr>
+                                        <tr>
+                                            <td><i class="fas fa-calendar-alt"></i></td>
+                                            <td><strong>Ngày Khám:</strong></td>
+                                            <td>10/15/2023</td>
+                                        </tr>
+                                        <tr>
+                                            <td><i class="fas fa-clock"></i></td>
+                                            <td><strong>Giờ Khám:</strong></td>
+                                            <td>09:00 AM</td>
+                                        </tr>-->
+                                        <tr>
+                                            <td><i class="fas fa-stethoscope"></i></td>
+                                            <td><strong>Services:</strong></td>
+                                            <td>${service.title}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                    <% session.removeAttribute("message"); 
+
+                    <!-- Cột cho thẻ card mới -->
+                    <div class="col-md-8">
+                        <div class="row choose-user justify-content-center ">
+                            <h1 class="text-center">Choose Your Children Profile</h1>
+                            <% String message = (String) session.getAttribute("message"); %>
+                            <% if (message != null) { %>
+                            <div class="alert alert-warning alert-dismissible show" role="alert">
+                                <strong> <%= message %></strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            <% session.removeAttribute("message"); 
                         }%>
-
-
-
-                    <c:forEach items="${requestScope.child}" var="c">
-                        <div class="card mt-4 border-m shadow child-card">
-                            <div class="card-body" onclick="showFullInfo(${c.childID})">
-                                <div id="basicInfo${c.childID}">
-                                    <div class="row">
-                                        <div class="info-desc col-md-9">
-                                            <div class="row">
-                                                <div class="col-md-5">
-                                                    <p class="title-info"><strong><i class="fas fa-user"></i> Fullname: </strong></p>
-                                                </div>
-                                                <div class="col-md-7 detail-info">
-                                                    <p>${c.childName}</p>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-5">
-                                                    <p class="title-info"><i class="fas fa-calendar-alt"></i> <strong>Date of birth:</strong>
-                                                    </p>
-                                                </div>
-                                                <div class="col-md-7 detail-info">
-                                                    <p>${c.birthday}</p>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-5">
-                                                    <p class="title-info"><i class="fas fa-phone"></i> <strong>Parent's phone:</strong></p>
-                                                </div>
-                                                <div class="col-md-7 detail-info">
-                                                    <p>${c.user.phoneNumber}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="row justify-content-center">
-                                                <img src="${c.image}" style="height: 85px;object-fit: cover;width: 85px;"
-                                                     alt="Image profile" style="max-height: 85px;"
-                                                     class="img-thumbnail rounded-circle" />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div id="fullInfo${c.childID}" style="display: none;">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <p class="title-info"><i class="fas fa-venus-mars"></i> <strong>Gender:</strong>
-                                            </p>
-                                        </div>
-                                        <div class="col-md-8 detail-info">
-                                            <p>${c.gender}</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <p class="title-info"><i class="fas fa-globe"></i> <strong>Parent's email:</strong></p>
-                                        </div>
-                                        <div class="col-md-8 detail-info">
-                                            <p>${c.user.email}</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <p class="title-info"><i class="fas fa-map-marker-alt"></i> <strong>Address: </strong></p>
-                                        </div>
-                                        <div class="col-md-8 detail-info">
-                                            <p>${c.user.address}</p>
-                                        </div>
-                                    </div>
-                                    <div class="card-footer mt-3">
-                                        <div class="row mt-3">
-                                            <div class="col-md-9">
+                        </div>
+                        <c:forEach items="${requestScope.child}" var="c">
+                            <div class="card mt-4 border-m shadow child-card">
+                                <div class="card-body" onclick="showFullInfo(${c.childID})">
+                                    <div id="basicInfo${c.childID}">
+                                        <div class="row">
+                                            <div class="info-desc col-md-9">
                                                 <div class="row">
-                                                    <div class="col-md-4">
-                                                        <button class="btn btn-danger btn-block border-m trash" value="${c.childID}">
+                                                    <div class="col-md-5">
+                                                        <p class="title-info"><strong><i class="fas fa-user"></i> Fullname: </strong></p>
+                                                    </div>
+                                                    <div class="col-md-7 detail-info">
+                                                        <p>${c.childName}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <p class="title-info"><i class="fas fa-calendar-alt"></i> <strong>Date of birth:</strong>
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-md-7 detail-info">
+                                                        <p>${c.birthday}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <p class="title-info"><i class="fas fa-phone"></i> <strong>Parent's phone:</strong></p>
+                                                    </div>
+                                                    <div class="col-md-7 detail-info">
+                                                        <p>${c.user.phoneNumber}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="row justify-content-center">
+                                                    <img src="${c.image}" style="height: 85px;object-fit: cover;width: 85px;"
+                                                         alt="Image profile" style="max-height: 85px;"
+                                                         class="img-thumbnail rounded-circle" />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div id="fullInfo${c.childID}" style="display: none;">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <p class="title-info"><i class="fas fa-venus-mars"></i> <strong>Gender:</strong>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-8 detail-info">
+                                                <p>${c.gender}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <p class="title-info"><i class="fas fa-globe"></i> <strong>Parent's email:</strong></p>
+                                            </div>
+                                            <div class="col-md-8 detail-info">
+                                                <p>${c.user.email}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <p class="title-info"><i class="fas fa-map-marker-alt"></i> <strong>Address: </strong></p>
+                                            </div>
+                                            <div class="col-md-8 detail-info">
+                                                <p>${c.user.address}</p>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer mt-3">
+                                            <div class="row mt-3">
+                                                <div class="col-md-9">
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <button class="btn btn-danger btn-block border-m trash" value="${c.childID}">
+                                                                <span class="d-flex align-items-center">
+                                                                    <i class="fas fa-arrow-circle-left mr-2"></i> Delete
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <button class="btn btn-primary btn-block border-m"><span
+                                                                    class="d-flex align-items-center">
+                                                                    <i class="fas fa-edit mr-2"></i> Edit
+                                                                </span></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="">
+                                                    <form action="reservationdetail?" method="POST">
+                                                        <input type="hidden" name="serviceID" value="${service.serviceID}">
+                                                        <input type="hidden" name="staffID" value="${staff.staffID}">
+                                                        <input type="hidden" name="childID" value="${c.childID}">
+                                                        <button type="submit" class="btn-continue btn btn-block text-white">
                                                             <span class="d-flex align-items-center">
-                                                                <i class="fas fa-arrow-circle-left mr-2"></i> Delete
+                                                                <i class="fas fa-arrow-circle-right mr-2"></i> Continue
                                                             </span>
                                                         </button>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <button class="btn btn-primary btn-block border-m"><span
-                                                                class="d-flex align-items-center">
-                                                                <i class="fas fa-edit mr-2"></i> Edit
-                                                            </span></button>
-                                                    </div>
+                                                    </form>
                                                 </div>
-                                            </div>
-                                            <div class="">
-                                                <button class="btn-continue btn btn-block text-white">
-                                                    <span class="d-flex align-items-center">
-                                                        <i class="fas fa-arrow-circle-right mr-2"></i> Continue
-                                                    </span>
-                                                </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </c:forEach>
+                        </c:forEach>
+                    </div>
                 </div>
             </div>
-            <div class="row justify-content-center">
+            <div class="row justify-content-center mb-5">
                 <div class="footer-nav mt-5 col-md-6">
                     <div class="row">
                         <div class="col-md-3">
@@ -274,7 +322,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="patientName">Fullname:</label>
-                                        <input required type="text" class="form-control" id="patientName" name="fullname" placeholder="Enter fullname of your child">
+                                        <input required type="text" class="form-control" oninvalid="CheckFullName(this);" oninput="CheckFullName(this);"
+                                               id="patientName" name="fullname" placeholder="Enter fullname of your child">
                                     </div>
                                     <div class="row">
                                         <div class="form-group mx-3">
@@ -318,6 +367,7 @@
                                     <div class="form-group">
                                         <label for="patientPhoneNumber">Parent's phone:</label>
                                         <input type="text" class="form-control" id="patientPhoneNumber" 
+                                               oninvalid="CheckPhone(this);" oninput="CheckPhone(this);"
                                                name="phoneNumber" placeholder="Enter phone number" value="${sessionScope.user.phoneNumber}">
                                     </div>
                                     <div class="form-group">
@@ -347,8 +397,8 @@
                     </form>
                 </div>
             </div>
-
         </div>
+        <jsp:include page="layout/footer.jsp" />
 
         <!-- Thêm script của Bootstrap JS và JavaScript tùy chỉnh -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -476,7 +526,25 @@
                                                     }
                                                 }
                                             });
+                                            function CheckFullName(text) {
+                                                var name = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ ]{4,}(?:[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+){0,2}$/;
+                                                if (!name.test(text.value)) {
+                                                    text.setCustomValidity('Name is not valid');
+                                                } else {
+                                                    text.setCustomValidity('');
+                                                }
+                                                return true;
+                                            }
 
+                                            function CheckPhone(text) {
+                                                var phone = /(84|0[3|5|7|8|9])+([0-9]{8})\b/;
+                                                if (!phone.test(text.value)) {
+                                                    text.setCustomValidity('Phone is not valid');
+                                                } else {
+                                                    text.setCustomValidity('');
+                                                }
+                                                return true;
+                                            }
 
 
         </script>

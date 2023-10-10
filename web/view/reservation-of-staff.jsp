@@ -51,15 +51,15 @@
     </head>
 
     <body>
-         <%
-        String email = (String) session.getAttribute("email");
-        StaffDAO staffDAO = new StaffDAO();
-        ReservationDAO reservationDAO = new ReservationDAO();
-        ChildrenDAO childrenDAO = new ChildrenDAO();
-        ServiceDAO serviceDAO = new ServiceDAO();
-        UserDAO userDAO = new UserDAO();
-        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-        boolean isManager = false;
+        <%
+       String email = (String) session.getAttribute("email");
+       StaffDAO staffDAO = new StaffDAO();
+       ReservationDAO reservationDAO = new ReservationDAO();
+       ChildrenDAO childrenDAO = new ChildrenDAO();
+       ServiceDAO serviceDAO = new ServiceDAO();
+       UserDAO userDAO = new UserDAO();
+       Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+       boolean isManager = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){
@@ -114,7 +114,7 @@
             <div class="content <%if(curStaff==null){%>ms-0 w-100<%}%>">
                 <!-- Navbar Start -->
                 <nav class="navbar navbar-expand navbar-light sticky-top px-4 py-0" style="background-color: #1977cc;">
-                    
+
                     <a href="#" class="sidebar-toggler flex-shrink-0 text-decoration-none text-light">
                         <i class="fa fa-bars"></i>
                     </a>
@@ -177,7 +177,7 @@
                                 <a href="logout" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
-                         <%}else{%>
+                        <%}else{%>
                         <a href="staff?event=sent-to-login" id="login" class="btn btn-outline-primary ms-3 bg-light rounded-pill text-decoration-none"><span class="d-none d-md-inline">Login</a>
                         <%}%>
                     </div>
@@ -192,6 +192,38 @@
                         <div class="col-md-12 p-0">
                             <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
                                 <h4>RESERVATION LIST</h4>
+                            </div>
+                            <div class="row justify-content-between align-items-start mb-4 px-4 py-3 border-bottom d-flex">
+                                <div class="col-md-3 px-4 d-flex flex-column">
+                                    <input type="text" name="reservationId" placeholder="Search Reservation Id" class="form-control">
+                                    <input type="text" name="customerName" class="mt-2 form-control" placeholder="Search Customer Name">
+                                </div>
+                                <div class="col-md-4 px-4 d-flex">
+                                    <div class="input-group mb-3 text-black-50">
+                                        <input type="date" class="form-control" name="from">
+                                        <span class="input-group-text">to</span>
+                                        <input type="date" class="form-control"name="to" >
+                                    </div>
+                                </div>
+                                <div class="col-md-3 px-4">
+                                    <select class="form-select">
+                                        <option selected value="">Sort By</option>
+                                        <option value="customername">Customer Name</option>
+                                        <option value="status">Status</option>
+                                        <option value="price-high">Highest Cost</option>
+                                        <option value="price-low">Lowest Cost</option>
+                                        <option value="date-latest">Latest Booking Date</option> 
+                                        <option value="date-earliest">Earliest Booking Date</option>
+                                    </select>
+                                    <select class="form-select mt-2">
+                                        <option selected value="">Status</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="awaiting-confirmation">Awaiting Confirmation</option>
+                                        <option value="waiting-for-examination">Waiting For Examination</option> 
+                                        <option value="done">Done</option>
+                                        <option value="cancel">Cancel</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="table-responsive p-4">
                                 <%if(curStaff!=null){%>
@@ -215,7 +247,7 @@
                                         for (Reservation reservation : reservations) {
                                         %>
                                         <tr>
-                                            <th scope="row"><%=reservation.getReservationID()%></th>
+                                            <th scope="row"><a href="staff?event=send-to-reservation-detail&reserdid=<%=reservation.getReservationID()%>" class="text-decoration-none text-dark"><%=reservation.getReservationID()%></a></th>
                                             <td><%=reservation.getReservationDate()%></td>
                                             <td>
                                                 <div class="d-flex align-items-center">
@@ -264,7 +296,7 @@
 
         <!-- Template Javascript -->
         <script>
-            document.querySelector('.sidebar-toggler').addEventListener('click', function() {
+            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
                 var sidebar = document.querySelector('.sidebar');
                 var content = document.querySelector('.content');
 

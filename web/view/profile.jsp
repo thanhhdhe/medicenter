@@ -103,13 +103,13 @@
                                             <label class="form-label">Gender</label>
                                             <div class="my-3">
                                                 <div class="form-check">
-                                                    <input id="credit" name="gender" value="male" type="radio" class="form-check-input" 
-                                                           <%= curUser.getGender().equals("male") ? "checked" : "" %> required>
+                                                    <input id="credit" name="gender" value="Male" type="radio" class="form-check-input" 
+                                                           <%= curUser.getGender().equals("Male") ? "checked" : "" %> required>
                                                     <label class="form-check-label">Male</label>
                                                 </div>
                                                 <div class="form-check">
-                                                    <input id="debit" name="gender" value="female" type="radio" class="form-check-input" 
-                                                           <%= curUser.getGender().equals("female") ? "checked" : "" %> required>
+                                                    <input id="debit" name="gender" value="Female" type="radio" class="form-check-input" 
+                                                           <%= curUser.getGender().equals("Female") ? "checked" : "" %> required>
                                                     <label class="form-check-label">Female</label>
                                                 </div>
                                             </div>
