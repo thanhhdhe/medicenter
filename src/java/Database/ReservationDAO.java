@@ -144,6 +144,98 @@ public class ReservationDAO extends MyDAO {
         }
         return list;
     }
+    
+    public List<Reservation> getFilteredReservationsOfStaff(String staffId, String status, String reservationId, String customerName, String fromDate, String toDate, String sortBy) {
+        List<Reservation> list = new ArrayList<>();
+        String sql = "SELECT * FROM Reservations "
+                + "INNER JOIN Users ON Reservations.UserID = Users.UserID "
+                + "WHERE StaffID = ? AND Reservations.Status <> ? ";
+        if (status != null && !status.isEmpty()) {
+            sql += "AND Reservations.Status = ? ";
+        }
+        if (reservationId != null && !reservationId.isEmpty()) {
+            sql += "AND Reservations.ReservationID = ? ";
+        }
+        if (customerName != null && !customerName.isEmpty()) {
+            sql += "AND Users.FirstName LIKE ? OR Users.LastName LIKE ?";
+        }
+        if (fromDate != null && !fromDate.isEmpty()) {
+            sql += "AND Reservations.CreatedDate >= ?";
+        }
+        if (toDate != null && !toDate.isEmpty()) {
+            sql += "AND Reservations.CreatedDate <= ? ";
+        }
+
+        sql += "ORDER BY ";
+        if (sortBy != null && !sortBy.isEmpty()) {
+            switch (sortBy) {
+                case "customername":
+                    sql += "Users.FirstName ";
+                    break;
+                case "status":
+                    sql += "ReservationsStatus ";
+                    break;
+                case "price-high":
+                    sql += "Reservations.Cost DESC ";
+                    break;
+                case "price-low":
+                    sql += "Reservations.Cost ";
+                    break;
+                case "date-latest":
+                    sql += "Reservations.CreatedDate DESC ";
+                    break;
+                case "date-earliest":
+                    sql += "Reservations.CreatedDate ";
+                    break;
+                default:
+                    sql += "Reservations.ReservationID ";
+                    break;
+            }
+        } else {
+            sql += "Reservations.CreatedDate DESC ";
+        }
+
+        try {
+            ps = con.prepareStatement(sql);
+            int paramIndex = 1;
+            ps.setString(paramIndex++, staffId);
+            ps.setString(paramIndex++, "pending");
+            if (status != null && !status.isEmpty()) {
+                ps.setString(paramIndex++, status);
+            }
+            if (reservationId != null && !reservationId.isEmpty()) {
+                ps.setString(paramIndex++, reservationId);
+            }
+            if (customerName != null && !customerName.isEmpty()) {
+                ps.setString(paramIndex++, "%" + customerName + "%");
+                ps.setString(paramIndex++, "%" + customerName + "%");
+            }
+            if (fromDate != null && toDate != null && !fromDate.isEmpty() && !toDate.isEmpty()) {
+                ps.setDate(paramIndex++, java.sql.Date.valueOf(fromDate));
+                ps.setDate(paramIndex++, java.sql.Date.valueOf(toDate));
+            }
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int ReservationID = rs.getInt("ReservationID");
+                int UserID = rs.getInt("UserID");
+                int ServiceID = rs.getInt("ServiceID");
+                Date ReservationDate = rs.getDate("ReservationDate");
+                int ReservationSlot = rs.getInt("ReservationSlot");
+                Timestamp CreatedDate = rs.getTimestamp("CreatedDate");
+                float Cost = rs.getFloat("Cost");
+                String Status = rs.getString("Status");
+                int StaffID = rs.getInt("StaffID");
+                int ChildID = rs.getInt("ChildID");
+                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status);
+                list.add(reservation);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
     public List<Reservation> getReservationByStaffID(String staffID) {
         List<Reservation> list = new ArrayList<>();
