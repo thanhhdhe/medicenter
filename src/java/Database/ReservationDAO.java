@@ -37,8 +37,7 @@ public class ReservationDAO extends MyDAO {
 
     //get total Reservation
     public int getTotalReservation() {
-        xSql = "select COUNT(*) from Reservations\n"
-                + "where Status = 'pending' or Status = 'cancel';";
+        xSql = "select COUNT(*) from Reservations;";
         try {
             ps = con.prepareStatement(xSql);
             rs = ps.executeQuery();
@@ -51,11 +50,17 @@ public class ReservationDAO extends MyDAO {
         return 0;
     }
 
-    public List<Reservation> getReservationAllByPaging(int page) {
+     public List<Reservation> getReservationAllByPaging(int page, String sort) {
         List<Reservation> list = new ArrayList<>();
+        String sortstatus="";
+        
+        if(sort == null || sort.equals("")){
+            sortstatus ="ReservationID";
+        } else {
+            sortstatus = "Status";
+        }
         xSql = "select * from Reservations\n"
-                + "where Status = 'pending' or Status = 'cancel'\n"
-                + "ORDER BY ReservationID\n"
+                + "ORDER BY "+sortstatus+"\n"
                 + "OFFSET ? Rows fetch next 10 rows ONLY; ";
         try {
             ps = con.prepareStatement(xSql);

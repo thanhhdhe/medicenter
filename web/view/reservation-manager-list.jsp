@@ -193,6 +193,11 @@
 
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
+                    <div class="" >
+                        <button style="border: 0px; border-radius: 5px; background-color: #6994eb; font-family: fantasy" id="sortButton" onclick="toggleSort()">
+                            Unsort
+                        </button>
+                    </div>
                     <div
                         class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0"
                         >
@@ -247,12 +252,12 @@
 
                                                 <td>
                                                     <div class="dropdown">
-                                                        <button style="border: 0px;" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <button style="border: 0px; padding: 0px" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                                             <span class="badge bg-primary"  id="statusBadge-${reservation.getReservationID()}">${reservation.getStatus()}</span>
                                                         </button>
                                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">Cancel</a></li>
-                                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">Pending</a></li>
+                                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">cancel</a></li>
+                                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">pending</a></li>
                                                             <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">waiting for examination</a></li>
                                                             <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">waiting for examination</a></li>
                                                         </ul>
@@ -270,9 +275,9 @@
                                 </table>
                                 <% ReservationDAO reservationdao = new ReservationDAO(); %>
                                 <div class="d-flex justify-content-center mb-5" id="pagination-container">
-                                    <button class="pagination-btn ms-2 active" data-page="1">1</button>
+                                    <button style="border: 0px; border-radius: 5px; background-color: #6994eb" class="pagination-btn ms-2 active" data-page="1">1</button>
                                     <%for (int i = 2; i <=(reservationdao.getTotalReservation()+9)/10; i++) {%>
-                                    <button class="pagination-btn ms-2 inactive" data-page="<%=i%>"><%=i%></button>
+                                    <button style="border: 0px; border-radius: 5px; background-color: #6994eb" class="pagination-btn ms-2 inactive" data-page="<%=i%>"><%=i%></button>
                                     <%}%>
                                 </div> 
 
@@ -318,7 +323,8 @@
 
                                                                     return false;
                                                                 });
-
+                                                                // Khởi tạo biến để theo dõi trạng thái của nút
+                                                                var isSorted = false;
                                                                 var paginationButtons = document.querySelectorAll('.pagination-btn');
                                                                 paginationButtons.forEach(function (button) {
                                                                     button.addEventListener('click', function (event) {
@@ -333,16 +339,42 @@
                                                                             this.classList.add('active');
 
                                                                             var page = this.dataset.page;
-                                                                            loadPageServices(page); // Gọi hàm loadServices() để tải danh sách dịch vụ của trang được chọn
+                                                                            if(isSorted){
+                                                                               loadPageServices(page,"sort"); // Gọi hàm loadServices() để tải danh sách dịch vụ của trang được chọn
+                                                                            } else {
+                                                                               loadPageServices(page,""); 
+                                                                            }
+                                                                            
                                                                         }
                                                                     });
                                                                 });
+                                                                
 
+                                                                        // Hàm thực hiện việc thay đổi giá trị của nút và gọi loadPageServices
+                                                                function toggleSort() {
+                                                                    // Lấy thẻ button bằng id
+                                                                    var sortButton = document.querySelector('#sortButton');
+
+                                                                    if (isSorted) {
+                                                                        // Nếu đã được sắp xếp (sort), thay đổi giá trị và gọi loadPageServices với giá trị "unsort"
+                                                                        sortButton.textContent = "Unsort";
+                                                                        loadPageServices(1, "");
+                                                                    } else {
+                                                                        // Nếu chưa được sắp xếp (unsort), thay đổi giá trị và gọi loadPageServices với giá trị "sort"
+                                                                        sortButton.textContent = "Sort";
+                                                                        loadPageServices(1, "sort");
+                                                                    }
+
+                                                                    // Đảo ngược trạng thái của biến
+                                                                    isSorted = !isSorted;
+                                                                }
                                                                 // Hàm tải dữ liệu của trang bằng Ajax
-                                                                function loadPageServices(page) {
+                                                                function loadPageServices(page,sortType) {
                                                                     // Gửi yêu cầu Ajax đến Servlet với tham số trang
+                                                                    
                                                                     var xhr = new XMLHttpRequest();
-                                                                    xhr.open('POST', 'reservationcontactmanager?event=reservation-list-paging&page=' + page);
+                                                                    xhr.open('POST', 'reservationcontactmanager?event=reservation-list-paging&page=' + page
+                                                                            + '&sortstatus=' + sortType);
 
                                                                     xhr.onload = function () {
                                                                         if (xhr.status === 200) {
