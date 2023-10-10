@@ -96,6 +96,11 @@
                         >
                     </div>
                     <%if(isManager){%>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="reservationcontactmanager?event=reservation-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations Manager</a
+                        >
+                    </div>
                     <div class="navbar-nav w-100 text-light">
                         <a href="feedback" class="nav-item nav-link"
                            ><i class="far fa-file-alt"></i>Feedback</a
