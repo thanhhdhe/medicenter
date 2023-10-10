@@ -360,7 +360,7 @@ VALUES
 	
 -- Reservations
 INSERT INTO Reservations(UserID, ServiceID, StaffID, ChildID, CreatedDate, ReservationDate, ReservationSlot, Cost, Status) 
-VALUES (1, 3, 3, 1, '10-01-2023 22:00:00', '10-14-2023', 3, 300.0, 'waiting for examination'),
+VALUES (1, 3, 3, 1, '10-01-2023 22:00:00', '10-14-2023', 3, 300.0, 'awaiting confirmation'),
 (1, 9, 1, 1, '10-01-2023 20:10:00', '10-13-2023', 1, 520.0, 'waiting for examination'),
 (1, 6, 1, 2, '10-01-2023 22:15:00', '10-13-2023', 1, 1200.0, 'waiting for examination'), 
 (1, 9, 3, 2, '10-01-2023 22:20:00', '10-26-2023', 3, 888.0, 'waiting for examination'), 

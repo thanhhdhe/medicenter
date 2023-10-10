@@ -9,7 +9,7 @@
     </head>
     <body>
         <jsp:include page="layout/Header.jsp"/>
-
+        <%@ page import="java.sql.Date"%>
         <%@ page import="java.util.List,java.util.ArrayList,model.Service,model.Staff,model.Children" %>
         <% List<Integer> Workday = (List<Integer>) request.getAttribute("Workday");
            List<Integer> fullDay = (List<Integer>) request.getAttribute("fullDay");
@@ -21,6 +21,8 @@
            if (staff != null) {
                 staffID = staff.getStaffID() + "";
            }
+           Date dateChange = (Date) request.getAttribute("dateChange");
+           int reservationID = (int) request.getAttribute("reservationID");
         %>
         <div class="container-fluid">
             <div class="row">
@@ -88,7 +90,7 @@
             let selectedDate = null; // p
             let selectedMonth = currentMonth + 1; // int
             let selectedSlot = null; // int
-            // INIT
+            // initial
             document.getElementById("time").textContent = currentMonth + 1 + " / " + currentYear;
             document.getElementById("nextMonth").addEventListener("click", function () {
                 // Increase the month
@@ -98,6 +100,60 @@
             document.getElementById("previousMonth").addEventListener("click", function () {
                 changeMonth(realMonth + 1);
             });
+
+            // ==============Process for update reservation=====================
+            <% if (dateChange != null) { %>
+            // Variable store the day of the date that be saved with the reservation
+            let storedDay = <%=dateChange.getDate()%>;
+            // Variable store the month of the date that be saved with the reservation
+            let storedMonth = <%=dateChange.getMonth() + 1%>;
+            // Variable store the year of the date that be saved with the reservation
+            let storedYear = <%=dateChange.getYear() + 1900%>;
+            var checkoutButton = document.getElementById("btnCheckOut");
+            checkoutButton.textContent = "Update";
+            checkoutButton.removeAttribute("onclick");
+            checkoutButton.addEventListener('click', function () {
+                updateReservation();
+            });
+            function updateReservation() {
+                if (selectedDate && selectedSlot) {
+                    // Get the selected date and time slot
+                    const selectedDateValue = selectedDate.textContent;
+                    // Check not null
+                    if (selectedDateValue === null) {
+                        return;
+                    }
+                    const selectedSlotValue = selectedSlot.textContent;
+                    if (selectedSlotValue === null) {
+                        return;
+                    }
+                    // Check the right condition to send the signal to the servlet
+                    if (workSlots.includes(timeSlots.indexOf(selectedSlotValue) + 1) && !bookedSlots.includes(timeSlots.indexOf(selectedSlotValue) + 1)
+                            && Workday.includes(parseInt(selectedDateValue, 10)) && !fullDay.includes(parseInt(selectedDateValue, 10))) {
+                        // Send date and time slot information to the servlet ...
+                        const xhr = new XMLHttpRequest();
+                        const serviceID = <%=service.getServiceID()%>;
+                        const staffID = <%=staffID%>;
+                        let updateUrl = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=update&serviceID=" + <%=service.getServiceID()%> + "&slot=" + (timeSlots.indexOf(selectedSlotValue) + 1) + "&ChildID=" + childID + "&reservationID=" + <%=reservationID%>;
+                        xhr.open("GET", updateUrl, true);
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState === 4 && xhr.status === 200) {
+                                const responseText = xhr.responseText; // Text string from response
+                                if (responseText === "Choose date again") {
+                                    alert("This slot is no longer available. Please choose again.");
+                                } else {
+                                    alert("Successfully update the reservation");
+                                    const url = "reservation?id=" + <%=reservationID%>;
+                                    window.location.href = url;
+                                }
+                            }
+                        };
+                        xhr.send();
+                    }
+                }
+            }
+            <% } %>
+            // ====================================================================
 
             // Create a timetable for scheduling
             function generateTimetable() {
@@ -127,7 +183,7 @@
                     } else {
                         if (staffID !== null) {
                             // Check whether day in the past or in working day or not
-                            if (currentDate.getHours() > 16 && currentDate.getDate() === dayCount && currentDate.getMonth() === selectedMonth && currentDate.getYear() === currentYear) {
+                            if (currentDate.getHours() > 16 && currentDate.getDate() === dayCount && (currentDate.getMonth() + 1) === selectedMonth && currentDate.getFullYear() === currentYear) {
                                 html += "<td><p title='This date is not available for booking' class=" + not_work + ">" + dayCount + "</p></td>";
                             } else if (Workday.includes(dayCount) && (dayCount >= currentDate.getDate() || currentMonth > currentDate.getMonth())) {
                                 // Check whether dayCount is in the list of day that full
@@ -344,7 +400,6 @@
                             }
                         };
                         xhr.send();
-
                     }
                 }
             }
@@ -357,7 +412,6 @@
                 workSlots = null;
                 // For service scheduling only
                 bookedSlots = null;
-
 
                 // Validate the month, the month only can be the current month or the next month
                 if (month !== (currentDate.getMonth() + 1) && month !== (currentDate.getMonth() + 2)) {

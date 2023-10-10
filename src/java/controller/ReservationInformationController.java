@@ -69,10 +69,11 @@ public class ReservationInformationController extends HttpServlet {
                 ReservationID = Integer.parseInt(id);
                 Reservation reservation = reservationDAO.getReservationByID(ReservationID);
                 if (!reservation.getStatus().equals("done")) {
+                    // Cancel reservation
                     reservation.setStatus("cancel");
+                    reservationDAO.update(reservation);
+                    response.getWriter().write("success");
                 }
-                request.setAttribute("message", "success");
-                response.sendRedirect("reservation?id="+ id);
             }
         }
     }

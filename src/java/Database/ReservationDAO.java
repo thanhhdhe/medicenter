@@ -184,10 +184,10 @@ public class ReservationDAO extends MyDAO {
                     + "FETCH NEXT ? ROWS ONLY";
         } else {
             xSql = "SELECT * FROM [dbo].[Reservations]  "
-                + "WHERE UserID = ? AND ReservationID = " + value + " "
-                + "ORDER BY CreatedDate DESC "
-                + "OFFSET ? ROWS "
-                + "FETCH NEXT ? ROWS ONLY";
+                    + "WHERE UserID = ? AND ReservationID = " + value + " "
+                    + "ORDER BY CreatedDate DESC "
+                    + "OFFSET ? ROWS "
+                    + "FETCH NEXT ? ROWS ONLY";
         }
         try {
             ps = con.prepareStatement(xSql);
@@ -511,7 +511,7 @@ public class ReservationDAO extends MyDAO {
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, userID);
-            ps.setString(2, "%"+title+"%");
+            ps.setString(2, "%" + title + "%");
             ps.setInt(3, carId);
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -535,7 +535,29 @@ public class ReservationDAO extends MyDAO {
         }
         return list;
     }
-    
+
+    public void update(Reservation reservation) {
+        xSql = "update [dbo].[Reservations] set UserID = ?, ServiceID = ?, StaffID = ? "
+                + " ,ChildID = ?, ReservationDate = ?, ReservationSlot = ?, CreatedDate = ?, Cost = ?, Status = ?  where ReservationID = ? ";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(10, reservation.getReservationID());
+            ps.setInt(1, reservation.getUserID());
+            ps.setInt(2, reservation.getServiceID());
+            ps.setInt(3, reservation.getStaffID());
+            ps.setInt(4, reservation.getChildID());
+            ps.setDate(5, reservation.getReservationDate());
+            ps.setInt(6, reservation.getReservationSlot());
+            ps.setTimestamp(7, reservation.getCreatedDate());
+            ps.setFloat(8, reservation.getCost());
+            ps.setString(9, reservation.getStatus());
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String args[]) {
         ReservationDAO rd = new ReservationDAO();
 //        String dateString = "2023-10-01 22:20:00";
