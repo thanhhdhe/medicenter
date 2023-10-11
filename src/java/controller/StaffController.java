@@ -81,6 +81,8 @@ public class StaffController extends HttpServlet {
                 break;
             case "send-to-history-examination":
                 String childId = request.getParameter("childid");
+                String reserdIdst = request.getParameter("reserdid")+"";
+                if(!reserdIdst.equals("null")) request.setAttribute("reserdid", reserdIdst);
                 request.setAttribute("childId", childId);
                 request.getRequestDispatcher("./view/add-medical-examination.jsp").forward(request, response);
                 break;

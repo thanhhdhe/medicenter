@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import model.Children;
 import model.MedicalExamination;
+import model.Reservation;
 import model.Staff;
 
 /**
@@ -236,6 +237,16 @@ public class MedicalExaminationController extends HttpServlet {
         int childID = Integer.parseInt(request.getParameter("childID") + "");
         int staffID = Integer.parseInt(request.getParameter("staffID") + "");
         int serviceId = Integer.parseInt(request.getParameter("service") + "");
+        String reserdId = request.getParameter("reserdId") + "";
+        if(!reserdId.equals("null")){
+            try {
+                ReservationDAO reservationDAO = new ReservationDAO();
+                Reservation reservation = reservationDAO.getReservationByID(Integer.parseInt(reserdId));
+                reservation.setStatus("waiting for examination");
+                reservationDAO.update(reservation);
+            } catch (Exception e) {
+            }
+        }
         String disease = request.getParameter("disease") + "";
         String prescription = request.getParameter("prescription") + "";
         ChildrenDAO childrenDAO = new ChildrenDAO();
