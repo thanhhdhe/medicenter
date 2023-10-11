@@ -100,7 +100,12 @@
                                 </div>
                             </div>
                             <div class="text-center">
-                                <a id="bookNowLink" href="user?action=my-children&serviceID=${service.serviceID}"><button class="btn btn-primary mb-4">Book an appointment now</button></a>
+                                <form method="post" action="user?action=my-children">
+                                    <input type="hidden" name="serviceID" value="${service.serviceID}">
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary mb-4">Book Now</button>
+                                    </div>
+                                </form>
                             </div>
 
                         </div>

@@ -12,7 +12,7 @@ import java.sql.Date;
  */
 public class Service {
 
-    private int ServiceID;
+    private int serviceID;
     private String title;
     private String brief;
     private String thumbnail;
@@ -26,8 +26,8 @@ public class Service {
     public Service() {
     }
 
-    public Service(int ServiceID, String title, String brief, String thumbnail, int categoryID, double originalPrice, double salePrice, String serviceDetail, Date updateDate) {
-        this.ServiceID = ServiceID;
+    public Service(int serviceID, String title, String brief, String thumbnail, int categoryID, double originalPrice, double salePrice, String serviceDetail, Date updateDate) {
+        this.serviceID = serviceID;
         this.title = title;
         this.brief = brief;
         this.thumbnail = thumbnail;
@@ -38,8 +38,8 @@ public class Service {
         this.updateDate = updateDate;
     }
 
-    public Service(int ServiceID, String title, String brief, String thumbnail, int categoryID, double originalPrice, double salePrice, String serviceDetail, Date updateDate, Boolean status) {
-        this.ServiceID = ServiceID;
+    public Service(int serviceID, String title, String brief, String thumbnail, int categoryID, double originalPrice, double salePrice, String serviceDetail, Date updateDate, Boolean status) {
+        this.serviceID = serviceID;
         this.title = title;
         this.brief = brief;
         this.thumbnail = thumbnail;
@@ -80,11 +80,11 @@ public class Service {
     }
 
     public int getServiceID() {
-        return ServiceID;
+        return serviceID;
     }
 
     public void setServiceID(int ServiceID) {
-        this.ServiceID = ServiceID;
+        this.serviceID = ServiceID;
     }
 
     public String getTitle() {

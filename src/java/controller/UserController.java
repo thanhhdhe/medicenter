@@ -133,7 +133,7 @@ public class UserController extends HttpServlet {
                     int userID = Integer.parseInt(userIDstr);
                     User userDetail = userdao.getUserByID(userID);
                     request.setAttribute("user", userDetail);
-                    ChildrenDAO childrenDAO = new ChildrenDAO();                   
+                    ChildrenDAO childrenDAO = new ChildrenDAO();
                     List<Children> childrenList = childrenDAO.getListChildrenByUserId(userIDstr);
                     request.setAttribute("children", childrenList);
                     request.getRequestDispatcher("./view/user-details.jsp").forward(request, response);
@@ -177,16 +177,23 @@ public class UserController extends HttpServlet {
                 ServiceDAO serviceDAO = new ServiceDAO();
                 Service service = serviceDAO.getServiceByID(serviceID);
                 String staffIDstr = request.getParameter("staffID");
-                int staffID = Integer.parseInt(staffIDstr);
-                StaffDAO staffDAO = new StaffDAO();
-                Staff staff = staffDAO.getStaffByStaffId(staffID);
-                request.setAttribute("staff", staff);
+                Staff staff = null;  // Initialize to null
+                if (staffIDstr != null) {
+                    int staffID = Integer.parseInt(staffIDstr);
+                    StaffDAO staffDAO = new StaffDAO();
+                    staff = staffDAO.getStaffByStaffId(staffID);
+                }
                 request.setAttribute("service", service);
                 ChildrenDAO cDao = new ChildrenDAO();
                 List<Children> childList = cDao.getListChildrenByUserId(userID + "");
                 request.setAttribute("child", childList);
+                // Set the "staff" attribute if staff is not null
+                if (staff != null) {
+                    request.setAttribute("staff", staff);
+                }
                 request.getRequestDispatcher("./view/choose-children.jsp").forward(request, response);
             }
+
             if (action.equals("add-child")) {
                 ChildrenDAO childDAO = new ChildrenDAO();
                 String fullName = request.getParameter("fullname");
