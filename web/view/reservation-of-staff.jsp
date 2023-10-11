@@ -241,7 +241,7 @@
                                     </thead>
                                     <tbody id="reservations-list">
                                         <%
-                                        List<Reservation> reservations = reservationDAO.getReservationByStaffID(curStaff.getStaffID()+"",1,10);
+                                        List<Reservation> reservations = reservationDAO.getPageReservationByStaffID(curStaff.getStaffID()+"",1,10);
         
                                         if(reservations!=null){
                                         for (Reservation reservation : reservations) {

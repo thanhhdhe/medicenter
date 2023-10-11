@@ -60,14 +60,18 @@ public class ReservationContact extends HttpServlet {
             if (endP % 10 != 0) {
                 endPage++; // if endP not divide by 10 so that endPage + 1
             }
-            List<Reservation> listreservation = reservationdao.getReservationAllByPaging(1);
+            List<Reservation> listreservation = reservationdao.getReservationAllByPaging(1,null);
             request.setAttribute("endP", endPage);
             request.setAttribute("Reservation", listreservation);
             request.getRequestDispatcher("/view/reservation-manager-list.jsp").forward(request, response);
         } else if (event.equals("reservation-list-paging")) {
+            //get parameter
             String page = request.getParameter("page");
-
-            List<Reservation> listreservation = reservationdao.getReservationAllByPaging(Integer.parseInt(page));
+            String sort = request.getParameter("sortstatus");
+            System.out.println(sort);
+            // get list reservation
+            List<Reservation> listreservation = reservationdao.getReservationAllByPaging(Integer.parseInt(page),sort);
+            //get information of user
             ServiceDAO serviceDAO = new ServiceDAO();
             UserDAO userdao = new UserDAO();
             ChildrenDAO childrenDAO = new ChildrenDAO();
@@ -83,7 +87,7 @@ public class ReservationContact extends HttpServlet {
                         + "                                                    <td>" + reservation.getReservationDate() + "</td>\n"
                         + "                                                    <td>" + reservation.getReservationSlot() + "</td>\n"
                         + "<td><div class=\"dropdown\">\n"
-                        + "                                                        <button style=\"border: 0px;\" type=\"button\" id=\"dropdownMenuButton1\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">\n"
+                        + "                                                        <button style=\"border: 0px ; padding: 0px;\" type=\"button\" id=\"dropdownMenuButton1\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">\n"
                         + "                                                            <span class=\"badge bg-primary\"  id=\"statusBadge-" + reservation.getReservationID() + "\">" + reservation.getStatus() + "</span>\n"
                         + "                                                        </button>\n"
                         + "                                                        <ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenuLink\">\n"
@@ -93,7 +97,7 @@ public class ReservationContact extends HttpServlet {
                         + "                                                            <li><a class=\"dropdown-item status-change\" href=\"#\" onclick=\"changestatus(this, " + reservation.getReservationID() + ")\">waiting for examination</a></li>\n"
                         + "                                                        </ul>\n"
                         + "                                                    </div> </td>"
-                        + "                                                    <td>" + reservation.getReservationID() + "</td>\n"
+                        + "                                                    <td>" + reservation.getCost() + "</td>\n"
                         + " </tr>");
             }
 

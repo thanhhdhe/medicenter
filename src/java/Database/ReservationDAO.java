@@ -37,8 +37,7 @@ public class ReservationDAO extends MyDAO {
 
     //get total Reservation
     public int getTotalReservation() {
-        xSql = "select COUNT(*) from Reservations\n"
-                + "where Status = 'pending' or Status = 'cancel';";
+        xSql = "select COUNT(*) from Reservations;";
         try {
             ps = con.prepareStatement(xSql);
             rs = ps.executeQuery();
@@ -51,11 +50,17 @@ public class ReservationDAO extends MyDAO {
         return 0;
     }
 
-    public List<Reservation> getReservationAllByPaging(int page) {
+    public List<Reservation> getReservationAllByPaging(int page, String sort) {
         List<Reservation> list = new ArrayList<>();
+        String sortstatus = "";
+
+        if (sort == null || sort.equals("")) {
+            sortstatus = "ReservationID";
+        } else {
+            sortstatus = "Status";
+        }
         xSql = "select * from Reservations\n"
-                + "where Status = 'pending' or Status = 'cancel'\n"
-                + "ORDER BY ReservationID\n"
+                + "ORDER BY " + sortstatus + "\n"
                 + "OFFSET ? Rows fetch next 10 rows ONLY; ";
         try {
             ps = con.prepareStatement(xSql);
@@ -110,6 +115,29 @@ public class ReservationDAO extends MyDAO {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public List<Integer> getListServiceIDByUserAndStaff(String userID, String staffID) {
+        List<Integer> serviceIDList = new ArrayList<>();
+        String sql = "SELECT DISTINCT ServiceID FROM Reservations WHERE UserID = ? AND StaffID = ?";
+
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setString(1, userID);
+            ps.setString(2, staffID);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int serviceID = rs.getInt("ServiceID");
+                serviceIDList.add(serviceID);
+            }
+
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return serviceIDList;
     }
 
     public List<Reservation> getSpecificReservation(String staffID, String date, String month, String year) {
@@ -302,7 +330,7 @@ public class ReservationDAO extends MyDAO {
         return count;
     }
 
-    public List<Reservation> getReservationByStaffID(String staffID, int page, int pageSize) {
+    public List<Reservation> getPageReservationByStaffID(String staffID, int page, int pageSize) {
         List<Reservation> list = new ArrayList<>();
         String sql = "SELECT * FROM [dbo].[Reservations] WHERE StaffID = ? AND Status <> ? "
                 + "ORDER BY ReservationID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
@@ -339,6 +367,38 @@ public class ReservationDAO extends MyDAO {
         return list;
     }
 
+    public List<Reservation> getReservationByStaffID(String staffID) {
+        List<Reservation> list = new ArrayList<>();
+        String sql = "SELECT * FROM [dbo].[Reservations] WHERE StaffID = ? AND Status <> ? ";
+
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setString(1, staffID);
+            ps.setString(2, "pending");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                // Lấy dữ liệu từ ResultSet và thêm vào danh sách
+                int ReservationID = rs.getInt("ReservationID");
+                int UserID = rs.getInt("UserID");
+                int ServiceID = rs.getInt("ServiceID");
+                Date ReservationDate = rs.getDate("ReservationDate");
+                int ReservationSlot = rs.getInt("ReservationSlot");
+                Timestamp CreatedDate = rs.getTimestamp("CreatedDate");
+                float Cost = rs.getFloat("Cost");
+                String Status = rs.getString("Status");
+                int StaffID = rs.getInt("StaffID");
+                int ChildID = rs.getInt("ChildID");
+                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status);
+                list.add(reservation);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public int countReservationsByStaffID(String staffID) {
         int count = 0;
         String sql = "SELECT COUNT(*) FROM [dbo].[Reservations] WHERE StaffID = ? AND Status <> ?";
@@ -347,6 +407,27 @@ public class ReservationDAO extends MyDAO {
             ps = con.prepareStatement(sql);
             ps.setString(1, staffID);
             ps.setString(2, "pending");
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+
+    public int countReservationsByStaffAndService(String staffID, String serviceID) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM [dbo].[Reservations] WHERE StaffID = ? AND ServiceID = ?";
+
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setString(1, staffID);
+            ps.setString(2, serviceID);
             rs = ps.executeQuery();
             if (rs.next()) {
                 count = rs.getInt(1);
@@ -836,6 +917,11 @@ public class ReservationDAO extends MyDAO {
         List<Reservation> reservations = reservationDAO.getFilteredReservationsOfStaff("1", "", "", "t", "", "", "", 1);
         for (Reservation reservation : reservations) {
             System.out.println(reservation.getUserID());
+        }
+        ServiceDAO serviceDAO = new ServiceDAO();
+        List<Integer> serviceIDList = reservationDAO.getListServiceIDByUserAndStaff("1", "1");
+        for (Integer integer : serviceIDList) {
+            System.out.println(integer);
         }
 
 //        Reservation r = new Reservation();
