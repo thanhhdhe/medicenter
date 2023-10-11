@@ -63,6 +63,11 @@ public class Service {
         this.status = status;
     }
 
+    public Service(int ServiceID, String title) {
+        this.serviceID = ServiceID;
+        this.title = title;
+    }
+
     public Boolean getStatus() {
         return status;
     }
@@ -143,6 +148,4 @@ public class Service {
         this.updateDate = updateDate;
     }
 
-   
-    
 }

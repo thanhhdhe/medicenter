@@ -55,6 +55,17 @@ public class Staff {
         this.introduction = introduction;
     }
 
+    public Staff(int staffID, String fullName, String gender, String phoneNumber, String profileImage, String rank, String specialty, String introduction) {
+        this.staffID = staffID;
+        this.fullName = fullName;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
+        this.profileImage = profileImage;
+        this.rank = rank;
+        this.specialty = specialty;
+        this.introduction = introduction;
+    }
+
     public String getRank() {
         return rank;
     }
@@ -78,7 +89,6 @@ public class Staff {
     public void setIntroduction(String introduction) {
         this.introduction = introduction;
     }
-
 
     public int getStaffID() {
         return staffID;

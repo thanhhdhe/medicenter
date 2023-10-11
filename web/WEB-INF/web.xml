@@ -85,8 +85,13 @@
         <servlet-class>controller.PostDetailManage</servlet-class>
     </servlet>
     <servlet>
+<<<<<<< Upstream, based on origin/main
         <servlet-name>AdminController</servlet-name>
         <servlet-class>controller.AdminController</servlet-class>
+        =======
+        <servlet-name>StaffListController</servlet-name>
+        <servlet-class>controller.StaffListController</servlet-class>
+        >>>>>>> 59e9924 doc page
     </servlet>
     <servlet-mapping>
         <servlet-name>ServiceController</servlet-name>
@@ -199,6 +204,10 @@
     <servlet-mapping>
         <servlet-name>AdminController</servlet-name>
         <url-pattern>/admin</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StaffListController</servlet-name>
+        <url-pattern>/staffList</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

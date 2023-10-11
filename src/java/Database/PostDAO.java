@@ -513,6 +513,21 @@ public class PostDAO extends MyDAO {
         return postList;
     }
 
+    public int getLastPostID() {
+        int lastID = 1;
+        xSql = "select Top 1 PostID  from Posts order by PostID desc";
+        try {
+            ps = con.prepareStatement(xSql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                lastID = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return lastID;
+    }
+
     public static void main(String[] args) {
         PostDAO postDAO = new PostDAO();
         //        List<Post> list = postDAO.getSortedPagedPostsByManagerChoice(0, 6, "", "", "", "", "Title");
@@ -522,9 +537,22 @@ public class PostDAO extends MyDAO {
         //        System.out.println("".isEmpty());
 //        System.out.println(postDAO.getCountOfPostsManagerChoose("", "", "1", ""));
         Post post = postDAO.getPostByID(1);
-        Date date = Date.valueOf(LocalDate.now());
-        post.setBriefInfo("qqqqq");
-        postDAO.update(1, post);
-        System.out.println(postDAO.getPostByID(1).getBriefInfo());
+//        Date date = Date.valueOf(LocalDate.now());
+//        post.setBriefInfo("qqqqq");
+//        postDAO.update(1, post);
+//        System.out.println(postDAO.getPostByID(1).getBriefInfo());
+        String title = "1";
+        String content = "content";
+        String briefInfo = "brief";
+        String thumbnail = "thumb";
+        Date createdDate = Date.valueOf(LocalDate.now());
+        String categoryPost = "1";
+        boolean statusPost = true;
+        Post newPost = new Post(0, title, content, briefInfo, thumbnail, 1, 1, 1, createdDate, categoryPost, statusPost);
+        System.out.println(newPost.getAuthorID() + title + content + briefInfo + thumbnail + 1 + createdDate + categoryPost + statusPost);
+        postDAO.insert(newPost);
+        postDAO.getAllPosts();
+        
+        System.out.println("DOCTOR'S ADVICE".toLowerCase());
     }
 }
