@@ -64,19 +64,21 @@ public class PostManageController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-//        HttpSession session = request.getSession(true);
-//        String email = (String) session.getAttribute("email");
+        HttpSession session = request.getSession(true);
+        String email = (String) session.getAttribute("email");
         StaffDAO staffDAO = new StaffDAO();
-//        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-//        boolean isManager = false;
-//        if (curStaff != null) {
-//            if (curStaff.getRole().equals("manager")) {
-//                isManager = true;
-//            }
-//        }
-//        if (!isManager) {
-//            request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
-//        }
+        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+        boolean isManager = false;
+
+        isManager = true;
+        if (curStaff != null) {
+            if (curStaff.getRole().equals("manager")) {
+                isManager = true;
+            }
+        }
+        if (!isManager) {
+            request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+        }
 
         loadPageWithChoice(request, response);
         request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
@@ -107,18 +109,18 @@ public class PostManageController extends HttpServlet {
                 doGet(request, response);
         }
     }
-    
+
     protected int numOfPage(String postTitle, String postCategory, String AuthorID, String postStatus) {
         PostDAO postDAO = new PostDAO();
         int numOfPage = postDAO.getCountOfPostsManagerChoose(postTitle, postCategory, AuthorID, postStatus) / 6;
-        
+
         if (postDAO.getCountOfPostsManagerChoose(postTitle, postCategory, AuthorID, postStatus)
                 % 6 != 0) {
             numOfPage += 1;
         }
         return numOfPage;
     }
-    
+
     protected void hidePost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         PostDAO postDAO = new PostDAO();
@@ -130,7 +132,7 @@ public class PostManageController extends HttpServlet {
         out.print(post.isStatusPost() + " " + post.getPostID());
         out.print(postDAO.getPostByID(ID).isStatusPost());
     }
-    
+
     protected void showPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         PostDAO postDAO = new PostDAO();
@@ -138,10 +140,9 @@ public class PostManageController extends HttpServlet {
         Post post = postDAO.getPostByID(ID);
         post.setStatusPost(true);
         postDAO.update(ID, post);
-        
+
     }
-    
-    
+
     protected void loadPageWithChoice(HttpServletRequest request, HttpServletResponse response) {
         //get title
         String postTitle;
@@ -200,7 +201,7 @@ public class PostManageController extends HttpServlet {
         } catch (Exception e) {
             sortBy = "Title";
         }
-        
+
         PostDAO postDao = new PostDAO();
         //get categorylist
         List<String> categoryList = postDao.allCategoryPost();
@@ -231,7 +232,7 @@ public class PostManageController extends HttpServlet {
         }
         //get sortlist
         List<String> sortList = new ArrayList<>();
-        
+
         sortList.add("Title");
         sortList.add("CategoryPost");
         sortList.add("AuthorID");
@@ -243,7 +244,7 @@ public class PostManageController extends HttpServlet {
         int numOfPage = numOfPage(postTitle, postCategory, postAuthorID, postStatus);
         //get list post  
         List<Post> list = postDao.getSortedPagedPostsByManagerChoice((page - 1) * 6, 6, postTitle, postCategory, postAuthorID, postStatus, sortBy);
-        
+
         request.setAttribute("postTitle", postTitle);
         request.setAttribute("categoryList", categoryList);
         request.setAttribute("authorList", authorList);

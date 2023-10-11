@@ -11,9 +11,10 @@ import java.util.List;
  *
  * @author hbich
  */
-public class ServiceStaffDAO extends MyDAO{
+public class ServiceStaffDAO extends MyDAO {
+
     public boolean checkExist(String StaffID, String ServiceID) {
-        xSql= "SELECT * FROM [dbo].[ServiceStaff] WHERE StaffID = ? AND ServiceID = ?";
+        xSql = "SELECT * FROM [dbo].[ServiceStaff] WHERE StaffID = ? AND ServiceID = ?";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, StaffID);
@@ -29,6 +30,7 @@ public class ServiceStaffDAO extends MyDAO{
         }
         return false;
     }
+
     public List<Integer> getListStaffIDCanWork(String selectedDate, String selectedMonth, String selectedYear, String slot, String serviceID) {
         List<Integer> list = new ArrayList<>();
         xSql = "select ss1.ServiceID, ss1.StaffID, ss2.Workday, ss2.Slot, r.ReservationID, r.status from ServiceStaff ss1\n"
@@ -52,10 +54,30 @@ public class ServiceStaffDAO extends MyDAO{
         }
         return list;
     }
+
+    public List<Integer> getServiceByDoc(int DocID) {
+        xSql = "Select ServiceID from ServiceStaff where StaffID = ? ";
+        List<Integer> serviceIDList = new ArrayList<>();
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, DocID);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                serviceIDList.add(rs.getInt("ServiceID"));
+            }
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return serviceIDList;
+    }
+
     public static void main(String args[]) {
         ServiceStaffDAO ssd = new ServiceStaffDAO();
         for (int i : ssd.getListStaffIDCanWork("29", "10", "2023", "3", "9")) {
             System.out.println(i);
         }
+        
+        System.out.println(ssd.getServiceByDoc(1));
     }
 }

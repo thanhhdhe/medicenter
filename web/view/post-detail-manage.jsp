@@ -96,7 +96,7 @@
                             </c:if>
 
                             <div class="d-flex justify-content-center">
-                                <input class="btn btn-primary mt-3 w-25" type="submit" value="Update" />
+                                <input class="btn btn-primary mt-3 w-25" type="submit" value="${event}" name="event" />
                             </div>
 
                             <div class="d-flex justify-content-between bg-light rounded p-4 mt-4 mb-4">

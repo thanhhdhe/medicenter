@@ -19,6 +19,22 @@ import model.Reservation;
 public class ReservationDAO extends MyDAO {
 
     //update status
+    public void updateDoctor(String staffId, String reservationID) {
+        xSql = "UPDATE Reservations\n"
+                + "SET StaffID = ? \n"
+                + "WHERE ReservationID = ?;";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, staffId);
+            ps.setString(2, reservationID);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //update status
     public void updateStatus(String status, String reservationID) {
         xSql = "UPDATE Reservations\n"
                 + "SET Status = ?\n"
@@ -223,6 +239,7 @@ public class ReservationDAO extends MyDAO {
         xSql = "select COUNT(*) from Reservations WHERE ReservationDate = CAST(GETDATE() AS DATE) AND StaffID = ?;";
         try {
             ps = con.prepareStatement(xSql);
+            ps.setString(1, staffID);
             rs = ps.executeQuery();
             if (rs.next()) {
                 count = rs.getInt(1);
