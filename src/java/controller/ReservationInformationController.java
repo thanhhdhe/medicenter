@@ -4,9 +4,11 @@
  */
 package controller;
 
+import Database.CategoryServiceDAO;
 import Database.ChildrenDAO;
 import Database.ReservationDAO;
 import Database.ServiceDAO;
+import Database.StaffDAO;
 import Database.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,9 +17,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import model.CategoryService;
 import model.Children;
 import model.Reservation;
 import model.Service;
+import model.Staff;
 import model.User;
 
 /**
@@ -65,7 +69,7 @@ public class ReservationInformationController extends HttpServlet {
                 } catch (Exception e) {
                     response.sendRedirect("home");
                 }
-            } else if (action.equals("cancel")) {
+            } if (action.equals("cancel")) {
                 ReservationID = Integer.parseInt(id);
                 Reservation reservation = reservationDAO.getReservationByID(ReservationID);
                 if (!reservation.getStatus().equals("done")) {
@@ -74,6 +78,24 @@ public class ReservationInformationController extends HttpServlet {
                     reservationDAO.update(reservation);
                     response.getWriter().write("success");
                 }
+            } if (action.equals("confirm")) {
+                int reserID = Integer.parseInt(request.getParameter("reservationID"));
+                Reservation reservation = reservationDAO.getReservationByID(reserID);
+                ServiceDAO serviceDAO = new ServiceDAO();
+                Service service = serviceDAO.getServiceByID(String.valueOf(reservation.getServiceID()));
+                StaffDAO staffDAO = new StaffDAO();
+                Staff doctor = staffDAO.getStaffByStaffId(reservation.getStaffID());
+                ChildrenDAO childrenDAO = new ChildrenDAO();
+                Children children = childrenDAO.getChildrenByChildrenId(String.valueOf(reservation.getChildID()));
+                CategoryServiceDAO cateDAO = new CategoryServiceDAO();
+                CategoryService cate = cateDAO.getCategoryServiceByID(String.valueOf(service.getServiceID()));
+                request.setAttribute("reservation", reservation);
+                request.setAttribute("service", service);
+                request.setAttribute("doctor", doctor);
+                request.setAttribute("children", children);
+                request.setAttribute("cate", cate);
+                request.getRequestDispatcher("/view/confirm-reservation.jsp").forward(request, response);
+                
             }
         }
     }

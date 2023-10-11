@@ -395,7 +395,7 @@
                                 } else if (responseText === "Double book at one time") {
                                     alert("This children cannot duplicate slots with other services. Please choose again.");
                                 } else {
-                                    const url = "ReservationContact?reservationID=" + responseText;
+                                    const url = "reservation?action=confirm&reservationID=" + responseText;
                                     window.location.href = url;
                                 }
                             }
