@@ -11,7 +11,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Staff dashboard</title>
+        <title>404</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <meta content="" name="keywords" />
         <meta content="" name="description" />
@@ -54,18 +54,19 @@
         
 
                <!-- 404 Start -->
-                <div class="container-fluid pt-4 px-4">
-                    <div class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0">
-                        <div class="container text-center p-4">
-                            <i class="bi bi-exclamation-triangle display-1 text-primary"></i>
-                            <h2 class="display-2 fw-bold text-danger">403 - ACCESS DENIED</h2>
-                            <h3 class="mb-4 text-info">Oops, You don't have permission to access this page.</h3>
-                            <p class="mb-4">A web server may return a 403 Forbidden HTTP status code in response to a request from a client for a web page or resource to indicate that the server can be reached and understood the request, but refuses to take any further action. Status code 403 responses are the result of the web server being configured to deny access, for some reason, to the requested resource by the client</p>
-                            <a class="btn btn-primary rounded-pill py-3 px-5" href="home">Go Back To Home</a>
-                        </div>
+            <div class="container-fluid pt-4 px-4">
+                <div class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0">
+                    <div class="col-md-6 text-center p-4">
+                        <i class="bi bi-exclamation-triangle display-1 text-primary"></i>
+                        <h1 class="display-1 fw-bold">404</h1>
+                        <h1 class="mb-4">Page Not Found</h1>
+                        <p class="mb-4">We’re sorry, the page you have looked for does not exist in our website!
+                            Maybe go to our home page or try to use a search?</p>
+                        <a class="btn btn-primary rounded-pill py-3 px-5" href="home">Go Back To Home</a>
                     </div>
                 </div>
-                <!-- 404 End -->
+            </div>
+            <!-- 404 End -->
 
                 
 

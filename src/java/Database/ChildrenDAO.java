@@ -139,11 +139,25 @@ public class ChildrenDAO extends MyDAO {
         }
         return check;
     }
+    
+    public int countChildren() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM [dbo].[Children]";
 
-    public static void main(String[] args) {
-        ChildrenDAO childrenDAO = new ChildrenDAO();
-        
-//        System.out.println("ketquadelete là : " + childrenDAO.deleteChild("5"));
+        try {
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return count;
     }
 
     public boolean deleteChild(String childID) {
@@ -162,4 +176,12 @@ public class ChildrenDAO extends MyDAO {
         }
         return success;
     }
+    
+    public static void main(String[] args) {
+        ChildrenDAO childrenDAO = new ChildrenDAO();
+        
+        
+//        System.out.println("ketquadelete là : " + childrenDAO.deleteChild("5"));
+    }
+
 }

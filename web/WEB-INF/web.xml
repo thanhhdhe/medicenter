@@ -168,6 +168,30 @@
         <servlet-name>postDetailManage</servlet-name>
         <url-pattern>/postDetailManage</url-pattern>
     </servlet-mapping>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/404</location>
+    </error-page>
+    <servlet>
+        <servlet-name>ErrorServlet</servlet-name>
+        <jsp-file>/view/404-error.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ErrorServlet</servlet-name>
+        <url-pattern>/404</url-pattern>
+    </servlet-mapping>
+    <error-page>
+        <error-code>500</error-code>
+        <location>/500</location>
+    </error-page>
+    <servlet>
+        <servlet-name>ErrorServerServlet</servlet-name>
+        <jsp-file>/view/500-server-error.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ErrorServerServlet</servlet-name>
+        <url-pattern>/500</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
