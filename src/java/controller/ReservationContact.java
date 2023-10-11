@@ -60,7 +60,7 @@ public class ReservationContact extends HttpServlet {
             if (endP % 10 != 0) {
                 endPage++; // if endP not divide by 10 so that endPage + 1
             }
-            List<Reservation> listreservation = reservationdao.getReservationAllByPaging(1,null);
+            List<Reservation> listreservation = reservationdao.getReservationAllByPaging(1, null);
             request.setAttribute("endP", endPage);
             request.setAttribute("Reservation", listreservation);
             request.getRequestDispatcher("/view/reservation-manager-list.jsp").forward(request, response);
@@ -70,15 +70,19 @@ public class ReservationContact extends HttpServlet {
             String sort = request.getParameter("sortstatus");
             System.out.println(sort);
             // get list reservation
-            List<Reservation> listreservation = reservationdao.getReservationAllByPaging(Integer.parseInt(page),sort);
+            List<Reservation> listreservation = reservationdao.getReservationAllByPaging(Integer.parseInt(page), sort);
             //get information of user
+            StaffDAO staffDAO = new StaffDAO();
             ServiceDAO serviceDAO = new ServiceDAO();
             UserDAO userdao = new UserDAO();
             ChildrenDAO childrenDAO = new ChildrenDAO();
             for (Reservation reservation : listreservation) {
                 Service service = serviceDAO.getServiceByID(reservation.getServiceID() + "");
                 User user = userdao.getUserByID(reservation.getUserID());
+                Staff staffa = staffDAO.getStaffByStaffId(reservation.getStaffID());
                 Children children = childrenDAO.getChildrenByChildrenId(reservation.getChildID() + "");
+                List<Staff> stafflist = staffDAO.getStaffsBySlot(String.valueOf(reservation.getReservationDate()), reservation.getReservationSlot() + "");
+
                 out.println("<tr>\n"
                         + "                                                    <td>" + reservation.getReservationID() + "</td>\n"
                         + "                                                    <td>" + service.getTitle() + "</td>\n"
@@ -86,6 +90,21 @@ public class ReservationContact extends HttpServlet {
                         + "                                                    <td>" + children.getChildName() + "</td>\n"
                         + "                                                    <td>" + reservation.getReservationDate() + "</td>\n"
                         + "                                                    <td>" + reservation.getReservationSlot() + "</td>\n"
+                        + "<td>\n"
+                        + "                                                    <div class=\"dropdown\">\n"
+                        + "                                                        <button style=\"border: 0px; padding: 0px\" type=\"button\" id=\"dropdownMenuButton1\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">\n"
+                        + "                                                            <span class=\"badge bg-primary\"  id=\"statusBadge-" + staffa.getStaffID() + "\">" + staffa.getStaffName() + " </span>\n"
+                        + "                                                        </button>\n"
+                        + "                                                        <ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenuLink\">\n");
+                for (Staff varstaff : stafflist) {
+                    out.println(
+                            "                                                                <li><a class=\"dropdown-item status-change\" href=\"#\" onclick=\"changestatus(this, ${reservation.getReservationID()})\">" + varstaff.getStaffName() + "</a></li>\n");
+                }
+                out.println(
+                        "                                                        </ul>\n"
+                        + "\n"
+                        + "                                                    </div>\n"
+                        + "                                                </td>"
                         + "<td><div class=\"dropdown\">\n"
                         + "                                                        <button style=\"border: 0px ; padding: 0px;\" type=\"button\" id=\"dropdownMenuButton1\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">\n"
                         + "                                                            <span class=\"badge bg-primary\"  id=\"statusBadge-" + reservation.getReservationID() + "\">" + reservation.getStatus() + "</span>\n"
@@ -99,6 +118,7 @@ public class ReservationContact extends HttpServlet {
                         + "                                                    </div> </td>"
                         + "                                                    <td>" + reservation.getCost() + "</td>\n"
                         + " </tr>");
+
             }
 
         } else if (event.equals("updatestatus")) {

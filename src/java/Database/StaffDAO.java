@@ -13,7 +13,7 @@ import model.Staff;
  * @author Admin
  */
 public class StaffDAO extends MyDAO {
-    
+
     public List<Staff> getAllStaffs() {
         List<Staff> staffList = new ArrayList<>();
         xSql = "SELECT *  FROM [dbo].[Staff]";
@@ -43,7 +43,7 @@ public class StaffDAO extends MyDAO {
         }
         return staffList;
     }
-    
+
     public List<Staff> getDoctorByServices(String id) {
         List<Staff> doctorList = new ArrayList<>();
         xSql = "select s.StaffID, s.StaffName, s.Email, s.Email, s.Password, s.FullName,s.Gender, s.PhoneNumber, s.ProfileImage, s.StaffRole\n"
@@ -75,7 +75,7 @@ public class StaffDAO extends MyDAO {
         }
         return doctorList;
     }
-    
+
     public List<Staff> getStaffsByRole(String staffRole) {
         List<Staff> staffList = new ArrayList<>();
         xSql = "SELECT *  FROM [dbo].[Staff] where StaffRole = ?";
@@ -106,7 +106,7 @@ public class StaffDAO extends MyDAO {
         }
         return staffList;
     }
-    
+
     public Staff getStaffByStaffEmail(String staffEmail) {
         Staff staff = null;
         xSql = "SELECT *  FROM [dbo].[Staff] where Email = ?";
@@ -136,7 +136,7 @@ public class StaffDAO extends MyDAO {
         }
         return staff;
     }
-    
+
     public Staff getStaffByStaffId(int staffID) {
         Staff staff = null;
         xSql = "SELECT *  FROM [dbo].[Staff] where StaffID = ?";
@@ -165,14 +165,55 @@ public class StaffDAO extends MyDAO {
         }
         return staff;
     }
-    
+
+    public List<Staff> getStaffsBySlot(String reservationDate, String slot) {
+        List<Staff> staffList = new ArrayList<>();
+        xSql = "SELECT DISTINCT *\n"
+                + "FROM Staff S\n"
+                + "WHERE S.StaffRole = 'Doctor'\n"
+                + "AND S.StaffID NOT IN (\n"
+                + "    SELECT R.StaffID\n"
+                + "    FROM Reservations R\n"
+                + "    WHERE R.ReservationDate = ?  \n"
+                + "    AND R.ReservationSlot = ?  \n"
+                + ")";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, reservationDate);
+            ps.setString(2, slot);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int staffID = rs.getInt(1);
+                String staffName = rs.getString(2);
+                String password = rs.getString(3);
+                String email = rs.getString(4);
+                String fullName = rs.getString(5);
+                String gender = rs.getString(6);
+                String phoneNumber = rs.getString(7);
+                String profileImage = rs.getString(8);
+                String role = rs.getString(9);
+                String rank = rs.getString(10);
+                String specialty = rs.getString(11);
+                String introduction = rs.getString(12);
+                Staff staff = new Staff(staffID, staffName, password, email, fullName, gender, phoneNumber, profileImage, role, rank, specialty, introduction);
+                staffList.add(staff);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return staffList;
+    }
+
     public static void main(String[] args) {
         StaffDAO staffDAO = new StaffDAO();
-//        List<Staff> staffList = staffDAO.getDoctorByServices("3");
+//        List<Staff> staffList = staffDAO.getStaffsBySlot("2023-10-14", "3");
 //        for (Staff staff : staffList) {
 //            System.out.println(staff.getFullName());
 //        }
-        System.out.println(staffDAO.getStaffByStaffEmail("lethanglrf@gmail.com").getFullName());
-        
+
+        //System.out.println(staffDAO.getStaffByStaffEmail("lethanglrf@gmail.com").getFullName());
+
     }
 }

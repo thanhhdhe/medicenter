@@ -214,6 +214,7 @@
                                             <th scope="col">Children</th>
                                             <th scope="col">Reservation Date</th>
                                             <th scope="col">Slot</th>
+                                            <th scope="col">Doctor</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Cost</th>
 
@@ -249,6 +250,30 @@
                                                 <td><%= children.getChildName()%></td>
                                                 <td>${reservation.getReservationDate()}</td>
                                                 <td>${reservation.getReservationSlot()}</td>
+                                                <c:set var="ReservationDate" value="${reservation.getReservationDate()}" />
+                                                <c:set var="ReservationDateString" value="${ReservationDate.toString()}" />
+                                                <c:set var="ReservationSlot" value="${reservation.getReservationSlot()}" />
+                                                <c:set var="ReservationSlotString" value="${ReservationSlot.toString()}" />
+                                                <c:set var="StaffID" value="${reservation.getStaffID()}" />
+                                                <c:set var="StaffIDString" value="${StaffID}" />
+                                                <%
+                                                    
+                                                    Staff staffa = staffDAO.getStaffByStaffId((int) pageContext.getAttribute("StaffIDString"));
+                                                    List<Staff> staff = staffDAO.getStaffsBySlot((String) pageContext.getAttribute("ReservationDateString"), (String) pageContext.getAttribute("ReservationSlotString"));
+                                                %>
+                                                <td>
+                                                    <div class="dropdown">
+                                                        <button style="border: 0px; padding: 0px" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <span class="badge bg-primary"  id="statusBadge-${reservation.getReservationID()}"><%= staffa.getStaffName() %></span>
+                                                        </button>
+                                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                            <c:forEach var="listdoctor" items="<%= staff %>">
+                                                                <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">${listdoctor.getStaffName()}</a></li>
+                                                            </c:forEach>
+                                                        </ul>
+
+                                                    </div>
+                                                </td>
 
                                                 <td>
                                                     <div class="dropdown">
@@ -339,18 +364,18 @@
                                                                             this.classList.add('active');
 
                                                                             var page = this.dataset.page;
-                                                                            if(isSorted){
-                                                                               loadPageServices(page,"sort"); // Gọi hàm loadServices() để tải danh sách dịch vụ của trang được chọn
+                                                                            if (isSorted) {
+                                                                                loadPageServices(page, "sort"); // Gọi hàm loadServices() để tải danh sách dịch vụ của trang được chọn
                                                                             } else {
-                                                                               loadPageServices(page,""); 
+                                                                                loadPageServices(page, "");
                                                                             }
-                                                                            
+
                                                                         }
                                                                     });
                                                                 });
-                                                                
 
-                                                                        // Hàm thực hiện việc thay đổi giá trị của nút và gọi loadPageServices
+
+                                                                // Hàm thực hiện việc thay đổi giá trị của nút và gọi loadPageServices
                                                                 function toggleSort() {
                                                                     // Lấy thẻ button bằng id
                                                                     var sortButton = document.querySelector('#sortButton');
@@ -369,9 +394,9 @@
                                                                     isSorted = !isSorted;
                                                                 }
                                                                 // Hàm tải dữ liệu của trang bằng Ajax
-                                                                function loadPageServices(page,sortType) {
+                                                                function loadPageServices(page, sortType) {
                                                                     // Gửi yêu cầu Ajax đến Servlet với tham số trang
-                                                                    
+
                                                                     var xhr = new XMLHttpRequest();
                                                                     xhr.open('POST', 'reservationcontactmanager?event=reservation-list-paging&page=' + page
                                                                             + '&sortstatus=' + sortType);
