@@ -224,6 +224,7 @@ public class ReservationDAO extends MyDAO {
         xSql = "select COUNT(*) from Reservations WHERE ReservationDate = CAST(GETDATE() AS DATE) AND StaffID = ?;";
         try {
             ps = con.prepareStatement(xSql);
+            ps.setString(1, staffID);
             rs = ps.executeQuery();
             if (rs.next()) {
                 count = rs.getInt(1);
