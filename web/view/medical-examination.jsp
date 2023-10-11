@@ -58,9 +58,13 @@
        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
        ChildrenDAO childrenDAO = new ChildrenDAO();
        MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
+       boolean isManager = false;
+        boolean isStaff = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
-            <%if(curStaff!=null){%>
+            <%if(curStaff!=null){
+            if(curStaff.getRole().equals("manager")) isManager=true;            
+            if(curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) isStaff=true;%>
             <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">
                 <nav class="navbar navbar-light">
@@ -86,9 +90,32 @@
                             <span><%=curStaff.getRole()%></span>
                         </div>
                     </div>
+                    <%if(isStaff){%>    
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations List</a
+                        >
+                    </div>  
                     <div class="navbar-nav w-100  text-light">
                         <a href="staff?event=send-to-medical-examination" class="nav-item nav-link active"
                            ><i class="far fa-check-square"></i>Medical examination</a
+                        >
+                    </div>
+                    <%}%>
+                    <%if(isManager){%>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations List</a
+                        >
+                    </div>  
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link active"
+                           ><i class="far fa-check-square"></i>Medical examination</a
+                        >
+                    </div>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="reservationcontactmanager?event=reservation-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations Manager</a
                         >
                     </div>
                     <div class="navbar-nav w-100 text-light">
@@ -101,6 +128,7 @@
                            ><i class="fas fa-stethoscope"></i>Services</a
                         >
                     </div>
+                    <%}%>
                 </nav>
             </div>
             <!-- Sidebar End -->

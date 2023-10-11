@@ -43,7 +43,7 @@ public class MedicalExaminationDAO extends MyDAO{
     
     public List<MedicalExamination> getMedicalExaminationsByStaff(String staffID) {
         List<MedicalExamination> medicalExaminationList = new ArrayList<>();
-        xSql = "SELECT *  FROM [dbo].[MedicalExaminations] WHERE StaffID = ?";
+        xSql = "SELECT *  FROM [dbo].[MedicalExaminations] WHERE StaffID = ? ORDER BY ExaminationDate DESC";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, staffID);
