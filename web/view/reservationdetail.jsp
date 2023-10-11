@@ -22,7 +22,10 @@
                 staffID = staff.getStaffID() + "";
            }
            Date dateChange = (Date) request.getAttribute("dateChange");
-           int reservationID = (int) request.getAttribute("reservationID");
+           int reservationID = -1;
+           if (dateChange != null) {
+                reservationID = (int) request.getAttribute("reservationID");
+           }
         %>
         <div class="container-fluid">
             <div class="row">
@@ -134,7 +137,7 @@
                         const xhr = new XMLHttpRequest();
                         const serviceID = <%=service.getServiceID()%>;
                         const staffID = <%=staffID%>;
-                        let updateUrl = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=update&serviceID=" + <%=service.getServiceID()%> + "&slot=" + (timeSlots.indexOf(selectedSlotValue) + 1) + "&ChildID=" + childID + "&reservationID=" + <%=reservationID%>;
+                        let updateUrl = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=update&slot=" + (timeSlots.indexOf(selectedSlotValue) + 1) + "&reservationID=" + <%=reservationID%>;
                         xhr.open("GET", updateUrl, true);
                         xhr.onreadystatechange = function () {
                             if (xhr.readyState === 4 && xhr.status === 200) {
@@ -154,7 +157,6 @@
             }
             <% } %>
             // ====================================================================
-
             // Create a timetable for scheduling
             function generateTimetable() {
                 const staffID = <%=staffID%>;
@@ -171,7 +173,6 @@
 
                 // Fill in the days of the month
                 let dayCount = 1;
-
                 // Status of the day
                 let not_work = "not_work";
                 let work = "work";
@@ -183,7 +184,7 @@
                     } else {
                         if (staffID !== null) {
                             // Check whether day in the past or in working day or not
-                            if (currentDate.getHours() > 16 && currentDate.getDate() === dayCount && (currentDate.getMonth() + 1) === selectedMonth && currentDate.getFullYear() === currentYear) {
+                            if (currentDate.getHours() >= 16 && currentDate.getDate() === dayCount && (currentDate.getMonth() + 1) === selectedMonth && currentDate.getFullYear() === currentYear) {
                                 html += "<td><p title='This date is not available for booking' class=" + not_work + ">" + dayCount + "</p></td>";
                             } else if (Workday.includes(dayCount) && (dayCount >= currentDate.getDate() || currentMonth > currentDate.getMonth())) {
                                 // Check whether dayCount is in the list of day that full
@@ -196,7 +197,7 @@
                                 html += "<td><p title='This date is not available for booking' class=" + not_work + ">" + dayCount + "</p></td>";
                             }
                         } else {
-                            if (currentDate.getHours() > 16 && currentDate.getDate() === dayCount && currentDate.getMonth() === selectedMonth && currentDate.getYear() === currentYear) {
+                            if (currentDate.getHours() >= 16 && currentDate.getDate() === dayCount && (currentDate.getMonth() + 1) === selectedMonth && currentDate.getFullYear() === currentYear) {
                                 html += "<td><p title='This date is not available for booking' class=" + not_work + ">" + dayCount + "</p></td>";
                             } else if (fullDay.includes(dayCount) && (dayCount >= currentDate.getDate() || currentMonth > currentDate.getMonth())) {
                                 html += "<td><p title='This date is fully booked' class=" + full + ">" + dayCount + "</p></td>";
@@ -282,32 +283,32 @@
 
                             // Check if time slot is in the past
                             if (parseInt(selectedDate.textContent, 10) === currentDate.getDate()) {
-                                if (currentDate.getHours() > 8 && i === 0) {
+                                if (currentDate.getHours() >= 7 && i === 0) {
                                     slot.className = "not_work";
                                     slot.title = "This slot is not available to book";
                                     timeSlotDiv.appendChild(slot);
                                     continue;
-                                } else if (currentDate.getHours() > 9 && i === 1) {
+                                } else if (currentDate.getHours() >= 8 && i === 1) {
                                     slot.className = "not_work";
                                     slot.title = "This slot is not available to book";
                                     timeSlotDiv.appendChild(slot);
                                     continue;
-                                } else if (currentDate.getHours() > 10 && i === 2) {
+                                } else if (currentDate.getHours() >= 9 && i === 2) {
                                     slot.className = "not_work";
                                     slot.title = "This slot is not available to book";
                                     timeSlotDiv.appendChild(slot);
                                     continue;
-                                } else if (currentDate.getHours() > 11 && i === 3) {
+                                } else if (currentDate.getHours() >= 10 && i === 3) {
                                     slot.className = "not_work";
                                     slot.title = "This slot is not available to book";
                                     timeSlotDiv.appendChild(slot);
                                     continue;
-                                } else if (currentDate.getHours() > 15 && i === 4) {
+                                } else if (currentDate.getHours() >= 14 && i === 4) {
                                     slot.className = "not_work";
                                     slot.title = "This slot is not available to book";
                                     timeSlotDiv.appendChild(slot);
                                     continue;
-                                } else if (currentDate.getHours() > 16 && i === 5) {
+                                } else if (currentDate.getHours() >= 15 && i === 5) {
                                     slot.className = "not_work";
                                     slot.title = "This slot is not available to book";
                                     timeSlotDiv.appendChild(slot);

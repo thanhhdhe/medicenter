@@ -118,7 +118,7 @@ public class ReservationDetail extends HttpServlet {
                     // List of slot and day in the reservation of that staff ID
                     List<Integer> temp = staffscheduleDAO.getWorkDay(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue));
                     List<Integer> fullDay = staffscheduleDAO.getWorkDay(staffID, Integer.toString(currentMonthValue), Integer.toString(currentYearValue));
-                    // Loop in workday
+                    // loop to check if at least one slot for that day is available
                     for (int day : temp) {
                         // Boolean to check if the slot is available
                         boolean check = false;

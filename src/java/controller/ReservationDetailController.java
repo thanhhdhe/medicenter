@@ -81,9 +81,7 @@ public class ReservationDetailController extends HttpServlet {
                 break;
             }
             case "update": {
-                String serviceID = (String) request.getParameter("serviceID");
                 String slot = (String) request.getParameter("slot");
-                String ChildID = (String) request.getParameter("ChildID");
                 String reservationID = (String) request.getParameter("reservationID");
                 updateData(staffID, selectedDate, selectedMonth, selectedYear, slot, reservationID, request, response);
                 break;
@@ -191,7 +189,7 @@ public class ReservationDetailController extends HttpServlet {
             reservation.setReservationSlot(Integer.parseInt(slot));
             reservation.setServiceID(Integer.parseInt(serviceID));
 
-            reservation.setStaffID(servicestaffDAO.getListStaffIDCanWork(selectedDate, selectedMonth, selectedYear, slot, serviceID).get(0));
+            reservation.setStaffID(listStaff.get(0));
 
             if (service.getSalePrice() > 0) {
                 reservation.setCost((float) service.getSalePrice());
