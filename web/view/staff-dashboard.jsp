@@ -295,28 +295,6 @@
 
                                     </tbody>
                                 </table>
-                                
-                                
-
-                                <ul id="pagination-container">
-                                    <%if(reservationDAO.countReservationsByStaffID(curStaff.getStaffID()+"")<=40){%>
-                                        <%if(reservationDAO.countReservationsByStaffID(curStaff.getStaffID()+"")>0){%>
-                                            <li class="pagination-btn active"><span>1</span></li>
-                                            <%for (int i = 2; i <= (reservationDAO.countReservationsByStaffID(curStaff.getStaffID()+"")+9)/10; i++) {%>
-                                                <li class="pagination-btn inactive"><a data-page="<%=i%>" href="#"><%=i%></a></li>
-                                            <%}%>
-                                        <%}%>
-                                    <%}else{%>
-                                        <!--<li class="pagination-btn inactive">><a href="#">&lt;</a></li>-->
-                                        <li class="pagination-btn active"><span>1</span></li>
-                                        <li class="pagination-btn inactive"><a href="#" data-page="2">2</a></li>
-                                        <li class="pagination-btn inactive"><a href="#" data-page="3">3</a></li>
-                                        <span>...</span>
-                                        <li class="pagination-btn inactive"><a href="#" data-page="<%=(reservationDAO.countReservationsByStaffID(curStaff.getStaffID()+"")+9)/10%>"><%=(reservationDAO.countReservationsByStaffID(curStaff.getStaffID()+"")+9)/10%></a></li>
-                                        <li class="pagination-btn inactive"><a href="#">&gt;</a></li>
-                                    <%}%>
-                                    
-                                </ul>
                                     <%}%>    
                             </div>
                         
