@@ -29,7 +29,7 @@
                         <div class="search-bar p-0 d-lg-block mx-3">                                                        
                             <div id="search" class="menu-search mb-0">
                                 <form action="user?action=search" method="POST" id="searchform" class="searchform">
-                                    <div class="input-group">
+                                    <div class="d-flex">
                                         <input type="text" value="${text}" class="form-control border rounded-pill" name="txt" id="search" placeholder="Search...">
                                         <button class="btn btn-block btn-primary mx-3" type="submit">Search</button>
                                     </div>
@@ -67,9 +67,9 @@
                                 <div class="col-md-2 mx-3 mt-3">
                                     <label for="itemsPerPage" class="form-label">Items per Page:</label>
                                     <select name="itemsPerPage" id="itemsPerPage" class="form-select">
-                                        <option value="15" <c:if test="${itemsPerPage == 15}">selected</c:if>>15</option>
-                                    <option value="25" <c:if test="${itemsPerPage == 25}">selected</c:if>>25</option>
-                                    <option value="50" <c:if test="${itemsPerPage == 50}">selected</c:if>>50</option>
+                                        <option value="15" <c:if test="${sessionScope.numPerPage == 15}">selected</c:if>>15</option>
+                                    <option value="25" <c:if test="${sessionScope.numPerPage == 25}">selected</c:if>>25</option>
+                                    <option value="50" <c:if test="${sessionScope.numPerPage == 50}">selected</c:if>>50</option>
                                     </select>
                                 </div>
                                 <table id="example" class="table table-striped nowrap" style="width:100%">
@@ -106,8 +106,10 @@
                                                 </td>
 
                                                 <td class="text-end p-3">
-                                                    <a href="user?action=detail&email=${a.email}" type="button"class="btn btn-info">Details</a>
-                                                <a href="#" type="button"class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit${a.userID}">Edit</a>
+                                                    <form action="user?action=detail" method="POST">
+                                                        <input type="hidden" name="id" value="${a.userID}">
+                                                    <button type="submit" class="btn btn-info">Details</button>
+                                                </form>
 
                                             </td>
 

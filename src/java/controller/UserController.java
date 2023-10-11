@@ -133,7 +133,10 @@ public class UserController extends HttpServlet {
                 int end = Math.min(page * numPerPage, size);
 
                 List<User> user = userdao.getListByPage(userList, start, end);
-                request.setAttribute("itemsPerPage", numPerPage);
+                session.setAttribute("numPerPage", numPerPage);
+                if (request.getParameter("txt")!= null) {
+                    request.setAttribute("text", request.getParameter("txt"));
+                }
                 request.setAttribute("url", url);
                 request.setAttribute("page", page);
                 request.setAttribute("num", numPages);
