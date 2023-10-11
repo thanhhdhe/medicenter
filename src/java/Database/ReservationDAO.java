@@ -20,6 +20,22 @@ import model.Reservation;
 public class ReservationDAO extends MyDAO {
 
     //update status
+    public void updateDoctor(String staffId, String reservationID) {
+        xSql = "UPDATE Reservations\n"
+                + "SET StaffID = ? \n"
+                + "WHERE ReservationID = ?;";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, staffId);
+            ps.setString(2, reservationID);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //update status
     public void updateStatus(String status, String reservationID) {
         xSql = "UPDATE Reservations\n"
                 + "SET Status = ?\n"
@@ -142,16 +158,16 @@ public class ReservationDAO extends MyDAO {
 
     public List<Integer> getListChildrenIDByUserAndStaff(String childName, String staffID, int page, int pageSize) {
         List<Integer> childrenIDList = new ArrayList<>();
-        String sql = "SELECT DISTINCT c.ChildID FROM Reservations r  " +
-                    "INNER JOIN Children c ON r.ChildID = c.ChildID " +
-                    "WHERE c.ChildName LIKE ? AND r.StaffID = ? AND r.Status <> ? " +
-                    "ORDER BY c.ChildID " +
-                    "OFFSET ? ROWS " +
-                    "FETCH NEXT ? ROWS ONLY;";
+        String sql = "SELECT DISTINCT c.ChildID FROM Reservations r  "
+                + "INNER JOIN Children c ON r.ChildID = c.ChildID "
+                + "WHERE c.ChildName LIKE ? AND r.StaffID = ? AND r.Status <> ? "
+                + "ORDER BY c.ChildID "
+                + "OFFSET ? ROWS "
+                + "FETCH NEXT ? ROWS ONLY;";
         int offset = (page - 1) * pageSize;
         try {
             ps = con.prepareStatement(sql);
-            ps.setString(1,"%"+childName+"%");
+            ps.setString(1, "%" + childName + "%");
             ps.setString(2, staffID);
             ps.setString(3, "pending");
             ps.setInt(4, offset);
@@ -170,17 +186,17 @@ public class ReservationDAO extends MyDAO {
 
         return childrenIDList;
     }
-    
-     public int countListChildrenIDByUserAndStaff(String childName, String staffID) {
+
+    public int countListChildrenIDByUserAndStaff(String childName, String staffID) {
         int count = 0;
-        String sql = "SELECT COUNT(*) AS RecordCount\n" +
-                    "FROM (SELECT DISTINCT c.ChildID FROM Reservations r  " +
-                    "INNER JOIN Children c ON r.ChildID = c.ChildID " +
-                    "WHERE c.ChildName LIKE ? AND r.StaffID = ? AND r.Status <> ? " +
-                    ") AS SubQuery;";
+        String sql = "SELECT COUNT(*) AS RecordCount\n"
+                + "FROM (SELECT DISTINCT c.ChildID FROM Reservations r  "
+                + "INNER JOIN Children c ON r.ChildID = c.ChildID "
+                + "WHERE c.ChildName LIKE ? AND r.StaffID = ? AND r.Status <> ? "
+                + ") AS SubQuery;";
         try {
             ps = con.prepareStatement(sql);
-            ps.setString(1,"%"+childName+"%");
+            ps.setString(1, "%" + childName + "%");
             ps.setString(2, staffID);
             ps.setString(3, "pending");
             rs = ps.executeQuery();
@@ -196,12 +212,12 @@ public class ReservationDAO extends MyDAO {
 
         return count;
     }
-     
-     public int countPatientToday(String staffID) {
+
+    public int countPatientToday(String staffID) {
         int count = 0;
-        String sql = "SELECT COUNT(DISTINCT ChildID) AS DistinctChildCount " +
-                    "FROM Reservations " +
-                    "WHERE ReservationDate = CAST(GETDATE() AS DATE) AND StaffID = ?;";
+        String sql = "SELECT COUNT(DISTINCT ChildID) AS DistinctChildCount "
+                + "FROM Reservations "
+                + "WHERE ReservationDate = CAST(GETDATE() AS DATE) AND StaffID = ?;";
         try {
             ps = con.prepareStatement(sql);
             ps.setString(1, staffID);
@@ -218,7 +234,7 @@ public class ReservationDAO extends MyDAO {
 
         return count;
     }
-     
+
     public int countApoinmentTodayOfStaff(String staffID) {
         int count = 0;
         xSql = "select COUNT(*) from Reservations WHERE ReservationDate = CAST(GETDATE() AS DATE) AND StaffID = ?;";
@@ -234,7 +250,7 @@ public class ReservationDAO extends MyDAO {
         }
         return count;
     }
-    
+
     public List<Reservation> getApoinmentTodayOfStaff(String staffID) {
         List<Reservation> list = new ArrayList<>();
         String sql = "SELECT * FROM [dbo].[Reservations] WHERE ReservationDate = CAST(GETDATE() AS DATE) AND StaffID = ? AND Status <> ? ";
@@ -266,7 +282,7 @@ public class ReservationDAO extends MyDAO {
         }
         return list;
     }
-    
+
     public List<Reservation> getReservationByStaffID(String staffID) {
         List<Reservation> list = new ArrayList<>();
         String sql = "SELECT * FROM [dbo].[Reservations] WHERE StaffID = ? AND Status <> ? ";
@@ -525,7 +541,6 @@ public class ReservationDAO extends MyDAO {
         }
         return list;
     }
-
 
     public int countReservationsByStaffID(String staffID) {
         int count = 0;

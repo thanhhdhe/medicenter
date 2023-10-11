@@ -264,11 +264,11 @@
                                                 <td>
                                                     <div class="dropdown">
                                                         <button style="border: 0px; padding: 0px" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            <span class="badge bg-primary"  id="statusBadge-${reservation.getReservationID()}"><%= staffa.getStaffName() %></span>
+                                                            <span class="badge bg-primary"  id="doctorBadge-${reservation.getReservationID()}"><%= staffa.getStaffName() %></span>
                                                         </button>
                                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                                             <c:forEach var="listdoctor" items="<%= staff %>">
-                                                                <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">${listdoctor.getStaffName()}</a></li>
+                                                                <li><a class="dropdown-item status-change" href="#" onclick="changeDoctor(this, ${listdoctor.getStaffID()},${reservation.getReservationID()})">${listdoctor.getStaffName()}</a></li>
                                                             </c:forEach>
                                                         </ul>
 
@@ -424,6 +424,25 @@
                                                                     // Gửi yêu cầu Ajax đến servlet
                                                                     var xhr = new XMLHttpRequest();
                                                                     xhr.open("POST", "reservationcontactmanager?event=updatestatus&status=" + text + "&reservationID=" + uid, true);
+
+                                                                    xhr.onload = function () {
+
+                                                                    };
+
+                                                                    xhr.onerror = function () {
+
+                                                                    };
+
+                                                                    xhr.send();
+                                                                }
+                                                                function changeDoctor(a, doctorId, reservationID) {
+                                                                    var text = a.textContent;
+                                                                    var textchange = document.getElementById("doctorBadge-" + reservationID);
+                                                                    textchange.textContent = text;
+
+                                                                    // Gửi yêu cầu Ajax đến servlet
+                                                                    var xhr = new XMLHttpRequest();
+                                                                    xhr.open("POST", "reservationcontactmanager?event=updatedoctor&doctorID=" + doctorId +"&reservationID="+reservationID, true);
 
                                                                     xhr.onload = function () {
 

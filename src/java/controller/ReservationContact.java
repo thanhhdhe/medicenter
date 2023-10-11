@@ -125,6 +125,10 @@ public class ReservationContact extends HttpServlet {
             String status = request.getParameter("status");
             String reservationID = request.getParameter("reservationID");
             reservationdao.updateStatus(status, reservationID);
+        } else if(event.equals("updatedoctor")){
+            String doctorID = request.getParameter("doctorID");
+            String reservationID = request.getParameter("reservationID");
+            reservationdao.updateDoctor(doctorID, reservationID);
         }
     }
 
