@@ -9,7 +9,6 @@ import Database.ServiceDAO;
 import Database.StaffDAO;
 import Database.UserDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
@@ -17,11 +16,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Date;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import model.Children;
@@ -94,7 +90,6 @@ public class UserController extends HttpServlet {
                     userdao.UpdateProfile(firstname, lastname, phone, gender, newImg, address, userId);
                     response.sendRedirect("home?showmodal=1&status=success");
                 } else {
-                    // Loại tệp tải lên không phải là hình ảnh
                     request.setAttribute("updateerror", "Uploaded file is not an image");
                     response.sendRedirect("home?showmodal=1&status=error");
                 }
@@ -128,6 +123,20 @@ public class UserController extends HttpServlet {
                         url = "user?action=filter&status=" + status;
                         userList = userdao.getFilterByStatus(status);
                     }
+                } else {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                }
+            }
+            if (action.equals("details")) {
+                if (isManager) {
+                    String userIDstr = request.getParameter("userID");
+                    int userID = Integer.parseInt(userIDstr);
+                    User userDetail = userdao.getUserByID(userID);
+                    request.setAttribute("user", userDetail);
+                    ChildrenDAO childrenDAO = new ChildrenDAO();                   
+                    List<Children> childrenList = childrenDAO.getListChildrenByUserId(userIDstr);
+                    request.setAttribute("children", childrenList);
+                    request.getRequestDispatcher("./view/user-details.jsp").forward(request, response);
                 } else {
                     request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
                 }

@@ -33,6 +33,12 @@
             />
 
         <title>User manage</title>
+        <style>
+            #example_filter {
+                margin-right: 1rem!important;
+                margin-left: 1rem!important;
+            }
+        </style>
     </head>
 
     <body>
@@ -215,9 +221,9 @@
                                     <div class="row">
                                         <div class="col-12 mt-4">
                                             <div class="table-responsive bg-white shadow rounded">
-                                                <div class="col-md-2 mx-3 mt-3">
-                                                    <label for="itemsPerPage" class="form-label">Items per Page:</label>
-                                                    <select name="itemsPerPage" id="itemsPerPage" class="form-select">
+                                                <div class="col-md-4 mx-3 mt-3 d-flex">
+                                                    <label for="itemsPerPage" class="form-label nowrap">No. of row</label>
+                                                    <select name="itemsPerPage" id="itemsPerPage" class="mx-3">
                                                         <option value="15" <c:if test="${sessionScope.numPerPage == 15}">selected</c:if>>15</option>
                                                     <option value="25" <c:if test="${sessionScope.numPerPage == 25}">selected</c:if>>25</option>
                                                     <option value="50" <c:if test="${sessionScope.numPerPage == 50}">selected</c:if>>50</option>
@@ -252,13 +258,19 @@
                                                                 <div class="form-check form-switch">
                                                                     <input class="form-check-input" type="checkbox" role="switch" disabled
                                                                            data-userid="${a.userID}"
-                                                                           <c:if test="${a.status == true}">checked value="1"</c:if>/>
+                                                                           <c:if test="${a.status == true}">checked value="1"</c:if>
+                                                                               />
+                                                                           <span class="badge <c:if test="${a.status == true}">bg-success</c:if><c:if test="${a.status != true}">bg-danger</c:if>"> 
+                                                                        <c:if test="${a.status == true}">Active</c:if><c:if test="${a.status != true}">Inactive</c:if>
+                                                                        </span>
                                                                     </div>
+
                                                                 </td>
 
+
                                                                 <td class="text-end p-3">
-                                                                    <form action="user?action=detail" method="POST">
-                                                                        <input type="hidden" name="id" value="${a.userID}">
+                                                                    <form action="user?action=details" method="POST">
+                                                                            <input type="hidden" name="userID" value="${a.userID}">
                                                                     <button type="submit" class="btn btn-info">Details</button>
                                                                 </form>
 
@@ -421,6 +433,7 @@
 
                                                             return false;
                                                         });
+
         </script>
 
 
