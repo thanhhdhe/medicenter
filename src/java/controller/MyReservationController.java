@@ -69,6 +69,7 @@ public class MyReservationController extends HttpServlet {
             if (condition == null) {
                 reservations = reservationDAO.getSortedPaged((pageNumber - 1) * numberPerPage, numberPerPage, Integer.toString(userDAO.getUser(email).getUserID()));
             } else {
+                value = value.replaceAll("%20", " ");
                 reservations = reservationDAO.getSortedSpecificPaged((pageNumber - 1) * numberPerPage, numberPerPage, Integer.toString(userDAO.getUser(email).getUserID()), condition, value);
             }
 
@@ -95,7 +96,7 @@ public class MyReservationController extends HttpServlet {
             // Get the number of pagination page
             String condition = (String) request.getParameter("condition");
             String value = (String) request.getParameter("value");
-//            value = value.replaceAll("%20", " ");
+            value = value.replaceAll("%20", " ");
             out.println(reservationDAO.getTotalPaginationWithCondition(Integer.toString(userDAO.getUser(email).getUserID()), 5, condition, value));
         }
     }

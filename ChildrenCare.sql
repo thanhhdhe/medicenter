@@ -23,7 +23,8 @@ CREATE TABLE Users (
     Gender VARCHAR(10) NOT NULL,
     PhoneNumber VARCHAR(20) NOT NULL,
     ProfileImage VARCHAR(MAX),
-	Status bit default 0
+	Status bit default 0,
+	CreatedDate DATE NOT NULL
 );
 
 -- Create the CategoryService table
@@ -278,7 +279,7 @@ VALUES
     ('nurse_johnson', 'nurse.johnson@example.com', 'nursepass', 'Nurse Johnson', 'Female', '555111222', 'nurse.jpg', 'nurse', 'Associate Doctor', 'Dermatology Department', 'Introduction for Nurse Johnson.'),
     ('nurse_brown', 'nurse.brown@example.com', 'nursepass', 'Nurse Brown', 'Male', '555333444', 'nurse.jpg', 'nurse', 'Meritorious Doctor', 'Dermatology Department', 'Introduction for Nurse Brown.'),
     ('dr_jackson', 'dr.jackson@example.com', 'doctorpass', 'Jackson', 'Male', '555111333', 'doctor.jpg', 'doctor', 'Meritorious Doctor', 'Internal Medicine Department', 'Introduction for Dr. Jackson.'),
-    ('dr_wilson', 'dr.wilson@example.com', 'doctorpass', 'Wilson', 'Male', '555333555', 'doctor.jpg', 'doctor', 'Meritorious Doctor', 'Internal Medicine Department', 'Introduction for Dr. Wilson.');
+    ('dr_wilson', 'dr.wilson@example.com', 'doctorpass', 'Wilson', 'Male', '555333555', 'doctor.jpg', 'doctor', 'Meritorious Doctor', 'Internal Medicine Department', 'Introduction for Dr. Wilson.'), ('Hieu', 'chtalong@gmail.com', '1234', 'Bui Chung Hieu', 'Male', '0373933128', 'resources/img/adminHieu.jpg','admin','High Level Admin','X','X');
 
 -- Insert data into ServiceStaff
 INSERT INTO ServiceStaff (ServiceID, StaffID)
@@ -287,13 +288,33 @@ VALUES
     (2, 2),(6, 4), (7, 3), (8, 5), (9, 3), (10, 3),(2, 5),(11, 7),(12, 8),(13, 7),(14, 8),(15, 7),(16, 8);
 
 -- Insert data into Users
-INSERT INTO Users (Address, Email, Password, FirstName, LastName, Gender, PhoneNumber, ProfileImage, Status)
-VALUES ('hn','lethangd@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 1),
-	   ('hn','levandin16@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 1);
+INSERT INTO Users (Address, Email, Password, FirstName, LastName, Gender, PhoneNumber, ProfileImage, Status, CreatedDate)
+VALUES ('hn','lethangd@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 1, '10-11-2023'),
+	   ('hn','levandin16@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 1, '10-11-2023');
 
 
- INSERT INTO StaffSchedules(StaffID, Workday, Slot) VALUES
-(1, '2023-10-10', 1),(2, '2023-10-15', 2),(3, '2023-10-12', 3),(4, '2023-10-20', 4),(5, '2023-10-25', 5),(6, '2023-10-18', 6),(1, '2023-10-13', 1),(2, '2023-10-28', 2),(3, '2023-10-14', 3),(4, '2023-10-22', 4),(5, '2023-10-11', 5),(6, '2023-10-30', 6),(1, '2023-10-19', 1),(2, '2023-10-16', 2),(3, '2023-10-26', 3),(4, '2023-10-21', 4),(5, '2023-10-17', 5),(6, '2023-10-27', 6),(1, '2023-10-23', 1),(2, '2023-10-24', 2),(3, '2023-10-29', 3),(4, '2023-10-10', 4),(5, '2023-10-15', 5),(6, '2023-10-12', 6),(1, '2023-10-20', 1),(2, '2023-10-25', 2),(3, '2023-10-18', 3),(4, '2023-10-13', 4),(5, '2023-10-28', 5);
+INSERT INTO StaffSchedules(StaffID, Workday, Slot) VALUES
+--StaffID 1
+(1, DATEADD(DAY, 3, GETDATE()), 1),(1, DATEADD(DAY, 3, GETDATE()), 2),(1, DATEADD(DAY, 3, GETDATE()), 3),(1, DATEADD(DAY, 3, GETDATE()), 5),
+(1, DATEADD(DAY, 3, GETDATE()), 6),(1, DATEADD(DAY, 4, GETDATE()), 1),(1, DATEADD(DAY, 4, GETDATE()), 2),(1, DATEADD(DAY, 4, GETDATE()), 5),
+(1, DATEADD(DAY, 4, GETDATE()), 6),(1, DATEADD(DAY, 7, GETDATE()), 1),(1, DATEADD(DAY, 7, GETDATE()), 2),(1, DATEADD(DAY, 10, GETDATE()), 4),
+(1, DATEADD(DAY, 10, GETDATE()), 5),(1, DATEADD(DAY, 15, GETDATE()), 1),(1, DATEADD(DAY, 15, GETDATE()), 2),(1, DATEADD(DAY, 19, GETDATE()), 2),
+--StaffID 3
+(3, DATEADD(DAY, 1, GETDATE()), 2),(3, DATEADD(DAY, 1, GETDATE()), 3),(3, DATEADD(DAY, 1, GETDATE()), 4),(3, DATEADD(DAY, 1, GETDATE()), 5),
+(3, DATEADD(DAY, 4, GETDATE()), 4),(3, DATEADD(DAY, 4, GETDATE()), 5),(3, DATEADD(DAY, 4, GETDATE()), 6),(3, DATEADD(DAY, 9, GETDATE()), 2),
+(3, DATEADD(DAY, 9, GETDATE()), 3),(3, DATEADD(DAY, 9, GETDATE()), 4),(3, DATEADD(DAY, 11, GETDATE()), 1),(3, DATEADD(DAY, 11, GETDATE()), 2),
+(3, DATEADD(DAY, 11, GETDATE()), 3),(3, DATEADD(DAY, 14, GETDATE()), 1),(3, DATEADD(DAY, 14, GETDATE()), 2),(3, DATEADD(DAY, 14, GETDATE()), 3),
+--StaffID 4
+(4, DATEADD(DAY, 2, GETDATE()), 3),(4, DATEADD(DAY, 2, GETDATE()), 4),(4, DATEADD(DAY, 2, GETDATE()), 6),(4, DATEADD(DAY, 3, GETDATE()), 1),
+(4, DATEADD(DAY, 3, GETDATE()), 2),(4, DATEADD(DAY, 3, GETDATE()), 5),(4, DATEADD(DAY, 3, GETDATE()), 6),(4, DATEADD(DAY, 8, GETDATE()), 1),
+(4, DATEADD(DAY, 8, GETDATE()), 2),(4, DATEADD(DAY, 8, GETDATE()), 3),(4, DATEADD(DAY, 14, GETDATE()), 1),(4, DATEADD(DAY, 14, GETDATE()), 2),
+(4, DATEADD(DAY, 14, GETDATE()), 3),(4, DATEADD(DAY, 17, GETDATE()), 1),(4, DATEADD(DAY, 17, GETDATE()), 2),(4, DATEADD(DAY, 17, GETDATE()), 3),
+--StaffID 7
+(7, DATEADD(DAY, 4, GETDATE()), 1),(7, DATEADD(DAY, 4, GETDATE()), 2),(7, DATEADD(DAY, 4, GETDATE()), 5),(7, DATEADD(DAY, 4, GETDATE()), 6),
+(7, DATEADD(DAY, 5, GETDATE()), 1),(7, DATEADD(DAY, 5, GETDATE()), 2),(7, DATEADD(DAY, 5, GETDATE()), 5),(7, DATEADD(DAY, 5, GETDATE()), 6),
+(7, DATEADD(DAY, 8, GETDATE()), 5),(7, DATEADD(DAY, 8, GETDATE()), 6),(7, DATEADD(DAY, 10, GETDATE()), 2),(7, DATEADD(DAY, 12, GETDATE()), 2),
+(7, DATEADD(DAY, 15, GETDATE()), 1),(7, DATEADD(DAY, 15, GETDATE()), 2),(7, DATEADD(DAY, 16, GETDATE()), 1),(7, DATEADD(DAY, 16, GETDATE()), 2)
+
 
 INSERT INTO [dbo].[Slider] ([Title], [Images], [Backlink], [status], [Brief])
 VALUES
@@ -301,8 +322,8 @@ VALUES
     ('SPECIAL OFFER: 20% OFF', 'resources/img/image2.jpg', 'service?event=service-list', 'Active', 'Limited time offer: Get 20% off on selected products. Grab the deal now!'),
     ('OUR SERVICE', 'resources/img/football.jpg', 'postPage?event=post-list', 'Active', 'Limited time offer: Get 20% off on selected products. Grab the deal now!');
 -- Dữ liệu mẫu cho bảng Users
-INSERT INTO Users (Address, Email, Password, FirstName, LastName, Gender, PhoneNumber, ProfileImage, Status)
-VALUES ('29HL', 'vietgame431@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', 'Viet', 'Can Quoc', 'Male', '123-456-7890', NULL, 1);
+INSERT INTO Users (Address, Email, Password, FirstName, LastName, Gender, PhoneNumber, ProfileImage, Status, CreatedDate)
+VALUES ('29HL', 'vietgame431@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', 'Viet', 'Can Quoc', 'Male', '123-456-7890', NULL, 1, '10-11-2023');
 
 -- Dữ liệu mẫu cho bảng Children
 INSERT INTO Children (UserID, ChildName, Birthday, Status, Gender, Avatar)
@@ -363,13 +384,13 @@ VALUES
 	
 -- Reservations
 INSERT INTO Reservations(UserID, ServiceID, StaffID, ChildID, CreatedDate, ReservationDate, ReservationSlot, Cost, Status) 
-VALUES (1, 3, 3, 1, '10-01-2023 22:00:00', '10-14-2023', 3, 300.0, 'waiting for examination'),
-(1, 9, 1, 1, '10-01-2023 20:10:00', '10-13-2023', 1, 520.0, 'waiting for examination'),
-(1, 6, 1, 2, '10-01-2023 22:15:00', '10-13-2023', 1, 1200.0, 'waiting for examination'), 
-(1, 9, 3, 2, '10-01-2023 22:20:00', '10-26-2023', 3, 888.0, 'waiting for examination'), 
-(1, 6, 4, 1, '10-01-2023 22:25:30', '10-22-2023', 4, 1200.0, 'pending'),
-(1, 8, 5, 2, '10-01-2023 23:00:00', '10-17-2023', 5, 635.0, 'waiting for examination'),
-(1, 10, 3, 2, '10-01-2023 23:20:00', '10-18-2023', 3, 1200.0, 'cancel');
+VALUES (1, 15, 7, 1, DATEADD(MILLISECOND,-4105241,GETDATE()), DATEADD(DAY, 4, GETDATE()), 1, 100.0, 'waiting for examination'),
+(1, 9, 1, 1, DATEADD(MILLISECOND,-8104511,GETDATE()), DATEADD(DAY, 3, GETDATE()), 3, 450, 'waiting for examination'),
+(1, 6, 1, 2, DATEADD(MILLISECOND,-10122452,GETDATE()), DATEADD(DAY, 3, GETDATE()), 2, 70.0, 'waiting for examination'), 
+(1, 9, 3, 2, DATEADD(MILLISECOND,-16785745,GETDATE()), DATEADD(DAY, 14, GETDATE()), 2, 450.0, 'waiting for examination'), 
+(1, 6, 4, 1, DATEADD(MILLISECOND,-25642544,GETDATE()), DATEADD(DAY, 8, GETDATE()), 1, 70.0, 'pending'),
+(1, 6, 4, 2, DATEADD(MILLISECOND,-38454524,GETDATE()), DATEADD(DAY, 8, GETDATE()), 2, 70.0, 'waiting for examination'),
+(1, 10, 3, 2, DATEADD(MILLISECOND,-98545422,GETDATE()), DATEADD(DAY, 1, GETDATE()), 2, 120.0, 'cancel');
 -- Insert data into the Posts table
 INSERT INTO Posts (Title, Content, Thumbnail, Counts ,AuthorID, ServiceID, CreatedDate, CategoryPost, BriefInfo)
 VALUES
@@ -383,5 +404,3 @@ VALUES
     ('Mental Health Awareness', 'Promoting mental health awareness and self-care.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',10, 3, 8, '2023-09-17', 8, 'Mental wellness'),
     ('Online Learning Tips', 'Effective tips for online learning and studying.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',90, 1, 9, '2023-09-18', 9, 'Education strategies'),
     ('Gaming News Update', 'Latest gaming news and reviews for gamers.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',200, 1, 10, '2023-09-19', 10, 'Gaming updates');
-
-	select * from users

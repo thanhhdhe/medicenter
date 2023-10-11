@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.sql.Date;
+
 
 /**
  *
@@ -20,11 +22,12 @@ public class User {
     private String phoneNumber;
     private String profileImage; 
     private boolean status;
+    private Date createdDate;
 
     public User() {
     }
 
-    public User(int userID, String address, String email, String password, String firstName, String lastName, String gender, String phoneNumber, String profileImage, boolean status) {
+    public User(int userID, String address, String email, String password, String firstName, String lastName, String gender, String phoneNumber, String profileImage, boolean status, Date createdDate) {
         this.userID = userID;
         this.address = address;
         this.email = email;
@@ -35,9 +38,10 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.profileImage = profileImage;
         this.status = status;
+        this.createdDate = createdDate;
     }
 
-    public User(int userID, String address, String email, String password, String firstName, String lastName, String gender, String phoneNumber, String profileImage) {
+    public User(int userID, String address, String email, String password, String firstName, String lastName, String gender, String phoneNumber, String profileImage, Date createdDate) {
         this.userID = userID;
         this.address = address;
         this.email = email;
@@ -47,7 +51,17 @@ public class User {
         this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.profileImage = profileImage;
+        this.createdDate = createdDate;
     }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+    
     
     public int getUserID() {
         return userID;

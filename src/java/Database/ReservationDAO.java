@@ -6,11 +6,10 @@ package Database;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import model.Children;
+import java.util.Map;
 import model.Reservation;
 
 /**
@@ -142,16 +141,16 @@ public class ReservationDAO extends MyDAO {
 
     public List<Integer> getListChildrenIDByUserAndStaff(String childName, String staffID, int page, int pageSize) {
         List<Integer> childrenIDList = new ArrayList<>();
-        String sql = "SELECT DISTINCT c.ChildID FROM Reservations r  " +
-                    "INNER JOIN Children c ON r.ChildID = c.ChildID " +
-                    "WHERE c.ChildName LIKE ? AND r.StaffID = ? AND r.Status <> ? " +
-                    "ORDER BY c.ChildID " +
-                    "OFFSET ? ROWS " +
-                    "FETCH NEXT ? ROWS ONLY;";
+        String sql = "SELECT DISTINCT c.ChildID FROM Reservations r  "
+                + "INNER JOIN Children c ON r.ChildID = c.ChildID "
+                + "WHERE c.ChildName LIKE ? AND r.StaffID = ? AND r.Status <> ? "
+                + "ORDER BY c.ChildID "
+                + "OFFSET ? ROWS "
+                + "FETCH NEXT ? ROWS ONLY;";
         int offset = (page - 1) * pageSize;
         try {
             ps = con.prepareStatement(sql);
-            ps.setString(1,"%"+childName+"%");
+            ps.setString(1, "%" + childName + "%");
             ps.setString(2, staffID);
             ps.setString(3, "pending");
             ps.setInt(4, offset);
@@ -170,17 +169,17 @@ public class ReservationDAO extends MyDAO {
 
         return childrenIDList;
     }
-    
-     public int countListChildrenIDByUserAndStaff(String childName, String staffID) {
+
+    public int countListChildrenIDByUserAndStaff(String childName, String staffID) {
         int count = 0;
-        String sql = "SELECT COUNT(*) AS RecordCount\n" +
-                    "FROM (SELECT DISTINCT c.ChildID FROM Reservations r  " +
-                    "INNER JOIN Children c ON r.ChildID = c.ChildID " +
-                    "WHERE c.ChildName LIKE ? AND r.StaffID = ? AND r.Status <> ? " +
-                    ") AS SubQuery;";
+        String sql = "SELECT COUNT(*) AS RecordCount\n"
+                + "FROM (SELECT DISTINCT c.ChildID FROM Reservations r  "
+                + "INNER JOIN Children c ON r.ChildID = c.ChildID "
+                + "WHERE c.ChildName LIKE ? AND r.StaffID = ? AND r.Status <> ? "
+                + ") AS SubQuery;";
         try {
             ps = con.prepareStatement(sql);
-            ps.setString(1,"%"+childName+"%");
+            ps.setString(1, "%" + childName + "%");
             ps.setString(2, staffID);
             ps.setString(3, "pending");
             rs = ps.executeQuery();
@@ -196,12 +195,12 @@ public class ReservationDAO extends MyDAO {
 
         return count;
     }
-     
-     public int countPatientToday(String staffID) {
+
+    public int countPatientToday(String staffID) {
         int count = 0;
-        String sql = "SELECT COUNT(DISTINCT ChildID) AS DistinctChildCount " +
-                    "FROM Reservations " +
-                    "WHERE ReservationDate = CAST(GETDATE() AS DATE) AND StaffID = ?;";
+        String sql = "SELECT COUNT(DISTINCT ChildID) AS DistinctChildCount "
+                + "FROM Reservations "
+                + "WHERE ReservationDate = CAST(GETDATE() AS DATE) AND StaffID = ?;";
         try {
             ps = con.prepareStatement(sql);
             ps.setString(1, staffID);
@@ -218,7 +217,7 @@ public class ReservationDAO extends MyDAO {
 
         return count;
     }
-     
+
     public int countApoinmentTodayOfStaff(String staffID) {
         int count = 0;
         xSql = "select COUNT(*) from Reservations WHERE ReservationDate = CAST(GETDATE() AS DATE) AND StaffID = ?;";
@@ -233,7 +232,7 @@ public class ReservationDAO extends MyDAO {
         }
         return count;
     }
-    
+
     public List<Reservation> getApoinmentTodayOfStaff(String staffID) {
         List<Reservation> list = new ArrayList<>();
         String sql = "SELECT * FROM [dbo].[Reservations] WHERE ReservationDate = CAST(GETDATE() AS DATE) AND StaffID = ? AND Status <> ? ";
@@ -265,7 +264,7 @@ public class ReservationDAO extends MyDAO {
         }
         return list;
     }
-    
+
     public List<Reservation> getReservationByStaffID(String staffID) {
         List<Reservation> list = new ArrayList<>();
         String sql = "SELECT * FROM [dbo].[Reservations] WHERE StaffID = ? AND Status <> ? ";
@@ -525,7 +524,6 @@ public class ReservationDAO extends MyDAO {
         return list;
     }
 
-
     public int countReservationsByStaffID(String staffID) {
         int count = 0;
         String sql = "SELECT COUNT(*) FROM [dbo].[Reservations] WHERE StaffID = ? AND Status <> ?";
@@ -636,7 +634,7 @@ public class ReservationDAO extends MyDAO {
                     + "FETCH NEXT ? ROWS ONLY";
         } else if (condition.equals("serviceTitle")) {
             xSql = "SELECT r.* FROM [dbo].[Reservations] r "
-                    + "JOIN Service s ON s.ServiceID = r.ServiceID "
+                    + "JOIN [dbo].[Services] s ON s.ServiceID = r.ServiceID "
                     + "WHERE UserID = ? AND s.Title = '" + value + "' "
                     + "ORDER BY CreatedDate DESC "
                     + "OFFSET ? ROWS "
@@ -714,7 +712,7 @@ public class ReservationDAO extends MyDAO {
                 break;
             case "serviceTitle":
                 xSql = "SELECT COUNT(*) AS totalNumber FROM [dbo].[Reservations] r "
-                        + "JOIN Service s ON r.ServiceID = s.ServiceID "
+                        + "JOIN Services s ON r.ServiceID = s.ServiceID "
                         + "WHERE r.UserID = ? AND s.Title = '" + conditionValue + "'";
                 break;
             default:
@@ -839,7 +837,7 @@ public class ReservationDAO extends MyDAO {
 
     public boolean checkSlotForAvailable(String slot, String staffID, String selectedDate, String selectedMonth, String selectedYear) {
         boolean result = true;
-        xSql = "select * from Reservations\n"
+        xSql = "select * from [dbo].[Reservations]\n"
                 + "where ReservationSlot = ? and StaffID = ? and DAY(ReservationDate) = ? \n"
                 + "and MONTH(ReservationDate) = ? and YEAR(ReservationDate) = ? \n"
                 + "and Status <> 'cancel'";
@@ -865,7 +863,7 @@ public class ReservationDAO extends MyDAO {
 
     public boolean checkSlotThatSelfBooked(String slot, String staffID, String childID, String selectedDate, String selectedMonth, String selectedYear) {
         boolean result = false;
-        xSql = "select * from Reservations\n"
+        xSql = "select * from [dbo].[Reservations]\n"
                 + "where ReservationSlot = ? and StaffID = ? and DAY(ReservationDate) = ? \n"
                 + "and MONTH(ReservationDate) = ? and YEAR(ReservationDate) = ? \n"
                 + "and Status <> 'cancel'";
@@ -891,7 +889,7 @@ public class ReservationDAO extends MyDAO {
 
     public List<Integer> getListSelfBookedSlot(String ChildID, String selectedDate, String selectedMonth, String selectedYear) {
         List<Integer> list = new ArrayList<>();
-        xSql = "select ReservationSlot from Reservations \n"
+        xSql = "select ReservationSlot from [dbo].[Reservations] \n"
                 + "  where ChildID = ? and DAY(ReservationDate) = ? \n"
                 + "  and MONTH(ReservationDate) = ? and YEAR(ReservationDate) = ?\n"
                 + "  and Status <> 'cancel'";
@@ -914,7 +912,7 @@ public class ReservationDAO extends MyDAO {
     }
 
     public boolean validateReservationByChildrenID(String ChildID, int ReservationSlot, Date ReservationDate) {
-        xSql = "select * from Reservations where ChildID = ? and ReservationSlot = ? and ReservationDate = ?";
+        xSql = "select * from [dbo].[Reservations] where ChildID = ? and ReservationSlot = ? and ReservationDate = ?";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, ChildID);
@@ -963,7 +961,7 @@ public class ReservationDAO extends MyDAO {
     public List<Reservation> getReservationSearchAndFillter(String userID, String title, int carId) {
         List<Reservation> list = new ArrayList<>();
         xSql = "SELECT r.*\n"
-                + "FROM Reservations r\n"
+                + "FROM [dbo].[Reservations] r\n"
                 + "INNER JOIN Services s ON s.ServiceID = r.ServiceID\n"
                 + "INNER JOIN Users u ON u.UserID = r.UserID\n"
                 + "WHERE r.UserID = ? AND (s.Title LIKE ? OR s.CategoryID = ?);";
@@ -1017,8 +1015,58 @@ public class ReservationDAO extends MyDAO {
         }
     }
 
+    public List<Reservation> getReservationsByDay(int daydiff) {
+        List<Reservation> list = new ArrayList<>();
+        xSql = "select * from [dbo].[Reservations] where DATEDIFF(DAY,GETDATE(),CreatedDate) <= ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, -daydiff);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int ReservationID = rs.getInt("ReservationID");
+                int UserID = rs.getInt("UserID");
+                int ServiceID = rs.getInt("ServiceID");
+                Date ReservationDate = rs.getDate("ReservationDate");
+                int ReservationSlot = rs.getInt("ReservationSlot");
+                Timestamp CreatedDate = rs.getTimestamp("CreatedDate");
+                float Cost = rs.getFloat("Cost");
+                String Status = rs.getString("Status");
+                int StaffID = rs.getInt("StaffID");
+                int ChildID = rs.getInt("ChildID");
+                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status);
+                list.add(reservation);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public float getRevenueByServiceCategory(int categoryID, int day) {
+        xSql = "select sum(Cost) as RevenueByCategoryID from Reservations r\n"
+                + " join Services s on r.ServiceID = s.ServiceID\n"
+                + " where s.CategoryID = ? and DATEDIFF(DAY,GETDATE(),CreatedDate) <= ? and r.Status <> 'cancel'";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, categoryID);
+            ps.setInt(2, -day);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getFloat("RevenueByCategoryID");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public static void main(String args[]) {
         ReservationDAO rd = new ReservationDAO();
+        for (Reservation r : rd.getSortedSpecificPaged(0, 5, "1", "serviceTitle", "Yoga Class")) {
+            System.out.println(r.getChildID());
+        }
 //        String dateString = "2023-10-01 22:20:00";
 //        Timestamp sqlTimestamp = Timestamp.valueOf(dateString);
 //        System.out.println(rd.checkSlotForAvailable("4", "3", "26", "10", "2023"));
@@ -1039,7 +1087,6 @@ public class ReservationDAO extends MyDAO {
 //        } catch (Exception e) {
 //
 //        }
-
         ReservationDAO reservationDAO = new ReservationDAO();
 //        List<Reservation> reservations = reservationDAO.getFilteredReservationsOfStaff("1", "", "", "t", "", "", "", 1);
 //        for (Reservation reservation : reservations) {

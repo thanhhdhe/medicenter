@@ -13,11 +13,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import model.Post;
-import model.Staff;
 import model.User;
 
 /**
@@ -213,7 +212,13 @@ public class PostManageController extends HttpServlet {
         //get authorlist
         List<Integer> authorIDList = postDao.allAuthorID();
         List<User> authorList = new ArrayList<>();
-        User notuser = new User(-1, "", "", "", "Author", "Name", "", "", "");
+        
+        // Get the current date and time
+        java.util.Date utilDate = new java.util.Date();
+        // Convert the java.util.Date to java.sql.Date
+        Date sqlDate = new Date(utilDate.getTime());
+        
+        User notuser = new User(-1, "", "", "", "Author", "Name", "", "", "", sqlDate);
         authorList.add(notuser);
         for (Integer ID : authorIDList) {
             UserDAO userDao = new UserDAO();

@@ -334,8 +334,8 @@ public class FeedBackDAO extends MyDAO {
             ps.setInt(1, feedbackid);
             rs = ps.executeQuery();
             if (rs.next()) {
-                FeedBack feeback = new FeedBack(rs.getString(1)+" "+rs.getString(2), rs.getString(3), 
-                        rs.getString(4), rs.getString(5), rs.getString(6), rs.getInt(7), 
+                FeedBack feeback = new FeedBack(rs.getString(1) + " " + rs.getString(2), rs.getString(3),
+                        rs.getString(4), rs.getString(5), rs.getString(6), rs.getInt(7),
                         rs.getString(8), rs.getString(9), rs.getString(10));
                 return feeback;
             }
@@ -382,6 +382,45 @@ public class FeedBackDAO extends MyDAO {
             e.printStackTrace();
         }
         return (medical);
+    }
+
+    public float getTotalAverageStarByDay(int day) {
+        xSql = "select AVG(f.RatedStar)as AverageStar from Feedbacks f "
+                + "left join MedicalExaminations m on f.MedicalExaminationID = m.MedicalExaminationID "
+                + "where DATEDIFF(DAY,GETDATE(),m.ExaminationDate) <= ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, -day);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getFloat("AverageStar");
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    public float getAverageStarByDayAndService(int day, int serviceID) {
+        xSql = "select AVG(f.RatedStar)as AverageStar from Feedbacks f "
+                + "left join MedicalExaminations m on f.MedicalExaminationID = m.MedicalExaminationID "
+                + "where DATEDIFF(DAY,GETDATE(),m.ExaminationDate) <= ? and m.ServiceID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, -day);
+            ps.setInt(2, serviceID);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getFloat("AverageStar");
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public static void main(String[] args) {

@@ -174,6 +174,7 @@
                     selectElement.appendChild(option);
             <% } %>
                 } else {
+                    console.log(encodeURIComponent(userInput));
                     url = "/ChildrenCare/myreservation?page=" + pageNumber + "&condition=" + selectedOption + "&value=" + encodeURIComponent(userInput);
                     selectElement.textContent = "";
                     for (let i = 1; i <= totalPagePagination; i++) {

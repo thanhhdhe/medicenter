@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.sql.Date;
 import java.util.Base64;
 import model.Mail;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -36,6 +37,12 @@ public class RegisterController extends HttpServlet {
             response.getWriter().write("email existed");
             return;
         }
+        // Get the current date and time
+        java.util.Date utilDate = new java.util.Date();
+        
+        // Convert the java.util.Date to java.sql.Date
+        Date sqlDate = new Date(utilDate.getTime());
+        
         // Insert user into database
         User user = new User();
         user.setEmail(email);
@@ -47,6 +54,7 @@ public class RegisterController extends HttpServlet {
         user.setAddress(address);
         user.setStatus(false);
         user.setProfileImage("resources/img/avatar.png");
+        user.setCreatedDate(sqlDate);
         userDAO.insert(user);
 
         // Encoding the email

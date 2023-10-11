@@ -33,7 +33,8 @@ public class UserDAO extends MyDAO {
                         rs.getString("Gender"),
                         rs.getString("PhoneNumber"),
                         rs.getString("ProfileImage"),
-                        rs.getBoolean("Status")
+                        rs.getBoolean("Status"),
+                        rs.getDate("CreatedDate")
                 );
                 userList.add(user);
             }
@@ -69,7 +70,8 @@ public class UserDAO extends MyDAO {
                         rs.getString("Gender"),
                         rs.getString("PhoneNumber"),
                         rs.getString("ProfileImage"),
-                        rs.getBoolean("Status")
+                        rs.getBoolean("Status"),
+                        rs.getDate("CreatedDate")
                 );
                 userList.add(user);
             }
@@ -144,7 +146,7 @@ public class UserDAO extends MyDAO {
             rs = ps.executeQuery();
             if (rs.next()) {
                 User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
-                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getBoolean(10));
+                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getBoolean(10), rs.getDate(11));
                 return user;
             }
             ps.close();
@@ -163,7 +165,7 @@ public class UserDAO extends MyDAO {
             rs = ps.executeQuery();
             if (rs.next()) {
                 User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
-                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getBoolean(10));
+                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getBoolean(10), rs.getDate(11));
                 return user;
             }
             ps.close();
@@ -191,9 +193,9 @@ public class UserDAO extends MyDAO {
     }
 
     public void insert(User x) {
-        xSql = "INSERT INTO [dbo].[Users]([Email],[FirstName],[LastName],[Password],[Gender],[Address],[PhoneNumber],[ProfileImage],[Status]) VALUES(N'"
+        xSql = "INSERT INTO [dbo].[Users]([Email],[FirstName],[LastName],[Password],[Gender],[Address],[PhoneNumber],[ProfileImage],[Status],[CreatedDate]) VALUES(N'"
                 + x.getEmail() + "',N'" + x.getFirstName() + "',N'" + x.getLastName() + "','" + x.getPassword() + "',N'"
-                + x.getGender() + "',N'" + x.getAddress() + "','" + x.getPhoneNumber() + "','" + x.getProfileImage() + "','" + (x.isStatus() ? Integer.toString(1) : Integer.toString(0)) + "')";
+                + x.getGender() + "',N'" + x.getAddress() + "','" + x.getPhoneNumber() + "','" + x.getProfileImage() + "','" + (x.isStatus() ? Integer.toString(1) : Integer.toString(0)) + "','" + x.getCreatedDate().toString() + "')";
         try {
             ps = con.prepareStatement(xSql);
             ps.executeUpdate();
@@ -249,7 +251,8 @@ public class UserDAO extends MyDAO {
                         rs.getString("Gender"),
                         rs.getString("PhoneNumber"),
                         rs.getString("ProfileImage"),
-                        rs.getBoolean("Status")
+                        rs.getBoolean("Status"),
+                        rs.getDate("CreatedDate")
                 );
                 filteredUsers.add(user);
             }
@@ -260,6 +263,36 @@ public class UserDAO extends MyDAO {
         }
 
         return filteredUsers;
+    }
+
+    public List<User> getUsersByCreatedDate(int day) {
+        List<User> list = new ArrayList<>();
+        xSql = "select * from [dbo].[Users] where DATEDIFF(DAY,GETDATE(),CreatedDate) <= ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, -day);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                User user = new User(
+                        rs.getInt("UserID"),
+                        rs.getString("Address"),
+                        rs.getString("Email"),
+                        rs.getString("Password"),
+                        rs.getString("FirstName"),
+                        rs.getString("LastName"),
+                        rs.getString("Gender"),
+                        rs.getString("PhoneNumber"),
+                        rs.getString("ProfileImage"),
+                        rs.getBoolean("Status"),
+                        rs.getDate("CreatedDate")
+                );
+                list.add(user);
+            }
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     public static void main(String[] args) {

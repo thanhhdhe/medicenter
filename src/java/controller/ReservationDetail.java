@@ -137,7 +137,7 @@ public class ReservationDetail extends HttpServlet {
                     }
                     request.setAttribute("Workday", Workday);
                     request.setAttribute("fullDay", fullDay);
-                    if (action.equals("update")) {
+                    if (action != null) {
                         String reservationID = (String) request.getParameter("reservationID");
                         Reservation reservation = reservationDAO.getReservationByID(Integer.parseInt(reservationID));
                         // Check if the reservation belongs to the user 
