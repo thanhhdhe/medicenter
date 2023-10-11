@@ -51,6 +51,13 @@ public class UserController extends HttpServlet {
         HttpSession session = request.getSession();
         User users = (User) session.getAttribute("user");
         String action = request.getParameter("action");
+        Staff curStaff = (Staff) session.getAttribute("staff");
+        boolean isManager = false;
+        if (curStaff != null) {
+            if (curStaff.getRole().equals("manager")) {
+                isManager = true;
+            }
+        }
         List<User> userList = null;
         String url = null;
 
@@ -94,23 +101,35 @@ public class UserController extends HttpServlet {
 
             }
             if (action.equals("all")) {
-                url = "user?action=all";
-                userList = userdao.getAllUsers();
+                if (isManager) {
+                    url = "user?action=all";
+                    userList = userdao.getAllUsers();
+                } else {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                }
             }
             if (action.equals("search")) {
-                String text = request.getParameter("txt");
-                text = text.replaceFirst("^0+(?!$)", "");
-                url = "user?action=search&txt=" + text;
-                userList = userdao.search(text);
+                if (isManager) {
+                    String text = request.getParameter("txt");
+                    text = text.replaceFirst("^0+(?!$)", "");
+                    url = "user?action=search&txt=" + text;
+                    userList = userdao.search(text);
+                } else {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                }
             }
             if (action.equals("filter")) {
-                String status = request.getParameter("status");
-                request.setAttribute("status", status);
-                if (status.equals("all")) {
-                    response.sendRedirect("user?action=all");
+                if (isManager) {
+                    String status = request.getParameter("status");
+                    request.setAttribute("status", status);
+                    if (status.equals("all")) {
+                        response.sendRedirect("user?action=all");
+                    } else {
+                        url = "user?action=filter&status=" + status;
+                        userList = userdao.getFilterByStatus(status);
+                    }
                 } else {
-                    url = "user?action=filter&status=" + status;
-                    userList = userdao.getFilterByStatus(status);
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
                 }
             }
 
@@ -134,7 +153,7 @@ public class UserController extends HttpServlet {
 
                 List<User> user = userdao.getListByPage(userList, start, end);
                 session.setAttribute("numPerPage", numPerPage);
-                if (request.getParameter("txt")!= null) {
+                if (request.getParameter("txt") != null) {
                     request.setAttribute("text", request.getParameter("txt"));
                 }
                 request.setAttribute("url", url);

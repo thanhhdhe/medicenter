@@ -85,6 +85,11 @@
                             <span><%=curStaff.getRole()%></span>
                         </div>
                     </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="user?action=all" class="nav-item nav-link"
+                           ><i class="bi bi-people-fill"></i>User</a
+                        >
+                    </div>
                     <div class="navbar-nav w-100  text-light">
                         <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
                            ><i class="far fa-check-square"></i>Medical examination</a
@@ -199,7 +204,7 @@
                                         </div>
                                     </c:when>
                                     <c:otherwise>  
-                                        
+
                                         <div class="col-md-9">
                                             <form class="d-flex" action="feedback?event=${fillevent}&${fillparameter}=${fill}" method="POST">
                                                 <input class="form-control me-2" type="search" name="search" value="" placeholder="Search" aria-label="Search">

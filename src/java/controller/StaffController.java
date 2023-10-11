@@ -134,6 +134,7 @@ public class StaffController extends HttpServlet {
         } else {
             HttpSession session = request.getSession(true);
             session.setAttribute("email", email);
+            session.setAttribute("staff", staff);
             request.getRequestDispatcher("./view/staff-dashboard.jsp").forward(request, response);
         }
     }
