@@ -58,10 +58,12 @@
         ChildrenDAO childrenDAO = new ChildrenDAO();
         Staff curStaff = staffDAO.getStaffByStaffEmail(email);
         boolean isManager = false;
+        boolean isStaff = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){
-            if(curStaff.getRole().equals("manager")) isManager=true;%>
+            if(curStaff.getRole().equals("manager")) isManager=true;            
+            if(curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) isStaff=true;%>
             <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">
                 <nav class="navbar navbar-light">
@@ -87,12 +89,34 @@
                             <span><%=curStaff.getRole()%></span>
                         </div>
                     </div>
+                    <%if(isStaff){%>    
                     <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
+                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations List</a
+                        >
+                    </div>  
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link active"
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
+                    <%}%>
                     <%if(isManager){%>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations List</a
+                        >
+                    </div>  
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link active"
+                           ><i class="far fa-check-square"></i>Medical examination</a
+                        >
+                    </div>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="reservationcontactmanager?event=reservation-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations Manager</a
+                        >
+                    </div>
                     <div class="navbar-nav w-100 text-light">
                         <a href="feedback" class="nav-item nav-link"
                            ><i class="far fa-file-alt"></i>Feedback</a
@@ -191,6 +215,11 @@
                             <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
                                 <h4>MY PATIENT LIST</h4>
                             </div>
+                            <div class="mb-4 px-4 py-3 d-flex justify-content-start align-items-center">
+                                <div class="col-md-4">
+                                    <input class="form-control" name="patientName" id="patientName" type="search" placeholder="Search Patient Name" />
+                                </div>
+                            </div>
                             <div class="table-responsive p-4">
                                 <%if(curStaff!=null){%>
                                 <table class="table table-striped table-hover">
@@ -204,13 +233,12 @@
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="children-list">
                                         <%
-                                        List<Reservation> reservations = reservationDAO.getReservationByStaffID(curStaff.getStaffID()+"");
-        
-                                        if(reservations!=null){
-                                        for (Reservation reservation : reservations) {
-                                        Children children = childrenDAO.getChildrenByChildrenId(reservation.getChildID()+"");
+                                        List<Integer> childrenIDList = reservationDAO.getListChildrenIDByUserAndStaff("",curStaff.getStaffID()+"",1,10);
+                                        if(childrenIDList!=null){
+                                        for (Integer integer : childrenIDList) {
+                                        Children children = childrenDAO.getChildrenByChildrenId(integer+"");
                                         %>
                                         <tr>
                                             <th scope="row"><%=children.getChildID()%></th>
@@ -227,6 +255,27 @@
 
                                     </tbody>
                                 </table>
+                                <ul id="pagination-container">
+                                    <%int numberOfRecord = reservationDAO.countListChildrenIDByUserAndStaff("",curStaff.getStaffID()+"");
+                                    if(numberOfRecord<=40){%>
+                                        <%if(numberOfRecord>0){%>
+                                            <li class="pagination-btn active"><span>1</span></li>
+                                            <%for (int i = 2; i <= (numberOfRecord+9)/10; i++) {%>
+                                                <li class="pagination-btn inactive"><a data-page="<%=i%>" href="#"><%=i%></a></li>
+                                            <%}%>
+                                        <%}%>
+                                    <%}else{%>
+                                        <!--<li class="pagination-btn inactive">><a href="#">&lt;</a></li>-->
+                                        <li class="pagination-btn active"><span>1</span></li>
+                                        <li class="pagination-btn inactive"><a href="#" data-page="2">2</a></li>
+                                        <li class="pagination-btn inactive"><a href="#" data-page="3">3</a></li>
+                                        <span>...</span>
+                                        <li class="pagination-btn inactive"><a href="#" data-page="<%=(numberOfRecord+9)/10%>"><%=(numberOfRecord+9)/10%></a></li>
+                                        <li class="pagination-btn inactive"><a href="#">&gt;</a></li>
+                                    <%}%>
+                                    
+                                </ul>
+                                    
                                 <%}%>
                             </div>
                         </div>
@@ -246,6 +295,7 @@
 
         <!-- JavaScript Libraries -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="./resources/js/my-patient-script.js"></script>
         <script
             src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
             integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"

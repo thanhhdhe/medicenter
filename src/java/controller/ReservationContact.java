@@ -42,52 +42,70 @@ public class ReservationContact extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        //get parameter
-        String servicetitle = request.getParameter("serviceTitle");
-        String servicetype = request.getParameter("serviceType");
-        //get event
-        String event = request.getParameter("event");
-
+        PrintWriter out = response.getWriter();
         // Get the user's email from the session
         HttpSession session = request.getSession();
         String email = (String) session.getAttribute("email");
         // Create a UserDAO instance to interact with the user data
-        UserDAO dao = new UserDAO();
-        StaffDAO staffdao= new StaffDAO();
-        Staff staff= staffdao.getStaffByStaffEmail(email);
-        // Retrieve the user based on their email
-//        User user = dao.getUser(email);
-        //get list reservation by user id
-        ReservationDAO rd = new ReservationDAO();
-        List<Reservation> listreservation = rd.getReservationByUserID(1 + "");
-        if (event == null) {
+        StaffDAO staffdao = new StaffDAO();
+        Staff staff = staffdao.getStaffByStaffEmail(email);
+        //get event
+        String event = request.getParameter("event");
+        ReservationDAO reservationdao = new ReservationDAO();
+        if (event.equals("reservation-list")) {
+            //get total page
+            int endP = reservationdao.getTotalReservation();
+            int endPage = endP / 10;
+            //paging
+            if (endP % 10 != 0) {
+                endPage++; // if endP not divide by 10 so that endPage + 1
+            }
+            List<Reservation> listreservation = reservationdao.getReservationAllByPaging(1,null);
+            request.setAttribute("endP", endPage);
             request.setAttribute("Reservation", listreservation);
-        } else if (event.equals("searchandfill")) {
-            List<Reservation> listreservationsearchandfill = new ArrayList<>();
-            if (servicetitle.equals("")) {
-                listreservationsearchandfill = rd.getReservationSearchAndFillter(1 + "",
-                        "", Integer.parseInt(servicetype));
-                System.out.println("1");
-            } else if (servicetype.equals("")) {
-                listreservationsearchandfill = rd.getReservationSearchAndFillter(1 + "",
-                        servicetitle, 0);
-                System.out.println("2");
-            } else {
-                listreservationsearchandfill = rd.getReservationSearchAndFillter(1 + "",
-                        servicetitle, Integer.parseInt(servicetype));
-                System.out.println("3");
+            request.getRequestDispatcher("/view/reservation-manager-list.jsp").forward(request, response);
+        } else if (event.equals("reservation-list-paging")) {
+            //get parameter
+            String page = request.getParameter("page");
+            String sort = request.getParameter("sortstatus");
+            System.out.println(sort);
+            // get list reservation
+            List<Reservation> listreservation = reservationdao.getReservationAllByPaging(Integer.parseInt(page),sort);
+            //get information of user
+            ServiceDAO serviceDAO = new ServiceDAO();
+            UserDAO userdao = new UserDAO();
+            ChildrenDAO childrenDAO = new ChildrenDAO();
+            for (Reservation reservation : listreservation) {
+                Service service = serviceDAO.getServiceByID(reservation.getServiceID() + "");
+                User user = userdao.getUserByID(reservation.getUserID());
+                Children children = childrenDAO.getChildrenByChildrenId(reservation.getChildID() + "");
+                out.println("<tr>\n"
+                        + "                                                    <td>" + reservation.getReservationID() + "</td>\n"
+                        + "                                                    <td>" + service.getTitle() + "</td>\n"
+                        + "                                                    <td>" + user.getFirstName() + user.getLastName() + "</td>\n"
+                        + "                                                    <td>" + children.getChildName() + "</td>\n"
+                        + "                                                    <td>" + reservation.getReservationDate() + "</td>\n"
+                        + "                                                    <td>" + reservation.getReservationSlot() + "</td>\n"
+                        + "<td><div class=\"dropdown\">\n"
+                        + "                                                        <button style=\"border: 0px ; padding: 0px;\" type=\"button\" id=\"dropdownMenuButton1\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">\n"
+                        + "                                                            <span class=\"badge bg-primary\"  id=\"statusBadge-" + reservation.getReservationID() + "\">" + reservation.getStatus() + "</span>\n"
+                        + "                                                        </button>\n"
+                        + "                                                        <ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenuLink\">\n"
+                        + "                                                            <li><a class=\"dropdown-item status-change\" href=\"#\" onclick=\"changestatus(this, " + reservation.getReservationID() + ")\">Cancel</a></li>\n"
+                        + "                                                            <li><a class=\"dropdown-item status-change\" href=\"#\" onclick=\"changestatus(this, " + reservation.getReservationID() + ")\">Pending</a></li>\n"
+                        + "                                                            <li><a class=\"dropdown-item status-change\" href=\"#\" onclick=\"changestatus(this, " + reservation.getReservationID() + ")\">waiting for examination</a></li>\n"
+                        + "                                                            <li><a class=\"dropdown-item status-change\" href=\"#\" onclick=\"changestatus(this, " + reservation.getReservationID() + ")\">waiting for examination</a></li>\n"
+                        + "                                                        </ul>\n"
+                        + "                                                    </div> </td>"
+                        + "                                                    <td>" + reservation.getCost() + "</td>\n"
+                        + " </tr>");
             }
 
-            request.setAttribute("Reservation", listreservationsearchandfill);
+        } else if (event.equals("updatestatus")) {
+            String status = request.getParameter("status");
+            String reservationID = request.getParameter("reservationID");
+            reservationdao.updateStatus(status, reservationID);
         }
-        float total = 0;
-        for (Reservation list : listreservation) {
-            total += list.getCost();
-        }
-        request.setAttribute("total", total);
-//        request.setAttribute("user", user);
-
-        request.getRequestDispatcher("/view/reservation-manager-list.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

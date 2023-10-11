@@ -19,7 +19,6 @@ public class User {
     private String gender;
     private String phoneNumber;
     private String profileImage; 
-//    private String role;
     private boolean status;
 
     public User() {

@@ -60,10 +60,12 @@
        UserDAO userDAO = new UserDAO();
        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
        boolean isManager = false;
+       boolean isStaff = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){
-            if(curStaff.getRole().equals("manager")) isManager=true;%>
+            if(curStaff.getRole().equals("manager")) isManager=true;            
+            if(curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) isStaff=true;%>
             <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">
                 <nav class="navbar navbar-light">
@@ -89,12 +91,34 @@
                             <span><%=curStaff.getRole()%></span>
                         </div>
                     </div>
+                    <%if(isStaff){%>    
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link active"
+                           ><i class="fas fa-list-alt"></i>Reservations List</a
+                        >
+                    </div>  
                     <div class="navbar-nav w-100  text-light">
                         <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
+                    <%}%>
                     <%if(isManager){%>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations List</a
+                        >
+                    </div>  
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
+                           ><i class="far fa-check-square"></i>Medical examination</a
+                        >
+                    </div>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="reservationcontactmanager?event=reservation-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations Manager</a
+                        >
+                    </div>
                     <div class="navbar-nav w-100 text-light">
                         <a href="feedback" class="nav-item nav-link"
                            ><i class="far fa-file-alt"></i>Feedback</a
@@ -195,18 +219,18 @@
                             </div>
                             <div class="row justify-content-between align-items-start mb-4 px-4 py-3 border-bottom d-flex">
                                 <div class="col-md-3 px-4 d-flex flex-column">
-                                    <input type="text" name="reservationId" placeholder="Search Reservation Id" class="form-control">
-                                    <input type="text" name="customerName" class="mt-2 form-control" placeholder="Search Customer Name">
+                                    <input type="number" name="reservationId" id="reservationId" placeholder="Search Reservation Id" class="form-control">
+                                    <input type="text" name="customerName" id="customerName" class="mt-2 form-control" placeholder="Search Customer Name">
                                 </div>
                                 <div class="col-md-4 px-4 d-flex">
                                     <div class="input-group mb-3 text-black-50">
-                                        <input type="date" class="form-control" name="from">
+                                        <input type="date" class="form-control" name="from" id="from">
                                         <span class="input-group-text">to</span>
-                                        <input type="date" class="form-control"name="to" >
+                                        <input type="date" class="form-control"name="to" id="to">
                                     </div>
                                 </div>
                                 <div class="col-md-3 px-4">
-                                    <select class="form-select">
+                                    <select class="form-select" id="sort">
                                         <option selected value="">Sort By</option>
                                         <option value="customername">Customer Name</option>
                                         <option value="status">Status</option>
@@ -215,11 +239,11 @@
                                         <option value="date-latest">Latest Booking Date</option> 
                                         <option value="date-earliest">Earliest Booking Date</option>
                                     </select>
-                                    <select class="form-select mt-2">
+                                    <select class="form-select mt-2" id="status">
                                         <option selected value="">Status</option>
                                         <option value="pending">Pending</option>
-                                        <option value="awaiting-confirmation">Awaiting Confirmation</option>
-                                        <option value="waiting-for-examination">Waiting For Examination</option> 
+                                        <option value="awaiting confirmation">Awaiting Confirmation</option>
+                                        <option value="waiting for examination">Waiting For Examination</option> 
                                         <option value="done">Done</option>
                                         <option value="cancel">Cancel</option>
                                     </select>
@@ -239,9 +263,9 @@
                                             <th scope="col">Detail</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="reservations-list">
                                         <%
-                                        List<Reservation> reservations = reservationDAO.getReservationByStaffID(curStaff.getStaffID()+"");
+                                        List<Reservation> reservations = reservationDAO.getPageReservationByStaffID(curStaff.getStaffID()+"",1,10);
         
                                         if(reservations!=null){
                                         for (Reservation reservation : reservations) {
@@ -264,7 +288,29 @@
 
                                     </tbody>
                                 </table>
-                                <%}%>
+                                
+                                
+
+                                <ul id="pagination-container">
+                                    <%if(reservationDAO.countReservationsByStaffID(curStaff.getStaffID()+"")<=40){%>
+                                        <%if(reservationDAO.countReservationsByStaffID(curStaff.getStaffID()+"")>0){%>
+                                            <li class="pagination-btn active"><span>1</span></li>
+                                            <%for (int i = 2; i <= (reservationDAO.countReservationsByStaffID(curStaff.getStaffID()+"")+9)/10; i++) {%>
+                                                <li class="pagination-btn inactive"><a data-page="<%=i%>" href="#"><%=i%></a></li>
+                                            <%}%>
+                                        <%}%>
+                                    <%}else{%>
+                                        <!--<li class="pagination-btn inactive">><a href="#">&lt;</a></li>-->
+                                        <li class="pagination-btn active"><span>1</span></li>
+                                        <li class="pagination-btn inactive"><a href="#" data-page="2">2</a></li>
+                                        <li class="pagination-btn inactive"><a href="#" data-page="3">3</a></li>
+                                        <span>...</span>
+                                        <li class="pagination-btn inactive"><a href="#" data-page="<%=(reservationDAO.countReservationsByStaffID(curStaff.getStaffID()+"")+9)/10%>"><%=(reservationDAO.countReservationsByStaffID(curStaff.getStaffID()+"")+9)/10%></a></li>
+                                        <li class="pagination-btn inactive"><a href="#">&gt;</a></li>
+                                    <%}%>
+                                    
+                                </ul>
+                                    <%}%>    
                             </div>
                         </div>
                     </div>
@@ -283,6 +329,7 @@
 
         <!-- JavaScript Libraries -->
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="./resources/js/reservation-staff-script.js"></script>
         <script
             src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
             integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"

@@ -120,26 +120,29 @@
                                 <h5 class="card-title">Info of examination</h5>
                                 <table class="table">
                                     <tbody>
-                                        <tr>
-                                            <td><i class="fas fa-user-md"></i></td>
-                                            <td><strong>Dr:</strong></td>
-                                            <td>${staff.staffName}</td>
-                                        </tr>
-<!--                                        <tr>
-                                            <td><i class="fas fa-hospital"></i></td>
-                                            <td><strong>Bệnh Viện:</strong></td>
-                                            <td>Bệnh Viện XYZ</td>
-                                        </tr>
-                                        <tr>
-                                            <td><i class="fas fa-calendar-alt"></i></td>
-                                            <td><strong>Ngày Khám:</strong></td>
-                                            <td>10/15/2023</td>
-                                        </tr>
-                                        <tr>
-                                            <td><i class="fas fa-clock"></i></td>
-                                            <td><strong>Giờ Khám:</strong></td>
-                                            <td>09:00 AM</td>
-                                        </tr>-->
+                                        <c:if test="${staff != null}">
+                                            <tr>
+                                                <td><i class="fas fa-user-md"></i></td>
+                                                <td><strong>Dr:</strong></td>
+                                                <td>${staff.staffName}</td>
+                                            </tr>
+                                        </c:if>
+
+                                        <!--                                        <tr>
+                                                                                    <td><i class="fas fa-hospital"></i></td>
+                                                                                    <td><strong>Bệnh Viện:</strong></td>
+                                                                                    <td>Bệnh Viện XYZ</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td><i class="fas fa-calendar-alt"></i></td>
+                                                                                    <td><strong>Ngày Khám:</strong></td>
+                                                                                    <td>10/15/2023</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td><i class="fas fa-clock"></i></td>
+                                                                                    <td><strong>Giờ Khám:</strong></td>
+                                                                                    <td>09:00 AM</td>
+                                                                                </tr>-->
                                         <tr>
                                             <td><i class="fas fa-stethoscope"></i></td>
                                             <td><strong>Services:</strong></td>
@@ -255,7 +258,9 @@
                                                 <div class="">
                                                     <form action="reservationdetail?" method="POST">
                                                         <input type="hidden" name="serviceID" value="${service.serviceID}">
-                                                        <input type="hidden" name="staffID" value="${staff.staffID}">
+                                                        <c:if test="${staff.staffID != null}">
+                                                            <input type="hidden" name="staffID" value="${staff.staffID}">
+                                                        </c:if>
                                                         <input type="hidden" name="childID" value="${c.childID}">
                                                         <button type="submit" class="btn-continue btn btn-block text-white">
                                                             <span class="d-flex align-items-center">
@@ -263,6 +268,7 @@
                                                             </span>
                                                         </button>
                                                     </form>
+
                                                 </div>
                                             </div>
                                         </div>

@@ -1,8 +1,10 @@
 <%-- 
-    Document   : HomePage
-    Created on : 12-Sep-2023, 20:29:49
+    Document   : user-details
+    Created on : 11-Oct-2023, 11:47:15
     Author     : Admin
 --%>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import = "model.*" %>
 <%@page import = "Database.*" %>
 <%@page import = "java.util.*" %>
@@ -46,29 +48,58 @@
             />
 
         <!-- Customized Bootstrap Stylesheet -->
-        <link href="css/bootstrap.min.css" rel="stylesheet" />
+                <link href="css/bootstrap.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="./resources/css/staff-dashboard.css">
+        <link rel="stylesheet" href="./resources/css/services-style.css">
+        <style>
+        body {
+            background-color: #e8f2f7;
+        }
+        .detail-info {
+            word-wrap: break-word;
+            flex: 1 1;
+            min-width: 0;
+            padding-left: 5px;
+            color: #003553;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+        }
+        h1 {
+            background: linear-gradient(83.63deg, #00b5f1 33.34%, #00e0ff 113.91%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-align: center;
+            font-size: 35px;
+            font-style: normal;
+            line-height: normal;
+            font-weight: bold;
+        }
+        p {
+            margin-bottom: 5px;
+        }
+        .border-m {
+            border: none;
+            border-radius: 8px;
+        }
+        .child-table th,
+        .child-table td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+        }
+    </style>
     </head>
 
     <body>
         <%
        String email = (String) session.getAttribute("email");
        StaffDAO staffDAO = new StaffDAO();
-       ReservationDAO reservationDAO = new ReservationDAO();
-       ChildrenDAO childrenDAO = new ChildrenDAO();
-       ServiceDAO serviceDAO = new ServiceDAO();
-       UserDAO userDAO = new UserDAO();
-       String reserdId = request.getAttribute("reserdid") + "";
-       Reservation reservation = reservationDAO.getReservationByID(Integer.parseInt(reserdId));
-       CategoryServiceDAO categoryServiceDAO = new CategoryServiceDAO();
        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-       boolean isManager = false;
-       boolean isStaff = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
-            <%if(curStaff!=null){
-            if(curStaff.getRole().equals("manager")) isManager=true;            
-            if(curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) isStaff=true;%>
+            <%if(curStaff!=null){%>
             <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">
                 <nav class="navbar navbar-light">
@@ -94,36 +125,18 @@
                             <span><%=curStaff.getRole()%></span>
                         </div>
                     </div>
-                    <%if(isStaff){%>    
-                    <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link active"
-                           ><i class="fas fa-list-alt"></i>Reservations List</a
-                        >
-                    </div>  
                     <div class="navbar-nav w-100  text-light">
                         <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
                            ><i class="far fa-check-square"></i>Medical examination</a
-                        >
-                    </div>
-                    <%}%>
-                    <%if(isManager){%>
-                    <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link"
-                           ><i class="fas fa-list-alt"></i>Reservations List</a
-                        >
-                    </div>  
-                    <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
-                           ><i class="far fa-check-square"></i>Medical examination</a
-                        >
-                    </div>
-                    <div class="navbar-nav w-100  text-light">
-                        <a href="reservationcontactmanager?event=reservation-list" class="nav-item nav-link"
-                           ><i class="fas fa-list-alt"></i>Reservations Manager</a
                         >
                     </div>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="feedback" class="nav-item nav-link"
+                        <a href="user?action=all" class="nav-item nav-link active"
+                           ><i class="bi bi-people-fill"></i>User</a
+                        >
+                    </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="staff?event=send-to-feedback" class="nav-item nav-link"
                            ><i class="far fa-file-alt"></i>Feedback</a
                         >
                     </div>
@@ -132,7 +145,6 @@
                            ><i class="fas fa-stethoscope"></i>Services</a
                         >
                     </div>
-                    <%}%>
                 </nav>
             </div>
             <!-- Sidebar End -->
@@ -210,102 +222,104 @@
                     </div>
                 </nav>
                 <!-- Navbar End -->
-                <%Children thisChild = childrenDAO.getChildrenByChildrenId(reservation.getChildID()+"");
-                User thisUser = userDAO.getUserByID(reservation.getUserID());%>
+
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
-                    <div
-                        class="row bg-light rounded align-items-center justify-content-center mx-0"
-                        >
-                        <div class="col-md-12 p-0">
-                            <div class="d-flex mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
-                                <h4>RESERVATION DETAIL</h4>
-                                <a href="staff?event=send-to-history-examination&childid=<%=thisChild.getChildID()%>" class="ms-text-primary font-weight-bold">Add Medical Record</a>
-                            </div>
-                            <div class="row px-4 justify-content-between">
-                                <div class="col-md-5 d-flex flex-column justify-content-center align-items-start">
-                                    
-                                    <div class="d-flex justify-content-center"><h3>Customer</h3></div>
+                    <h1 class="mb-5">Contact Information</h1>
 
-                                    <div class="d-flex">
-                                        <img src="<%=thisUser.getProfileImage()%>" alt="dr" class="rounded-3 object-cover me-3" width="100px" height="100px"/>
-                                        <div>
-                                            <h5><%=thisUser.getLastName()+" " +thisUser.getFirstName()%></h5>
-                                            <p class="m-0 text-black-50"><i class="fas fa-envelope"></i>  <%=thisUser.getEmail()%></p>
-                                            <p class="m-0 text-black-50"><i class="fas fa-phone"></i>  <%=thisUser.getPhoneNumber()%></p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="d-flex justify-content-center"><h3 class="mt-3">Patient</h3></div>
-                                    <div class="d-flex">
-                                        <img src="<%=thisChild.getImage()%>" alt="dr" class="rounded-3 object-cover me-3" width="100px" height="100px"/>
-                                        <div>
-                                            <h5><%=thisChild.getChildName()%></h5>
-                                            <p class="m-0 text-black-50"><%=thisChild.getAge()%> years old</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 d-flex flex-column justify-content-center align-items-center">
-                                    <%Staff thisStaff = staffDAO.getStaffByStaffId(reservation.getStaffID());%>
-                                    <img src="<%=thisStaff.getProfileImage()%>" alt="dr" class="rounded-circle object-cover" width="100px" height="100px"/>
-                                    <h4>Dr: <%=thisStaff.getFullName()%></h4>
-                                    <p class="m-0 text-black-50"><i class="fas fa-envelope"></i>  <%=thisStaff.getEmail()%></p>
-                                    <p class="m-0 text-black-50"><i class="fas fa-phone"></i>  <%=thisStaff.getPhoneNumber()%></p>
-                                    <p class="text-black-50"><%=thisStaff.getGender()%></p>
-                                </div>
-                            </div>
-                            <div class="row px-4 justify-content-between mt-4">
-                                <div class="col-md-8">
-                                    <p><strong>Service:</strong><%=serviceDAO.getServiceByID(reservation.getServiceID()+"").getTitle()%></p>
-                                    <p><strong>Cost:</strong><%=serviceDAO.getServiceByID(reservation.getServiceID()+"").getSalePrice()>0 ? serviceDAO.getServiceByID(reservation.getServiceID()+"").getSalePrice() : serviceDAO.getServiceByID(reservation.getServiceID()+"").getOriginalPrice()%></p>
-                                    <p><strong>Payment Method:</strong> COD</p>
-                                </div>
-                                <div class="col-md-4">
-                                    <p><strong>Reservation ID:</strong> <%=reservation.getReservationID()%></p>
-                                    <p><strong>Reservation date:</strong> <%=reservation.getCreatedDate()%></p>
-                                    <p><strong>Confirm Date: </strong><%=reservation.getReservationDate()%></p>
-                                    <p><strong>Status: </strong><%=reservation.getStatus()%></p>
-                                </div>
-                            </div>
-                            <div class="table-responsive p-4 mt-2">
-                                <%if(curStaff!=null){%>
-                                <table class="table table-striped table-hover">
-                                    <thead class="text-light" style="background: #1977cc;">
-                                        <tr>
-                                            <th scope="col">Service name</th>
-                                            <th scope="col">Category</th>
-                                            <th scope="col">Cost</th>
-                                            <th scope="col">Number Of Person</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <%
-                                        List<Integer> serviceIDList = reservationDAO.getListServiceIDByUserAndStaff(reservation.getUserID()+"",curStaff.getStaffID()+"");
-                                        if(serviceIDList!=null){
-                                        for (Integer integer : serviceIDList) {
-                                        Service service = serviceDAO.getServiceByID(integer+"");
-                                        %>
-                                        <tr>
-                                            <th scope="row">
-                                                <div class="d-flex align-items-center">
-                                                    <img src="<%=service.getThumbnail()%>" class="me-2 rounded-3 object-cover" width="30px" height="30px"/>
-                                                    <p class="m-0"><%=service.getTitle()%></p>
-                                                </div>
-                                            </th>
-                                            <td><%=categoryServiceDAO.getCategoryServiceByID(service.getCategoryID()+"").getCategoryName()%></td>
-                                            <td><%if(service.getSalePrice()<=0){%>
-                                                <span class="price"> $<%=service.getOriginalPrice()%> </span>
-                                                <%}else{%>
-                                                <span class="price"> $<%=service.getSalePrice()%> </span>
-                                                <%}%></td>
-                                            <td><%=reservationDAO.countReservationsByStaffAndService(curStaff.getStaffID()+"",service.getServiceID()+"")%></td>
-                                        </tr>
-                                        <%}}%>
+                    <div class="row">
+                        <div class="col-md-6">
 
-                                    </tbody>
-                                </table>
-                                <%}%>
+                            <!-- Parent's Information -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">User information</h5>
+                                    <div class="text-center">
+                                        <img id="img-preview" style="height: 160px;width: 160px;" class="rounded-circle mx-auto d-block"
+                                             src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png" />
+                                    </div>
+                                    <form id="contact-form">
+                                        <div class="form-group">
+                                            <label for="full-name" class="detail-info">Full Name</label>
+                                            <input type="text" class="form-control" id="full-name" name="full-name" readonly value="${user.lastName} ${user.firstName}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="gender" class="detail-info">Gender</label>
+                                            <input type="text" class="form-control" id="gender" name "gender" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="email" class="detail-info">Email</label>
+                                            <input type="email" class="form-control" id="email" name="email" value="${user.email}" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="mobile" class="detail-info">Mobile</label>
+                                            <input type="tel" class="form-control" id="mobile" name="mobile" value="${user.phoneNumber}" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="address" class="detail-info">Address</label>
+                                            <input type="text" class="form-control" id="address" name="address" value="${user.address}" readonly>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="status" class="detail-info">Status</label>
+                                            <input type="text" class="form-control" id="status" name="status" readonly>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <!-- Children's Information -->
+                            <div class="card">
+
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">Children information</h5>
+                                    <table class="child-table" style="width: 100%;">
+                                        <tr>
+                                            <th>ChildID</th>
+                                            <th>Full Name</th>
+                                            <th>Date of Birth</th>
+                                            <th>Gender</th>
+                                        </tr>
+                                        <c:forEach items="${children}" var="c">
+                                            <tr>
+                                                <td>${c.childID}</td>
+                                                <td>${c.childName}</td>
+                                                <td>${c.birthday}</td>
+                                                <td>${c.gender}</td>
+                                            </tr>
+                                        </c:forEach>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Changes History -->
+                    <h1 class="text-center mt-5 mb-5">Contact Changes History</h1>
+                    <div class="card">
+
+                        <div class="card-body">
+                            <table class="child-table" style="width: 100%;">
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Full Name</th>
+                                    <th>Gender</th>
+                                    <th>Mobile</th>
+                                    <th>Address</th>
+                                    <th>Updated Date</th>
+                                </tr>
+                                <!-- Add a new row for each child -->
+                                <tr>
+                                    <td>Thang@gmail.com</td>
+                                    <td>Thang@gmail.com</td>
+                                    <td>Thang@gmail.com</td>
+                                    <td>Thang@gmail.com</td>
+                                    <td>Thang@gmail.com</td>
+                                    <td>Thang@gmail.com</td>
+                                </tr>
+                                <!-- Repeat this row structure for other children -->
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -322,7 +336,7 @@
         </div>
 
         <!-- JavaScript Libraries -->
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script
             src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
             integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
@@ -348,4 +362,3 @@
         </script>
     </body>
 </html>
-

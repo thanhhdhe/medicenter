@@ -3,6 +3,7 @@
     Created on : 12-Sep-2023, 20:29:49
     Author     : Admin
 --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import = "model.*" %>
 <%@page import = "Database.*" %>
 <%@page import = "java.util.*" %>
@@ -51,11 +52,11 @@
     </head>
 
     <body>
-         <%
-        String email = (String) session.getAttribute("email");
-        StaffDAO staffDAO = new StaffDAO();
-        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-        boolean isManager = false;
+        <%
+       String email = (String) session.getAttribute("email");
+       StaffDAO staffDAO = new StaffDAO();
+       Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+       boolean isManager = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){
@@ -96,6 +97,11 @@
                         >
                     </div>
                     <%if(isManager){%>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="reservationcontactmanager?event=reservation-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations Manager</a
+                        >
+                    </div>
                     <div class="navbar-nav w-100 text-light">
                         <a href="feedback" class="nav-item nav-link"
                            ><i class="far fa-file-alt"></i>Feedback</a
@@ -115,7 +121,7 @@
             <div class="content <%if(curStaff==null){%>ms-0 w-100<%}%>">
                 <!-- Navbar Start -->
                 <nav class="navbar navbar-expand navbar-light sticky-top px-4 py-0" style="background-color: #1977cc;">
-                    
+
                     <a href="#" class="sidebar-toggler flex-shrink-0 text-decoration-none text-light">
                         <i class="fa fa-bars"></i>
                     </a>
@@ -178,7 +184,7 @@
                                 <a href="logout" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
-                         <%}else{%>
+                        <%}else{%>
                         <a href="staff?event=sent-to-login" id="login" class="btn btn-outline-primary ms-3 bg-light rounded-pill text-decoration-none"><span class="d-none d-md-inline">Login</a>
                         <%}%>
                     </div>
@@ -187,11 +193,97 @@
 
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
+                    <div class="" >
+                        <button style="border: 0px; border-radius: 5px; background-color: #6994eb; font-family: fantasy" id="sortButton" onclick="toggleSort()">
+                            Unsort
+                        </button>
+                    </div>
                     <div
                         class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0"
                         >
-                        <div class="col-md-6 text-center">
-                            <jsp:include page="reservationcontact.jsp" />
+                        <div class="col-md-12 text-center justify-content-center">
+                            <div class="table-responsive p-4 w-100">
+                                <%if(curStaff!=null){%>
+
+                                <table class="table table-striped table-hover">
+                                    <thead class="text-light" style="background: #1977cc;">
+                                        <tr>
+                                            <th scope="col">ID</th>
+                                            <th scope="col">Service Name</th>
+                                            <th scope="col">Full name</th>
+                                            <th scope="col">Children</th>
+                                            <th scope="col">Reservation Date</th>
+                                            <th scope="col">Slot</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Cost</th>
+
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="service-list">
+
+                                        <c:forEach var="reservation" items="${requestScope.Reservation}"> 
+
+                                            <tr>
+                                                <td>${reservation.getReservationID()}</td>
+                                                <c:set var="ServiceID" value="${reservation.getServiceID()}" />
+                                                <c:set var="ServiceIDString" value="${ServiceID.toString()}" />
+                                                <%
+                                                    ServiceDAO serviceDAO = new ServiceDAO();
+                                                    Service service = serviceDAO.getServiceByID((String) pageContext.getAttribute("ServiceIDString"));
+                                                %>
+                                                <td><%= service.getTitle() %></td>
+                                                <c:set var="UserID" value="${reservation.getUserID()}" />
+                                                <c:set var="UserIDString" value="${UserID}" />
+                                                <%
+                                                    UserDAO userdao = new UserDAO();
+                                                    User user = userdao.getUserByID((int) pageContext.getAttribute("UserIDString"));
+                                                %>
+                                                <td><%= user.getFirstName()%> <%= user.getLastName()%></td>
+                                                <c:set var="ChildID" value="${reservation.getChildID()}" />
+                                                <c:set var="ChildIDString" value="${ChildID.toString()}" />
+                                                <%
+                                                    ChildrenDAO childrenDAO = new ChildrenDAO();
+                                                    Children children = childrenDAO.getChildrenByChildrenId((String) pageContext.getAttribute("ChildIDString"));
+                                                %>
+                                                <td><%= children.getChildName()%></td>
+                                                <td>${reservation.getReservationDate()}</td>
+                                                <td>${reservation.getReservationSlot()}</td>
+
+                                                <td>
+                                                    <div class="dropdown">
+                                                        <button style="border: 0px; padding: 0px" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <span class="badge bg-primary"  id="statusBadge-${reservation.getReservationID()}">${reservation.getStatus()}</span>
+                                                        </button>
+                                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">cancel</a></li>
+                                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">pending</a></li>
+                                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">waiting for examination</a></li>
+                                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">waiting for examination</a></li>
+                                                        </ul>
+
+                                                    </div>
+                                                </td>
+                                                <td>${reservation.getCost()}</td>
+                                            </tr>
+
+                                        </c:forEach>
+
+
+                                    </tbody> 
+
+                                </table>
+                                <% ReservationDAO reservationdao = new ReservationDAO(); %>
+                                <div class="d-flex justify-content-center mb-5" id="pagination-container">
+                                    <button style="border: 0px; border-radius: 5px; background-color: #6994eb" class="pagination-btn ms-2 active" data-page="1">1</button>
+                                    <%for (int i = 2; i <=(reservationdao.getTotalReservation()+9)/10; i++) {%>
+                                    <button style="border: 0px; border-radius: 5px; background-color: #6994eb" class="pagination-btn ms-2 inactive" data-page="<%=i%>"><%=i%></button>
+                                    <%}%>
+                                </div> 
+
+
+                                <%}%>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -222,15 +314,102 @@
 
         <!-- Template Javascript -->
         <script>
-            document.querySelector('.sidebar-toggler').addEventListener('click', function() {
-                var sidebar = document.querySelector('.sidebar');
-                var content = document.querySelector('.content');
+                                                                document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+                                                                    var sidebar = document.querySelector('.sidebar');
+                                                                    var content = document.querySelector('.content');
 
-                sidebar.classList.toggle('open');
-                content.classList.toggle('open');
+                                                                    sidebar.classList.toggle('open');
+                                                                    content.classList.toggle('open');
 
-                return false;
-            });
+                                                                    return false;
+                                                                });
+                                                                // Khởi tạo biến để theo dõi trạng thái của nút
+                                                                var isSorted = false;
+                                                                var paginationButtons = document.querySelectorAll('.pagination-btn');
+                                                                paginationButtons.forEach(function (button) {
+                                                                    button.addEventListener('click', function (event) {
+                                                                        event.preventDefault(); // Ngăn chặn trình duyệt chuyển đến URL trong thẻ 'a'
+
+                                                                        if (!this.classList.contains('active')) {
+                                                                            document.querySelectorAll('.pagination-btn').forEach(function (paginationBtn) {
+                                                                                if (paginationBtn.classList.contains('active')) {
+                                                                                    paginationBtn.classList.remove('active');
+                                                                                }
+                                                                            });
+                                                                            this.classList.add('active');
+
+                                                                            var page = this.dataset.page;
+                                                                            if(isSorted){
+                                                                               loadPageServices(page,"sort"); // Gọi hàm loadServices() để tải danh sách dịch vụ của trang được chọn
+                                                                            } else {
+                                                                               loadPageServices(page,""); 
+                                                                            }
+                                                                            
+                                                                        }
+                                                                    });
+                                                                });
+                                                                
+
+                                                                        // Hàm thực hiện việc thay đổi giá trị của nút và gọi loadPageServices
+                                                                function toggleSort() {
+                                                                    // Lấy thẻ button bằng id
+                                                                    var sortButton = document.querySelector('#sortButton');
+
+                                                                    if (isSorted) {
+                                                                        // Nếu đã được sắp xếp (sort), thay đổi giá trị và gọi loadPageServices với giá trị "unsort"
+                                                                        sortButton.textContent = "Unsort";
+                                                                        loadPageServices(1, "");
+                                                                    } else {
+                                                                        // Nếu chưa được sắp xếp (unsort), thay đổi giá trị và gọi loadPageServices với giá trị "sort"
+                                                                        sortButton.textContent = "Sort";
+                                                                        loadPageServices(1, "sort");
+                                                                    }
+
+                                                                    // Đảo ngược trạng thái của biến
+                                                                    isSorted = !isSorted;
+                                                                }
+                                                                // Hàm tải dữ liệu của trang bằng Ajax
+                                                                function loadPageServices(page,sortType) {
+                                                                    // Gửi yêu cầu Ajax đến Servlet với tham số trang
+                                                                    
+                                                                    var xhr = new XMLHttpRequest();
+                                                                    xhr.open('POST', 'reservationcontactmanager?event=reservation-list-paging&page=' + page
+                                                                            + '&sortstatus=' + sortType);
+
+                                                                    xhr.onload = function () {
+                                                                        if (xhr.status === 200) {
+                                                                            // Xử lý dữ liệu trả về từ máy chủ và cập nhật nội dung trang
+                                                                            document.querySelector('#service-list').innerHTML = xhr.responseText;
+                                                                        } else {
+                                                                            console.error('Error:', xhr.status);
+                                                                        }
+                                                                    };
+
+                                                                    xhr.onerror = function () {
+                                                                        console.error('Error:', xhr.status);
+                                                                    };
+
+                                                                    xhr.send();
+                                                                }
+                                                                function changestatus(a, uid) {
+                                                                    var text = a.textContent;
+                                                                    var textchange = document.getElementById("statusBadge-" + uid);
+                                                                    textchange.textContent = text;
+
+                                                                    // Gửi yêu cầu Ajax đến servlet
+                                                                    var xhr = new XMLHttpRequest();
+                                                                    xhr.open("POST", "reservationcontactmanager?event=updatestatus&status=" + text + "&reservationID=" + uid, true);
+
+                                                                    xhr.onload = function () {
+
+                                                                    };
+
+                                                                    xhr.onerror = function () {
+
+                                                                    };
+
+                                                                    xhr.send();
+                                                                }
         </script>
     </body>
 </html>

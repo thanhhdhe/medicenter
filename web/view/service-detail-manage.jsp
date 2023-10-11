@@ -56,10 +56,14 @@
        String email = (String) session.getAttribute("email");
        StaffDAO staffDAO = new StaffDAO();
        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+       boolean isManager = false;
+        boolean isStaff = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
-            <%if(curStaff!=null){%>
-            <!-- Sidebar Start -->
+            <%if(curStaff!=null){ 
+            if(curStaff.getRole().equals("manager")) isManager=true;            
+            if(curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) isStaff=true;%>
+           <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">
                 <nav class="navbar navbar-light">
                     <a href="staff?event=sent-to-home" class="navbar-brand mx-4 mb-3">
@@ -84,13 +88,41 @@
                             <span><%=curStaff.getRole()%></span>
                         </div>
                     </div>
+                    <%if(isStaff){%>    
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations List</a
+                        >
+                    </div>  
                     <div class="navbar-nav w-100  text-light">
                         <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
+                    <%}%>
+                    <%if(isManager){%>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations List</a
+                        >
+                    </div>  
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
+                           ><i class="far fa-check-square"></i>Medical examination</a
+                        >
+                    </div>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="reservationcontactmanager?event=reservation-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations Manager</a
+                        >
+                    </div>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="staff?event=send-to-feedback" class="nav-item nav-link"
+                        <a href="user?action=all" class="nav-item nav-link"
+                           ><i class="bi bi-people-fill"></i>User</a
+                        >
+                    </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="feedback" class="nav-item nav-link"
                            ><i class="far fa-file-alt"></i>Feedback</a
                         >
                     </div>
@@ -99,6 +131,7 @@
                            ><i class="fas fa-stethoscope"></i>Services</a
                         >
                     </div>
+                    <%}%>
                 </nav>
             </div>
             <!-- Sidebar End -->
@@ -324,44 +357,44 @@
                         </section>
                     </div>
                 </div>
-            <!-- Blank End -->
+                <!-- Blank End -->
 
-            <!-- Footer Start -->
-            <div class="mt-4">
-                <jsp:include page="layout/footer.jsp" />
+                <!-- Footer Start -->
+                <div class="mt-4">
+                    <jsp:include page="layout/footer.jsp" />
+                </div>
+                <!-- Footer End -->
             </div>
-            <!-- Footer End -->
+            <!-- Content End -->
+
         </div>
-        <!-- Content End -->
 
-    </div>
+        <!-- JavaScript Libraries -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="./resources/js/services-details-manage.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+            crossorigin="anonymous"
+        ></script>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="./resources/js/services-details-manage.js"></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-        crossorigin="anonymous"
-    ></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-        crossorigin="anonymous"
-    ></script>
+        <!-- Template Javascript -->
+        <script>
+                                                            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+                                                                var sidebar = document.querySelector('.sidebar');
+                                                                var content = document.querySelector('.content');
 
-    <!-- Template Javascript -->
-    <script>
-                                    document.querySelector('.sidebar-toggler').addEventListener('click', function () {
-                                        var sidebar = document.querySelector('.sidebar');
-                                        var content = document.querySelector('.content');
+                                                                sidebar.classList.toggle('open');
+                                                                content.classList.toggle('open');
 
-                                        sidebar.classList.toggle('open');
-                                        content.classList.toggle('open');
-
-                                        return false;
-                                    });
-    </script>
-</body>
+                                                                return false;
+                                                            });
+        </script>
+    </body>
 </html>
 

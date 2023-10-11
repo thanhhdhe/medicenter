@@ -313,3 +313,43 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 .object-cover{
     object-fit: cover;
 }
+
+#pagination-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+}
+#pagination-container li{
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#pagination-container a{
+    text-decoration: none;
+    font-weight: 500;
+}
+
+#pagination-container .active{
+    background-color: #1977cc !important;
+}
+
+#pagination-container .inactive{
+    background-color: #fff;
+}
+
+#pagination-container .active span {
+    color: #fff;
+    font-weight: 500;
+}
+#pagination-container .inactive a{
+    color: #8f8f8f;
+}
+

@@ -9,7 +9,6 @@ import Database.ServiceDAO;
 import Database.StaffDAO;
 import Database.UserDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
@@ -17,11 +16,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Date;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import model.Children;
@@ -51,6 +47,13 @@ public class UserController extends HttpServlet {
         HttpSession session = request.getSession();
         User users = (User) session.getAttribute("user");
         String action = request.getParameter("action");
+        Staff curStaff = (Staff) session.getAttribute("staff");
+        boolean isManager = false;
+        if (curStaff != null) {
+            if (curStaff.getRole().equals("manager")) {
+                isManager = true;
+            }
+        }
         List<User> userList = null;
         String url = null;
 
@@ -87,51 +90,57 @@ public class UserController extends HttpServlet {
                     userdao.UpdateProfile(firstname, lastname, phone, gender, newImg, address, userId);
                     response.sendRedirect("home?showmodal=1&status=success");
                 } else {
-                    // Loại tệp tải lên không phải là hình ảnh
                     request.setAttribute("updateerror", "Uploaded file is not an image");
                     response.sendRedirect("home?showmodal=1&status=error");
                 }
 
             }
             if (action.equals("all")) {
-                url = "user?action=all";
-                userList = userdao.getAllUsers();
+                if (isManager) {
+                    url = "user?action=all";
+                    userList = userdao.getAllUsers();
+                } else {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                }
             }
             if (action.equals("search")) {
-                String text = request.getParameter("txt");
-                text = text.replaceFirst("^0+(?!$)", "");
-                url = "user?action=search&txt=" + text;
-                userList = userdao.search(text);
+                if (isManager) {
+                    String text = request.getParameter("txt");
+                    text = text.replaceFirst("^0+(?!$)", "");
+                    url = "user?action=search&txt=" + text;
+                    userList = userdao.search(text);
+                } else {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                }
             }
-//            if (action.equals("status")) {
-//                int id = Integer.parseInt(request.getParameter("userid"));
-//                User u = userdao.getUserByID(id);
-//                System.out.println(id);
-//                System.out.println(u.isStatus());
-//                boolean status = u.isStatus();
-//                try {
-//                    if (status) {
-//                        u.setStatus(false);
-//                        userdao.updateStatus(Boolean.FALSE, id);
-//                        System.out.println("change to false");
-//                    } else {
-//                        u.setStatus(true);
-//                        userdao.updateStatus(Boolean.TRUE, id);
-//                        System.out.println("change to true");
-//                    }
-//                    // Send back a JSON object with the new status
-//                    response.setContentType("application/json");
-//                    PrintWriter out = response.getWriter();
-//                    out.print("{\"success\": true, \"status\": " + u.isStatus() + "}");
-//                    out.flush();
-//                } catch (Exception e) {
-//                    // Send back a JSON object with an error message
-//                    response.setContentType("application/json");
-//                    PrintWriter out = response.getWriter();
-//                    out.print("{\"success\": false, \"error\": \"" + e.getMessage() + "\"}");
-//                    out.flush();
-//                }
-//            }
+            if (action.equals("filter")) {
+                if (isManager) {
+                    String status = request.getParameter("status");
+                    request.setAttribute("status", status);
+                    if (status.equals("all")) {
+                        response.sendRedirect("user?action=all");
+                    } else {
+                        url = "user?action=filter&status=" + status;
+                        userList = userdao.getFilterByStatus(status);
+                    }
+                } else {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                }
+            }
+            if (action.equals("details")) {
+                if (isManager) {
+                    String userIDstr = request.getParameter("userID");
+                    int userID = Integer.parseInt(userIDstr);
+                    User userDetail = userdao.getUserByID(userID);
+                    request.setAttribute("user", userDetail);
+                    ChildrenDAO childrenDAO = new ChildrenDAO();
+                    List<Children> childrenList = childrenDAO.getListChildrenByUserId(userIDstr);
+                    request.setAttribute("children", childrenList);
+                    request.getRequestDispatcher("./view/user-details.jsp").forward(request, response);
+                } else {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                }
+            }
 
             if (userList != null) {
                 int numPerPage = 15;
@@ -152,7 +161,10 @@ public class UserController extends HttpServlet {
                 int end = Math.min(page * numPerPage, size);
 
                 List<User> user = userdao.getListByPage(userList, start, end);
-
+                session.setAttribute("numPerPage", numPerPage);
+                if (request.getParameter("txt") != null) {
+                    request.setAttribute("text", request.getParameter("txt"));
+                }
                 request.setAttribute("url", url);
                 request.setAttribute("page", page);
                 request.setAttribute("num", numPages);
@@ -165,17 +177,23 @@ public class UserController extends HttpServlet {
                 ServiceDAO serviceDAO = new ServiceDAO();
                 Service service = serviceDAO.getServiceByID(serviceID);
                 String staffIDstr = request.getParameter("staffID");
-                int staffID = Integer.parseInt(staffIDstr);
-                StaffDAO staffDAO= new StaffDAO();
-                Staff staff = staffDAO.getStaffByStaffId(staffID);
-                request.setAttribute("staff",staff );
-                request.setAttribute("service",service);
-                System.out.println("user id la" + userID);
+                Staff staff = null;  // Initialize to null
+                if (staffIDstr != null) {
+                    int staffID = Integer.parseInt(staffIDstr);
+                    StaffDAO staffDAO = new StaffDAO();
+                    staff = staffDAO.getStaffByStaffId(staffID);
+                }
+                request.setAttribute("service", service);
                 ChildrenDAO cDao = new ChildrenDAO();
                 List<Children> childList = cDao.getListChildrenByUserId(userID + "");
                 request.setAttribute("child", childList);
+                // Set the "staff" attribute if staff is not null
+                if (staff != null) {
+                    request.setAttribute("staff", staff);
+                }
                 request.getRequestDispatcher("./view/choose-children.jsp").forward(request, response);
             }
+
             if (action.equals("add-child")) {
                 ChildrenDAO childDAO = new ChildrenDAO();
                 String fullName = request.getParameter("fullname");
