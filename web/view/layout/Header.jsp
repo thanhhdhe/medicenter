@@ -38,7 +38,7 @@
 
                         </ul>
                     </li>
-                    <li><a class="nav-link scrollto" href="#doctors">Doctors</a></li>
+                    <li><a class="nav-link scrollto" href="/ChildrenCare/staffList">Doctors</a></li>
                     <li class="dropdown"><a href="/ChildrenCare/blogPage"><span>Blog</span> <i class="bi bi-chevron-down"></i></a>
                         <ul>
                             <li><a href="#">Drop Down 1</a></li>

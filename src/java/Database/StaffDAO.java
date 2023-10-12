@@ -239,7 +239,10 @@ public class StaffDAO extends MyDAO {
                 String rank = rs.getString("Rank");
                 String specialty = rs.getString("Specialty");
                 String introduction = rs.getString("Introduction");
-                Staff staff = new Staff(staffID, fullName, gender, phoneNumber, profileImage, rank, specialty, introduction);
+                String SpecializedActivities = rs.getString("SpecializedActivities");
+                String ProfessionalAchievements = rs.getString("ProfessionalAchievements");
+                String DepthStudy = rs.getString("DepthStudy");
+                Staff staff = new Staff(staffID, fullName, gender, phoneNumber, profileImage, rank, specialty, introduction, SpecializedActivities, ProfessionalAchievements, DepthStudy);
                 staffList.add(staff);
             }
             rs.close();

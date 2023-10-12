@@ -20,7 +20,7 @@ import model.Staff;
  *
  * @author quanh
  */
-public class StaffListController extends HttpServlet {
+public class DocDetailController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,10 +39,10 @@ public class StaffListController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet StaffListController</title>");
+            out.println("<title>Servlet DocDetailController</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet StaffListController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet DocDetailController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -60,52 +60,11 @@ public class StaffListController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PrintWriter out = response.getWriter();
-        ServiceDAO serviceDao = new ServiceDAO();
-        StaffDAO staffDao = new StaffDAO();
-        String staffName;
-        try {
-            staffName = request.getParameter("staffName");
-            if (staffName == null) {
-                throw new Exception();
-            }
-        } catch (Exception e) {
-            staffName = "";
-        }
-        String serviceID;
-        List<Service> serviceList = serviceDao.getAllServices();
-        Service service = new Service(0, "Choice Service");
-        serviceList.add(0, service);
-        try {
-            serviceID = request.getParameter("serviceID");
-            if (serviceID == null || serviceID.equals("0")) {
-                throw new Exception();
-            }
-            out.print(serviceID);
-            service = serviceDao.getServiceByID(serviceID);
-            serviceList.remove(service);
-            serviceList.add(0, service);
-        } catch (Exception e) {
-            serviceID = "";
-        }
-        out.print(serviceID);
-
-        int page;
-        try {
-            page = Integer.parseInt(request.getParameter("page"));
-        } catch (Exception e) {
-            page = 1;
-        }
-        
-        int numOfPage= staffDao.getNumOfPageStaffList(staffName, serviceID);
-
-        List<Staff> staffList = staffDao.getStaffListPage((page - 1) * 5, 5, staffName, serviceID);
-
-        request.setAttribute("staffName", staffName);
-        request.setAttribute("serviceList", serviceList);
-        request.setAttribute("staffList", staffList);
-        request.setAttribute("numOfPage", numOfPage);
-        request.getRequestDispatcher("./view/staff-list.jsp").forward(request, response);
+        int docID = Integer.parseInt(request.getParameter("ID"));
+        StaffDAO staffDAO = new StaffDAO();
+        Staff staff= staffDAO.getStaffByStaffId(docID);
+        request.setAttribute("Staff", staff);
+        request.getRequestDispatcher("./view/doctor-detail.jsp").forward(request, response);
     }
 
     /**

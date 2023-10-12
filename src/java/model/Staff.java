@@ -22,6 +22,9 @@ public class Staff {
     private String rank;
     private String specialty;
     private String introduction;
+    private String SpecializedActivities;
+    private String ProfessionalAchievements;
+    private String DepthStudy;
 
     public Staff() {
     }
@@ -55,7 +58,7 @@ public class Staff {
         this.introduction = introduction;
     }
 
-    public Staff(int staffID, String fullName, String gender, String phoneNumber, String profileImage, String rank, String specialty, String introduction) {
+    public Staff(int staffID, String fullName, String gender, String phoneNumber, String profileImage, String rank, String specialty, String introduction, String SpecializedActivities, String ProfessionalAchievements, String DepthStudy) {
         this.staffID = staffID;
         this.fullName = fullName;
         this.gender = gender;
@@ -64,6 +67,9 @@ public class Staff {
         this.rank = rank;
         this.specialty = specialty;
         this.introduction = introduction;
+        this.DepthStudy = DepthStudy;
+        this.ProfessionalAchievements = ProfessionalAchievements;
+        this.SpecializedActivities = SpecializedActivities;
     }
 
     public String getRank() {
@@ -160,6 +166,30 @@ public class Staff {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getSpecializedActivities() {
+        return SpecializedActivities;
+    }
+
+    public void setSpecializedActivities(String SpecializedActivities) {
+        this.SpecializedActivities = SpecializedActivities;
+    }
+
+    public String getProfessionalAchievements() {
+        return ProfessionalAchievements;
+    }
+
+    public void setProfessionalAchievements(String ProfessionalAchievements) {
+        this.ProfessionalAchievements = ProfessionalAchievements;
+    }
+
+    public String getDepthStudy() {
+        return DepthStudy;
+    }
+
+    public void setDepthStudy(String DepthStudy) {
+        this.DepthStudy = DepthStudy;
     }
 
 }

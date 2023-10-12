@@ -51,14 +51,14 @@
                 for (Staff staff : staffList) {  %>
                 <div class="item-doctor d-flex">
                     <div class="thumb"> 
-                        <a href="#linkvaodetail"> 
+                        <a href="/ChildrenCare/docDetail?ID=<%=staff.getStaffID()%>"> 
                             <img src="<%=staff.getProfileImage()%>" class="w-100"> 
                         </a>
                     </div>
                     <div class="info">
                         <h3>
 
-                            <a href="https://hongngochospital.vn/dotor/pgs-ts-bs-ha-kim-trung/"><%=staff.getRank()%> <%=staff.getFullName()%></a></h3>
+                            <a href="/ChildrenCare/docDetail?ID=<%=staff.getStaffID()%>"><%=staff.getRank()%> <%=staff.getFullName()%></a></h3>
                         <p><img src="https://hongngochospital.vn/wp-content/themes/hongngoc/images/icon-level.png" alt=""><%=staff.getRank()%></p>
                         <p><img src="https://hongngochospital.vn/wp-content/themes/hongngoc/images/icon-park.png" alt=""> 
                             <%List<Integer> servicesList= ssDao.getServiceByDoc(staff.getStaffID());
