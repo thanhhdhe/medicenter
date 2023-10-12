@@ -200,13 +200,14 @@ public class UserController extends HttpServlet {
                 String year = request.getParameter("year");
                 String month = request.getParameter("month");
                 String day = request.getParameter("day");
-                String email = request.getParameter("email");
                 String address = request.getParameter("address");
                 String gender = request.getParameter("gender");
                 String phoneNumber = request.getParameter("phoneNumber");
                 String dfImage = "https://cdn-icons-png.flaticon.com/512/3177/3177440.png";
                 Part filePart = request.getPart("images");
-
+                
+                
+                
                 Date sqlDOB = null;
                 try {
                     String date = day + "-" + month + "-" + year;
@@ -226,11 +227,14 @@ public class UserController extends HttpServlet {
                     System.out.println("anh la " + newImg);
                     Children newChild = new Children(users, fullName, sqlDOB, gender, newImg);
                     childDAO.createChildren(newChild);
-                    session.setAttribute("message", "Thông báo: Thêm trẻ em thành công!");
+                    users.setAddress(address);
+                    users.setPhoneNumber(phoneNumber);
+                    userdao.updateProfile(users);
+                    session.setAttribute("message", "Add children profile successfully");
                 } else {
                     Children newChild = new Children(users, fullName, sqlDOB, gender, dfImage);
                     childDAO.createChildren(newChild);
-                    session.setAttribute("message", "Thông báo: Thêm trẻ em thành công!");
+                    session.setAttribute("message", "Add children profile successfully");
                 }
                 response.sendRedirect("user?action=my-children");
 //                request.getRequestDispatcher().forward(request, response);
