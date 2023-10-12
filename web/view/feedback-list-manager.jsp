@@ -187,7 +187,7 @@
                             <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
                                 <h4>FEEDBACK RECORDS</h4>
 
-                                <a href="add-appointment.html" class="ms-text-primary font-weight-bold">Add Medical Record</a>
+                                
                             </div>
                             <div class="d-flex justify-content-around">
                                 <div class="col-md-3 ">
