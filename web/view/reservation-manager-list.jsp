@@ -57,10 +57,12 @@
        StaffDAO staffDAO = new StaffDAO();
        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
        boolean isManager = false;
+       boolean isStaff = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){
-            if(curStaff.getRole().equals("manager")) isManager=true;%>
+            if(curStaff.getRole().equals("manager")) isManager=true;
+            if(curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) isStaff=true;%>
             <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">
                 <nav class="navbar navbar-light">
@@ -86,17 +88,24 @@
                             <span><%=curStaff.getRole()%></span>
                         </div>
                     </div>
+                        <%if(isStaff){%>    
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link active"
+                           ><i class="fas fa-list-alt"></i>Reservations List</a
+                        >
+                    </div>  
                     <div class="navbar-nav w-100  text-light">
                         <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
+                    <%}%>
+                    <%if(isManager){%>
                     <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link"
-                           ><i class="fas fa-list-alt"></i>Reservations List</a
+                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
+                           ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
-                    <%if(isManager){%>
                     <div class="navbar-nav w-100  text-light">
                         <a href="reservationcontactmanager?event=reservation-list" class="nav-item nav-link"
                            ><i class="fas fa-list-alt"></i>Reservations Manager</a
@@ -217,6 +226,7 @@
                                             <th scope="col">Doctor</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Cost</th>
+                                            <th scope="col">Detail</th>
 
                                         </tr>
                                     </thead>
@@ -290,6 +300,7 @@
                                                     </div>
                                                 </td>
                                                 <td>${reservation.getCost()}</td>
+                                                <td><a href="staff?event=send-to-reservation-manager-detail&reserdid=${reservation.getReservationID()}"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></a></td>
                                             </tr>
 
                                         </c:forEach>

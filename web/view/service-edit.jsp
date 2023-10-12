@@ -102,11 +102,6 @@
                     <%}%>
                     <%if(isManager){%>
                     <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link"
-                           ><i class="fas fa-list-alt"></i>Reservations List</a
-                        >
-                    </div>  
-                    <div class="navbar-nav w-100  text-light">
                         <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
@@ -114,6 +109,11 @@
                     <div class="navbar-nav w-100  text-light">
                         <a href="reservationcontactmanager?event=reservation-list" class="nav-item nav-link"
                            ><i class="fas fa-list-alt"></i>Reservations Manager</a
+                        >
+                    </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="user?action=all" class="nav-item nav-link"
+                           ><i class="bi bi-people-fill"></i>User</a
                         >
                     </div>
                     <div class="navbar-nav w-100 text-light">

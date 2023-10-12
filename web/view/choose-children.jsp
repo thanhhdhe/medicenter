@@ -247,12 +247,12 @@
                                                                 </span>
                                                             </button>
                                                         </div>
-                                                        <div class="col-md-4">
+<!--                                                        <div class="col-md-4">
                                                             <button class="btn btn-primary btn-block border-m"><span
                                                                     class="d-flex align-items-center">
                                                                     <i class="fas fa-edit mr-2"></i> Edit
                                                                 </span></button>
-                                                        </div>
+                                                        </div>-->
                                                     </div>
                                                 </div>
                                                 <div class="">
@@ -283,7 +283,7 @@
                 <div class="footer-nav mt-5 col-md-6">
                     <div class="row">
                         <div class="col-md-3">
-                            <button type="button" class="btn btn-none btn-block border-m">
+                            <button type="button" class="btn btn-none btn-block border-m" onclick="goBack()">
                                 <span class="d-flex align-items-center">
                                     <i class="fas fa-arrow-circle-left mr-2"></i> Back
                                 </span>
@@ -471,15 +471,8 @@
                                                 document.getElementById("basicInfo" + index).style.display = "none";
                                                 document.getElementById("fullInfo" + index).style.display = "none";
                                             }
-                                            function savePatient() {
-                                                // Lấy thông tin từ các trường input trong modal
-                                                const patientName = document.getElementById("patientName").value;
-                                                const patientDOB = document.getElementById("patientDOB").value;
-
-                                                // Ở đây, bạn có thể thực hiện việc lưu thông tin bệnh nhân vào cơ sở dữ liệu hoặc xử lý theo ý muốn.
-
-                                                // Sau khi lưu hoặc xử lý xong, đóng modal
-                                                $('#addPatientModal').modal('hide');
+                                            function goBack() {
+                                                window.history.back();
                                             }
                                             $(document).ready(function () {
                                                 // Khởi tạo các combobox với tùy chọn mặc định

@@ -125,6 +125,15 @@ public class StaffController extends HttpServlet {
                 request.setAttribute("reserdid", reserdId);
                 request.getRequestDispatcher("./view/reservationdetail-of-staff.jsp").forward(request, response);
                 break;
+            case "send-to-reservation-manager-detail":
+                if (!isManager) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
+                String reserdIdM = request.getParameter("reserdid");
+                request.setAttribute("reserdid", reserdIdM);
+                request.getRequestDispatcher("./view/reservationdetail-of-staff.jsp").forward(request, response);
+                break;
             case "reservation-of-staff":
                 if (!isManager && !isStaff) {
                     request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);

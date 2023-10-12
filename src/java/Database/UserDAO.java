@@ -231,6 +231,32 @@ public class UserDAO extends MyDAO {
         }
     }
 
+    public void updateProfile(User user) {
+        String xSql = "UPDATE [dbo].[Users]\n"
+                + "   SET [Address] = ?\n"
+                + "      ,[FirstName] = ?\n"
+                + "      ,[LastName] = ?\n"
+                + "      ,[Gender] = ?\n"
+                + "      ,[PhoneNumber] = ?\n"
+                + "      ,[ProfileImage] = ?\n"
+                + " WHERE UserID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            System.out.println(xSql);
+            ps.setString(1, user.getAddress());
+            ps.setString(2, user.getFirstName());
+            ps.setString(3, user.getLastName());
+            ps.setString(4, user.getGender());
+            ps.setString(5, user.getPhoneNumber());
+            ps.setString(6, user.getProfileImage());
+            ps.setInt(7, user.getUserID());
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<User> getFilterByStatus(String status) {
         List<User> filteredUsers = new ArrayList<>();
         String xSql = "SELECT * FROM [dbo].[Users] WHERE [Status] = ?";

@@ -48,48 +48,48 @@
             />
 
         <!-- Customized Bootstrap Stylesheet -->
-                <link href="css/bootstrap.min.css" rel="stylesheet" />
+        <link href="css/bootstrap.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="./resources/css/staff-dashboard.css">
         <link rel="stylesheet" href="./resources/css/services-style.css">
         <style>
-        body {
-            background-color: #e8f2f7;
-        }
-        .detail-info {
-            word-wrap: break-word;
-            flex: 1 1;
-            min-width: 0;
-            padding-left: 5px;
-            color: #003553;
-            font-size: 16px;
-            font-style: normal;
-            font-weight: 500;
-            line-height: normal;
-        }
-        h1 {
-            background: linear-gradient(83.63deg, #00b5f1 33.34%, #00e0ff 113.91%);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            text-align: center;
-            font-size: 35px;
-            font-style: normal;
-            line-height: normal;
-            font-weight: bold;
-        }
-        p {
-            margin-bottom: 5px;
-        }
-        .border-m {
-            border: none;
-            border-radius: 8px;
-        }
-        .child-table th,
-        .child-table td {
-            border: 1px solid #dee2e6;
-            padding: 8px;
-        }
-    </style>
+            body {
+                background-color: #e8f2f7;
+            }
+            .detail-info {
+                word-wrap: break-word;
+                flex: 1 1;
+                min-width: 0;
+                padding-left: 5px;
+                color: #003553;
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+            }
+            h1 {
+                background: linear-gradient(83.63deg, #00b5f1 33.34%, #00e0ff 113.91%);
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+                text-align: center;
+                font-size: 35px;
+                font-style: normal;
+                line-height: normal;
+                font-weight: bold;
+            }
+            p {
+                margin-bottom: 5px;
+            }
+            .border-m {
+                border: none;
+                border-radius: 8px;
+            }
+            .child-table th,
+            .child-table td {
+                border: 1px solid #dee2e6;
+                padding: 8px;
+            }
+        </style>
     </head>
 
     <body>
@@ -245,7 +245,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="gender" class="detail-info">Gender</label>
-                                            <input type="text" class="form-control" id="gender" name "gender" readonly>
+                                            <input type="text" class="form-control" id="gender" name="gender" value="${user.gender}" readonly>
                                         </div>
                                         <div class="form-group">
                                             <label for="email" class="detail-info">Email</label>
@@ -261,8 +261,10 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="status" class="detail-info">Status</label>
-                                            <input type="text" class="form-control" id="status" name="status" readonly>
+                                            <span class="${user.status ? 'badge bg-success' : 'badge bg-danger'}">${user.status ? 'Active' : 'Inactive'}</span>
                                         </div>
+
+
                                     </form>
                                 </div>
                             </div>
