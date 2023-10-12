@@ -352,4 +352,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 #pagination-container .inactive a{
     color: #8f8f8f;
 }
-
+#pagination-container button{
+    border-radius: 50%;
+    border: 0px;
+    background-color: white
+}

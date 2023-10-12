@@ -7,6 +7,7 @@ package controller;
 import Database.ChildrenDAO;
 import Database.MedicalExaminationDAO;
 import Database.ReservationDAO;
+import Database.ServiceDAO;
 import Database.StaffDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -62,7 +63,9 @@ public class MedicalExaminationController extends HttpServlet {
             if (curStaff.getRole().equals("manager")) {
                 isManager = true;
             }
-            if(curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) isStaff=true;
+            if (curStaff.getRole().equals("doctor") || curStaff.getRole().equals("nurse")) {
+                isStaff = true;
+            }
         }
         
         switch (event) {
@@ -72,11 +75,17 @@ public class MedicalExaminationController extends HttpServlet {
                 }
                 deleteMedicalExamination(request, response);
                 break;
-            case "patient-of-staff":
+            case "get-patient-of-staff":
                 if (!isManager && !isStaff) {
                     break;
                 }
                 renderPatientOfStaff(request, response);
+                break;
+            case "get-medical-examination-page":
+                if (!isManager && !isStaff) {
+                    break;
+                }
+                renderPageMedicalExaminationOfStaff(request, response);
                 break;
         }
     }
@@ -103,7 +112,9 @@ public class MedicalExaminationController extends HttpServlet {
             if (curStaff.getRole().equals("manager")) {
                 isManager = true;
             }
-            if(curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) isStaff=true;
+            if (curStaff.getRole().equals("doctor") || curStaff.getRole().equals("nurse")) {
+                isStaff = true;
+            }
         }
         
         switch (event) {
@@ -145,7 +156,7 @@ public class MedicalExaminationController extends HttpServlet {
         request.getRequestDispatcher("./view/medical-examination.jsp").forward(request, response);
     }
     
-    protected void renderPatientOfStaff(HttpServletRequest request, HttpServletResponse response)
+    protected void renderPageMedicalExaminationOfStaff(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
@@ -153,16 +164,105 @@ public class MedicalExaminationController extends HttpServlet {
         String childName = request.getParameter("patientName");
         HttpSession session = request.getSession(true);
         String email = (String) session.getAttribute("email");
-        logger.info("Giá trị của biến email là: " + email);
+//        logger.info("Giá trị của biến email là: " + email);
+        StaffDAO staffDAO = new StaffDAO();
+        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+        String page = (String) request.getParameter("page");
+        int pagination = Integer.parseInt(page.trim());
+        MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
+        ChildrenDAO childrenDAO = new ChildrenDAO();
+        ServiceDAO serviceDAO = new ServiceDAO();
+        int numberOfPage = (medicalExaminationDAO.countMedicalExaminationsByStaffAndChildName(curStaff.getStaffID() + "", childName) + 9) / 10;
+        int numberOfRecord = medicalExaminationDAO.countMedicalExaminationsByStaffAndChildName(curStaff.getStaffID() + "", childName);
+        // Generate the pagination HTML
+        String paginationHtml = "";
+        if (numberOfRecord <= 40) {
+            if (numberOfRecord > 0) {
+                for (int i = 1; i <= numberOfPage; i++) {
+                    if (i == pagination) {
+                        paginationHtml += "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>";
+                    } else {
+                        paginationHtml += "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange("+i+")\" data-page=\"" + i + "\" href=\"#\">" + i + "</a></li>";
+                    }
+                }
+            }
+        } else {
+            
+            if (pagination == 1) {
+                paginationHtml += "<li class=\"pagination-btn active\"><span>1</span></li>"
+                        + "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange(2)\" data-page=\"2\">2</button></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange(3)\" data-page=\"3\">3</button></li>\n"
+                        + "<span>...</span>\n"
+                        + "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange("+numberOfPage+")\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</button></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\">&gt;</a></li>";
+            } else if (pagination > numberOfPage - 4) {
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\">&lt;</a></li>"
+                        + "<span>...</span>\n";
+                for (int i = numberOfPage - 3; i <= numberOfPage; i++) {
+                    if (i == pagination) {
+                        paginationHtml += "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>";
+                    } else {
+                        paginationHtml += "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange("+i+")\" data-page=\"" + i + "\" href=\"#\">" + i + "</a></li>";
+                    }
+                }
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\">&gt;</a></li>";
+            } else {
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\">&lt;</a></li>"
+                        + "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>"
+                        + "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange("+(pagination+1)+")\" data-page=\"" + pagination + "\">" + pagination + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange("+(pagination+1)+")\" data-page=\"" + pagination + "\">" + pagination + "</a></li>\n"
+                        + "<span>...</span>\n"
+                        + "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange("+(pagination+1)+")\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\">&gt;</a></li>";
+            }
+            
+        }
+        // Add the pagination HTML to the response header
+        response.addHeader("pagination", paginationHtml);
+        
+        List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getPageMedicalExaminationsByStaffAndChildName(curStaff.getStaffID() + "",childName, pagination, 10);
+        if (listMedicalExamination != null) {
+            for (MedicalExamination medicalExamination : listMedicalExamination) {
+                out.print("<tr>\n"
+                        + "    <th scope=\"row\">"+medicalExamination.getMedicalExaminationID()+"</th>\n"
+                        + "    <td>\n"
+                        + "        <div class=\"d-flex\">\n"
+                        + "            <img class=\"rounded-circle object-cover me-3\" src=\""+childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getImage()+"\" alt=\"alt\" width=\"30px\" height=\"30px\"/>\n"
+                        + "            <div>"+childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getChildName()+"</div>\n"
+                        + "        </div>\n"
+                        + "    </td>\n"
+                        + "    <td>"+childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getBirthday()+"</td>\n"
+                        + "    <td>"+serviceDAO.getServiceByID(medicalExamination.getMuserID()+"").getTitle()+"</td>\n"
+                        + "    <td>"+medicalExamination.getExaminationDate()+"</td>\n"
+                        + "    <td>"+medicalExamination.getDisease()+"</td>\n"
+                        + "    <td>\n"
+                        + "        <div class=\"d-flex\">\n"
+                        + "            <a class=\"me-3\" href=\"staff?event=send-to-edit&id="+medicalExamination.getMedicalExaminationID()+"\"><i class=\"fas fa-pencil-alt ms-text-primary\"></i></a>\n"
+                        + "            <a href=\"medical-examination?event=delete&id="+medicalExamination.getMedicalExaminationID()+"\" style=\"color: #d9534f;\"><i class=\"far fa-trash-alt ms-text-danger\"></i></a>\n"
+                        + "        </div>\n"
+                        + "    </td>\n"
+                        + "</tr>");
+            }
+        }
+        
+    }
+    
+    protected void renderPatientOfStaff(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        String childName = request.getParameter("patientName");
+        HttpSession session = request.getSession(true);
+        String email = (String) session.getAttribute("email");
         StaffDAO staffDAO = new StaffDAO();
         Staff curStaff = staffDAO.getStaffByStaffEmail(email);
         String page = (String) request.getParameter("page");
         int pagination = Integer.parseInt(page.trim());
         ReservationDAO reservationDAO = new ReservationDAO();
+        MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
         ChildrenDAO childrenDAO = new ChildrenDAO();
-            logger.info("*****"+childName+"   "+curStaff.getStaffID());       
-        int numberOfPage = (reservationDAO.countListChildrenIDByUserAndStaff(childName, curStaff.getStaffID() + "") + 9) / 10;
-        int numberOfRecord = reservationDAO.countListChildrenIDByUserAndStaff(childName, curStaff.getStaffID() + "");
+        int numberOfPage = (medicalExaminationDAO.countListChildrenIDByStaff(childName, curStaff.getStaffID() + "") + 9) / 10;
+        int numberOfRecord = medicalExaminationDAO.countListChildrenIDByStaff(childName, curStaff.getStaffID() + "");
         // Generate the pagination HTML
         String paginationHtml = "";
         if (numberOfRecord <= 40) {
@@ -205,30 +305,28 @@ public class MedicalExaminationController extends HttpServlet {
                         + "<li class=\"pagination-btn inactive\"><a href=\"#\">&gt;</a></li>";
             }
             
-            
         }
         // Add the pagination HTML to the response header
         response.addHeader("pagination", paginationHtml);
         
-        
-            List<Integer> childrenIDList = reservationDAO.getListChildrenIDByUserAndStaff(childName, curStaff.getStaffID() + "", 1, 10);
-            if (childrenIDList != null) {
-                for (Integer integer : childrenIDList) {
-                    Children children = childrenDAO.getChildrenByChildrenId(integer + "");
-                    out.print("<tr>\n"
-                            + "<th scope=\"row\">"+children.getChildID()+"</th>\n"
-                            + "<td class=\"d-flex align-items-center\">\n"
-                            + "    <img class=\"rounded-circle object-cover me-3\" src=\""+children.getImage()+"\" alt=\"alt\" width=\"30px\" height=\"30px\"/>\n"
-                            + "    <div>"+children.getChildName()+"</div>\n"
-                            + "</td>\n"
-                            + "<td>"+children.getBirthday()+"</td>\n"
-                            + "<td>"+children.getStatus()+"</td>\n"
-                            + "<td>"+children.getGender()+"</td>\n"
-                            + "<td><a href=\"staff?event=send-to-history-examination&childid="+children.getChildID()+"\"><i class=\"fas fa-pencil-alt ms-text-primary\"></i></a></td>\n"
-                            + "</tr>");
-                    
-                }
+        List<Integer> childrenIDList = medicalExaminationDAO.getListChildrenIDByStaff(childName, curStaff.getStaffID() + "", pagination, 10);
+        if (childrenIDList != null) {
+            for (Integer integer : childrenIDList) {
+                Children children = childrenDAO.getChildrenByChildrenId(integer + "");
+                out.print("<tr>\n"
+                        + "<th scope=\"row\">" + children.getChildID() + "</th>\n"
+                        + "<td class=\"d-flex align-items-center\">\n"
+                        + "    <img class=\"rounded-circle object-cover me-3\" src=\"" + children.getImage() + "\" alt=\"alt\" width=\"30px\" height=\"30px\"/>\n"
+                        + "    <div>" + children.getChildName() + "</div>\n"
+                        + "</td>\n"
+                        + "<td>" + children.getBirthday() + "</td>\n"
+                        + "<td>" + children.getStatus() + "</td>\n"
+                        + "<td>" + children.getGender() + "</td>\n"
+                        + "<td><a href=\"staff?event=send-to-history-examination&childid=" + children.getChildID() + "\"><i class=\"fas fa-pencil-alt ms-text-primary\"></i></a></td>\n"
+                        + "</tr>");
+                
             }
+        }
         
     }
     
@@ -238,11 +336,11 @@ public class MedicalExaminationController extends HttpServlet {
         int staffID = Integer.parseInt(request.getParameter("staffID") + "");
         int serviceId = Integer.parseInt(request.getParameter("service") + "");
         String reserdId = request.getParameter("reserdId") + "";
-        if(!reserdId.equals("null")){
+        if (!reserdId.equals("null")) {
             try {
                 ReservationDAO reservationDAO = new ReservationDAO();
                 Reservation reservation = reservationDAO.getReservationByID(Integer.parseInt(reserdId));
-                reservation.setStatus("waiting for examination");
+                reservation.setStatus("done");
                 reservationDAO.update(reservation);
             } catch (Exception e) {
             }

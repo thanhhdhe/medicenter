@@ -56,6 +56,7 @@
         StaffDAO staffDAO = new StaffDAO();
         ReservationDAO reservationDAO = new ReservationDAO();
         ChildrenDAO childrenDAO = new ChildrenDAO();
+        MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
         Staff curStaff = staffDAO.getStaffByStaffEmail(email);
         boolean isManager = false;
         boolean isStaff = false;
@@ -235,7 +236,7 @@
                                     </thead>
                                     <tbody id="children-list">
                                         <%
-                                        List<Integer> childrenIDList = reservationDAO.getListChildrenIDByUserAndStaff("",curStaff.getStaffID()+"",1,10);
+                                        List<Integer> childrenIDList = medicalExaminationDAO.getListChildrenIDByStaff("", curStaff.getStaffID() + "", 1, 10);
                                         if(childrenIDList!=null){
                                         for (Integer integer : childrenIDList) {
                                         Children children = childrenDAO.getChildrenByChildrenId(integer+"");
@@ -256,7 +257,7 @@
                                     </tbody>
                                 </table>
                                 <ul id="pagination-container">
-                                    <%int numberOfRecord = reservationDAO.countListChildrenIDByUserAndStaff("",curStaff.getStaffID()+"");
+                                    <%int numberOfRecord = medicalExaminationDAO.countListChildrenIDByStaff("",curStaff.getStaffID()+"");
                                     if(numberOfRecord<=40){%>
                                         <%if(numberOfRecord>0){%>
                                             <li class="pagination-btn active"><span>1</span></li>
