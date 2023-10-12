@@ -69,7 +69,7 @@ public class ReservationInformationController extends HttpServlet {
                 } catch (Exception e) {
                     response.sendRedirect("home");
                 }
-            } if (action.equals("cancel")) {
+            } else if (action.equals("cancel")) {
                 ReservationID = Integer.parseInt(id);
                 Reservation reservation = reservationDAO.getReservationByID(ReservationID);
                 if (!reservation.getStatus().equals("done")) {
@@ -78,7 +78,7 @@ public class ReservationInformationController extends HttpServlet {
                     reservationDAO.update(reservation);
                     response.getWriter().write("success");
                 }
-            } if (action.equals("confirm")) {
+            } else if (action.equals("confirm")) {
                 int reserID = Integer.parseInt(request.getParameter("reservationID"));
                 Reservation reservation = reservationDAO.getReservationByID(reserID);
                 ServiceDAO serviceDAO = new ServiceDAO();
@@ -95,7 +95,7 @@ public class ReservationInformationController extends HttpServlet {
                 request.setAttribute("children", children);
                 request.setAttribute("cate", cate);
                 request.getRequestDispatcher("/view/confirm-reservation.jsp").forward(request, response);
-                
+
             }
         }
     }

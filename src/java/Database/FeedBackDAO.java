@@ -387,7 +387,7 @@ public class FeedBackDAO extends MyDAO {
     public float getTotalAverageStarByDay(int day) {
         xSql = "select AVG(f.RatedStar)as AverageStar from Feedbacks f "
                 + "left join MedicalExaminations m on f.MedicalExaminationID = m.MedicalExaminationID "
-                + "where DATEDIFF(DAY,GETDATE(),m.ExaminationDate) <= ?";
+                + "where DATEDIFF(DAY,GETDATE(),f.FeedbackDate) >= ?";
         try {
             ps = con.prepareStatement(xSql);
             ps.setInt(1, -day);
@@ -406,7 +406,7 @@ public class FeedBackDAO extends MyDAO {
     public float getAverageStarByDayAndService(int day, int serviceID) {
         xSql = "select AVG(f.RatedStar)as AverageStar from Feedbacks f "
                 + "left join MedicalExaminations m on f.MedicalExaminationID = m.MedicalExaminationID "
-                + "where DATEDIFF(DAY,GETDATE(),m.ExaminationDate) <= ? and m.ServiceID = ?";
+                + "where DATEDIFF(DAY,GETDATE(),f.FeedbackDate) >= ? and m.ServiceID = ?";
         try {
             ps = con.prepareStatement(xSql);
             ps.setInt(1, -day);
@@ -425,13 +425,14 @@ public class FeedBackDAO extends MyDAO {
 
     public static void main(String[] args) {
         FeedBackDAO dao = new FeedBackDAO();
+        System.out.println(dao.getTotalAverageStarByDay(7));
         //System.out.println(dao.getTotalFeedback());
         List<MedicalExamination> feedbacks = dao.getMedicalExamination(1);
 //          FeedBack fe = dao.getFeedbackDetail(10);
 //          System.out.println(fe.getFullName());
-        for (MedicalExamination f : feedbacks) {
-            System.out.println(f.getMchildrenID());
-        }
+//        for (MedicalExamination f : feedbacks) {
+//            System.out.println(f.getMchildrenID());
+//        }
 
     }
 }

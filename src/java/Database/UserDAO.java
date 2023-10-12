@@ -265,34 +265,20 @@ public class UserDAO extends MyDAO {
         return filteredUsers;
     }
 
-    public List<User> getUsersByCreatedDate(int day) {
-        List<User> list = new ArrayList<>();
-        xSql = "select * from [dbo].[Users] where DATEDIFF(DAY,GETDATE(),CreatedDate) <= ?";
+    public int getUserCountByCreatedDate(int day) {
+        xSql = "select count(*) as UserCount from [dbo].[Users] where DATEDIFF(DAY,GETDATE(),CreatedDate) >= ?";
         try {
             ps = con.prepareStatement(xSql);
             ps.setInt(1, -day);
             rs = ps.executeQuery();
             if (rs.next()) {
-                User user = new User(
-                        rs.getInt("UserID"),
-                        rs.getString("Address"),
-                        rs.getString("Email"),
-                        rs.getString("Password"),
-                        rs.getString("FirstName"),
-                        rs.getString("LastName"),
-                        rs.getString("Gender"),
-                        rs.getString("PhoneNumber"),
-                        rs.getString("ProfileImage"),
-                        rs.getBoolean("Status"),
-                        rs.getDate("CreatedDate")
-                );
-                list.add(user);
+                return rs.getInt("UserCount");
             }
             ps.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return list;
+        return 0;
     }
 
     public static void main(String[] args) {

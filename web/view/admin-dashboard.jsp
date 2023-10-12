@@ -31,6 +31,8 @@
         Map<String, Float> averageStarByServiceID = (Map<String, Float>) request.getAttribute("averageStarByServiceID");
         
         Staff admin = (Staff) request.getAttribute("admin");
+        
+        int maximumDayDiff = 7;
         %>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
@@ -134,13 +136,13 @@
                 datasets: [
                     {
                         label: 'Successful Reservations',
-                        data: [], // Provide data for successful reservations for the last 7 days here
+                        data: [1, 2, 4, 6, 2, 3, 1], // Provide data for successful reservations for the last 7 days here
                         fill: false,
                         borderColor: 'blue'
                     },
                     {
                         label: 'All Reservations',
-                        data: [], // Provide data for all reservations for the last 7 days here
+                        data: [5, 6, 9, 11, 5, 7, 4], // Provide data for all reservations for the last 7 days here
                         fill: false,
                         borderColor: 'green'
                     }

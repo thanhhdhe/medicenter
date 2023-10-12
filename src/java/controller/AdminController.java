@@ -37,10 +37,17 @@ public class AdminController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         HttpSession session = request.getSession(true);
+        String action = (String) request.getParameter("action");
         if (session.getAttribute("adminEmail") == null) {
             request.getRequestDispatcher("./view/login-admin.jsp").forward(request, response);
         } else {
-            processData(7, session, request, response);
+            if (action != null) {
+                if (action.equals("logout")) {
+                    logOut(session, request, response);
+                }
+            } else {
+                processData(7, session, request, response);
+            }
         }
     }
 
@@ -57,13 +64,11 @@ public class AdminController extends HttpServlet {
                 break;
             }
             case "changeDate": {
-                String day = (String) request.getParameter("day");
-                int day_number = Integer.parseInt(day);
-                processData(day_number, session, request, response);
-                break;
-            }
-            case "logout": {
-                logOut(session, request, response);
+                String startDay = (String) request.getParameter("startDay");
+                int startDayNumber = Integer.parseInt(startDay);
+                String endDay = (String) request.getParameter("endDay");
+                int endDayNumber = Integer.parseInt(endDay);
+                processData(endDayNumber - startDayNumber, session, request, response);
                 break;
             }
             default: {
@@ -73,7 +78,7 @@ public class AdminController extends HttpServlet {
     }
 
     private void logOut(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        session.removeAttribute("adminEmail");
+        session.invalidate();
         response.sendRedirect("admin");
     }
 
@@ -111,13 +116,9 @@ public class AdminController extends HttpServlet {
         }
 
         // Newly created user
-        for (User user : userDAO.getUsersByCreatedDate(day)) {
-            if (user.isStatus()) {
-                newlyUserCount++;
-            }
-        }
-        // Newly reserved user
+        newlyUserCount = userDAO.getUserCountByCreatedDate(day);
 
+        // Newly reserved user
         // Total average star 
         float totalAverageStar = feedBackDAO.getTotalAverageStarByDay(day);
 

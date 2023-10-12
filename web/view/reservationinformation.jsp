@@ -219,7 +219,9 @@
                 // Go back to the previous page
                 window.history.back();
             });
-
+            function checkout() {
+                location.href = "reservation?action=confirm&reservationID=" +<%=reservation.getReservationID()%>;
+            }
             function cancel() {
                 var userChoice = confirm("Are you sure to cancel this examination ?");
                 if (userChoice === true) {

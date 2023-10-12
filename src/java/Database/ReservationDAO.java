@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import model.Reservation;
+import model.Reservation;   
 
 /**
  *
@@ -1034,7 +1034,7 @@ public class ReservationDAO extends MyDAO {
 
     public List<Reservation> getReservationsByDay(int daydiff) {
         List<Reservation> list = new ArrayList<>();
-        xSql = "select * from [dbo].[Reservations] where DATEDIFF(DAY,GETDATE(),CreatedDate) <= ?";
+        xSql = "select * from [dbo].[Reservations] where DATEDIFF(DAY,GETDATE(),CreatedDate) >= ?";
         try {
             ps = con.prepareStatement(xSql);
             ps.setInt(1, -daydiff);
@@ -1064,7 +1064,7 @@ public class ReservationDAO extends MyDAO {
     public float getRevenueByServiceCategory(int categoryID, int day) {
         xSql = "select sum(Cost) as RevenueByCategoryID from Reservations r\n"
                 + " join Services s on r.ServiceID = s.ServiceID\n"
-                + " where s.CategoryID = ? and DATEDIFF(DAY,GETDATE(),CreatedDate) <= ? and r.Status <> 'cancel'";
+                + " where s.CategoryID = ? and DATEDIFF(DAY,GETDATE(),CreatedDate) >= ? and r.Status <> 'cancel'";
         try {
             ps = con.prepareStatement(xSql);
             ps.setInt(1, categoryID);
@@ -1081,9 +1081,22 @@ public class ReservationDAO extends MyDAO {
 
     public static void main(String args[]) {
         ReservationDAO rd = new ReservationDAO();
-        for (Reservation r : rd.getSortedSpecificPaged(0, 5, "1", "serviceTitle", "Yoga Class")) {
-            System.out.println(r.getChildID());
+        int doneReservationCount=0, cancelReservationCount= 0, submittedReservationCount =0;
+        float totalRevenues = 0;
+        for (Reservation reservation : rd.getReservationsByDay(7)) {
+            if (reservation.getStatus().equals("done")) {
+                doneReservationCount++;
+            } else if (reservation.getStatus().equals("cancel")) {
+                cancelReservationCount++;
+            } else if (!reservation.getStatus().equals("pending")) {
+                submittedReservationCount++;
+            }
+            // Get the total revenues of the reservation
+            if (!reservation.getStatus().equals("cancel")) {
+                totalRevenues += (reservation.getStatus().equals("cancel") ? 0.0 : reservation.getCost());
+            }
         }
+        System.out.println(doneReservationCount + " / " + cancelReservationCount + " / " + submittedReservationCount + " / " + totalRevenues);
 //        String dateString = "2023-10-01 22:20:00";
 //        Timestamp sqlTimestamp = Timestamp.valueOf(dateString);
 //        System.out.println(rd.checkSlotForAvailable("4", "3", "26", "10", "2023"));
