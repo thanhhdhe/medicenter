@@ -117,6 +117,7 @@ public class ReservationContact extends HttpServlet {
                         + "                                                        </ul>\n"
                         + "                                                    </div> </td>"
                         + "                                                    <td>" + reservation.getCost() + "</td>\n"
+                        + "                                                    <td><a href=\"staff?event=send-to-reservation-manager-detail&reserdid=" + reservation.getReservationID() + "\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\" width=\"25px\"/></a></td>"
                         + " </tr>");
 
             }
@@ -125,7 +126,7 @@ public class ReservationContact extends HttpServlet {
             String status = request.getParameter("status");
             String reservationID = request.getParameter("reservationID");
             reservationdao.updateStatus(status, reservationID);
-        } else if(event.equals("updatedoctor")){
+        } else if (event.equals("updatedoctor")) {
             String doctorID = request.getParameter("doctorID");
             String reservationID = request.getParameter("reservationID");
             reservationdao.updateDoctor(doctorID, reservationID);
