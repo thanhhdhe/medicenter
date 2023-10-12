@@ -217,6 +217,11 @@
                                 <h4>MEDICAL RECORDS</h4>
                                 <a href="staff?event=send-to-children-list" class="ms-text-primary font-weight-bold">Add Medical Record</a>
                             </div>
+                            <div class="mb-4 px-4 py-3 d-flex justify-content-start align-items-center">
+                                <div class="col-md-4">
+                                    <input class="form-control" name="patientName" id="patientName" type="search" placeholder="Search Child Name" />
+                                </div>
+                            </div>
                             <div class="table-responsive p-4">
                                 <%if(curStaff!=null){%>
                                 <table class="table table-striped table-hover">
@@ -231,9 +236,9 @@
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="medical-list">
                                         <%
-                                        List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getMedicalExaminationsByStaff(curStaff.getStaffID()+"");
+                                        List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getPageMedicalExaminationsByStaff(curStaff.getStaffID()+"",1,10);
                                         if(listMedicalExamination!=null){
                                         for (MedicalExamination medicalExamination : listMedicalExamination) {%>
                                         <tr>
@@ -259,6 +264,27 @@
 
                                     </tbody>
                                 </table>
+
+                                <ul id="pagination-container">
+                                    <%if(medicalExaminationDAO.countMedicalExaminationsByStaff(curStaff.getStaffID()+"")<=40){%>
+                                    <%if(medicalExaminationDAO.countMedicalExaminationsByStaff(curStaff.getStaffID()+"")>0){%>
+                                    <li class="pagination-btn active"><span>1</span></li>
+                                        <%for (int i = 2; i <= (medicalExaminationDAO.countMedicalExaminationsByStaff(curStaff.getStaffID()+"")+9)/10; i++) {%>
+                                    <li class="pagination-btn inactive"><a data-page="<%=i%>" href="#"><%=i%></a></li>
+                                        <%}%>
+                                        <%}%>
+                                        <%}else{%>
+                                    <!--<li class="pagination-btn inactive">><a href="#">&lt;</a></li>-->
+                                    <li class="pagination-btn active"><span>1</span></li>
+                                    <li class="pagination-btn inactive"><a href="#" data-page="2">2</a></li>
+                                    <li class="pagination-btn inactive"><a href="#" data-page="3">3</a></li>
+                                    <span>...</span>
+                                    <li class="pagination-btn inactive"><a href="#" data-page="<%=(medicalExaminationDAO.countMedicalExaminationsByStaff(curStaff.getStaffID()+"")+9)/10%>"><%=(medicalExaminationDAO.countMedicalExaminationsByStaff(curStaff.getStaffID()+"")+9)/10%></a></li>
+                                    <li class="pagination-btn inactive"><a href="#">&gt;</a></li>
+                                        <%}%>
+
+                                </ul>
+
                                 <%}%>
                             </div>
                         </div>
@@ -277,6 +303,7 @@
 
             <!-- JavaScript Libraries -->
             <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+            <script src="./resources/js/medical-examination-script.js"></script>
             <script
                 src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
                 integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"

@@ -57,7 +57,9 @@ public class StaffController extends HttpServlet {
             if (curStaff.getRole().equals("manager")) {
                 isManager = true;
             }
-            if(curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) isStaff=true;
+            if (curStaff.getRole().equals("doctor") || curStaff.getRole().equals("nurse")) {
+                isStaff = true;
+            }
         }
 
         switch (event) {
@@ -98,10 +100,12 @@ public class StaffController extends HttpServlet {
                     request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
                     break;
                 }
-                
+
                 String childId = request.getParameter("childid");
-                String reserdIdst = request.getParameter("reserdid")+"";
-                if(!reserdIdst.equals("null")) request.setAttribute("reserdid", reserdIdst);
+                String reserdIdst = request.getParameter("reserdid") + "";
+                if (!reserdIdst.equals("null")) {
+                    request.setAttribute("reserdid", reserdIdst);
+                }
                 request.setAttribute("childId", childId);
                 request.getRequestDispatcher("./view/add-medical-examination.jsp").forward(request, response);
                 break;
@@ -131,7 +135,6 @@ public class StaffController extends HttpServlet {
 
         }
     }
-
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -251,7 +254,16 @@ public class StaffController extends HttpServlet {
                     + "        </div>\n"
                     + "    </td>\n"
                     + "    <td>" + serviceDAO.getServiceByID(reservation.getServiceID() + "").getTitle() + "</td>\n"
-                    + "    <td>" + reservation.getCost() + "</td>\n"
+                    + "    <td>");
+            if (reservation.getStatus().equals("done")) {
+                out.print("<p class=\"bg-success rounded-2 text-white m-0 p-1 px-2\" style=\"width: fit-content;\">" + reservation.getStatus() + "</p>");
+            } else if (reservation.getStatus().equals("done")) {
+                out.print("<p class=\"bg-danger rounded-2 text-white m-0 p-1 px-2\" style=\"width: fit-content;\">" + reservation.getStatus() + "</p>");
+            } else {
+                out.print("<p class=\"bg-primary rounded-2 text-white m-0 p-1 px-2\" style=\"width: fit-content;\">" + reservation.getStatus() + "</p>");
+            }
+
+            out.print("</td>\n"
                     + "    <td>" + reservation.getStatus() + "</td>\n"
                     + "    <td><a href=\"staff?event=send-to-reservation-detail&reserdid=" + reservation.getReservationID() + "\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\" width=\"25px\"/></a></td>\n"
                     + "</tr>");

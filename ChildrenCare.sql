@@ -345,8 +345,12 @@ VALUES
 (3, 3, 1, '2023-09-02 13:00:00', 5, 'Prescription 6', 'Disease 6'),
 (3, 2, 1, '2023-09-02 13:00:00', 5, 'Prescription 6', 'Disease 6'),
 (3, 4, 1, '2023-09-02 13:00:00', 5, 'Prescription 6', 'Disease 7'),
-(3, 2, 1, '2023-09-02 13:00:00', 5, 'Prescription 6', 'Disease 8'),
-(3, 3, 1, '2023-09-03 11:00:00', 3, 'Prescription 7', 'Disease 9');
+(1, 2, 1, '2023-09-02 13:00:00', 5, 'Prescription 6', 'Disease 8'),
+(2, 3, 1, '2023-09-02 13:00:00', 5, 'Prescription 6', 'Disease 6'),
+(1, 2, 1, '2023-09-02 13:00:00', 5, 'Prescription 6', 'Disease 6'),
+(2, 4, 1, '2023-09-02 13:00:00', 5, 'Prescription 6', 'Disease 7'),
+(1, 2, 1, '2023-09-02 13:00:00', 5, 'Prescription 6', 'Disease 8'),
+(2, 3, 1, '2023-09-03 11:00:00', 3, 'Prescription 7', 'Disease 9');
 
 -- Chèn 15 bản ghi ngẫu nhiên vào bảng Feedbacks
 INSERT INTO Feedbacks (UserID, MedicalExaminationID, Content, FeedbackDate, RatedStar, FStatus)
