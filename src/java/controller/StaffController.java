@@ -132,7 +132,7 @@ public class StaffController extends HttpServlet {
                 }
                 String reserdIdM = request.getParameter("reserdid");
                 request.setAttribute("reserdid", reserdIdM);
-                request.getRequestDispatcher("./view/reservationdetail-of-staff.jsp").forward(request, response);
+                request.getRequestDispatcher("./view/reservationdetail-of-manager.jsp").forward(request, response);
                 break;
             case "reservation-of-staff":
                 if (!isManager && !isStaff) {

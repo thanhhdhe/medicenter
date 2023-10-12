@@ -296,7 +296,6 @@
                                                             <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">waiting for examination</a></li>
                                                             <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">waiting for examination</a></li>
                                                         </ul>
-
                                                     </div>
                                                 </td>
                                                 <td>${reservation.getCost()}</td>
