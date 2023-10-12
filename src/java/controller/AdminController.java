@@ -62,10 +62,19 @@ public class AdminController extends HttpServlet {
                 processData(day_number, session, request, response);
                 break;
             }
+            case "logout": {
+                logOut(session, request, response);
+                break;
+            }
             default: {
                 break;
             }
         }
+    }
+
+    private void logOut(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        session.removeAttribute("adminEmail");
+        response.sendRedirect("admin");
     }
 
     private void processData(int day, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
