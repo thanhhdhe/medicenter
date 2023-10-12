@@ -11,7 +11,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Xác nhận thông tin khám</title>
+        <title>Confirm Information</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
               integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -208,10 +208,10 @@
                                 <div class="mb-4">
                                     <div class="form-group">
                                         <p class="title-info"><strong>Total Payment:</strong></p>
-                                        <p class="detail-info">${service.salePrice}$</p>
+                                        
                                         <input class="form-control" data-val="true" data-val-number="The field Amount must be a number."
                                                data-val-required="The Amount field is required." 
-                                               id="amount" max="100000000" min="1" name="amount" type="number" value="${service.salePrice}" />
+                                                name="amount" value="${service.salePrice}" />
                                     </div>
 
                                 </div>
@@ -222,10 +222,6 @@
                                         <label  for="bankCode" class="form-check-label detail-info">Pay at center</label><br>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio"  id="bankCode" name="bankCode" value="VNPAYQR">
-                                        <label  for="bankCode" class="form-check-label detail-info">Payment with VNPAYQR-supported application</label><br>
-                                    </div>
-                                    <div class="form-check">
                                         <input class="form-check-input" type="radio" id="bankCode" name="bankCode" value="VNBANK">
                                         <label  for="bankCode" class="form-check-label detail-info">Payment via ATM/Domestic Account</label><br>
                                     </div>
@@ -234,7 +230,7 @@
                                         <label  for="bankCode" class="form-check-label detail-info">Payment via International Card</label><br>
                                     </div>
                                     <input type="hidden" id="language" name="language" value="en">
-
+                                    <input type="hidden" id="reserv" name="reservation" value="${reservation.reservationID}">
                                 </div>
                             </div>
                         </div>
@@ -315,7 +311,6 @@
         window.history.back();
     }
 </script>
-<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>-->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>

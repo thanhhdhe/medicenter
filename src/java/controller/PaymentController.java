@@ -4,6 +4,11 @@
  */
 package controller;
 
+import Database.CategoryServiceDAO;
+import Database.ChildrenDAO;
+import Database.ReservationDAO;
+import Database.ServiceDAO;
+import Database.StaffDAO;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.vnpay.common.Config;
@@ -12,6 +17,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -23,6 +29,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import model.CategoryService;
+import model.Children;
+import model.Reservation;
+import model.Service;
+import model.Staff;
 
 /**
  *
@@ -41,13 +52,34 @@ public class PaymentController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        String action = request.getParameter("action");
-//        if (action.equals("vnpay")) {
+        HttpSession session = request.getSession();
+        String bankCode = request.getParameter("bankCode");
+        int reservationID = Integer.parseInt(request.getParameter("reservation"));
+        ReservationDAO reservationDAO = new ReservationDAO();
+        Reservation reservation = reservationDAO.getReservationByID(reservationID);
+        ServiceDAO serviceDAO = new ServiceDAO();
+        Service service = serviceDAO.getServiceByID(String.valueOf(reservation.getServiceID()));
+        StaffDAO staffDAO = new StaffDAO();
+        Staff doctor = staffDAO.getStaffByStaffId(reservation.getStaffID());
+        ChildrenDAO childrenDAO = new ChildrenDAO();
+        Children children = childrenDAO.getChildrenByChildrenId(String.valueOf(reservation.getChildID()));
+        CategoryServiceDAO cateDAO = new CategoryServiceDAO();
+        CategoryService cate = cateDAO.getCategoryServiceByID(String.valueOf(service.getServiceID()));
+        request.setAttribute("reservation", reservation);
+        request.setAttribute("service", service);
+        request.setAttribute("doctor", doctor);
+        request.setAttribute("children", children);
+        request.setAttribute("cate", cate);
+        if (bankCode.equals("offline")) {
+            reservation.setStatus("Wait for examination");
+            reservationDAO.update(reservation);
+            session.setAttribute("method","Pay at center" );
+            request.getRequestDispatcher("/view/reservationstatus.jsp").forward(request, response);
+        } else {
             String vnp_Version = "2.1.0";
             String vnp_Command = "pay";
             String orderType = "other";
             long amount = (int) Math.round(Double.parseDouble(request.getParameter("amount")) * 100 * 24000);
-            String bankCode = request.getParameter("bankCode");
 
             String vnp_TxnRef = Config.getRandomNumber(8);
             String vnp_IpAddr = Config.getIpAddress(request);
@@ -65,7 +97,7 @@ public class PaymentController extends HttpServlet {
                 vnp_Params.put("vnp_BankCode", bankCode);
             }
             vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-            vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
+            vnp_Params.put("vnp_OrderInfo", "Payment for booking medical reservation:" + vnp_TxnRef);
             vnp_Params.put("vnp_OrderType", orderType);
 
             String locate = request.getParameter("language");
@@ -119,7 +151,7 @@ public class PaymentController extends HttpServlet {
             job.addProperty("data", paymentUrl);
             Gson gson = new Gson();
             response.getWriter().write(gson.toJson(job));
-        
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
