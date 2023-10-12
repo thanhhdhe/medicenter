@@ -104,11 +104,6 @@
                     </div>
                     <%}%>
                     <%if(isManager){%>
-                    <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link"
-                           ><i class="fas fa-list-alt"></i>Reservations List</a
-                        >
-                    </div>  
                     <div class="navbar-nav w-100 text-light">
                         <a href="user?action=all" class="nav-item nav-link"
                            ><i class="bi bi-people-fill"></i>User</a
