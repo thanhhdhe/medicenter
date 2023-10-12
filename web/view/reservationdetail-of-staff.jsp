@@ -220,7 +220,7 @@
                         <div class="col-md-12 p-0">
                             <div class="d-flex mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
                                 <h4>RESERVATION DETAIL</h4>
-                                <a href="staff?event=send-to-history-examination&childid=<%=thisChild.getChildID()%>" class="ms-text-primary font-weight-bold">Add Medical Record</a>
+                                <a href="staff?event=send-to-history-examination&childid=<%=thisChild.getChildID()%>&reserdid=<%=reserdId%>" class="ms-text-primary font-weight-bold">Add Medical Record</a>
                             </div>
                             <div class="row px-4 justify-content-between">
                                 <div class="col-md-5 d-flex flex-column justify-content-center align-items-start">

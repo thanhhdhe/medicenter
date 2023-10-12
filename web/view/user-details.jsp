@@ -309,16 +309,14 @@
                                     <th>Address</th>
                                     <th>Updated Date</th>
                                 </tr>
-                                <!-- Add a new row for each child -->
                                 <tr>
                                     <td>Thang@gmail.com</td>
-                                    <td>Thang@gmail.com</td>
-                                    <td>Thang@gmail.com</td>
-                                    <td>Thang@gmail.com</td>
-                                    <td>Thang@gmail.com</td>
-                                    <td>Thang@gmail.com</td>
+                                    <td>Lê Minh Thang</td>
+                                    <td>Male</td>
+                                    <td>0978190212</td>
+                                    <td>Thanh Hoa</td>
+                                    <td>22/11/2000</td>
                                 </tr>
-                                <!-- Repeat this row structure for other children -->
                             </table>
                         </div>
                     </div>

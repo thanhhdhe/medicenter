@@ -52,9 +52,13 @@ public class StaffController extends HttpServlet {
         StaffDAO staffDAO = new StaffDAO();
         Staff curStaff = staffDAO.getStaffByStaffEmail(email);
         boolean isManager = false;
+        boolean isStaff = false;
         if (curStaff != null) {
             if (curStaff.getRole().equals("manager")) {
                 isManager = true;
+            }
+            if (curStaff.getRole().equals("doctor") || curStaff.getRole().equals("nurse")) {
+                isStaff = true;
             }
         }
 
@@ -66,9 +70,17 @@ public class StaffController extends HttpServlet {
                 request.getRequestDispatcher("./view/login-staff.jsp").forward(request, response);
                 break;
             case "send-to-medical-examination":
+                if (!isManager && !isStaff) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
                 request.getRequestDispatcher("./view/medical-examination.jsp").forward(request, response);
                 break;
             case "send-to-edit":
+                if (!isManager && !isStaff) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
                 String id = request.getParameter("id");
                 request.setAttribute(id, id);
                 request.getRequestDispatcher("./view/edit-medical-examination.jsp").forward(request, response);
@@ -77,22 +89,47 @@ public class StaffController extends HttpServlet {
                 request.getRequestDispatcher("feedback").forward(request, response);
                 break;
             case "send-to-children-list":
+                if (!isManager && !isStaff) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
                 request.getRequestDispatcher("./view/my-patient-list.jsp").forward(request, response);
                 break;
             case "send-to-history-examination":
+                if (!isManager && !isStaff) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
+
                 String childId = request.getParameter("childid");
+                String reserdIdst = request.getParameter("reserdid") + "";
+                if (!reserdIdst.equals("null")) {
+                    request.setAttribute("reserdid", reserdIdst);
+                }
                 request.setAttribute("childId", childId);
                 request.getRequestDispatcher("./view/add-medical-examination.jsp").forward(request, response);
                 break;
             case "send-to-reservations-list":
+                if (!isManager && !isStaff) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
                 request.getRequestDispatcher("./view/reservation-of-staff.jsp").forward(request, response);
                 break;
             case "send-to-reservation-detail":
+                if (!isManager && !isStaff) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
                 String reserdId = request.getParameter("reserdid");
                 request.setAttribute("reserdid", reserdId);
                 request.getRequestDispatcher("./view/reservationdetail-of-staff.jsp").forward(request, response);
                 break;
             case "reservation-of-staff":
+                if (!isManager && !isStaff) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
                 renderReservationOfStaff(request, response);
                 break;
 
@@ -217,7 +254,16 @@ public class StaffController extends HttpServlet {
                     + "        </div>\n"
                     + "    </td>\n"
                     + "    <td>" + serviceDAO.getServiceByID(reservation.getServiceID() + "").getTitle() + "</td>\n"
-                    + "    <td>" + reservation.getCost() + "</td>\n"
+                    + "    <td>");
+            if (reservation.getStatus().equals("done")) {
+                out.print("<p class=\"bg-success rounded-2 text-white m-0 p-1 px-2\" style=\"width: fit-content;\">" + reservation.getStatus() + "</p>");
+            } else if (reservation.getStatus().equals("done")) {
+                out.print("<p class=\"bg-danger rounded-2 text-white m-0 p-1 px-2\" style=\"width: fit-content;\">" + reservation.getStatus() + "</p>");
+            } else {
+                out.print("<p class=\"bg-primary rounded-2 text-white m-0 p-1 px-2\" style=\"width: fit-content;\">" + reservation.getStatus() + "</p>");
+            }
+
+            out.print("</td>\n"
                     + "    <td>" + reservation.getStatus() + "</td>\n"
                     + "    <td><a href=\"staff?event=send-to-reservation-detail&reserdid=" + reservation.getReservationID() + "\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\" width=\"25px\"/></a></td>\n"
                     + "</tr>");
