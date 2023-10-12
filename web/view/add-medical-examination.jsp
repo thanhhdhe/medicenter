@@ -56,6 +56,7 @@
        StaffDAO staffDAO = new StaffDAO();
        ServiceDAO serviceDAO = new ServiceDAO();
        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+       String reserdId = request.getAttribute("reserdid") + "";
        MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
        ChildrenDAO childrenDAO = new ChildrenDAO();
        String childID = request.getAttribute("childId") + "";
@@ -250,6 +251,7 @@
                                             <textarea class="form-control" name="prescription" rows="3" required=""></textarea>
                                         </div>
                                     </div>
+                                    <input type="hidden" name="reserdId" value="<%=reserdId%>">
                                     <input type="hidden" name="childID" value="<%=children.getChildID()%>">
                                     <input type="hidden" name="staffID" value="<%=curStaff.getStaffID()%>">
                                     <div class="d-flex mb-3">
