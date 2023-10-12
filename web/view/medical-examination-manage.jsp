@@ -11,7 +11,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Staff dashboard</title>
+        <title>Medical examination</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <meta content="" name="keywords" />
         <meta content="" name="description" />
@@ -51,20 +51,19 @@
     </head>
 
     <body>
-         <%
+        <%
+            ServiceDAO serviceDAO = new ServiceDAO();
        String email = (String) session.getAttribute("email");
        StaffDAO staffDAO = new StaffDAO();
-       ChildrenDAO childrenDAO = new ChildrenDAO();
-       ReservationDAO reservationDAO = new ReservationDAO();
        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-       UserDAO userDAO = new UserDAO();
-       ServiceDAO serviceDAO = new ServiceDAO();
+       ChildrenDAO childrenDAO = new ChildrenDAO();
+       MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
        boolean isManager = false;
-       boolean isStaff = false;
+        boolean isStaff = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){
-            if(curStaff.getRole().equals("manager")) isManager=true;
+            if(curStaff.getRole().equals("manager")) isManager=true;            
             if(curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) isStaff=true;%>
             <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">
@@ -98,19 +97,14 @@
                         >
                     </div>  
                     <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
+                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link active"
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
                     <%}%>
                     <%if(isManager){%>
-                    <div class="navbar-nav w-100 text-light">
-                        <a href="user?action=all" class="nav-item nav-link"
-                           ><i class="bi bi-people-fill"></i>User</a
-                        >
-                    </div>
                     <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-medical-examination-manage" class="nav-item nav-link"
+                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link active"
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
@@ -138,7 +132,7 @@
             <div class="content <%if(curStaff==null){%>ms-0 w-100<%}%>">
                 <!-- Navbar Start -->
                 <nav class="navbar navbar-expand navbar-light sticky-top px-4 py-0" style="background-color: #1977cc;">
-                    
+
                     <a href="#" class="sidebar-toggler flex-shrink-0 text-decoration-none text-light">
                         <i class="fa fa-bars"></i>
                     </a>
@@ -201,7 +195,7 @@
                                 <a href="logout" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
-                         <%}else{%>
+                        <%}else{%>
                         <a href="staff?event=sent-to-login" id="login" class="btn btn-outline-primary ms-3 bg-light rounded-pill text-decoration-none"><span class="d-none d-md-inline">Login</a>
                         <%}%>
                     </div>
@@ -211,132 +205,123 @@
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
                     <div
-                        class="min-vh-100 bg-light rounded justify-content-center align-items-center mx-0"
+                        class="medical-records row bg-white rounded align-items-md-start justify-content-center mx-0"
                         >
-                        <div class="row px-4 justify-content-between bg-white rounded-3 border-2 border-light">
-                            <div class="col-md-12 col-lg-4">
-                                <div class="d-flex">
-                                    <div class="me-3">
-                                        <img src="./resources/img/icon/icon-01.png" class="img-fluid" alt="patient" width="100px">
-                                    </div>
-                                    <div class="dash-widget-info">
-                                        <h6>Total Patient</h6>
-                                        <h3><%=childrenDAO.countChildren()%></h3>
-                                        <p class="text-muted">Till Today</p>
-                                    </div>
+                        <div class="col-md-12 p-0">
+                            <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
+                                <h4>MEDICAL RECORDS</h4>
+                                <a href="staff?event=send-to-children-list" class="ms-text-primary font-weight-bold">Add Medical Record</a>
+                            </div>
+                            <div class="mb-4 px-4 py-3 d-flex justify-content-start align-items-center">
+                                <div class="col-md-4">
+                                    <input class="form-control" name="patientName" id="patientName" type="search" placeholder="Search Child Name" />
                                 </div>
                             </div>
-
-                            <div class="col-md-12 col-lg-4">
-                                <div class="d-flex">
-                                    <div class="me-3">
-                                        <img src="./resources/img/icon/icon-02.png" class="img-fluid" alt="Patient" width="100px">
-                                    </div>
-                                    <div class="dash-widget-info">
-                                        <h6>Today Patient</h6>
-                                        <h3><%=reservationDAO.countPatientToday(curStaff.getStaffID()+"")%></h3>
-                                        <p class="text-muted">Today</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12 col-lg-4">
-                                <div class="d-flex">
-                                    <div class="me-3">
-                                        <img src="./resources/img/icon/icon-03.png" class="img-fluid" alt="Patient" width="100px">
-                                    </div>
-                                    <div class="dash-widget-info">
-                                        <h6>Appoinments</h6>
-                                        <h3><%=reservationDAO.countApoinmentTodayOfStaff(curStaff.getStaffID()+"")%></h3>
-                                        <p class="text-muted">Today</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                                        
-                        <h3 class="px-4 mt-3">Patient Appoinment Today</h3>
-                        
-                         <div class="table-responsive p-4 bg-light border-2 border-light">
+                            <div class="table-responsive p-4">
                                 <%if(curStaff!=null){%>
                                 <table class="table table-striped table-hover">
                                     <thead class="text-light" style="background: #1977cc;">
                                         <tr>
                                             <th scope="col">ID</th>
-                                            <th scope="col">Reserved date</th>
-                                            <th scope="col">Customer name</th>
+                                            <th scope="col">Patient Name</th>
+                                            <th scope="col">Date of birth</th>
                                             <th scope="col">Service</th>
-                                            <th scope="col">Cost</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Detail</th>
+                                            <th scope="col">Date</th>
+                                            <th scope="col">Disease</th>
+                                            <th scope="col">Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="reservations-list">
+                                    <tbody id="medical-list">
                                         <%
-                                        List<Reservation> reservations = reservationDAO.getApoinmentTodayOfStaff(curStaff.getStaffID()+"");
-        
-                                        if(reservations!=null){
-                                        for (Reservation reservation : reservations) {
-                                        %>
+                                        List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getPageMedicalExaminations(1,10);
+                                        if(listMedicalExamination!=null){
+                                        for (MedicalExamination medicalExamination : listMedicalExamination) {%>
                                         <tr>
-                                            <th scope="row"><a href="staff?event=send-to-reservation-detail&reserdid=<%=reservation.getReservationID()%>" class="text-decoration-none text-dark"><%=reservation.getReservationID()%></a></th>
-                                            <td><%=reservation.getReservationDate()%></td>
+                                            <th scope="row"><%=medicalExamination.getMedicalExaminationID()%></th>
                                             <td>
-                                                <div class="d-flex align-items-center">
-                                                    <img class="rounded-circle object-cover me-3" src="<%=userDAO.getUserByID(reservation.getUserID()).getProfileImage()%>" alt="alt" width="30px" height="30px"/>
-                                                    <div><%=userDAO.getUserByID(reservation.getUserID()).getFirstName()%></div>
+                                                <div class="d-flex">
+                                                    <img class="rounded-circle object-cover me-3" src="<%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getImage()%>" alt="alt" width="30px" height="30px"/>
+                                                    <div><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getChildName()%></div>
                                                 </div>
                                             </td>
-                                            <td><%=serviceDAO.getServiceByID(reservation.getServiceID()+"").getTitle()%></td>
-                                            <td><%=reservation.getCost()%></td>
-                                            <td><%=reservation.getStatus()%></td>
-                                            <td><a href="staff?event=send-to-reservation-detail&reserdid=<%=reservation.getReservationID()%>"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></a></td>
+                                            <td><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getBirthday()%></td>
+                                            <td><%=serviceDAO.getServiceByID(medicalExamination.getMuserID()+"").getTitle()%></td>
+                                            <td><%=medicalExamination.getExaminationDate()%></td>
+                                            <td><%=medicalExamination.getDisease()%></td>
+                                            <td>
+                                                <div class="d-flex">
+                                                    <a class="me-3" href="staff?event=send-to-edit&id=<%=medicalExamination.getMedicalExaminationID()%>"><i class="fas fa-pencil-alt ms-text-primary"></i></a>
+                                                    <a href="medical-examination?event=delete&id=<%=medicalExamination.getMedicalExaminationID()%>" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
+                                                </div>
+                                            </td>
                                         </tr>
                                         <%}}%>
 
                                     </tbody>
                                 </table>
-                                    <%}%>    
+                                        <%int numberRecord = medicalExaminationDAO.countMedicalExaminations("");%>
+                                <ul id="pagination-container">
+                                    <%if(numberRecord<=40){%>
+                                    <%if(numberRecord>0){%>
+                                    <li class="pagination-btn active"><span>1</span></li>
+                                        <%for (int i = 2; i <= (numberRecord+9)/10; i++) {%>
+                                    <li class="pagination-btn inactive"><a data-page="<%=i%>" href="#"><%=i%></a></li>
+                                        <%}%>
+                                        <%}%>
+                                        <%}else{%>
+                                    <!--<li class="pagination-btn inactive">><a href="#">&lt;</a></li>-->
+                                    <li class="pagination-btn active"><span>1</span></li>
+                                    <li class="pagination-btn inactive"><a href="#" data-page="2">2</a></li>
+                                    <li class="pagination-btn inactive"><a href="#" data-page="3">3</a></li>
+                                    <span>...</span>
+                                    <li class="pagination-btn inactive"><a href="#" data-page="<%=(numberRecord+9)/10%>"><%=(numberRecord+9)/10%></a></li>
+                                    <li class="pagination-btn inactive"><a href="#">&gt;</a></li>
+                                        <%}%>
+
+                                </ul>
+
+                                <%}%>
                             </div>
-                        
+                        </div>
                     </div>
-                </div>
-                <!-- Blank End -->
+                    <!-- Blank End -->
 
-                <!-- Footer Start -->
-                <div class="mt-4">
-                    <jsp:include page="layout/footer.jsp" />
+                    <!-- Footer Start -->
+                    <div class="mt-4">
+                        <jsp:include page="layout/footer.jsp" />
+                    </div>
+                    <!-- Footer End -->
                 </div>
-                <!-- Footer End -->
+                <!-- Content End -->
+
             </div>
-            <!-- Content End -->
 
-        </div>
+            <!-- JavaScript Libraries -->
+            <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+            <script src="./resources/js/medical-examination-script.js"></script>
+            <script
+                src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+                integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+                crossorigin="anonymous"
+            ></script>
+            <script
+                src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+                integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+                crossorigin="anonymous"
+            ></script>
 
-        <!-- JavaScript Libraries -->
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-            crossorigin="anonymous"
-        ></script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-            crossorigin="anonymous"
-        ></script>
+            <!-- Template Javascript -->
+            <script>
+                document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+                    var sidebar = document.querySelector('.sidebar');
+                    var content = document.querySelector('.content');
 
-        <!-- Template Javascript -->
-        <script>
-            document.querySelector('.sidebar-toggler').addEventListener('click', function() {
-                var sidebar = document.querySelector('.sidebar');
-                var content = document.querySelector('.content');
+                    sidebar.classList.toggle('open');
+                    content.classList.toggle('open');
 
-                sidebar.classList.toggle('open');
-                content.classList.toggle('open');
-
-                return false;
-            });
-        </script>
+                    return false;
+                });
+            </script>
     </body>
 </html>
 
