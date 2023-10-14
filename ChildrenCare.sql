@@ -98,7 +98,10 @@ CREATE TABLE Staff (
     StaffRole VARCHAR(50) NOT NULL,
     Rank NVARCHAR(50),
     Specialty NVARCHAR(50),
-	Introduction NVARCHAR(MAX)
+	Introduction NVARCHAR(MAX),
+	SpecializedActivities Nvarchar(200),
+	ProfessionalAchievements Nvarchar(200),
+	DepthStudy Nvarchar(200),
 );
 
 -- Create the CartItems table
@@ -270,17 +273,19 @@ Pediatric vaccinations, also known as childhood immunizations or vaccines, are a
 -- Insert data into Staff
 INSERT INTO Staff (StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole, Rank, Specialty, Introduction)
 VALUES
-    ('thang', 'lethanglrf@gmail.com', '1234', 'Lê Minh Thắng', 'Male', '0834398268', 'resources/img/thang.jpeg', 'doctor', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for the first staff member.'),
     ('thang', 'lethang@gmail.com', '1234', 'Lê Minh Thắng', 'Male', '0834398268', 'resources/img/thang.jpeg', 'manager', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for the second staff member.'),
-    ('john_doe', 'john@example.com', 'password123', 'John Doe', 'Male', '123456789', 'profile.jpg', 'doctor', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for John Doe.'),
     ('jane_smith', 'jane@example.com', 'password456', 'Jane Smith', 'Female', '987654321', 'avatar.jpg', 'nurse', 'Meritorious Doctor', 'Internal Medicine Department', 'Introduction for Jane Smith.'),
-    ('dr_smith', 'dr.smith@example.com', 'doctorpass', 'Smith', 'Male', '555123456', 'resources\img\bsHieu.jpg', 'doctor', 'Associate Doctor', 'Internal Medicine Department', 'Introduction for Dr. Smith.'),
-    ('dr_anderson', 'dr.anderson@example.com', 'doctorpass', 'Anderson', 'Female', '555987654', 'doctor.jpg', 'doctor', 'Associate Doctor', 'Internal Medicine Department', 'Introduction for Dr. Anderson.'),
     ('nurse_johnson', 'nurse.johnson@example.com', 'nursepass', 'Nurse Johnson', 'Female', '555111222', 'nurse.jpg', 'nurse', 'Associate Doctor', 'Dermatology Department', 'Introduction for Nurse Johnson.'),
-    ('nurse_brown', 'nurse.brown@example.com', 'nursepass', 'Nurse Brown', 'Male', '555333444', 'nurse.jpg', 'nurse', 'Meritorious Doctor', 'Dermatology Department', 'Introduction for Nurse Brown.'),
-    ('dr_jackson', 'dr.jackson@example.com', 'doctorpass', 'Jackson', 'Male', '555111333', 'doctor.jpg', 'doctor', 'Meritorious Doctor', 'Internal Medicine Department', 'Introduction for Dr. Jackson.'),
-    ('dr_wilson', 'dr.wilson@example.com', 'doctorpass', 'Wilson', 'Male', '555333555', 'doctor.jpg', 'doctor', 'Meritorious Doctor', 'Internal Medicine Department', 'Introduction for Dr. Wilson.'), ('Hieu', 'chtalong@gmail.com', '1234', 'Bui Chung Hieu', 'Male', '0373933128', 'resources/img/adminHieu.jpg','admin','High Level Admin','X','X');
-
+    ('nurse_brown', 'nurse.brown@example.com', 'nursepass', 'Nurse Brown', 'Male', '555333444', 'nurse.jpg', 'nurse', 'Meritorious Doctor', 'Dermatology Department', 'Introduction for Nurse Brown.')
+	INSERT INTO Staff (StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole, Rank, Specialty, Introduction, SpecializedActivities, ProfessionalAchievements,DepthStudy)
+VALUES
+    ('thang', 'lethanglrf@gmail.com', '1234', 'Lê Minh Thắng', 'Male', '0834398268', 'resources/img/thang.jpeg', 'doctor', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for the first staff member.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
+    ('john_doe', 'john@example.com', 'password123', 'John Doe', 'Male', '123456789', 'profile.jpg', 'doctor', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for John Doe.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
+    ('dr_smith', 'dr.smith@example.com', 'doctorpass', 'Smith', 'Male', '555123456', 'resources\img\bsHieu.jpg', 'doctor', 'Associate Doctor', 'Internal Medicine Department', 'Introduction for Dr. Smith.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
+    ('dr_anderson', 'dr.anderson@example.com', 'doctorpass', 'Anderson', 'Female', '555987654', 'doctor.jpg', 'doctor', 'Associate Doctor', 'Internal Medicine Department', 'Introduction for Dr. Anderson.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
+    ('dr_jackson', 'dr.jackson@example.com', 'doctorpass', 'Jackson', 'Male', '555111333', 'doctor.jpg', 'doctor', 'Meritorious Doctor', 'Internal Medicine Department', 'Introduction for Dr. Jackson.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022')
+-- ADMIN
+INSERT INTO Staff(StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole) VALUES ('Hieu','chtalong@gmail.com','1234','Bui Chung Hieu','Male','037399128','resources\img\adminHieu.jpg')
 -- Insert data into ServiceStaff
 INSERT INTO ServiceStaff (ServiceID, StaffID)
 VALUES

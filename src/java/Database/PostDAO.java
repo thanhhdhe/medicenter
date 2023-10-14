@@ -554,5 +554,6 @@ public class PostDAO extends MyDAO {
         postDAO.getAllPosts();
         
         System.out.println("DOCTOR'S ADVICE".toLowerCase());
+        System.out.println("PROFESSIONAL ACHIEVEMENTS".toLowerCase());
     }
 }

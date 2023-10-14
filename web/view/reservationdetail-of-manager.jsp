@@ -108,7 +108,7 @@
                     <%}%>
                     <%if(isManager){%>
                     <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
+                        <a href="staff?event=send-to-medical-examination-manage" class="nav-item nav-link"
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
@@ -219,7 +219,7 @@
                             </div>
                             <div class="row px-4 justify-content-between">
                                 <div class="col-md-5 d-flex flex-column justify-content-center align-items-start">
-                                    
+
                                     <div class="d-flex justify-content-center"><h3>Customer</h3></div>
 
                                     <div class="d-flex">
@@ -230,7 +230,7 @@
                                             <p class="m-0 text-black-50"><i class="fas fa-phone"></i>  <%=thisUser.getPhoneNumber()%></p>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="d-flex justify-content-center"><h3 class="mt-3">Patient</h3></div>
                                     <div class="d-flex">
                                         <img src="<%=thisChild.getImage()%>" alt="dr" class="rounded-3 object-cover me-3" width="100px" height="100px"/>
@@ -240,13 +240,44 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4 d-flex flex-column justify-content-center align-items-center">
-                                    <%Staff thisStaff = staffDAO.getStaffByStaffId(reservation.getStaffID());%>
-                                    <img src="<%=thisStaff.getProfileImage()%>" alt="dr" class="rounded-circle object-cover" width="100px" height="100px"/>
-                                    <h4>Dr: <%=thisStaff.getFullName()%></h4>
-                                    <p class="m-0 text-black-50"><i class="fas fa-envelope"></i>  <%=thisStaff.getEmail()%></p>
-                                    <p class="m-0 text-black-50"><i class="fas fa-phone"></i>  <%=thisStaff.getPhoneNumber()%></p>
-                                    <p class="text-black-50"><%=thisStaff.getGender()%></p>
+                                <div class="col-md-4 d-flex justify-content-center align-items-start">
+                                    <%Staff thisStaff = staffDAO.getStaffByStaffId(reservation.getStaffID());
+                                    List<Staff> staffList = staffDAO.getStaffsBySlot((String) pageContext.getAttribute("ReservationDateString"), (String) pageContext.getAttribute("ReservationSlotString"));%>
+                                    <div class="d-flex me-2"  id="doctorBadge-<%=reservation.getReservationID()%>">
+                                        <img src="<%=thisStaff.getProfileImage()%>" alt="dr" class="rounded-circle object-cover me-3" width="70px" height="70px"/>
+                                        <div>
+                                            <h4>Dr: <%=thisStaff.getFullName()%></h4>
+                                            <p class="m-0 text-black-50"><i class="fas fa-envelope"></i>  <%=thisStaff.getEmail()%></p>
+                                            <p class="m-0 text-black-50"><i class="fas fa-phone"></i>  <%=thisStaff.getPhoneNumber()%></p>
+                                            <p class="text-black-50"><%=thisStaff.getGender()%></p>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button style="border: 0px; padding: 0px" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="badge bg-light"><img src="resources/img/icon/edit-tool.png" alt="alt" width="50px"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="max-height: 300px;overflow-y: auto; ">
+                                            <%for (Staff staff : staffList) {%>
+                                            <li><a class="dropdown-item status-change" href="#" onclick="changeDoctor(this, <%=staff.getStaffID()%>,<%=reservation.getReservationID()%>)"style="height: 90px;overflow: hidden;">
+                                                    <div class="d-flex me-2">
+                                                        <img src="<%=staff.getProfileImage()%>" alt="dr" class="rounded-circle object-cover me-3" width=70px" height="70px"/>
+                                                        <div>
+                                                            <h4>Dr: <%=staff.getFullName()%></h4>
+                                                            <p class="m-0 text-black-50"><i class="fas fa-envelope"></i>  <%=staff.getEmail()%></p>
+                                                            <p class="m-0 text-black-50"><i class="fas fa-phone"></i>  <%=staff.getPhoneNumber()%></p>
+                                                            <p class="text-black-50"><%=staff.getGender()%></p>
+                                                        </div>
+                                                    </div>
+                                                </a></li>
+
+                                            <%}%>
+                                        </ul>
+
+                                    </div>
+
+
+
+
                                 </div>
                             </div>
                             <div class="row px-4 justify-content-between mt-4">
@@ -259,7 +290,18 @@
                                     <p><strong>Reservation ID:</strong> <%=reservation.getReservationID()%></p>
                                     <p><strong>Reservation date:</strong> <%=reservation.getCreatedDate()%></p>
                                     <p><strong>Confirm Date: </strong><%=reservation.getReservationDate()%></p>
-                                    <p><strong>Status: </strong><%=reservation.getStatus()%></p>
+                                    <div class="dropdown">
+                                        <button style="border: 0px; padding: 0px" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="badge bg-primary"  id="statusBadge-<%=reservation.getReservationID()%>"><%=reservation.getStatus()%></span>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, <%=reservation.getReservationID()%>)">cancel</a></li>
+                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, <%=reservation.getReservationID()%>)">pending</a></li>
+                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, <%=reservation.getReservationID()%>)">awaiting confirmation</a></li>
+                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, <%=reservation.getReservationID()%>)">waiting for examination</a></li>
+                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, <%=reservation.getReservationID()%>)">done</a></li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                             <div class="table-responsive p-4 mt-2">
@@ -275,7 +317,7 @@
                                     </thead>
                                     <tbody>
                                         <%
-                                        List<Integer> serviceIDList = reservationDAO.getListServiceIDByUserAndStaff(reservation.getUserID()+"",curStaff.getStaffID()+"");
+                                        List<Integer> serviceIDList = reservationDAO.getListServiceIDByUser(reservation.getUserID()+"");
                                         if(serviceIDList!=null){
                                         for (Integer integer : serviceIDList) {
                                         Service service = serviceDAO.getServiceByID(integer+"");
@@ -331,15 +373,54 @@
 
         <!-- Template Javascript -->
         <script>
-            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
-                var sidebar = document.querySelector('.sidebar');
-                var content = document.querySelector('.content');
+                                                document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+                                                    var sidebar = document.querySelector('.sidebar');
+                                                    var content = document.querySelector('.content');
 
-                sidebar.classList.toggle('open');
-                content.classList.toggle('open');
+                                                    sidebar.classList.toggle('open');
+                                                    content.classList.toggle('open');
 
-                return false;
-            });
+                                                    return false;
+                                                });
+
+                                                function changestatus(a, uid) {
+                                                                    var text = a.textContent;
+                                                                    var textchange = document.getElementById("statusBadge-" + uid);
+                                                                    textchange.textContent = text;
+
+                                                                    // Gửi yêu cầu Ajax đến servlet
+                                                                    var xhr = new XMLHttpRequest();
+                                                                    xhr.open("POST", "reservationcontactmanager?event=updatestatus&status=" + text + "&reservationID=" + uid, true);
+
+                                                                    xhr.onload = function () {
+
+                                                                    };
+
+                                                                    xhr.onerror = function () {
+
+                                                                    };
+
+                                                                    xhr.send();
+                                                                }
+                                                function changeDoctor(a, doctorId, reservationID) {
+                                                    var text = a.innerHTML;
+                                                    var textchange = document.getElementById("doctorBadge-" + reservationID);
+                                                    textchange.innerHTML = text;
+
+                                                    // Gửi yêu cầu Ajax đến servlet
+                                                    var xhr = new XMLHttpRequest();
+                                                    xhr.open("POST", "reservationcontactmanager?event=updatedoctor&doctorID=" + doctorId + "&reservationID=" + reservationID, true);
+
+                                                    xhr.onload = function () {
+
+                                                    };
+
+                                                    xhr.onerror = function () {
+
+                                                    };
+
+                                                    xhr.send();
+                                                }
         </script>
     </body>
 </html>

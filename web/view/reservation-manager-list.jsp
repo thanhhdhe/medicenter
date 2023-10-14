@@ -102,7 +102,7 @@
                     <%}%>
                     <%if(isManager){%>
                     <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
+                        <a href="staff?event=send-to-medical-examination-manage" class="nav-item nav-link"
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
@@ -293,10 +293,10 @@
                                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                                             <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">cancel</a></li>
                                                             <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">pending</a></li>
+                                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">awaiting confirmation</a></li>
                                                             <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">waiting for examination</a></li>
-                                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">waiting for examination</a></li>
+                                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${reservation.getReservationID()})">done</a></li>
                                                         </ul>
-
                                                     </div>
                                                 </td>
                                                 <td>${reservation.getCost()}</td>

@@ -76,6 +76,13 @@ public class StaffController extends HttpServlet {
                 }
                 request.getRequestDispatcher("./view/medical-examination.jsp").forward(request, response);
                 break;
+            case "send-to-medical-examination-manage":
+                if (!isManager) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
+                request.getRequestDispatcher("./view/medical-examination-manage.jsp").forward(request, response);
+                break;
             case "send-to-edit":
                 if (!isManager && !isStaff) {
                     request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
@@ -132,7 +139,7 @@ public class StaffController extends HttpServlet {
                 }
                 String reserdIdM = request.getParameter("reserdid");
                 request.setAttribute("reserdid", reserdIdM);
-                request.getRequestDispatcher("./view/reservationdetail-of-staff.jsp").forward(request, response);
+                request.getRequestDispatcher("./view/reservationdetail-of-manager.jsp").forward(request, response);
                 break;
             case "reservation-of-staff":
                 if (!isManager && !isStaff) {

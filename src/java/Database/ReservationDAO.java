@@ -185,6 +185,28 @@ public class ReservationDAO extends MyDAO {
 
         return childrenIDList;
     }
+    
+    public List<Integer> getListServiceIDByUser(String userID) {
+        List<Integer> serviceIDList = new ArrayList<>();
+        String sql = "SELECT DISTINCT ServiceID FROM Reservations WHERE UserID = ?";
+
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setString(1, userID);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int serviceID = rs.getInt("ServiceID");
+                serviceIDList.add(serviceID);
+            }
+
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return serviceIDList;
+    }
 
     public int countListChildrenIDByUserAndStaff(String childName, String staffID) {
         int count = 0;
