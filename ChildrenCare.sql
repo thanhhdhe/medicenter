@@ -285,7 +285,7 @@ VALUES
     ('dr_anderson', 'dr.anderson@example.com', 'doctorpass', 'Anderson', 'Female', '555987654', 'doctor.jpg', 'doctor', 'Associate Doctor', 'Internal Medicine Department', 'Introduction for Dr. Anderson.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
     ('dr_jackson', 'dr.jackson@example.com', 'doctorpass', 'Jackson', 'Male', '555111333', 'doctor.jpg', 'doctor', 'Meritorious Doctor', 'Internal Medicine Department', 'Introduction for Dr. Jackson.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022')
 -- ADMIN
-INSERT INTO Staff(StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole) VALUES ('Hieu','chtalong@gmail.com','1234','Bui Chung Hieu','Male','037399128','resources\img\adminHieu.jpg')
+INSERT INTO Staff(StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole) VALUES ('Hieu','chtalong@gmail.com','1234','Bui Chung Hieu','Male','037399128','resources\img\adminHieu.jpg', 'admin')
 -- Insert data into ServiceStaff
 INSERT INTO ServiceStaff (ServiceID, StaffID)
 VALUES
