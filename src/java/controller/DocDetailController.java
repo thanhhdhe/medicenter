@@ -39,7 +39,7 @@ public class DocDetailController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet DocDetailController</title>");            
+            out.println("<title>Servlet DocDetailController</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet DocDetailController at " + request.getContextPath() + "</h1>");
@@ -62,8 +62,8 @@ public class DocDetailController extends HttpServlet {
             throws ServletException, IOException {
         int docID = Integer.parseInt(request.getParameter("ID"));
         StaffDAO staffDAO = new StaffDAO();
-        Staff staff= staffDAO.getStaffByStaffId(docID);
-        request.setAttribute("Staff", staff);
+        Staff staff = staffDAO.getStaffByStaffId(docID);
+        request.setAttribute("staff", staff);
         request.getRequestDispatcher("./view/doctor-detail.jsp").forward(request, response);
     }
 
