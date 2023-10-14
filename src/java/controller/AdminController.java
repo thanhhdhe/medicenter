@@ -42,8 +42,19 @@ public class AdminController extends HttpServlet {
             request.getRequestDispatcher("./view/login-admin.jsp").forward(request, response);
         } else {
             if (action != null) {
-                if (action.equals("logout")) {
-                    logOut(session, request, response);
+                switch (action) {
+                    case "logout": {
+                        logOut(session, request, response);
+                        break;
+                    }
+                    case "changeDate": {
+                        String startDay = (String) request.getParameter("startDay");
+                        int startDayNumber = Integer.parseInt(startDay);
+                        String endDay = (String) request.getParameter("endDay");
+                        int endDayNumber = Integer.parseInt(endDay);
+                        processData(endDayNumber - startDayNumber, session, request, response);
+                        break;
+                    }
                 }
             } else {
                 processData(7, session, request, response);
@@ -63,14 +74,7 @@ public class AdminController extends HttpServlet {
                 login(request, response);
                 break;
             }
-            case "changeDate": {
-                String startDay = (String) request.getParameter("startDay");
-                int startDayNumber = Integer.parseInt(startDay);
-                String endDay = (String) request.getParameter("endDay");
-                int endDayNumber = Integer.parseInt(endDay);
-                processData(endDayNumber - startDayNumber, session, request, response);
-                break;
-            }
+
             default: {
                 break;
             }
