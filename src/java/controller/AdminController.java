@@ -55,6 +55,10 @@ public class AdminController extends HttpServlet {
                         processData(endDayNumber - startDayNumber, session, request, response);
                         break;
                     }
+                    case "send-to-customer-list": {
+                        sendToCustomerList(session, request, response);
+                        break;
+                    }
                 }
             } else {
                 processData(7, session, request, response);
@@ -181,5 +185,13 @@ public class AdminController extends HttpServlet {
         HttpSession session = request.getSession(true);
         session.setAttribute("adminEmail", email);
         response.sendRedirect("admin");
+    }
+    
+    private void sendToCustomerList(HttpSession session,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        StaffDAO staffDAO = new StaffDAO();
+        String adminEmail = (String) session.getAttribute("adminEmail");
+        request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
+        
+        request.getRequestDispatcher("./view/customer-list-admin.jsp").forward(request, response);
     }
 }

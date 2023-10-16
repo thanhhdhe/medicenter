@@ -57,17 +57,6 @@
         <%@ page import="java.util.HashMap,java.util.Map,jakarta.servlet.http.HttpSession" %>
         <%@ page import="model.Staff" %>
         <%
-        // Retrieve data from the servlet
-        int cancelReservationCount = (int) request.getAttribute("cancelReservationCount");
-        int doneReservationCount = (int) request.getAttribute("doneReservationCount");
-        int submittedReservationCount = (int) request.getAttribute("submittedReservationCount");
-        int newlyUserCount = (int) request.getAttribute("newlyUserCount");
-        int newlyUserReservedCount = (int) request.getAttribute("newlyUserReservedCount");
-        float totalRevenues = (float) request.getAttribute("totalRevenues");
-        Map<String, Float> revenueCategory = (Map<String, Float>) request.getAttribute("revenueCategory");
-        float totalAverageStar = (float) request.getAttribute("totalAverageStar");
-        Map<String, Float> averageStarByServiceID = (Map<String, Float>) request.getAttribute("averageStarByServiceID");
-        
         Staff admin = (Staff) request.getAttribute("admin");
         
         int maximumDayDiff = 7;
@@ -123,7 +112,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="admin?action=send-to-customer-list">
+                                <a class="nav-link" href="#">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                                     <span class="ml-2">Customers</span>
                                 </a>
@@ -140,24 +129,6 @@
                                     <span class="ml-2">Integrations</span>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a class="btn btn-sm btn-secondary ml-3 mt-2" href="https://themesberg.com/blog/bootstrap/simple-bootstrap-5-dashboard-tutorial">
-                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-book" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M1 2.828v9.923c.918-.35 2.107-.692 3.287-.81 1.094-.111 2.278-.039 3.213.492V2.687c-.654-.689-1.782-.886-3.112-.752-1.234.124-2.503.523-3.388.893zm7.5-.141v9.746c.935-.53 2.12-.603 3.213-.493 1.18.12 2.37.461 3.287.811V2.828c-.885-.37-2.154-.769-3.388-.893-1.33-.134-2.458.063-3.112.752zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
-                                    </svg>
-                                    <span class="ml-2">Gray</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="btn btn-sm btn-warning ml-3 mt-2" href="https://themesberg.com/product/admin-dashboard/volt-bootstrap-5-dashboard">
-                                    Yellow
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="btn btn-sm btn-primary ml-3 mt-2" href="https://themesberg.com">
-                                    Blue
-                                </a>
-                            </li>
                         </ul>
                     </div>
                 </nav>
@@ -165,143 +136,10 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Overview</li>
+                            <li class="breadcrumb-item active" aria-current="page">Customer List</li>
                         </ol>
                     </nav>
-                    <h1 class="h2">Dashboard</h1>
-                    <p>Trending</p>
-                    <div class="chart"> 
-                        <div class="row mt-4">
-                            <div class="col-md-12">
-                                <canvas id="reservationTrendChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row my-4">
-                        <div class="col-12 col-md-6 col-lg-3 mb-4 mb-lg-0">
-                            <div class="card">
-                                <h5 class="card-header">Customers</h5>
-                                <div class="card-body">
-                                    <h5 class="card-title">345k</h5>
-                                    <p class="card-text">Feb 1 - Apr 1, United States</p>
-                                    <p class="card-text text-success">18.2% increase since last month</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 mb-4 mb-lg-0 col-lg-3">
-                            <div class="card">
-                                <h5 class="card-header">Revenue</h5>
-                                <div class="card-body">
-                                    <h5 class="card-title">$2.4k</h5>
-                                    <p class="card-text">Feb 1 - Apr 1, United States</p>
-                                    <p class="card-text text-success">4.6% increase since last month</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 mb-4 mb-lg-0 col-lg-3">
-                            <div class="card">
-                                <h5 class="card-header">Purchases</h5>
-                                <div class="card-body">
-                                    <h5 class="card-title">43</h5>
-                                    <p class="card-text">Feb 1 - Apr 1, United States</p>
-                                    <p class="card-text text-danger">2.6% decrease since last month</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6 mb-4 mb-lg-0 col-lg-3">
-                            <div class="card">
-                                <h5 class="card-header">Traffic</h5>
-                                <div class="card-body">
-                                    <h5 class="card-title">64k</h5>
-                                    <p class="card-text">Feb 1 - Apr 1, United States</p>
-                                    <p class="card-text text-success">2.5% increase since last month</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 col-xl-8 mb-4 mb-lg-0">
-                            <div class="card">
-                                <h5 class="card-header">Latest transactions</h5>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table">
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col">Order</th>
-                                                    <th scope="col">Product</th>
-                                                    <th scope="col">Customer</th>
-                                                    <th scope="col">Total</th>
-                                                    <th scope="col">Date</th>
-                                                    <th scope="col"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <th scope="row">17371705</th>
-                                                    <td>Volt Premium Bootstrap 5 Dashboard</td>
-                                                    <td>johndoe@gmail.com</td>
-                                                    <td>61.11</td>
-                                                    <td>Aug 31 2020</td>
-                                                    <td><a href="#" class="btn btn-sm btn-primary">View</a></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">17370540</th>
-                                                    <td>Pixel Pro Premium Bootstrap UI Kit</td>
-                                                    <td>jacob.monroe@company.com</td>
-                                                    <td>153.11</td>
-                                                    <td>Aug 28 2020</td>
-                                                    <td><a href="#" class="btn btn-sm btn-primary">View</a></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">17371705</th>
-                                                    <td>Volt Premium Bootstrap 5 Dashboard</td>
-                                                    <td>johndoe@gmail.com</td>
-                                                    <td>61.11</td>
-                                                    <td>Aug 31 2020</td>
-                                                    <td><a href="#" class="btn btn-sm btn-primary">View</a></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">17370540</th>
-                                                    <td>Pixel Pro Premium Bootstrap UI Kit</td>
-                                                    <td>jacob.monroe@company.com</td>
-                                                    <td>153.11</td>
-                                                    <td>Aug 28 2020</td>
-                                                    <td><a href="#" class="btn btn-sm btn-primary">View</a></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">17371705</th>
-                                                    <td>Volt Premium Bootstrap 5 Dashboard</td>
-                                                    <td>johndoe@gmail.com</td>
-                                                    <td>61.11</td>
-                                                    <td>Aug 31 2020</td>
-                                                    <td><a href="#" class="btn btn-sm btn-primary">View</a></td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">17370540</th>
-                                                    <td>Pixel Pro Premium Bootstrap UI Kit</td>
-                                                    <td>jacob.monroe@company.com</td>
-                                                    <td>153.11</td>
-                                                    <td>Aug 28 2020</td>
-                                                    <td><a href="#" class="btn btn-sm btn-primary">View</a></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <a href="#" class="btn btn-block btn-light">View all</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-xl-4">
-                            <div class="card">
-                                <h5 class="card-header">Traffic last 6 months</h5>
-                                <div class="card-body">
-                                    <div id="traffic-chart"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
                     <footer class="pt-5 d-flex justify-content-between">
                         <span>Copyright © 2023-2024 <a href="https://github.com/BlinkWork">BlinkWork</a></span>
                         <ul class="nav m-0">
