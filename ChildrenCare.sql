@@ -184,7 +184,7 @@ CREATE TABLE Feedbacks (
     FeedbackID INT IDENTITY(1,1) PRIMARY KEY,
     UserID INT NOT NULL,
     MedicalExaminationID INT NOT NULL,
-    Content NVARCHAR(MAX)NOT NULL,
+    Content NVARCHAR(MAX) NOT NULL,
     FeedbackDate DATETIME NOT NULL,
     RatedStar INT,
 	FStatus VARCHAR(50),
@@ -273,7 +273,7 @@ Pediatric vaccinations, also known as childhood immunizations or vaccines, are a
 -- Insert data into Staff
 INSERT INTO Staff (StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole, Rank, Specialty, Introduction)
 VALUES
-    ('thang', 'lethang@gmail.com', '1234', 'Lê Minh Thắng', 'Male', '0834398268', 'resources/img/thang.jpeg', 'manager', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for the second staff member.'),
+    ('thang', 'lethang@gmail.com', '1234', 'Le Minh Thang', 'Male', '0834398268', 'resources/img/thang.jpeg', 'manager', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for the second staff member.'),
     ('jane_smith', 'jane@example.com', 'password456', 'Jane Smith', 'Female', '987654321', 'avatar.jpg', 'nurse', 'Meritorious Doctor', 'Internal Medicine Department', 'Introduction for Jane Smith.'),
     ('nurse_johnson', 'nurse.johnson@example.com', 'nursepass', 'Nurse Johnson', 'Female', '555111222', 'nurse.jpg', 'nurse', 'Associate Doctor', 'Dermatology Department', 'Introduction for Nurse Johnson.'),
     ('nurse_brown', 'nurse.brown@example.com', 'nursepass', 'Nurse Brown', 'Male', '555333444', 'nurse.jpg', 'nurse', 'Meritorious Doctor', 'Dermatology Department', 'Introduction for Nurse Brown.')
