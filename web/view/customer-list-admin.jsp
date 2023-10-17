@@ -54,9 +54,12 @@
         </style>
     </head>
     <body>
-        <%@ page import="java.util.HashMap,java.util.Map,jakarta.servlet.http.HttpSession" %>
-        <%@ page import="model.Staff" %>
+        <%@ page import="jakarta.servlet.http.HttpSession" %>
+        <%@page import = "model.*" %>
+        <%@page import = "Database.*" %>
+        <%@page import = "java.util.*" %>
         <%
+        UserDAO userDAO = new UserDAO();
         Staff admin = (Staff) request.getAttribute("admin");
         
         int maximumDayDiff = 7;
@@ -139,7 +142,39 @@
                             <li class="breadcrumb-item active" aria-current="page">Customer List</li>
                         </ol>
                     </nav>
-                    
+                    <div class="col-md-12">
+                        <table class="table table-striped table-hover">
+                            <thead class="text-light" style="background: #1977cc;">
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Full Name</th>
+                                    <th scope="col">Gender</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Mobile</th>
+                                    <th scope="col">Role</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Detail</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <%List<User> users = userDAO.getAllUsersByAdmin(1, 10, "", "", "", "", "", "", 1);
+                                for (User user : users) {%>
+                                    <tr>
+                                        <td><%=user.getUserID()%></td>
+                                        <td><%=user.getFirstName()%></td>
+                                        <td><%=user.getGender()%></td>
+                                        <td><%=user.getEmail()%></td>
+                                        <td><%=user.getPhoneNumber()%></td>
+                                        <td><%=user.getRole()%></td>
+                                        <td><%=user.isStatus()?"Active":"Inactive"%></td>
+                                        <td><a href="#"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></a></td>
+                                    </tr>
+                                <%}%>
+                            </tbody>
+                        </table>
+
+                    </div>
+
                     <footer class="pt-5 d-flex justify-content-between">
                         <span>Copyright © 2023-2024 <a href="https://github.com/BlinkWork">BlinkWork</a></span>
                         <ul class="nav m-0">
