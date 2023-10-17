@@ -4,6 +4,7 @@
  */
 package Database;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import model.User;
@@ -291,11 +292,13 @@ public class UserDAO extends MyDAO {
         return filteredUsers;
     }
 
-    public int getUserCountByCreatedDate(int day) {
-        xSql = "select count(*) as UserCount from [dbo].[Users] where DATEDIFF(DAY,GETDATE(),CreatedDate) >= ?";
+    public int getUserCountByCreatedDate(Date startDate, Date endDate) {
+        xSql = "select count(*) as UserCount from [dbo].[Users] where "
+                + "DATEDIFF(DAY, ? ,CreatedDate) >= 0 AND DATEDIFF(DAY, ? CreatedDate) <= 0";
         try {
             ps = con.prepareStatement(xSql);
-            ps.setInt(1, -day);
+            ps.setDate(1, startDate);
+            ps.setDate(2, endDate);
             rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getInt("UserCount");

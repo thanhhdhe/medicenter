@@ -184,6 +184,10 @@ public class StaffController extends HttpServlet {
         } else if (!staff.getPassword().equals(password)) {
             request.setAttribute("err", "Incorrect username or password!");
             request.getRequestDispatcher("./view/login-staff.jsp").forward(request, response);
+        } else if (staff.getRole().equals("admin")) {
+             HttpSession session = request.getSession(true);
+            session.setAttribute("adminEmail", email);
+            response.sendRedirect("admin");
         } else {
             HttpSession session = request.getSession(true);
             session.setAttribute("email", email);
