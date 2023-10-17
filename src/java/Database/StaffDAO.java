@@ -46,7 +46,7 @@ public class StaffDAO extends MyDAO {
 
     public List<Staff> getDoctorByServices(String id) {
         List<Staff> doctorList = new ArrayList<>();
-        xSql = "select s.StaffID, s.StaffName, s.Email, s.Email, s.Password, s.FullName,s.Gender, s.PhoneNumber, s.ProfileImage, s.StaffRole\n"
+        xSql = "select s.StaffID, s.StaffName, s.Email, s.Email, s.Password, s.FullName,s.Gender, s.PhoneNumber, s.ProfileImage, s.StaffRole, s.Rank\n"
                 + "		   from Staff s inner join ServiceStaff ss on s.StaffID = ss.StaffID where s.StaffRole = 'doctor' AND ServiceID = ?";
         try {
             ps = con.prepareStatement(xSql);

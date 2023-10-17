@@ -292,6 +292,174 @@ public class UserDAO extends MyDAO {
         return filteredUsers;
     }
 
+    public List<User> getAllUsersByAdmin(int page, int pageSize, String sortBy, String searchFullName, String searchEmail, String searchMobile, String filterGender, String filterRole, int filterStatus) {
+        List<User> userList = new ArrayList<>();
+        String sql = "SELECT * FROM ("
+                + "SELECT UserID as ID, CONCAT(LastName , ' ', FirstName) as Name, Gender, Email, ProfileImage, PhoneNumber, CAST(Status AS BIT) as Status, 'user' as Role FROM Users "
+                + "UNION "
+                + "SELECT StaffID as ID, FullName as Name, Gender, Email, ProfileImage, PhoneNumber, CAST(1 AS BIT) AS Status, StaffRole as Role FROM Staff"
+                + ") AS USERLIST WHERE 1=1";
+
+        // Xây dựng câu truy vấn dựa trên các điều kiện và mệnh đề đầu vào
+        if (searchFullName != null && !searchFullName.isEmpty()) {
+            sql += " AND Name LIKE ?";
+        }
+        if (searchEmail != null && !searchEmail.isEmpty()) {
+            sql += " AND Email LIKE ?";
+        }
+        if (searchMobile != null && !searchMobile.isEmpty()) {
+            sql += " AND PhoneNumber LIKE ?";
+        }
+        if (filterGender != null && !filterGender.isEmpty()) {
+            sql += " AND Gender = ?";
+        }
+        if (filterRole != null && !filterRole.isEmpty()) {
+            sql += " AND Role = ?";
+        }
+        if (filterStatus != 0) {
+            sql += " AND Status = CAST(? AS BIT)";
+        }
+        if (sortBy != null && !sortBy.isEmpty()) {
+            sql += " ORDER BY ?";
+        }
+
+        // Thực thi câu truy vấn và xử lý kết quả
+        try {
+            ps = connection.prepareStatement(sql);
+
+            // Đặt các giá trị vào câu truy vấn
+            int parameterIndex = 1;
+            if (searchFullName != null && !searchFullName.isEmpty()) {
+                ps.setString(parameterIndex++, "%" + searchFullName + "%");
+            }
+            if (searchEmail != null && !searchEmail.isEmpty()) {
+                ps.setString(parameterIndex++, "%" + searchEmail + "%");
+            }
+            if (searchMobile != null && !searchMobile.isEmpty()) {
+                ps.setString(parameterIndex++, "%" + searchMobile + "%");
+            }
+            if (filterGender != null && !filterGender.isEmpty()) {
+                ps.setString(parameterIndex++, filterGender);
+            }
+            if (filterRole != null && !filterRole.isEmpty()) {
+                ps.setString(parameterIndex++, filterRole);
+            }
+            if (filterStatus != 0) {
+                ps.setInt(parameterIndex++, filterStatus);
+            }
+            if (sortBy != null && !sortBy.isEmpty()) {
+                ps.setString(parameterIndex, sortBy);
+            }
+
+            rs = ps.executeQuery();
+
+            // Lấy dữ liệu từ ResultSet và tạo các đối tượng User
+            while (rs.next()) {
+                String id = rs.getString("ID");
+                String name = rs.getString("Name");
+                String gender = rs.getString("Gender");
+                String email = rs.getString("Email");
+                String mobile = rs.getString("PhoneNumber");
+                boolean status = rs.getBoolean("Status");
+                String role = rs.getString("Role");
+                String profileImage = rs.getString("ProfileImage");
+                User user = new User(Integer.parseInt(id), email, name, gender, mobile, profileImage, status, role);
+                userList.add(user);
+            }
+
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return userList;
+    }
+
+    public List<User> getAllUsersByAdmin(int page, int pageSize, String sortBy, String searchFullName, String searchEmail, String searchMobile, String filterGender, String filterRole, int filterStatus) {
+        List<User> userList = new ArrayList<>();
+        String sql = "SELECT * FROM ("
+                + "SELECT UserID as ID, CONCAT(LastName , ' ', FirstName) as Name, Gender, Email, ProfileImage, PhoneNumber, CAST(Status AS BIT) as Status, 'user' as Role FROM Users "
+                + "UNION "
+                + "SELECT StaffID as ID, FullName as Name, Gender, Email, ProfileImage, PhoneNumber, CAST(1 AS BIT) AS Status, StaffRole as Role FROM Staff"
+                + ") AS USERLIST WHERE 1=1";
+
+        // Xây dựng câu truy vấn dựa trên các điều kiện và mệnh đề đầu vào
+        if (searchFullName != null && !searchFullName.isEmpty()) {
+            sql += " AND Name LIKE ?";
+        }
+        if (searchEmail != null && !searchEmail.isEmpty()) {
+            sql += " AND Email LIKE ?";
+        }
+        if (searchMobile != null && !searchMobile.isEmpty()) {
+            sql += " AND PhoneNumber LIKE ?";
+        }
+        if (filterGender != null && !filterGender.isEmpty()) {
+            sql += " AND Gender = ?";
+        }
+        if (filterRole != null && !filterRole.isEmpty()) {
+            sql += " AND Role = ?";
+        }
+        if (filterStatus != 0) {
+            sql += " AND Status = CAST(? AS BIT)";
+        }
+        if (sortBy != null && !sortBy.isEmpty()) {
+            sql += " ORDER BY ?";
+        }
+
+        // Thực thi câu truy vấn và xử lý kết quả
+        try {
+            ps = connection.prepareStatement(sql);
+
+            // Đặt các giá trị vào câu truy vấn
+            int parameterIndex = 1;
+            if (searchFullName != null && !searchFullName.isEmpty()) {
+                ps.setString(parameterIndex++, "%" + searchFullName + "%");
+            }
+            if (searchEmail != null && !searchEmail.isEmpty()) {
+                ps.setString(parameterIndex++, "%" + searchEmail + "%");
+            }
+            if (searchMobile != null && !searchMobile.isEmpty()) {
+                ps.setString(parameterIndex++, "%" + searchMobile + "%");
+            }
+            if (filterGender != null && !filterGender.isEmpty()) {
+                ps.setString(parameterIndex++, filterGender);
+            }
+            if (filterRole != null && !filterRole.isEmpty()) {
+                ps.setString(parameterIndex++, filterRole);
+            }
+            if (filterStatus != 0) {
+                ps.setInt(parameterIndex++, filterStatus);
+            }
+            if (sortBy != null && !sortBy.isEmpty()) {
+                ps.setString(parameterIndex, sortBy);
+            }
+
+            rs = ps.executeQuery();
+
+            // Lấy dữ liệu từ ResultSet và tạo các đối tượng User
+            while (rs.next()) {
+                String id = rs.getString("ID");
+                String name = rs.getString("Name");
+                String gender = rs.getString("Gender");
+                String email = rs.getString("Email");
+                String mobile = rs.getString("PhoneNumber");
+                boolean status = rs.getBoolean("Status");
+                String role = rs.getString("Role");
+                String profileImage = rs.getString("ProfileImage");
+                User user = new User(Integer.parseInt(id), email, name, gender, mobile, profileImage, status, role);
+                userList.add(user);
+            }
+
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return userList;
+    }
+
     public int getUserCountByCreatedDate(Date startDate, Date endDate) {
         xSql = "select count(*) as UserCount from [dbo].[Users] where "
                 + "DATEDIFF(DAY, ? ,CreatedDate) >= 0 AND DATEDIFF(DAY, ? CreatedDate) <= 0";
@@ -311,12 +479,12 @@ public class UserDAO extends MyDAO {
     }
 
     public static void main(String[] args) {
-        UserDAO u = new UserDAO();
-        List<User> us = u.getFilterByStatus("1");
-
-        for (User u1 : us) {
-            System.out.println(u1.isStatus());
-        }
+        UserDAO userDAO = new UserDAO();
+        List<User> users = userDAO.getAllUsersByAdmin(1, 10, "", "", "", "", "", "", 1);
+//        
+//        for (User user : users) {
+//            user.isStatus()
+//        }
 
     }
 }

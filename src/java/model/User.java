@@ -23,6 +23,7 @@ public class User {
     private String profileImage; 
     private boolean status;
     private Date createdDate;
+    private String role;
 
     public User() {
     }
@@ -53,6 +54,27 @@ public class User {
         this.profileImage = profileImage;
         this.createdDate = createdDate;
     }
+
+    public User(int userID, String email, String firstName, String gender, String phoneNumber, String profileImage, boolean status, String role) {
+        this.userID = userID;
+        this.email = email;
+        this.firstName = firstName;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
+        this.profileImage = profileImage;
+        this.status = status;
+        this.role = role;
+    }
+    
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+    
 
     public Date getCreatedDate() {
         return createdDate;
