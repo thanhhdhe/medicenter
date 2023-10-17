@@ -51,7 +51,60 @@
             .sidebar .nav-link.active {
                 color: #0d6efd;
             }
+
+            #pagination-container{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                list-style: none;
+            }
+            #pagination-container li{
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+                margin-left: 0.5rem;
+                margin-right: 0.5rem;
+                text-align: center;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            #pagination-container a{
+                text-decoration: none;
+                font-weight: 500;
+            }
+
+            #pagination-container .active{
+                background-color: #1977cc !important;
+            }
+
+            #pagination-container .inactive{
+                background-color: #fff;
+            }
+
+            #pagination-container .active span {
+                color: #fff;
+                font-weight: 500;
+            }
+            #pagination-container .inactive a{
+                color: #8f8f8f;
+            }
+            #pagination-container button{
+                border-radius: 50%;
+                border: 0px;
+                background-color: white
+            }
+
         </style>
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+            rel="stylesheet"
+            />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
+            rel="stylesheet"
+            />
     </head>
     <body>
         <%@ page import="jakarta.servlet.http.HttpSession" %>
@@ -97,39 +150,15 @@
                     <div class="position-sticky">
                         <ul class="nav flex-column">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="admin">
+                                <a class="nav-link" aria-current="page" href="admin">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-home"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                                    <span class="ml-2">Dashboard</span>
+                                    <span class="ml-2">Home</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
-                                    <span class="ml-2">Orders</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                                    <span class="ml-2">Products</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
+                                <a class="nav-link active" href="#">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                                    <span class="ml-2">Customers</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bar-chart-2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-                                    <span class="ml-2">Reports</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
-                                    <span class="ml-2">Integrations</span>
+                                    <span class="ml-2">Users</span>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -146,12 +175,42 @@
                     </div>
                 </nav>
                 <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Customer List</li>
-                        </ol>
-                    </nav>
+                    <div class="mb-4 py-3 border-bottom d-flex justify-content-between align-items-center">
+                        <h5>User Manage</h5>
+                        <a href="#" class="ms-text-primary text-decoration-none"><i class="fas fa-pencil-alt ms-text-primary"></i> Add New User</a>
+                    </div>
+                    <div class="col-md-12 row justify-content-between mb-3">
+                        <div class="col-md-3">
+                            <input type="text" name="name" class="form-control" placeholder="Search By Name" id="nameUser">
+                            <input type="text" name="email" class="form-control mt-2" placeholder="Search By Email" id="emailUser">
+                            <input type="text" name="mobile" class="form-control mt-2" placeholder="Search By Mobile" id="mobileUser">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="filterUser">
+                                <option selected value="">Filtered User List</option>
+                                <option value="user">Customer</option>
+                                <option value="doctor">Doctor</option>
+                                <option value="nurse">Nurse</option> 
+                                <option value="manager">Manager</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">FeMale</option>
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+
+                            <select class="form-select mt-3" id="sort">
+                                <option selected value="">Sort By</option>
+                                <option value="ID">Sort By ID</option>
+                                <option value="Name">Sort By Name</option>
+                                <option value="Gender">Sort By Gender</option>
+                                <option value="Email">Sort By Email</option>
+                                <option value="PhoneNumber">Sort By Mobile</option> 
+                                <option value="Role">Sort By Role</option>
+                                <option value="Status">Sort By status</option>
+                            </select>
+
+                        </div>
+                    </div>
                     <div class="col-md-12">
                         <table class="table table-striped table-hover">
                             <thead class="text-light" style="background: #1977cc;">
@@ -169,19 +228,40 @@
                             <tbody>
                                 <%List<User> users = userDAO.getAllUsersByAdmin(1, 10, "", "", "", "", "", "", 1);
                                 for (User user : users) {%>
-                                    <tr>
-                                        <td><%=user.getUserID()%></td>
-                                        <td><%=user.getFirstName()%></td>
-                                        <td><%=user.getGender()%></td>
-                                        <td><%=user.getEmail()%></td>
-                                        <td><%=user.getPhoneNumber()%></td>
-                                        <td><%=user.getRole()%></td>
-                                        <td><%=user.isStatus()?"Active":"Inactive"%></td>
-                                        <td><a href="#"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></a></td>
-                                    </tr>
+                                <tr>
+                                    <td><%=user.getUserID()%></td>
+                                    <td><%=user.getFirstName()%></td>
+                                    <td><%=user.getGender()%></td>
+                                    <td><%=user.getEmail()%></td>
+                                    <td><%=user.getPhoneNumber()%></td>
+                                    <td><%=user.getRole()%></td>
+                                    <td><%=user.isStatus()?"Active":"Inactive"%></td>
+                                    <td><a href="#"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></a></td>
+                                </tr>
                                 <%}%>
                             </tbody>
                         </table>
+
+                        <ul id="pagination-container">
+                            <%int totalRecord = userDAO.countTotalUserByAdmin("", "", "", "", "", 3);
+                                    if(totalRecord<=40){%>
+                            <%if(totalRecord>0){%>
+                            <li class="pagination-btn active"><span>1</span></li>
+                                <%for (int i = 2; i <= (totalRecord+9)/10; i++) {%>
+                            <li class="pagination-btn inactive"><a data-page="<%=i%>" href="#"><%=i%></a></li>
+                                <%}%>
+                                <%}%>
+                                <%}else{%>
+                            <!--<li class="pagination-btn inactive">><a href="#">&lt;</a></li>-->
+                            <li class="pagination-btn active"><span>1</span></li>
+                            <li class="pagination-btn inactive"><a href="#" data-page="2">2</a></li>
+                            <li class="pagination-btn inactive"><a href="#" data-page="3">3</a></li>
+                            <span>...</span>
+                            <li class="pagination-btn inactive"><a href="#" data-page="<%=(totalRecord+9)/10%>"><%=(totalRecord+9)/10%></a></li>
+                            <li class="pagination-btn inactive"><a href="#">&gt;</a></li>
+                                <%}%>
+
+                        </ul>
 
                     </div>
 
@@ -203,49 +283,6 @@
             </div>
         </div>
         <!-- JavaScript to create charts -->
-        <script>
-            function sendDatesToServlet() {
-                const startDate = document.getElementById("startDate").value;
-                const endDate = document.getElementById("endDate").value;
-
-                const servletUrl = `admin?action=changeDate&startDay=${startDate}&endDay=${endDate}`;
-
-                console.log(startDate);
-                console.log(endDate);
-            }
-
-            var reservationTrendData = {
-                labels: ["Day 1", "Day 2", "Day 3", "Day 4", "Day 5", "Day 6", "Day 7"],
-                datasets: [
-                    {
-                        label: 'Successful Reservations',
-                        data: [1, 2, 4, 6, 2, 3, 1], // Provide data for successful reservations for the last 7 days here
-                        fill: false,
-                        borderColor: 'blue'
-                    },
-                    {
-                        label: 'All Reservations',
-                        data: [5, 6, 9, 11, 5, 7, 4], // Provide data for all reservations for the last 7 days here
-                        fill: false,
-                        borderColor: 'green'
-                    }
-                ]
-            };
-
-            var reservationTrendCtx = document.getElementById('reservationTrendChart').getContext('2d');
-
-            var reservationTrendChart = new Chart(reservationTrendCtx, {
-                type: 'line',
-                data: reservationTrendData,
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        </script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
 
