@@ -11,105 +11,364 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <!-- Google Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+        <meta charset="utf-8" />
+        <title>Staff dashboard</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <meta content="" name="keywords" />
+        <meta content="" name="description" />
+        
+        <!-- Favicon -->
+        <link href="img/favicon.ico" rel="icon" />
+
+        <!-- Google Web Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+            />
+
+        <!-- Icon Font Stylesheet -->
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+            rel="stylesheet"
+            />
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
+            rel="stylesheet"
+            />
+
+        <!-- Libraries Stylesheet -->
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
             rel="stylesheet"
             integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
             crossorigin="anonymous"
             />
-        <link rel="stylesheet" href="./resources/css/post-style.css">
-        <title>Medilab</title>
+
+        <!-- Customized Bootstrap Stylesheet -->
+        <link href="css/bootstrap.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="./resources/css/staff-dashboard.css">
+        <link rel="stylesheet" href="./resources/css/services-style.css">
     </head>
     <body>
-        <jsp:include page="./layout/Header.jsp" />
-        <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
-            <h4>Post MANAGEMENT</h4>
-            <a href="postDetailManage?postId=-1&event=add" class="ms-text-primary font-weight-bold">Add Post</a>
-        </div>
-        <div class="d-flex justify-content-center mt-5">
-            <div class="col-md-9" id="blog-list">
-                <div class="container py-5">
-                    <div class="row g-5">
-                        <c:forEach var="l" items="${list}">
-                            <div class="col-xl-4 col-lg-6">
-                                <div class="bg-light rounded overflow-hidden">
-                                    <img class="img-fluid w-100" src="${l.getThumbnail()}" alt="">
-                                    <div class="p-4">
-                                        Post ID: ${l.getPostID()}
-                                        <a class="h3 d-block mb-3" href="/ChildrenCare/blogDetail?ID=${l.getPostID()}">${l.getTitle()}</a>
-                                        <p class="m-0">${l.getBriefInfo()}</p>
-                                        <div class="d-flex h-50 align-content-center flex-wrap d-flex" >
-                                            <form action="postManage" method="POST">
-                                                <div>
-                                                    <input type="text" name="postId" value="${l.getPostID()}" hidden=""/>
-                                                    <c:if test="${l.isStatusPost()}">
-                                                        <button class="button-icon me-2" value="hide" name="event"><img src="resources/img/icon/hide.png" alt="alt"/></button> Hide
-                                                        </c:if>
-                                                        <c:if test="${!l.isStatusPost()}">
-                                                        <button class="button-icon me-2"value="show" name="event"><img src="resources/img/icon/visual.png" alt="alt"/></button> Show
-                                                        </c:if>
-                                                </div>
-                                            </form>
-                                            <div>
-                                                <button class="button-icon me-2" value="update" name="event"><a href="postDetailManage?postId=${l.getPostID()}&event=update"><img src="resources/img/icon/pen.png" alt="alt"/></a></button>  Update
-                                            </div>
+        <%
+String email = (String) session.getAttribute("email");
+StaffDAO staffDAO = new StaffDAO();
+Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+boolean isManager = false;
+        %>
+        <div class="container-fluid position-relative bg-white d-flex p-0">
+            <%if(curStaff!=null){
+            if(curStaff.getRole().equals("manager")) isManager=true;%>
+            <!-- Sidebar Start -->
+            <div class="sidebar pe-4 pb-3">
+                <nav class="navbar navbar-light">
+                    <a href="staff?event=sent-to-home" class="navbar-brand mx-4 mb-3">
+                        <h3 class="text-light">
+                            <i class="fa fa-hashtag me-2"></i>Medilab
+                        </h3>
+                    </a>
+                    <div class="d-flex align-items-center ms-4 mb-4">
+                        <div class="position-relative">
+                            <img
+                                class="rounded-circle"
+                                src="<%=curStaff.getProfileImage()%>"
+                                alt=""
+                                style="width: 40px; height: 40px"
+                                />
+                            <div
+                                class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"
+                                ></div>
+                        </div>
+                        <div class="ms-3 text-light">
+                            <h6 class="mb-0"><%=curStaff.getStaffName()%></h6>
+                            <span><%=curStaff.getRole()%></span>
+                        </div>
+                    </div>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
+                           ><i class="far fa-check-square"></i>Medical examination</a
+                        >
+                    </div>
+                    <%if(isManager){%>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-medical-examination-manage" class="nav-item nav-link"
+                           ><i class="far fa-check-square"></i>Medical examination</a
+                        >
+                    </div>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="reservationcontactmanager?event=reservation-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations Manager</a
+                        >
+                    </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="user?action=all" class="nav-item nav-link"
+                           ><i class="bi bi-people-fill"></i>User</a
+                        >
+                    </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="feedback" class="nav-item nav-link"
+                           ><i class="far fa-file-alt"></i>Feedback</a
+                        >
+                    </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="service?event=manage" class="nav-item nav-link active"
+                           ><i class="fas fa-stethoscope"></i>Services</a
+                        >
+                    </div>
+                    <%}%>
+                </nav>
+            </div>
+            <!-- Sidebar End -->
+            <%}%>
+            <div class="content <%if(curStaff==null){%>ms-0 w-100<%}%>">
+                <!-- Navbar Start -->
+                <nav class="navbar navbar-expand navbar-light sticky-top px-4 py-0" style="background-color: #1977cc;">
+
+                    <a href="#" class="sidebar-toggler flex-shrink-0 text-decoration-none text-light">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                    <form class="d-none d-md-flex ms-4">
+                        <input
+                            class="form-control border-0"
+                            type="search"
+                            placeholder="Search"
+                            />
+                    </form>
+                    <div class="navbar-nav align-items-center ms-auto">
+                        <div class="nav-item dropdown">
+                            <a
+                                href="#"
+                                class="nav-link dropdown-toggle"
+                                data-bs-toggle="dropdown"
+                                >
+                                <i class="fa fa-envelope me-lg-2"></i>
+                                <span class="d-none d-lg-inline-flex">Message</span>
+                            </a>
+                            <div
+                                class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0"
+                                >
+                            </div>
+                        </div>
+                        <div class="nav-item dropdown">
+                            <a
+                                href="#"
+                                class="nav-link dropdown-toggle"
+                                data-bs-toggle="dropdown"
+                                >
+                                <i class="fa fa-bell me-lg-2"></i>
+                                <span class="d-none d-lg-inline-flex">Notification</span>
+                            </a>
+                            <div
+                                class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0"
+                                >
+                            </div>
+                        </div>
+                        <%if(curStaff!=null){%>
+                        <div class="nav-item dropdown">
+                            <a
+                                href="#"
+                                class="nav-link dropdown-toggle"
+                                data-bs-toggle="dropdown"
+                                >
+                                <img
+                                    class="rounded-circle me-lg-2"
+                                    src="<%=curStaff.getProfileImage()%>"
+                                    alt=""
+                                    style="width: 40px; height: 40px"
+                                    />
+                                <span class="d-none d-lg-inline-flex"><%=curStaff.getStaffName()%></span>
+                            </a>
+                            <div
+                                class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0"
+                                >
+                                <a href="#" class="dropdown-item">My Profile</a>
+                                <a href="#" class="dropdown-item">Settings</a>
+                                <a href="logout" class="dropdown-item">Log Out</a>
+                            </div>
+                        </div>
+                        <%}else{%>
+                        <a href="staff?event=sent-to-login" id="login" class="btn btn-outline-primary ms-3 bg-light rounded-pill text-decoration-none"><span class="d-none d-md-inline">Login</a>
+                        <%}%>
+                    </div>
+                </nav>
+                <!-- Navbar End -->
+
+                <!-- Blank Start -->
+                <div class="container-fluid pt-4 px-4">
+                    <div
+                        class="row bg-light rounded align-items-center justify-content-center mx-0"
+                        >
+                        <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
+                            <h4>POST MANAGEMENT</h4>
+                            <a href="service?event=sent-to-add" class="ms-text-primary font-weight-bold">Add Service</a>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="d-flex flex-column align-items-center justify-content-center mt-2">
+                                <div class="container d-flex justify-content-between">
+                                    <input type="text" name="keywordSearch" placeholder="Search Title or Brief" class="form-control w-25 mx-3" />
+                                    <select class="form-select text-primary w-25 me-3" name="sortBy" >
+                                        <option selected value="">Sort By</option>
+                                        <option value="title">Title</option>
+                                        <option value="category">Category</option>
+                                        <option value="listPrice">List price</option>
+                                        <option value="salePrice">Sale price</option>
+                                        <option value="status">Status</option>
+                                    </select>
+                                </div>
+                                <div class="container row mt-5 mb-4">
+
+                                    <div class="col-md-12">
+
+                                        <!-- Services List -->
+                                        <table class="table">
+                                            <thead class="text-light" style="background: #1977cc;">
+                                                <tr>
+                                                    <th scope="col">ID</th>
+                                                    <th scope="col">Thumbnail</th>
+                                                    <th scope="col">Title</th>
+                                                    <th scope="col">Category</th>
+                                                    <th scope="col">Brief</th>
+                                                    <th scope="col">Status</th>
+                                                    <th scope="col">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="service-list">
+                                                <c:forEach var="l" items="${list}">
+                                                    <tr id="${l.getPostID()}" class="service p-3 " ${l.isStatusPost()}>
+                                                        <th scope="row">${l.getBriefInfo()}</th>
+                                                        <td><img src="${l.getThumbnail()}" alt="ìmg" style="width: 12rem;height: 8rem;object-fit: cover;" /></td>
+                                                        <td>${l.getTitle()}</td>
+                                                        <td>${l.getCategoryPost()}</td>
+                                                        <td>${l.getBriefInfo()} </td>
+                                                        <c:if test="${l.isStatusPost()}"><td><p class="status text-success mt-2">Active</p></td></c:if>
+                                                        <c:if test="${!l.isStatusPost()}"><td><p class="status text-black-50 mt-2">Inactive</p></td></c:if>
+                                                            <td>
+                                                                <div class="d-flex h-50 align-content-center flex-wrap" >
+                                                                    <div class="d-flex">
+                                                                    <c:if test="${l.isStatusPost()}"> <a href="postManage?event=to-detail-manage&id="><button class="button-icon me-2 showhide hide-service-button" ><img src="resources/img/icon/hide.png" alt="alt"/></button></a> </c:if>
+                                                                       <c:if test="${!l.isStatusPost()}"> <button class="button-icon me-2 showhide show-service-button"><img src="resources/img/icon/visual.png" alt="alt"/></button> </c:if>
+
+                                                                        <button class="button-icon me-2"><a href="service?event=to-detail-manage&id="><img src="resources/img/icon/detail.png" alt="alt"/></a></button>
+                                                                        <button class="button-icon"><a href="service?event=edit&id="><img src="resources/img/icon/pen.png" alt="alt"/></a></button>
+                                                                    </div></div>
+                                                            </td>
+                                                        </tr>
+                                                </c:forEach>
+
+                                            </tbody>
+                                        </table>
+                                        <div class="d-flex justify-content-center mb-5" id="pagination-container">
+                                            <c:forEach var="p" begin="1" end="${numOfPage}">
+                                                <input class="pagination-btn ms-2 active" type="submit" name="page" value="${p}" /> 
+                                            </c:forEach>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                        </c:forEach>
+                        </div>
                     </div>
                 </div>
+                <!-- Blank End -->
+
+                <!-- Footer Start -->
+                <div class="mt-4">
+                    <jsp:include page="layout/footer.jsp" />
+                </div>
+                <!-- Footer End -->
             </div>
-            <form action="postManage">
-                <div class="container row mt-5 mb-4">
-                    <div class="mb-5">
-                        Search by:
-                        <input type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3 search" value="${postTitle}"/>
-                        <select class="form-select text-primary mt-3" name="postCategory">
-                            <c:forEach var="c" items="${categoryList}">
-                                <option value="${c}">${c}</option>
-                            </c:forEach>
-                        </select>
-                        <select class="form-select text-primary mt-3" name="postAuthor">
-                            <c:forEach var="a" items="${authorList}">
-                                <option value="${a.getUserID()}">${a.getLastName()} ${a.getFirstName()}</option>
-                            </c:forEach>
-                        </select>
-                        <br>
-                        Sort by:
-                        <select class="form-select text-primary mt-3" name="sortBy">
-                            <c:forEach var="s" items="${sortList}">
-                                <option value="${s}">${s}</option>
-                            </c:forEach>
-                        </select>
-                        <br>
-                        <a href="service?event=to-contact-link" class="mt-3 ms-2">Contact Us</a>
-                    </div>
-                </div>
+            <!-- Content End -->
+
         </div>
-        <div class="d-flex justify-content-center" id="pagination-container">
-            <c:forEach var="p" begin="1" end="${numOfPage}">
-                <input type="submit" name="page" value="${p}" /> 
-            </c:forEach>
-        </form>
+        <!--        <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <h4>Post MANAGEMENT</h4>
+                    <a href="postDetailManage?postId=-1&event=add" class="ms-text-primary font-weight-bold">Add Post</a>
+                </div>
+                <div class="d-flex justify-content-center mt-5">
+                    <div class="col-md-9" id="blog-list">
+                        <div class="container py-5">
+                            <div class="row g-5">
+        <c:forEach var="l" items="${list}">
+            <div class="col-xl-4 col-lg-6">
+                <div class="bg-light rounded overflow-hidden">
+                    <img class="img-fluid w-100" src="${l.getThumbnail()}" alt="">
+                    <div class="p-4">
+                        Post ID: ${l.getPostID()}
+                        <a class="h3 d-block mb-3" href="/ChildrenCare/blogDetail?ID=${l.getPostID()}">${l.getTitle()}</a>
+                        <p class="m-0">${l.getBriefInfo()}</p>
+                        <div class="d-flex h-50 align-content-center flex-wrap d-flex" >
+                            <form action="postManage" method="POST">
+                                <div>
+                                    <input type="text" name="postId" value="${l.getPostID()}" hidden=""/>
+            <c:if test="${l.isStatusPost()}">
+                <button class="button-icon me-2" value="hide" name="event"><img src="resources/img/icon/hide.png" alt="alt"/></button> Hide
+            </c:if>
+            <c:if test="${!l.isStatusPost()}">
+            <button class="button-icon me-2"value="show" name="event"><img src="resources/img/icon/visual.png" alt="alt"/></button> Show
+            </c:if>
     </div>
-    <jsp:include page="layout/footer.jsp" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="./resources/js/posts-manage-script.js"></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-        crossorigin="anonymous"
-    ></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-        crossorigin="anonymous"
-    ></script>
+</form>
+<div>
+    <button class="button-icon me-2" value="update" name="event"><a href="postDetailManage?postId=${l.getPostID()}&event=update"><img src="resources/img/icon/pen.png" alt="alt"/></a></button>  Update
+</div>
+</div>
+</div>
+</div>
+</div>
+
+        </c:forEach>
+    </div>
+</div>
+</div>
+<form action="postManage">
+<div class="container row mt-5 mb-4">
+    <div class="mb-5">
+        Search by:
+        <input type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3 search" value="${postTitle}"/>
+        <select class="form-select text-primary mt-3" name="postCategory">
+        <c:forEach var="c" items="${categoryList}">
+            <option value="${c}">${c}</option>
+        </c:forEach>
+    </select>
+    <select class="form-select text-primary mt-3" name="postAuthor">
+        <c:forEach var="a" items="${authorList}">
+            <option value="${a.getUserID()}">${a.getLastName()} ${a.getFirstName()}</option>
+        </c:forEach>
+    </select>
+    <br>
+    Sort by:
+    <select class="form-select text-primary mt-3" name="sortBy">
+        <c:forEach var="s" items="${sortList}">
+            <option value="${s}">${s}</option>
+        </c:forEach>
+
+        <!-- JavaScript Libraries -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="./resources/js/services-manage-script.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+            crossorigin="anonymous"
+        ></script>
+
+        <!-- Template Javascript -->
+        <script>
+            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+                var sidebar = document.querySelector('.sidebar');
+                var content = document.querySelector('.content');
+
+                sidebar.classList.toggle('open');
+                content.classList.toggle('open');
+
+                return false;
+            });
+        </script>
+    </body>
 </html>

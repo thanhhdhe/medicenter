@@ -210,7 +210,7 @@ public class StaffDAO extends MyDAO {
         List<Staff> staffList = new ArrayList<>();
         xSql = " select distinct s.staffID, s.FullName, s.Gender, s.PhoneNumber, s.ProfileImage, s.Rank, s.Specialty, s.Introduction "
                 + "from staff as s join ServiceStaff as ss on s.StaffID= ss.StaffID "
-                + "where s.StaffRole='doctor' and s.FullName like ? ";
+                + "where s.StaffRole= 'doctor' and s.FullName like ? ";
 
         if (!ServiceID.isEmpty()) {
             xSql += " and ss.ServiceID = ? ";
@@ -239,7 +239,7 @@ public class StaffDAO extends MyDAO {
                 String rank = rs.getString("Rank");
                 String specialty = rs.getString("Specialty");
                 String introduction = rs.getString("Introduction");
-                String SpecializedActivities = rs.getString("SpecializedActivities");
+                String SpecializedActivities = rs.getString("Specialized");
                 String ProfessionalAchievements = rs.getString("ProfessionalAchievements");
                 String DepthStudy = rs.getString("DepthStudy");
                 Staff staff = new Staff(staffID, fullName, gender, phoneNumber, profileImage, rank, specialty, introduction, SpecializedActivities, ProfessionalAchievements, DepthStudy);
@@ -293,10 +293,11 @@ public class StaffDAO extends MyDAO {
 
         //System.out.println(staffDAO.getStaffByStaffEmail("lethanglrf@gmail.com").getFullName());
 //        System.out.println(staffDAO.getStaffByStaffEmail("lethanglrf@gmail.com").getFullName());
-        List<Staff> list = staffDAO.getStaffListPage(0, 6, "s", "1");
-//        for (Staff staff : list) {
-//            System.out.println(staff.getFullName());
-//        }
-        System.out.println(staffDAO.getNumOfPageStaffList("", ""));
+        List<Staff> list = staffDAO.getStaffListPage(0, 6, "", "");
+        for (Staff staff : list) {
+            System.out.println(staff.getFullName());
+        }
+        
+        
     }
 }
