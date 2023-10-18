@@ -88,9 +88,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
             </div>
-            <div class="col-12 col-md-4 col-lg-2">
-                <input class="form-control form-control-dark" type="text" placeholder="Search" aria-label="Search">
-            </div>
+            
             <div class="col-12 col-md-5 col-lg-8 d-flex align-items-center justify-content-md-end mt-3 mt-md-0">
                 <div class="dropdown">
 
@@ -217,7 +215,7 @@
                             <div class="card">
                                 <h5 class="card-header">Revenue</h5>
                                 <div class="card-body">
-                                    <h5 id="totalRevenues" class="card-title">$<%=totalRevenues%></h5>
+                                    <h5 id="totalRevenues" class="card-title">Total revenues : $<%=totalRevenues%></h5>
                                     <%for (Map.Entry<String, Float> entry : revenueCategory.entrySet()) {
                                         String key = entry.getKey();
                                         Float value = entry.getValue(); %>
