@@ -142,10 +142,7 @@
         </style>
     </head>
     <body>
-        <form action="feedback?action=sendmailfeed" method="POST">
-            <input type="submit" value="Thanh toan">
-
-        </form>
+        
         <div class="container">
             <h1>Feedback Form</h1>
             <form action="feedback?action=sendfeedback" method="POST">

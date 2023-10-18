@@ -95,7 +95,7 @@ public class FeedBackDAO extends MyDAO {
             ps = con.prepareStatement(xSql);
             ps.setString(1, Fill);
             // set index for offser (page)
-            ps.setInt(2, (index - 1) * 10); //page 0 -> index 0 page 1 -> index 5
+            ps.setInt(2, (index - 1) * 10); //page 0 -> index 0 page 1 -> index 10
             rs = ps.executeQuery();
             while (rs.next()) {
                 feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
