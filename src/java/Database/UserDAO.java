@@ -331,7 +331,7 @@ public class UserDAO extends MyDAO {
 
         // Perform pagination
         int offset = (page - 1) * pageSize;
-        sql += " ORDER BY " + (sortBy != null && !sortBy.isEmpty() ? "?" : "Name");
+        sql += " ORDER BY " + (sortBy != null && !sortBy.isEmpty() ? sortBy : "Name");
         sql += " OFFSET " + offset + " ROWS FETCH NEXT " + pageSize + " ROWS ONLY";
 
         // Execute the query and handle the results
@@ -348,9 +348,9 @@ public class UserDAO extends MyDAO {
                 parameterIndex++;
             }
 
-            if (sortBy != null && !sortBy.isEmpty()) {
-                ps.setString(parameterIndex, sortBy);
-            }
+//            if (sortBy != null && !sortBy.isEmpty()) {
+//                ps.setString(parameterIndex, sortBy);
+//            }
 
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -456,12 +456,13 @@ public class UserDAO extends MyDAO {
 
     public static void main(String[] args) {
         UserDAO userDAO = new UserDAO();
-        List<User> users = userDAO.getAllUsersByAdmin(1, 10, "", "", "", "", "", "", 1);
-        System.out.println(userDAO.countTotalUserByAdmin("", "", "", "", "", 3));
+        List<User> users = userDAO.getAllUsersByAdmin(1, 10, "Email", "", "", "", "", "", 2);
+        
+//        System.out.println(userDAO.countTotalUserByAdmin("", "", "", "", "", 3));
 //        
-//        for (User user : users) {
-//            user.isStatus()
-//        }
+        for (User user : users) {
+            System.out.println(user.getFirstName());
+        }
 
     }
 }

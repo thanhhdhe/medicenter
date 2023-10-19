@@ -186,16 +186,26 @@
                             <input type="text" name="mobile" class="form-control mt-2" placeholder="Search By Mobile" id="mobileUser">
                         </div>
                         <div class="col-md-3">
-                            <select class="form-select" id="filterUser">
-                                <option selected value="">Filtered User List</option>
+                            <select class="form-select" id="gender">
+                                <option selected value="">Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">FeMale</option>
+                            </select>
+
+                            <select class="form-select mt-3" id="status">
+                                <option selected value="">Status</option>
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="role">
+                                <option selected value="">Role</option>
                                 <option value="user">Customer</option>
                                 <option value="doctor">Doctor</option>
                                 <option value="nurse">Nurse</option> 
                                 <option value="manager">Manager</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">FeMale</option>
-                                <option value="1">Active</option>
-                                <option value="0">Inactive</option>
                             </select>
 
                             <select class="form-select mt-3" id="sort">
@@ -225,7 +235,7 @@
                                     <th scope="col">Detail</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="user-list">
                                 <%List<User> users = userDAO.getAllUsersByAdmin(1, 10, "", "", "", "", "", "", 1);
                                 for (User user : users) {%>
                                 <tr>
@@ -282,7 +292,7 @@
                 </main>
             </div>
         </div>
-        <!-- JavaScript to create charts -->
+        <script src="./resources/js/user-list-admin.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
 

@@ -5,6 +5,7 @@
 package controller;
 
 import Database.ChildrenDAO;
+import Database.ReservationDAO;
 import Database.ServiceDAO;
 import Database.StaffDAO;
 import Database.UserDAO;
@@ -16,11 +17,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
+import java.io.PrintWriter;
 import java.nio.file.Paths;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import model.Children;
+import model.Reservation;
 import model.Service;
 import model.Staff;
 import model.User;
@@ -49,9 +52,13 @@ public class UserController extends HttpServlet {
         String action = request.getParameter("action");
         Staff curStaff = (Staff) session.getAttribute("staff");
         boolean isManager = false;
+        boolean isAdmin = false;
         if (curStaff != null) {
             if (curStaff.getRole().equals("manager")) {
                 isManager = true;
+            }
+            if (curStaff.getRole().equals("admin")) {
+                isAdmin = true;
             }
         }
         List<User> userList = null;
@@ -246,6 +253,9 @@ public class UserController extends HttpServlet {
                 ChildrenDAO childDAO = new ChildrenDAO();
                 childDAO.deleteChild(childID);
             }
+            if (action.equals("render-user-by-admin")) {
+                renderUserByAdmin(request, response);
+            }
         } catch (IOException | ServletException e) {
             System.out.println(e);
         }
@@ -281,6 +291,92 @@ public class UserController extends HttpServlet {
         processRequest(request, response);
 
     }
+    
+    protected void renderUserByAdmin(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        String nameSearch = (String) request.getParameter("name");
+        String emailSearch = (String) request.getParameter("email");
+        String mobileSearch = (String) request.getParameter("mobile");
+        String role = (String) request.getParameter("role");
+        String gender = (String) request.getParameter("gender");
+        String status = (String) request.getParameter("status");
+        int statusUser = 2;
+        if(!status.isEmpty()){
+            statusUser = Integer.parseInt(status.trim());
+        }
+        String sortBy = (String) request.getParameter("sortBy");
+        String page = (String) request.getParameter("page");
+        int pagination = Integer.parseInt(page.trim());
+        HttpSession session = request.getSession(true);
+        String email = (String) session.getAttribute("email");
+        StaffDAO staffDAO = new StaffDAO();
+        UserDAO userDAO = new UserDAO();
+        
+        // Generate the pagination HTML
+        String paginationHtml = "";
+        int totalRecord = userDAO.countTotalUserByAdmin(nameSearch, emailSearch, mobileSearch, gender, role, statusUser );
+        int numberOfPage = (totalRecord + 9) / 10;
+        if (totalRecord <= 40) {
+            if (totalRecord > 0) {
+                for (int i = 1; i <= numberOfPage; i++) {
+                    if (i == pagination) {
+                        paginationHtml += "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>";
+                    } else {
+                        paginationHtml += "<li class=\"pagination-btn inactive\"><a data-page=\"" + i + "\" href=\"#\" onclick=\"pagination(event, " + i + ");\">" + i + "</a></li>";
+                    }
+                }
+            }
+        } else {
+
+            if (pagination == 1) {
+                paginationHtml += "<li class=\"pagination-btn active\"><span>1</span></li>"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"2\" onclick=\"pagination(event, 2);\">2</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"3\" onclick=\"pagination(event, 3);\">3</a></li>\n"
+                        + "<span>...</span>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"pagination(event, " + numberOfPage + ");\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\">&gt;</a></li>";
+            } else if (pagination > numberOfPage - 4) {
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\">&lt;</a></li>"
+                        + "<span>...</span>\n";
+                for (int i = numberOfPage - 3; i <= numberOfPage; i++) {
+                    if (i == pagination) {
+                        paginationHtml += "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>";
+                    } else {
+                        paginationHtml += "<li class=\"pagination-btn inactive\"><a data-page=\"" + i + "\" href=\"#\" onclick=\"pagination(event, " + i + ");\">" + i + "</a></li>";
+                    }
+                }
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\">&gt;</a></li>";
+            } else {
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\">&lt;</a></li>"
+                        + "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"" + pagination + "\" onclick=\"pagination(event, " + pagination + ");\">" + pagination + "</a></li>\n"
+                        + "                                    <li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"" + pagination + "\" onclick=\"pagination(event, " + pagination + ");\">" + pagination + "</a></li>\n"
+                        + "<span>...</span>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"" + numberOfPage + "\" onclick=\"pagination(event, " + numberOfPage + ");\">" + numberOfPage + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\">&gt;</a></li>";
+            }
+
+        }
+        // Add the pagination HTML to the response header
+        response.addHeader("pagination", paginationHtml);
+
+        List<User> users = userDAO.getAllUsersByAdmin(pagination, 10, sortBy, nameSearch, emailSearch, mobileSearch, gender, role, statusUser);
+        for (User user : users) {
+            out.print("<tr>\n" +
+"                           <td>"+user.getUserID()+"</td>\n" +
+"                           <td>"+user.getFirstName()+"</td>\n" +
+"                           <td>"+user.getGender()+"</td>\n" +
+"                           <td>"+user.getEmail()+"</td>\n" +
+"                           <td>"+user.getPhoneNumber()+"</td>\n" +
+"                           <td>"+user.getRole()+"</td>\n" +
+"                           <td>");if(user.isStatus()){out.print("Active");}else{out.print("Inactive");}out.print("</td>\n" +
+"                           <td><a href=\"#\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\" width=\"25px\"/></a></td>\n" +
+"                       </tr>");
+        }
+    }
+    
 
     /**
      * Returns a short description of the servlet.
