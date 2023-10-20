@@ -176,104 +176,89 @@
                 </nav>
                 <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4">
                     <div class="mb-4 py-3 border-bottom d-flex justify-content-between align-items-center">
-                        <h5>User Manage</h5>
-                        <a href="user?action=send-to-adduser" class="ms-text-primary text-decoration-none"><i class="fas fa-pencil-alt ms-text-primary"></i> Add New User</a>
+                        <h5>Add User</h5>
                     </div>
-                    <div class="col-md-12 row justify-content-between mb-3">
-                        <div class="col-md-3">
-                            <input type="text" name="name" class="form-control" placeholder="Search By Name" id="nameUser">
-                            <input type="text" name="email" class="form-control mt-2" placeholder="Search By Email" id="emailUser">
-                            <input type="text" name="mobile" class="form-control mt-2" placeholder="Search By Mobile" id="mobileUser">
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="gender">
-                                <option selected value="">Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">FeMale</option>
-                            </select>
 
-                            <select class="form-select mt-3" id="status">
-                                <option selected value="">Status</option>
-                                <option value="1">Active</option>
-                                <option value="0">Inactive</option>
-                            </select>
 
-                        </div>
-                        <div class="col-md-3">
-                            <select class="form-select" id="role">
-                                <option selected value="">Role</option>
-                                <option value="user">Customer</option>
-                                <option value="doctor">Doctor</option>
-                                <option value="nurse">Nurse</option> 
-                                <option value="manager">Manager</option>
-                            </select>
+                    <form action="user?action=add-user-byadmin" method="POST" enctype="multipart/form-data" class="d-flex flex-column align-items-center justify-content-between">
+                        <div class="col-md-12 row justify-content-center">
+                            <div class="col-md-4 px-2">
+                                <div class="d-flex justify-content-center">
+                                    <img src="resources/img/avatar.png" alt="img" class="object-contain" width="200px" />
+                                </div>
+                                <div class="form-group mt-3">
+                                    <label for="serviceImage">Profile Image:</label>
+                                    <input type="file" class="form-control-file" id="serviceImage" name="serviceImage">
+                                </div>
+                                <h5 class="d-flex justify-content-center mt-3">- Or -</h5>
+                                <div class="form-group mt-3">
+                                    <label for="serviceURL">Profile Image:</label>
+                                    <input type="text" class="form-control" id="serviceURL" name="serviceURL">
+                                </div>
+                            </div>
+                            <div class="col-md-6 px-5">
+                                <div class="d-flex">
+                                    <div class="form-group pe-4">
+                                        <label for="full-name" class="detail-info">First Name</label>
+                                        <input type="text" class="form-control"  name="firstname">
+                                    </div>
+                                    <div class="form-group px-4">
+                                        <label for="full-name" class="detail-info">Last Name</label>
+                                        <input type="text" class="form-control" name="lastname">
+                                    </div>
+                                </div>
+                                <div class="form-group mt-3">
+                                    <label for="email" class="detail-info">Email</label>
+                                    <input type="email" class="form-control w-75" id="email" name="email">
+                                </div>
+                                <div class="form-group mt-3">
+                                    <label for="password" class="detail-info">Password</label>
+                                    <input type="password" class="form-control w-75" id="password" name="password">
+                                </div>
+                                <div class="d-flex">
+                                    <div class="form-group mt-3 col-md-5 ps-5">
+                                        <label for="status" class="detail-info">Status</label>
+                                        <select class="form-select text-primary mt-3 mb-4 w-50" name="status" >
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group mt-3 col-md-6 px-3">
+                                        <label for="gender" class="detail-info">Gender</label>
+                                        <select class="form-select text-primary mt-3 mb-4 w-50" name="gender" >
+                                            <option value="male">Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="d-flex mt-3">
+                                    <p class="fit-content-width ms-3">User is:</p>
+                                    <div class="form-group col-md-6 px-3">
+                                        <select class="form-select text-primary w-50" name="role" >
+                                            <option value="user">User</option>
+                                            <option value="doctor">Doctor</option>
+                                            <option value="nurse">Nurse</option>
+                                            <option value="manager">Manager</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group mt-3">
+                                    <label for="mobile" class="detail-info">Mobile</label>
+                                    <input type="tel" class="form-control w-75" id="mobile" name="mobile">
+                                </div>
+                                <div class="form-group mt-3">
+                                    <label for="address" class="detail-info">Address</label>
+                                    <input type="text" class="form-control w-75" id="address" name="address">
+                                </div>
 
-                            <select class="form-select mt-3" id="sort">
-                                <option selected value="">Sort By</option>
-                                <option value="ID">Sort By ID</option>
-                                <option value="Name">Sort By Name</option>
-                                <option value="Gender">Sort By Gender</option>
-                                <option value="Email">Sort By Email</option>
-                                <option value="PhoneNumber">Sort By Mobile</option> 
-                                <option value="Role">Sort By Role</option>
-                                <option value="Status">Sort By status</option>
-                            </select>
+                            </div>
+                            
+                        </div> 
+                        <input class="btn btn-primary mt-5 w-25" type="submit" value="Add User" />
+                    </form>
 
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <table class="table table-striped table-hover">
-                            <thead class="text-light" style="background: #1977cc;">
-                                <tr>
-                                    <th scope="col">ID</th>
-                                    <th scope="col">Full Name</th>
-                                    <th scope="col">Gender</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Mobile</th>
-                                    <th scope="col">Role</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Detail</th>
-                                </tr>
-                            </thead>
-                            <tbody id="user-list">
-                                <%List<User> users = userDAO.getAllUsersByAdmin(1, 10, "", "", "", "", "", "", 1);
-                                for (User user : users) {%>
-                                <tr>
-                                    <td><%=user.getUserID()%></td>
-                                    <td><%=user.getFirstName()%></td>
-                                    <td><%=user.getGender()%></td>
-                                    <td><%=user.getEmail()%></td>
-                                    <td><%=user.getPhoneNumber()%></td>
-                                    <td><%=user.getRole()%></td>
-                                    <td><%=user.isStatus()?"Active":"Inactive"%></td>
-                                    <td><a href="#"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></a></td>
-                                </tr>
-                                <%}%>
-                            </tbody>
-                        </table>
-
-                        <ul id="pagination-container">
-                            <%int totalRecord = userDAO.countTotalUserByAdmin("", "", "", "", "", 3);
-                                    if(totalRecord<=40){%>
-                            <%if(totalRecord>0){%>
-                            <li class="pagination-btn active"><span>1</span></li>
-                                <%for (int i = 2; i <= (totalRecord+9)/10; i++) {%>
-                            <li class="pagination-btn inactive"><a data-page="<%=i%>" href="#"><%=i%></a></li>
-                                <%}%>
-                                <%}%>
-                                <%}else{%>
-                            <!--<li class="pagination-btn inactive">><a href="#">&lt;</a></li>-->
-                            <li class="pagination-btn active"><span>1</span></li>
-                            <li class="pagination-btn inactive"><a href="#" data-page="2">2</a></li>
-                            <li class="pagination-btn inactive"><a href="#" data-page="3">3</a></li>
-                            <span>...</span>
-                            <li class="pagination-btn inactive"><a href="#" data-page="<%=(totalRecord+9)/10%>"><%=(totalRecord+9)/10%></a></li>
-                            <li class="pagination-btn inactive"><a href="#">&gt;</a></li>
-                                <%}%>
-
-                        </ul>
-
-                    </div>
 
                     <footer class="pt-5 d-flex justify-content-between">
                         <span>Copyright © 2023-2024 <a href="https://github.com/BlinkWork">BlinkWork</a></span>

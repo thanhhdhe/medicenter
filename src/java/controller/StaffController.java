@@ -277,7 +277,7 @@ public class StaffController extends HttpServlet {
                     + "    <td>");
             if (reservation.getStatus().equals("done")) {
                 out.print("<p class=\"bg-success rounded-2 text-white m-0 p-1 px-2\" style=\"width: fit-content;\">" + reservation.getStatus() + "</p>");
-            } else if (reservation.getStatus().equals("done")) {
+            } else if (reservation.getStatus().equals("cancel")) {
                 out.print("<p class=\"bg-danger rounded-2 text-white m-0 p-1 px-2\" style=\"width: fit-content;\">" + reservation.getStatus() + "</p>");
             } else {
                 out.print("<p class=\"bg-primary rounded-2 text-white m-0 p-1 px-2\" style=\"width: fit-content;\">" + reservation.getStatus() + "</p>");

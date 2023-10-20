@@ -212,9 +212,7 @@ public class UserController extends HttpServlet {
                 String phoneNumber = request.getParameter("phoneNumber");
                 String dfImage = "https://cdn-icons-png.flaticon.com/512/3177/3177440.png";
                 Part filePart = request.getPart("images");
-                
-                
-                
+
                 Date sqlDOB = null;
                 try {
                     String date = day + "-" + month + "-" + year;
@@ -256,6 +254,12 @@ public class UserController extends HttpServlet {
             if (action.equals("render-user-by-admin")) {
                 renderUserByAdmin(request, response);
             }
+            if (action.equals("send-to-adduser")) {
+                sendToAddUser(request, response);
+            }
+            if (action.equals("add-user-byadmin")) {
+                addUserByAdmin(request, response);
+            }
         } catch (IOException | ServletException e) {
             System.out.println(e);
         }
@@ -292,6 +296,24 @@ public class UserController extends HttpServlet {
 
     }
     
+    private void addUserByAdmin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(true);
+        StaffDAO staffDAO = new StaffDAO();
+        String adminEmail = (String) session.getAttribute("adminEmail");
+        request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
+
+        request.getRequestDispatcher("./view/add-user-admin.jsp").forward(request, response);
+    }
+
+    private void sendToAddUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(true);
+        StaffDAO staffDAO = new StaffDAO();
+        String adminEmail = (String) session.getAttribute("adminEmail");
+        request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
+
+        request.getRequestDispatcher("./view/add-user-admin.jsp").forward(request, response);
+    }
+
     protected void renderUserByAdmin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -303,7 +325,7 @@ public class UserController extends HttpServlet {
         String gender = (String) request.getParameter("gender");
         String status = (String) request.getParameter("status");
         int statusUser = 2;
-        if(!status.isEmpty()){
+        if (!status.isEmpty()) {
             statusUser = Integer.parseInt(status.trim());
         }
         String sortBy = (String) request.getParameter("sortBy");
@@ -313,10 +335,10 @@ public class UserController extends HttpServlet {
         String email = (String) session.getAttribute("email");
         StaffDAO staffDAO = new StaffDAO();
         UserDAO userDAO = new UserDAO();
-        
+
         // Generate the pagination HTML
         String paginationHtml = "";
-        int totalRecord = userDAO.countTotalUserByAdmin(nameSearch, emailSearch, mobileSearch, gender, role, statusUser );
+        int totalRecord = userDAO.countTotalUserByAdmin(nameSearch, emailSearch, mobileSearch, gender, role, statusUser);
         int numberOfPage = (totalRecord + 9) / 10;
         if (totalRecord <= 40) {
             if (totalRecord > 0) {
@@ -364,19 +386,24 @@ public class UserController extends HttpServlet {
 
         List<User> users = userDAO.getAllUsersByAdmin(pagination, 10, sortBy, nameSearch, emailSearch, mobileSearch, gender, role, statusUser);
         for (User user : users) {
-            out.print("<tr>\n" +
-"                           <td>"+user.getUserID()+"</td>\n" +
-"                           <td>"+user.getFirstName()+"</td>\n" +
-"                           <td>"+user.getGender()+"</td>\n" +
-"                           <td>"+user.getEmail()+"</td>\n" +
-"                           <td>"+user.getPhoneNumber()+"</td>\n" +
-"                           <td>"+user.getRole()+"</td>\n" +
-"                           <td>");if(user.isStatus()){out.print("Active");}else{out.print("Inactive");}out.print("</td>\n" +
-"                           <td><a href=\"#\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\" width=\"25px\"/></a></td>\n" +
-"                       </tr>");
+            out.print("<tr>\n"
+                    + "                           <td>" + user.getUserID() + "</td>\n"
+                    + "                           <td>" + user.getFirstName() + "</td>\n"
+                    + "                           <td>" + user.getGender() + "</td>\n"
+                    + "                           <td>" + user.getEmail() + "</td>\n"
+                    + "                           <td>" + user.getPhoneNumber() + "</td>\n"
+                    + "                           <td>" + user.getRole() + "</td>\n"
+                    + "                           <td>");
+            if (user.isStatus()) {
+                out.print("Active");
+            } else {
+                out.print("Inactive");
+            }
+            out.print("</td>\n"
+                    + "                           <td><a href=\"#\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\" width=\"25px\"/></a></td>\n"
+                    + "                       </tr>");
         }
     }
-    
 
     /**
      * Returns a short description of the servlet.
