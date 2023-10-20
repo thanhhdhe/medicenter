@@ -100,6 +100,10 @@
         <servlet-name>DocDetailController</servlet-name>
         <servlet-class>controller.DocDetailController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SettingController</servlet-name>
+        <servlet-class>controller.SettingController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServiceController</servlet-name>
         <url-pattern>/service</url-pattern>
@@ -223,6 +227,10 @@
     <servlet-mapping>
         <servlet-name>DocDetailController</servlet-name>
         <url-pattern>/docDetail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SettingController</servlet-name>
+        <url-pattern>/setting</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

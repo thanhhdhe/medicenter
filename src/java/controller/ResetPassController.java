@@ -41,12 +41,15 @@ public class ResetPassController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private Random ra = new Random();
+    
     private String generatePhu1() {
-        Random ra = new Random();
+        
         int phu1 = ra.nextInt(100);
         // Encrypt phu1 for security purposes
         return MaHoa.toSHA1(String.valueOf(phu1));
     }
+    
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

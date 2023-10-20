@@ -133,8 +133,8 @@
                 <div class="dropdown">
 
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
-                        Hello, <%=admin.getStaffName()%>
-                        <img src="<%=admin.getProfileImage()%>" alt="Admin Avatar" class="admin-avatar">
+                        Hello,
+                        <img src="" alt="Admin Avatar" class="admin-avatar">
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="#">Settings</a></li>
@@ -180,7 +180,7 @@
                         <a href="#" class="ms-text-primary text-decoration-none"><i class="fas fa-pencil-alt ms-text-primary"></i> Add New Setting</a>
                     </div>
                     <div class="col-md-12 row justify-content-between mb-3">
-                     <div class="col-md-3">
+                        <div class="col-md-3">
                             <input type="text" name="name" class="form-control" placeholder="Search By Name" id="nameUser">
                             <input type="text" name="email" class="form-control mt-2" placeholder="Search By Email" id="emailUser">
                             <input type="text" name="mobile" class="form-control mt-2" placeholder="Search By Mobile" id="mobileUser">
@@ -224,7 +224,7 @@
                                     <th scope="col">Detail</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="service-list">
                                 <%List<Setting> settings = settingDAO.getSettingList(1);
                                 for (Setting setting : settings) {%>
                                 <tr>
@@ -233,28 +233,45 @@
                                     <td><%=setting.getSettingName() %></td>
                                     <td><%=setting.getValue() %></td>
                                     <td><%=setting.getDescription().substring(0, 25)+"..." %></td>
-                                    <td><%=setting.getStatus() %></td>                                   
+                                    
+                                    <td>
+                                        <div class="dropdown">
+                                            <button style="border: 0px; padding: 0px" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <span class="badge bg-primary"  id="statusBadge-<%=setting.getSettingID() %>"><%=setting.getStatus() %></span>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                                <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, <%=setting.getSettingID() %>)">Active</a></li>
+                                                <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, <%=setting.getSettingID() %>)">Inactive</a></li>             
+                                            </ul>
+                                        </div>
+                                    </td>
                                     <td><a href="#"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></a></td>
                                 </tr>
                                 <%} %>
                             </tbody>
                         </table>
-                    
 
-                    <footer class="pt-5 d-flex justify-content-between">
-                        <span>Copyright © 2023-2024 <a href="https://github.com/BlinkWork">BlinkWork</a></span>
-                        <ul class="nav m-0">
-                            <li class="nav-item">
-                                <a class="nav-link text-secondary" aria-current="page" href="#">Privacy Policy</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-secondary" href="#">Terms and conditions</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-secondary" href="#">Contact</a>
-                            </li>
-                        </ul>
-                    </footer>
+                        <div class="d-flex justify-content-center mb-5" id="pagination-container">
+                            <button style="border: 0px; border-radius: 5px; background-color: #6994eb" class="pagination-btn ms-2 active" data-page="1">1</button>
+                            <%for (int i = 2; i <=(settingDAO.getTotalPageSetting()+9)/10; i++) {%>
+                            <button style="border: 0px; border-radius: 5px; background-color: #6994eb" class="pagination-btn ms-2 inactive" data-page="<%=i%>"><%=i%></button>
+                            <%}%>
+                        </div>
+
+                        <footer class="pt-5 d-flex justify-content-between">
+                            <span>Copyright © 2023-2024 <a href="https://github.com/BlinkWork">BlinkWork</a></span>
+                            <ul class="nav m-0">
+                                <li class="nav-item">
+                                    <a class="nav-link text-secondary" aria-current="page" href="#">Privacy Policy</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-secondary" href="#">Terms and conditions</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-secondary" href="#">Contact</a>
+                                </li>
+                            </ul>
+                        </footer>
                 </main>
             </div>
         </div>
@@ -263,6 +280,65 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script>
+                                                                var paginationButtons = document.querySelectorAll('.pagination-btn');
+                                                                paginationButtons.forEach(function (button) {
+                                                                    button.addEventListener('click', function (event) {
+                                                                        event.preventDefault();
 
+                                                                        if (!this.classList.contains('active')) {
+                                                                            document.querySelectorAll('.pagination-btn').forEach(function (paginationBtn) {
+                                                                                if (paginationBtn.classList.contains('active')) {
+                                                                                    paginationBtn.classList.remove('active');
+                                                                                }
+                                                                            });
+                                                                            this.classList.add('active');
+
+                                                                            var page = this.dataset.page;
+
+                                                                            loadPageServices(page);
+                                                                        }
+                                                                    });
+                                                                });
+                                                                function loadPageServices(page) {
+
+                                                                    var xhr = new XMLHttpRequest();
+                                                                    xhr.open('POST', 'setting?event=paging&page=' + page);
+
+                                                                    xhr.onload = function () {
+                                                                        if (xhr.status === 200) {
+
+                                                                            document.querySelector('#service-list').innerHTML = xhr.responseText;
+                                                                        } else {
+                                                                            console.error('Error:', xhr.status);
+                                                                        }
+                                                                    };
+
+                                                                    xhr.onerror = function () {
+                                                                        console.error('Error:', xhr.status);
+                                                                    };
+
+                                                                    xhr.send();
+                                                                }
+                                                                function changestatus(a, uid) {
+                                                                    var text = a.textContent;
+                                                                    var textchange = document.getElementById("statusBadge-" + uid);
+                                                                    textchange.textContent = text;
+
+                                                                    // G?i yêu c?u Ajax ??n servlet
+                                                                    var xhr = new XMLHttpRequest();
+                                                                    xhr.open("POST", "setting?event=updatestatus&status=" + text + "&settingID=" + uid, true);
+
+                                                                    xhr.onload = function () {
+
+                                                                    };
+
+                                                                    xhr.onerror = function () {
+
+                                                                    };
+
+                                                                    xhr.send();
+                                                                }
+        </script>
     </body>
 </html>

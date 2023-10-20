@@ -55,4 +55,19 @@ public class SettingDAO extends MyDAO {
         }
         return settingList;
     }
+    
+    // update
+    public void updateStatus(String status, String FID) {
+        xSql = "update Settings set Status = ? where SettingID = ?;";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, status);
+            ps.setString(2, FID);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
 }
