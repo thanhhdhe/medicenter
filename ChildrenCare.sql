@@ -413,3 +413,8 @@ VALUES
     ('Mental Health Awareness', 'Promoting mental health awareness and self-care.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',10, 3, 8, '2023-09-17', 8, 'Mental wellness'),
     ('Online Learning Tips', 'Effective tips for online learning and studying.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',90, 1, 9, '2023-09-18', 9, 'Education strategies'),
     ('Gaming News Update', 'Latest gaming news and reviews for gamers.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',200, 1, 10, '2023-09-19', 10, 'Gaming updates');
+
+
+	select distinct s.staffID, s.FullName, s.Gender, s.PhoneNumber, s.ProfileImage, s.Rank, s.Specialty, s.Introduction
+	from staff as s join ServiceStaff as ss on s.StaffID= ss.StaffID
+	where s.StaffRole= 'doctor' and s.FullName like '%%'
