@@ -208,7 +208,7 @@ public class StaffDAO extends MyDAO {
 
     public List<Staff> getStaffListPage(int offSetPage, int numberOfPage, String keyword, String ServiceID) {
         List<Staff> staffList = new ArrayList<>();
-        xSql = " select distinct s.staffID, s.FullName, s.Gender, s.PhoneNumber, s.ProfileImage, s.Rank, s.Specialty, s.Introduction "
+        xSql = " select distinct s.staffID, s.FullName, s.Gender, s.PhoneNumber, s.ProfileImage, s.Rank, s.Specialty, s.Introduction, s.SpecializedActivities, s.ProfessionalAchievements,s.DepthStudy "
                 + "from staff as s join ServiceStaff as ss on s.StaffID= ss.StaffID "
                 + "where s.StaffRole= 'doctor' and s.FullName like ? ";
 
@@ -239,7 +239,7 @@ public class StaffDAO extends MyDAO {
                 String rank = rs.getString("Rank");
                 String specialty = rs.getString("Specialty");
                 String introduction = rs.getString("Introduction");
-                String SpecializedActivities = rs.getString("Specialized");
+                String SpecializedActivities = rs.getString("SpecializedActivities");
                 String ProfessionalAchievements = rs.getString("ProfessionalAchievements");
                 String DepthStudy = rs.getString("DepthStudy");
                 Staff staff = new Staff(staffID, fullName, gender, phoneNumber, profileImage, rank, specialty, introduction, SpecializedActivities, ProfessionalAchievements, DepthStudy);

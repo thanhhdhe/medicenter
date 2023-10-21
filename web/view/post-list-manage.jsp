@@ -16,7 +16,7 @@
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <meta content="" name="keywords" />
         <meta content="" name="description" />
-        
+
         <!-- Favicon -->
         <link href="img/favicon.ico" rel="icon" />
 
@@ -196,6 +196,7 @@ boolean isManager = false;
                 <!-- Navbar End -->
 
                 <!-- Blank Start -->
+
                 <div class="container-fluid pt-4 px-4">
                     <div
                         class="row bg-light rounded align-items-center justify-content-center mx-0"
@@ -206,21 +207,30 @@ boolean isManager = false;
                         </div>
                         <div class="col-md-12">
                             <div class="d-flex flex-column align-items-center justify-content-center mt-2">
-                                <div class="container d-flex justify-content-between">
-                                    <input type="text" name="keywordSearch" placeholder="Search Title or Brief" class="form-control w-25 mx-3" />
-                                    <select class="form-select text-primary w-25 me-3" name="sortBy" >
-                                        <option selected value="">Sort By</option>
-                                        <option value="title">Title</option>
-                                        <option value="category">Category</option>
-                                        <option value="listPrice">List price</option>
-                                        <option value="salePrice">Sale price</option>
-                                        <option value="status">Status</option>
-                                    </select>
-                                </div>
+                                <form action="postManage">
+                                    <div class="container d-flex justify-content-between">
+
+                                        <input type="text" name="postTitle" placeholder="Search Title" class="form-control w-25 mx-3" value="${postTitle}" />
+                                        <select class="form-select text-primary w-25 me-3" name="postAuthor" >
+                                            <c:forEach var="a" items="${authorList}">
+                                                <option value="${a.getUserID()}">${a.getFirstName()} ${a.getLastName()} </option>
+                                            </c:forEach>
+                                        </select>
+                                        <select class="form-select text-primary w-25 me-3" name="postCategory" >
+                                            <c:forEach var="c" items="${categoryList}">
+                                                <option value="${c}">${c} </option>
+                                            </c:forEach>
+                                        </select>
+                                        <select class="form-select text-primary w-25 me-3" name="sortBy" >
+                                            <c:forEach var="s" items="${sortList}">
+                                                <option value="${s}">${s}</option>
+                                            </c:forEach>
+                                        </select>
+
+                                    </div>
+                                </form>
                                 <div class="container row mt-5 mb-4">
-
                                     <div class="col-md-12">
-
                                         <!-- Services List -->
                                         <table class="table">
                                             <thead class="text-light" style="background: #1977cc;">
@@ -236,8 +246,9 @@ boolean isManager = false;
                                             </thead>
                                             <tbody id="service-list">
                                                 <c:forEach var="l" items="${list}">
+
                                                     <tr id="${l.getPostID()}" class="service p-3 " ${l.isStatusPost()}>
-                                                        <th scope="row">${l.getBriefInfo()}</th>
+                                                        <th scope="row">${l.getPostID()}</th>
                                                         <td><img src="${l.getThumbnail()}" alt="ìmg" style="width: 12rem;height: 8rem;object-fit: cover;" /></td>
                                                         <td>${l.getTitle()}</td>
                                                         <td>${l.getCategoryPost()}</td>
@@ -247,11 +258,11 @@ boolean isManager = false;
                                                             <td>
                                                                 <div class="d-flex h-50 align-content-center flex-wrap" >
                                                                     <div class="d-flex">
-                                                                    <c:if test="${l.isStatusPost()}"> <a href="postManage?event=to-detail-manage&id="><button class="button-icon me-2 showhide hide-service-button" ><img src="resources/img/icon/hide.png" alt="alt"/></button></a> </c:if>
-                                                                       <c:if test="${!l.isStatusPost()}"> <button class="button-icon me-2 showhide show-service-button"><img src="resources/img/icon/visual.png" alt="alt"/></button> </c:if>
+                                                                    <c:if test="${l.isStatusPost()}"> <a href="postManage?event=hide&postId=${l.getPostID()}"><button class="button-icon me-2 showhide hide-service-button"><img src="resources/img/icon/hide.png" alt="alt"/></button></a> </c:if>
+                                                                    <c:if test="${!l.isStatusPost()}"> <a href="postManage?event=show&postId=${l.getPostID()}"><button class="button-icon me-2 showhide show-service-button"><img src="resources/img/icon/visual.png" alt="alt"/></button> </c:if>
 
-                                                                        <button class="button-icon me-2"><a href="service?event=to-detail-manage&id="><img src="resources/img/icon/detail.png" alt="alt"/></a></button>
-                                                                        <button class="button-icon"><a href="service?event=edit&id="><img src="resources/img/icon/pen.png" alt="alt"/></a></button>
+                                                                            <button class="button-icon me-2"><a href="postDetailManage?event=update"><img src="resources/img/icon/detail.png" alt="alt"/></a></button>
+                                                                            <button class="button-icon"><a href="service?event=edit&id="><img src="resources/img/icon/pen.png" alt="alt"/></a></button>
                                                                     </div></div>
                                                             </td>
                                                         </tr>
@@ -271,6 +282,7 @@ boolean isManager = false;
                         </div>
                     </div>
                 </div>
+
                 <!-- Blank End -->
 
                 <!-- Footer Start -->
@@ -282,67 +294,6 @@ boolean isManager = false;
             <!-- Content End -->
 
         </div>
-        <!--        <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
-                    <h4>Post MANAGEMENT</h4>
-                    <a href="postDetailManage?postId=-1&event=add" class="ms-text-primary font-weight-bold">Add Post</a>
-                </div>
-                <div class="d-flex justify-content-center mt-5">
-                    <div class="col-md-9" id="blog-list">
-                        <div class="container py-5">
-                            <div class="row g-5">
-        <c:forEach var="l" items="${list}">
-            <div class="col-xl-4 col-lg-6">
-                <div class="bg-light rounded overflow-hidden">
-                    <img class="img-fluid w-100" src="${l.getThumbnail()}" alt="">
-                    <div class="p-4">
-                        Post ID: ${l.getPostID()}
-                        <a class="h3 d-block mb-3" href="/ChildrenCare/blogDetail?ID=${l.getPostID()}">${l.getTitle()}</a>
-                        <p class="m-0">${l.getBriefInfo()}</p>
-                        <div class="d-flex h-50 align-content-center flex-wrap d-flex" >
-                            <form action="postManage" method="POST">
-                                <div>
-                                    <input type="text" name="postId" value="${l.getPostID()}" hidden=""/>
-            <c:if test="${l.isStatusPost()}">
-                <button class="button-icon me-2" value="hide" name="event"><img src="resources/img/icon/hide.png" alt="alt"/></button> Hide
-            </c:if>
-            <c:if test="${!l.isStatusPost()}">
-            <button class="button-icon me-2"value="show" name="event"><img src="resources/img/icon/visual.png" alt="alt"/></button> Show
-            </c:if>
-    </div>
-</form>
-<div>
-    <button class="button-icon me-2" value="update" name="event"><a href="postDetailManage?postId=${l.getPostID()}&event=update"><img src="resources/img/icon/pen.png" alt="alt"/></a></button>  Update
-</div>
-</div>
-</div>
-</div>
-</div>
-
-        </c:forEach>
-    </div>
-</div>
-</div>
-<form action="postManage">
-<div class="container row mt-5 mb-4">
-    <div class="mb-5">
-        Search by:
-        <input type="text" name="postTitle" placeholder="Search" class="form-select text-primary mt-3 search" value="${postTitle}"/>
-        <select class="form-select text-primary mt-3" name="postCategory">
-        <c:forEach var="c" items="${categoryList}">
-            <option value="${c}">${c}</option>
-        </c:forEach>
-    </select>
-    <select class="form-select text-primary mt-3" name="postAuthor">
-        <c:forEach var="a" items="${authorList}">
-            <option value="${a.getUserID()}">${a.getLastName()} ${a.getFirstName()}</option>
-        </c:forEach>
-    </select>
-    <br>
-    Sort by:
-    <select class="form-select text-primary mt-3" name="sortBy">
-        <c:forEach var="s" items="${sortList}">
-            <option value="${s}">${s}</option>
-        </c:forEach>
 
         <!-- JavaScript Libraries -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

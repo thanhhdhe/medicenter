@@ -82,8 +82,27 @@ public class PostManageController extends HttpServlet {
             request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
         }
 
-        loadPageWithChoice(request, response);
-        request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
+        String event = request.getParameter("event");
+        if (event == null || event.isEmpty()) {
+            loadPageWithChoice(request, response);
+            request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
+        } else {
+            switch (event) {
+                case "hide":
+                    hidePost(request, response);
+                    loadPageWithChoice(request, response);
+                    request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
+                    break;
+                case "show":
+                    showPost(request, response);
+                    loadPageWithChoice(request, response);
+                    request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
+                    break;
+                default:
+                    break;
+            }
+        }
+
     }
 
     /**
@@ -97,19 +116,7 @@ public class PostManageController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String event = request.getParameter("event");
-        switch (event) {
-            case "hide":
-                hidePost(request, response);
-                doGet(request, response);
-                break;
-            case "show":
-                showPost(request, response);
-                doGet(request, response);
-                break;
-            default:
-                doGet(request, response);
-        }
+
     }
 
     protected int numOfPage(String postTitle, String postCategory, String AuthorID, String postStatus) {
@@ -215,12 +222,12 @@ public class PostManageController extends HttpServlet {
         //get authorlist
         List<Integer> authorIDList = postDao.allAuthorID();
         List<User> authorList = new ArrayList<>();
-        
+
         // Get the current date and time
         java.util.Date utilDate = new java.util.Date();
         // Convert the java.util.Date to java.sql.Date
         Date sqlDate = new Date(utilDate.getTime());
-        
+
         User notuser = new User(-1, "", "", "", "Author", "Name", "", "", "", sqlDate);
         authorList.add(notuser);
         for (Integer ID : authorIDList) {
