@@ -40,7 +40,7 @@ public class SettingController extends HttpServlet {
         String event = request.getParameter("event");
         System.out.println(event);
         if (event == null) {
-            System.out.println("1");
+            
             StaffDAO staffDAO = new StaffDAO();
             HttpSession session = request.getSession();
             String adminEmail = (String) session.getAttribute("adminEmail");
@@ -68,7 +68,7 @@ public class SettingController extends HttpServlet {
                         + "                                                <li><a class=\"dropdown-item status-change\" href=\"#\" onclick=\"changestatus(this, " + setting.getSettingID() + ")\">Inactive</a></li>             \n"
                         + "                                            </ul>\n"
                         + "                                        </div></td>                                   \n"
-                        + "                                    <td><a href=\"#\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\" width=\"25px\"/></a></td>\n"
+                        + "                                    <td><a href=\"setting?event=detail&settingID=" + setting.getSettingID() + "\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\" width=\"25px\"/></a></td>\n"
                         + "                                </tr>");
             }
         } else if (event.equals("updatestatus")) {
@@ -76,6 +76,34 @@ public class SettingController extends HttpServlet {
             String status = request.getParameter("status");
             String settingID = request.getParameter("settingID");
             settingDAO.updateStatus(status, settingID);
+        } else if(event.equals("detail")){
+            //get information
+            String settingID= request.getParameter("settingID");
+            //get setting from database
+            Setting settingdetail= settingDAO.getSettingByID(settingID);
+            // redirect from detail
+            StaffDAO staffDAO = new StaffDAO();
+            HttpSession session = request.getSession();
+            String adminEmail = (String) session.getAttribute("adminEmail");
+            request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
+            request.setAttribute("settingDeatil", settingdetail);
+            request.getRequestDispatcher("./view/setting-detail.jsp").forward(request, response);
+        } else if(event.equals("update")){
+            //get information
+            String settingid= request.getParameter("settingid");
+            String settingName = request.getParameter("name");
+            String settingType = request.getParameter("type");
+            String settingDes = request.getParameter("description");
+            String settingValue = request.getParameter("avartar");
+            String settingStatus = request.getParameter("status");
+            
+            settingDAO.updateSetting(settingStatus, settingid, settingName, settingType, settingValue, settingDes);
+            StaffDAO staffDAO = new StaffDAO();
+            HttpSession session = request.getSession();
+            String adminEmail = (String) session.getAttribute("adminEmail");
+            request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
+
+            request.getRequestDispatcher("./view/setting-list-admin.jsp").forward(request, response);
         }
     }
 

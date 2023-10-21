@@ -133,8 +133,8 @@
                 <div class="dropdown">
 
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
-                        Hello,
-                        <img src="" alt="Admin Avatar" class="admin-avatar">
+                        Hello,<%=admin.getStaffName()%>
+                        <img src="<%=admin.getProfileImage()%>" alt="Admin Avatar" class="admin-avatar">
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <li><a class="dropdown-item" href="#">Settings</a></li>
@@ -245,7 +245,7 @@
                                             </ul>
                                         </div>
                                     </td>
-                                    <td><a href="#"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></a></td>
+                                    <td><a href="setting?event=detail&settingID=<%=setting.getSettingID() %>"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></a></td>
                                 </tr>
                                 <%} %>
                             </tbody>
