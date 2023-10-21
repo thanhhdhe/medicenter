@@ -184,6 +184,10 @@ public class StaffController extends HttpServlet {
         } else if (!staff.getPassword().equals(password)) {
             request.setAttribute("err", "Incorrect username or password!");
             request.getRequestDispatcher("./view/login-staff.jsp").forward(request, response);
+        } else if (staff.getRole().equals("admin")) {
+             HttpSession session = request.getSession(true);
+            session.setAttribute("adminEmail", email);
+            response.sendRedirect("admin");
         } else {
             HttpSession session = request.getSession(true);
             session.setAttribute("email", email);
@@ -273,7 +277,7 @@ public class StaffController extends HttpServlet {
                     + "    <td>");
             if (reservation.getStatus().equals("done")) {
                 out.print("<p class=\"bg-success rounded-2 text-white m-0 p-1 px-2\" style=\"width: fit-content;\">" + reservation.getStatus() + "</p>");
-            } else if (reservation.getStatus().equals("done")) {
+            } else if (reservation.getStatus().equals("cancel")) {
                 out.print("<p class=\"bg-danger rounded-2 text-white m-0 p-1 px-2\" style=\"width: fit-content;\">" + reservation.getStatus() + "</p>");
             } else {
                 out.print("<p class=\"bg-primary rounded-2 text-white m-0 p-1 px-2\" style=\"width: fit-content;\">" + reservation.getStatus() + "</p>");

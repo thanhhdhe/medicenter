@@ -17,13 +17,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import model.CategoryService;
 import model.Reservation;
 import model.Service;
-import model.Staff;
-import model.User;
 
 /**
  *
@@ -38,8 +41,22 @@ public class AdminController extends HttpServlet {
         PrintWriter out = response.getWriter();
         HttpSession session = request.getSession(true);
         String action = (String) request.getParameter("action");
+
+        // Get the current date
+        Date currentDate = new Date(System.currentTimeMillis());
+
+        // Create a Calendar instance and set it to the current date
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+
+        // Subtract 6 days
+        calendar.add(Calendar.DAY_OF_MONTH, -7);
+
+        // Get the date seven days ago as a java.sql.Date
+        Date sevenDaysAgo = new Date(calendar.getTimeInMillis());
+
         if (session.getAttribute("adminEmail") == null) {
-            request.getRequestDispatcher("./view/login-admin.jsp").forward(request, response);
+            request.getRequestDispatcher("/staff?event=sent-to-login").forward(request, response);
         } else {
             if (action != null) {
                 switch (action) {
@@ -49,38 +66,23 @@ public class AdminController extends HttpServlet {
                     }
                     case "changeDate": {
                         String startDay = (String) request.getParameter("startDay");
-                        int startDayNumber = Integer.parseInt(startDay);
+                        java.sql.Date startDate = java.sql.Date.valueOf(startDay);
                         String endDay = (String) request.getParameter("endDay");
-                        int endDayNumber = Integer.parseInt(endDay);
-                        processData(endDayNumber - startDayNumber, session, request, response);
+                        java.sql.Date endDate = java.sql.Date.valueOf(endDay);
+                        processData(true, startDate, endDate, calendar, session, request, response);
                         break;
                     }
                     case "send-to-customer-list": {
                         sendToCustomerList(session, request, response);
                         break;
                     }
+                    case "send-to-setting-list": {
+                        sendToSettingList(session, request, response);
+                        break;
+                    }
                 }
             } else {
-                processData(7, session, request, response);
-            }
-        }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        HttpSession session = request.getSession(true);
-        String event = (String) request.getParameter("event");
-        switch (event) {
-            case "login": {
-                login(request, response);
-                break;
-            }
-
-            default: {
-                break;
+                processData(false, sevenDaysAgo, currentDate, calendar, session, request, response);
             }
         }
     }
@@ -90,12 +92,15 @@ public class AdminController extends HttpServlet {
         response.sendRedirect("admin");
     }
 
-    private void processData(int day, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void processData(Boolean isChangeDate, Date startDate, Date endDate, Calendar calendar, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int cancelReservationCount = 0, doneReservationCount = 0, submittedReservationCount = 0;
         int newlyUserCount = 0, newlyUserReservedCount = 0;
         float totalRevenues = 0;
         Map<String, Float> revenueCategory = new HashMap<>();
         Map<String, Float> averageStarByServiceID = new HashMap<>();
+        List<Integer> doneReservation = new ArrayList<>();
+        List<Integer> allReservation = new ArrayList<>();
+
         ReservationDAO reservationDAO = new ReservationDAO();
         CategoryServiceDAO categoryServiceDAO = new CategoryServiceDAO();
         UserDAO userDAO = new UserDAO();
@@ -104,7 +109,7 @@ public class AdminController extends HttpServlet {
         StaffDAO staffDAO = new StaffDAO();
 
         // Get the count of each reservation status
-        for (Reservation reservation : reservationDAO.getReservationsByDay(day)) {
+        for (Reservation reservation : reservationDAO.getReservationsByDay(startDate, endDate)) {
             if (reservation.getStatus().equals("done")) {
                 doneReservationCount++;
             } else if (reservation.getStatus().equals("cancel")) {
@@ -120,71 +125,97 @@ public class AdminController extends HttpServlet {
 
         // Revenues by category service
         for (CategoryService categoryService : categoryServiceDAO.getAllCategoryServices()) {
-            revenueCategory.put(categoryService.getCategoryName(), reservationDAO.getRevenueByServiceCategory(categoryService.getCategoryID(), day));
+            revenueCategory.put(categoryService.getCategoryName(), reservationDAO.getRevenueByServiceCategory(categoryService.getCategoryID(), startDate, endDate));
         }
 
         // Newly created user
-        newlyUserCount = userDAO.getUserCountByCreatedDate(day);
+        newlyUserCount = userDAO.getUserCountByCreatedDate(startDate, endDate);
 
         // Newly reserved user
+        newlyUserReservedCount = reservationDAO.countNewlyReservedMember(startDate, endDate);
+
         // Total average star 
-        float totalAverageStar = feedBackDAO.getTotalAverageStarByDay(day);
+        float totalAverageStar = feedBackDAO.getTotalAverageStarByDay(startDate, endDate);
 
         // By service average star
         for (Service service : serviceDAO.getAllServices()) {
-            averageStarByServiceID.put(service.getTitle(), feedBackDAO.getAverageStarByDayAndService(day, service.getServiceID()));
+            averageStarByServiceID.put(service.getTitle(), feedBackDAO.getAverageStarByDayAndService(startDate, endDate, service.getServiceID()));
         }
 
-        request.setAttribute("doneReservationCount", doneReservationCount);
-        request.setAttribute("cancelReservationCount", cancelReservationCount);
-        request.setAttribute("submittedReservationCount", submittedReservationCount);
-        request.setAttribute("newlyUserCount", newlyUserCount);
-        request.setAttribute("newlyUserReservedCount", newlyUserReservedCount);
-        request.setAttribute("totalRevenues", totalRevenues);
-        request.setAttribute("revenueCategory", revenueCategory);
-        request.setAttribute("totalAverageStar", totalAverageStar);
-        request.setAttribute("averageStarByServiceID", averageStarByServiceID);
+        // Trending reservation
+        if (startDate.getMonth() == endDate.getMonth()) {
+            while (startDate.compareTo(endDate) != 0) {
+                doneReservation.add(reservationDAO.getReservationDoneEachDay(startDate));
+                allReservation.add(reservationDAO.getReservationTotalEachDay(startDate));
 
-        // Admin avatar
-        String adminEmail = (String) session.getAttribute("adminEmail");
-        request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
+                //Adding 1 day in startDate
+                calendar.setTime(startDate);
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                startDate = new Date(calendar.getTimeInMillis());
+            }
+            doneReservation.add(reservationDAO.getReservationDoneEachDay(startDate));
+            allReservation.add(reservationDAO.getReservationTotalEachDay(startDate));
+        } else {
+            while (startDate.getMonth() != endDate.getMonth()) {
+                doneReservation.add(reservationDAO.getReservationDoneEachMonth(startDate));
+                allReservation.add(reservationDAO.getReservationTotalEachMonth(startDate));
 
-        request.getRequestDispatcher("./view/admin-dashboard.jsp").forward(request, response);
-    }
+                //Adding 1 month in startDate
+                calendar.setTime(startDate);
+                calendar.add(Calendar.MONTH, 1);
+                startDate = new Date(calendar.getTimeInMillis());
+            }
+            doneReservation.add(reservationDAO.getReservationDoneEachMonth(startDate));
+            allReservation.add(reservationDAO.getReservationTotalEachMonth(startDate));
+        }
 
-    private void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String email = (String) request.getParameter("email");
-        String password = (String) request.getParameter("password");
-        if ("".equals(email.trim())) {
-            request.setAttribute("errorMessage", "Your email is invalid");
-            request.getRequestDispatcher("./view/login-admin.jsp").include(request, response);
-            return;
+        if (isChangeDate) {
+
+            response.setContentType("text/plain");
+
+            // Write the data to the response
+            PrintWriter out = response.getWriter();
+            out.println("cancelReservationCount=" + cancelReservationCount);
+            out.println("doneReservationCount=" + doneReservationCount);
+            out.println("submittedReservationCount=" + submittedReservationCount);
+            out.println("newlyUserCount=" + newlyUserCount);
+            out.println("newlyUserReservedCount=" + newlyUserReservedCount);
+            out.println("totalRevenues=" + totalRevenues);
+
+            // Write revenueCategory data
+            for (Map.Entry<String, Float> entry : revenueCategory.entrySet()) {
+                out.println("revenueCategory_" + entry.getKey() + "=" + entry.getValue());
+            }
+
+            // Write averageStarByServiceID data
+            for (Map.Entry<String, Float> entry : averageStarByServiceID.entrySet()) {
+                out.println("averageStarByServiceID_" + entry.getKey() + "=" + entry.getValue());
+            }
+
+            out.println("doneReservation=" + doneReservation.stream().map(Object::toString).collect(Collectors.joining(",")));
+            out.println("allReservation=" + allReservation.stream().map(Object::toString).collect(Collectors.joining(",")));
+            out.println("totalAverageStar=" + totalAverageStar);
+
+            out.close();
+        } else {
+            request.setAttribute("doneReservationCount", doneReservationCount);
+            request.setAttribute("cancelReservationCount", cancelReservationCount);
+            request.setAttribute("submittedReservationCount", submittedReservationCount);
+            request.setAttribute("newlyUserCount", newlyUserCount);
+            request.setAttribute("newlyUserReservedCount", newlyUserReservedCount);
+            request.setAttribute("totalRevenues", totalRevenues);
+            request.setAttribute("revenueCategory", revenueCategory);
+            request.setAttribute("totalAverageStar", totalAverageStar);
+            request.setAttribute("averageStarByServiceID", averageStarByServiceID);
+            request.setAttribute("doneReservation", doneReservation);
+            request.setAttribute("allReservation", allReservation);
+
+            // Admin avatar
+            String adminEmail = (String) session.getAttribute("adminEmail");
+            request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
+
+            request.getRequestDispatcher("./view/admin-dashboard.jsp").forward(request, response);
         }
-        if ("".equals(password.trim())) {
-            request.setAttribute("errorMessage", "Your password is invalid");
-            request.getRequestDispatcher("./view/login-admin.jsp").include(request, response);
-            return;
-        }
-        StaffDAO staffDAO = new StaffDAO();
-        Staff staff = staffDAO.getStaffByStaffEmail(email);
-        if (staff == null) {
-            request.setAttribute("errorMessage", "Your account is not in the database");
-            request.getRequestDispatcher("./view/login-admin.jsp").include(request, response);
-            return;
-        }
-        if (!staff.getPassword().equals(password)) {
-            request.setAttribute("errorMessage", "Your password is incorrect");
-            request.getRequestDispatcher("./view/login-admin.jsp").include(request, response);
-            return;
-        }
-        if (!staff.getRole().equals("admin")) {
-            request.setAttribute("errorMessage", "You don't have permission to login.");
-            request.getRequestDispatcher("./view/login-admin.jsp").include(request, response);
-            return;
-        }
-        HttpSession session = request.getSession(true);
-        session.setAttribute("adminEmail", email);
-        response.sendRedirect("admin");
     }
     
     private void sendToCustomerList(HttpSession session,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -193,5 +224,13 @@ public class AdminController extends HttpServlet {
         request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
         
         request.getRequestDispatcher("./view/customer-list-admin.jsp").forward(request, response);
+    }
+    
+    private void sendToSettingList(HttpSession session,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        StaffDAO staffDAO = new StaffDAO();
+        String adminEmail = (String) session.getAttribute("adminEmail");
+        request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
+        
+        request.getRequestDispatcher("./view/setting-list-admin.jsp").forward(request, response);
     }
 }

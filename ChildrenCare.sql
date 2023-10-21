@@ -15,11 +15,11 @@ USE ChildrenCare;
 -- Create the Users table
 CREATE TABLE Users (
     UserID INT IDENTITY(1,1) PRIMARY KEY,
-	Address NVARCHAR(300) COLLATE Vietnamese_CI_AS NOT NULL,
+	Address NVARCHAR(300)NOT NULL,
     Email VARCHAR(100) NOT NULL UNIQUE,
     Password VARCHAR(50) NOT NULL,
-    FirstName NVARCHAR(50) COLLATE Vietnamese_CI_AS NOT NULL,
-    LastName NVARCHAR(50) COLLATE Vietnamese_CI_AS NOT NULL,
+    FirstName NVARCHAR(50)NOT NULL,
+    LastName NVARCHAR(50)NOT NULL,
     Gender VARCHAR(10) NOT NULL,
     PhoneNumber VARCHAR(20) NOT NULL,
     ProfileImage VARCHAR(MAX),
@@ -30,14 +30,14 @@ CREATE TABLE Users (
 -- Create the CategoryService table
 CREATE TABLE CategoryService (
     CategoryID INT IDENTITY(1,1) PRIMARY KEY,
-    CategoryName VARCHAR(50) COLLATE Vietnamese_CI_AS NOT NULL,
-    Description VARCHAR(MAX) COLLATE Vietnamese_CI_AS NOT NULL 
+    CategoryName VARCHAR(50)NOT NULL,
+    Description VARCHAR(MAX)NOT NULL 
 );
 
 -- Create the Services table
 CREATE TABLE Services (
     ServiceID INT IDENTITY(1,1) PRIMARY KEY,
-    Title VARCHAR(100) COLLATE Vietnamese_CI_AS UNIQUE NOT NULL,
+    Title VARCHAR(100)UNIQUE NOT NULL,
     Thumbnail NVARCHAR(MAX),
     CategoryID INT NOT NULL,
     OriginalPrice DECIMAL(10, 2) NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE Comments (
     CommentID INT IDENTITY(1,1) PRIMARY KEY,
     UserID INT NOT NULL,
     PostID INT NOT NULL,
-    Content NVARCHAR(MAX) COLLATE Vietnamese_CI_AS NOT NULL,
+    Content NVARCHAR(MAX)NOT NULL,
     CommentDate DATETIME NOT NULL,
     FOREIGN KEY (UserID) REFERENCES Users(UserID),
     FOREIGN KEY (PostID) REFERENCES Posts(PostID)
@@ -88,10 +88,10 @@ CREATE TABLE Cart (
 -- Create the Staff table
 CREATE TABLE Staff (
     StaffID INT PRIMARY KEY IDENTITY(1,1),
-    StaffName NVARCHAR(255) COLLATE Vietnamese_CI_AS,
+    StaffName NVARCHAR(255) ,
     Email VARCHAR(100) NOT NULL UNIQUE,
     Password VARCHAR(50) NOT NULL,
-    FullName NVARCHAR(50) COLLATE Vietnamese_CI_AS NOT NULL,
+    FullName NVARCHAR(50)  NOT NULL,
     Gender VARCHAR(10) NOT NULL,
     PhoneNumber VARCHAR(20) NOT NULL,
     ProfileImage VARCHAR(MAX),
@@ -136,7 +136,7 @@ CREATE TABLE Slider (
 CREATE TABLE Children (
     ChildID INT IDENTITY(1,1) PRIMARY KEY,
     UserID INT NOT NULL,
-    ChildName NVARCHAR(100) COLLATE Vietnamese_CI_AS NOT NULL,
+    ChildName NVARCHAR(100)NOT NULL,
     Birthday DATE,
 	Status TEXT,
 	Gender VARCHAR(10) NOT NULL,
@@ -184,7 +184,7 @@ CREATE TABLE Feedbacks (
     FeedbackID INT IDENTITY(1,1) PRIMARY KEY,
     UserID INT NOT NULL,
     MedicalExaminationID INT NOT NULL,
-    Content NVARCHAR(MAX) COLLATE Vietnamese_CI_AS NOT NULL,
+    Content NVARCHAR(MAX) NOT NULL,
     FeedbackDate DATETIME NOT NULL,
     RatedStar INT,
 	FStatus VARCHAR(50),
@@ -220,7 +220,7 @@ CREATE TABLE Manager (
     ManagerID INT IDENTITY(1,1) PRIMARY KEY,
     Email  VARCHAR(100) NOT NULL UNIQUE,
 	Password  VARCHAR(100) NOT NULL,
-    ManagerName NVARCHAR(100) COLLATE Vietnamese_CI_AS NOT NULL,
+    ManagerName NVARCHAR(100)NOT NULL,
 );
 
 
@@ -271,11 +271,16 @@ Pediatric vaccinations, also known as childhood immunizations or vaccines, are a
 
 	GO
 -- Insert data into Staff
-
+INSERT INTO Staff (StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole, Rank, Specialty, Introduction)
+VALUES
+    ('thang', 'lethang@gmail.com', '1234', 'Le Minh Thang', 'Male', '0834398268', 'resources/img/thang.jpeg', 'manager', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for the second staff member.'),
+    ('jane_smith', 'jane@example.com', 'password456', 'Jane Smith', 'Female', '987654321', 'avatar.jpg', 'nurse', 'Meritorious Doctor', 'Internal Medicine Department', 'Introduction for Jane Smith.'),
+    ('nurse_johnson', 'nurse.johnson@example.com', 'nursepass', 'Nurse Johnson', 'Female', '555111222', 'nurse.jpg', 'nurse', 'Associate Doctor', 'Dermatology Department', 'Introduction for Nurse Johnson.'),
+    ('nurse_brown', 'nurse.brown@example.com', 'nursepass', 'Nurse Brown', 'Male', '555333444', 'nurse.jpg', 'nurse', 'Meritorious Doctor', 'Dermatology Department', 'Introduction for Nurse Brown.')
 	INSERT INTO Staff (StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole, Rank, Specialty, Introduction, SpecializedActivities, ProfessionalAchievements,DepthStudy)
 VALUES
-    ('thang', 'lethanglrf@gmail.com', '1234', 'Lê Minh Thắng', 'Male', '0834398268', 'resources/img/thang.jpeg', 'doctor', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for the first staff member.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
-	('thang', 'lethang@gmail.com', '1234', 'Lê Minh Thắng', 'Male', '0834398268', 'resources/img/thang.jpeg', 'manager', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for the second staff member.','','',''),
+    ('thang', 'lethanglrf@gmail.com', '1234', 'Le Minh Thang', 'Male', '0834398268', 'resources/img/thang.jpeg', 'doctor', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for the first staff member.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
+	('thang', 'lethang@gmail.com', '1234', 'Le Minh Thang', 'Male', '0834398268', 'resources/img/thang.jpeg', 'manager', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for the second staff member.','','',''),
     ('john_doe', 'john@example.com', 'password123', 'John Doe', 'Male', '123456789', 'profile.jpg', 'doctor', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for John Doe.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
     ('dr_smith', 'dr.smith@example.com', 'doctorpass', 'Smith', 'Male', '555123456', 'resources\img\bsHieu.jpg', 'doctor', 'Associate Doctor', 'Internal Medicine Department', 'Introduction for Dr. Smith.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
     ('dr_anderson', 'dr.anderson@example.com', 'doctorpass', 'Anderson', 'Female', '555987654', 'doctor.jpg', 'doctor', 'Associate Doctor', 'Internal Medicine Department', 'Introduction for Dr. Anderson.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),

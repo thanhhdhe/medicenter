@@ -283,6 +283,33 @@ public class StaffDAO extends MyDAO {
 
         return numOfPage;
     }
+    
+    public void addStaff(Staff staff) {
+        String sql = "INSERT INTO Staff (StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole, Rank, Specialty, Introduction, SpecializedActivities, ProfessionalAchievements, DepthStudy) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setString(1, staff.getStaffName());
+            ps.setString(2, staff.getEmail());
+            ps.setString(3, staff.getPassword());
+            ps.setString(4, staff.getFullName());
+            ps.setString(5, staff.getGender());
+            ps.setString(6, staff.getPhoneNumber());
+            ps.setString(7, staff.getProfileImage());
+            ps.setString(8, staff.getRole());
+            ps.setString(9, staff.getRank());
+            ps.setString(10, staff.getSpecialty());
+            ps.setString(11, staff.getIntroduction());
+            ps.setString(12, staff.getSpecializedActivities());
+            ps.setString(13, staff.getProfessionalAchievements());
+            ps.setString(14, staff.getDepthStudy());
+            
+            ps.executeUpdate();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void main(String[] args) {
         StaffDAO staffDAO = new StaffDAO();

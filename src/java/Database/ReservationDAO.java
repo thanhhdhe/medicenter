@@ -7,10 +7,11 @@ package Database;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import model.Reservation;   
+import model.Reservation;
 
 /**
  *
@@ -185,7 +186,7 @@ public class ReservationDAO extends MyDAO {
 
         return childrenIDList;
     }
-    
+
     public List<Integer> getListServiceIDByUser(String userID) {
         List<Integer> serviceIDList = new ArrayList<>();
         String sql = "SELECT DISTINCT ServiceID FROM Reservations WHERE UserID = ?";
@@ -667,14 +668,14 @@ public class ReservationDAO extends MyDAO {
         if (condition.equals("staffName")) {
             xSql = "SELECT r.* FROM [dbo].[Reservations] r "
                     + "JOIN Staff s ON s.StaffID = r.StaffID "
-                    + "WHERE UserID = ? AND s.StaffName = '" + value + "' "
+                    + "WHERE UserID = ? AND s.StaffName LIKE '%" + value + "%' "
                     + "ORDER BY CreatedDate DESC "
                     + "OFFSET ? ROWS "
                     + "FETCH NEXT ? ROWS ONLY";
         } else if (condition.equals("serviceTitle")) {
             xSql = "SELECT r.* FROM [dbo].[Reservations] r "
                     + "JOIN [dbo].[Services] s ON s.ServiceID = r.ServiceID "
-                    + "WHERE UserID = ? AND s.Title = '" + value + "' "
+                    + "WHERE UserID = ? AND s.Title LIKE '%" + value + "%' "
                     + "ORDER BY CreatedDate DESC "
                     + "OFFSET ? ROWS "
                     + "FETCH NEXT ? ROWS ONLY";
@@ -747,12 +748,12 @@ public class ReservationDAO extends MyDAO {
             case "staffName":
                 xSql = "SELECT COUNT(*) AS totalNumber FROM [dbo].[Reservations] r "
                         + "JOIN Staff s ON r.StaffID = s.StaffID "
-                        + "WHERE r.UserID = ? AND s.StaffName = '" + conditionValue + "'";
+                        + "WHERE r.UserID = ? AND s.StaffName LIKE '%" + conditionValue + "%'";
                 break;
             case "serviceTitle":
                 xSql = "SELECT COUNT(*) AS totalNumber FROM [dbo].[Reservations] r "
                         + "JOIN Services s ON r.ServiceID = s.ServiceID "
-                        + "WHERE r.UserID = ? AND s.Title = '" + conditionValue + "'";
+                        + "WHERE r.UserID = ? AND s.Title LIKE '%" + conditionValue + "%'";
                 break;
             default:
                 xSql = "SELECT COUNT(*) AS totalNumber FROM [dbo].[Reservations] r "
@@ -1054,12 +1055,14 @@ public class ReservationDAO extends MyDAO {
         }
     }
 
-    public List<Reservation> getReservationsByDay(int daydiff) {
+    public List<Reservation> getReservationsByDay(Date startDate, Date endDate) {
         List<Reservation> list = new ArrayList<>();
-        xSql = "select * from [dbo].[Reservations] where DATEDIFF(DAY,GETDATE(),CreatedDate) >= ?";
+        xSql = "select * from [dbo].[Reservations] "
+                + " where DATEDIFF(DAY, ?, CreatedDate) >= 0 and DATEDIFF(DAY, ?, CreatedDate) <= 0";
         try {
             ps = con.prepareStatement(xSql);
-            ps.setInt(1, -daydiff);
+            ps.setDate(1, startDate);
+            ps.setDate(2, endDate);
             rs = ps.executeQuery();
             while (rs.next()) {
                 int ReservationID = rs.getInt("ReservationID");
@@ -1083,14 +1086,16 @@ public class ReservationDAO extends MyDAO {
         return list;
     }
 
-    public float getRevenueByServiceCategory(int categoryID, int day) {
+    public float getRevenueByServiceCategory(int categoryID, Date startDate, Date endDate) {
         xSql = "select sum(Cost) as RevenueByCategoryID from Reservations r\n"
                 + " join Services s on r.ServiceID = s.ServiceID\n"
-                + " where s.CategoryID = ? and DATEDIFF(DAY,GETDATE(),CreatedDate) >= ? and r.Status <> 'cancel'";
+                + " where s.CategoryID = ? and r.Status <> 'cancel' and "
+                + " DATEDIFF(DAY, ?, CreatedDate) >= 0 AND DATEDIFF(DAY, ?, CreatedDate) <= 0";
         try {
             ps = con.prepareStatement(xSql);
             ps.setInt(1, categoryID);
-            ps.setInt(2, -day);
+            ps.setDate(2, startDate);
+            ps.setDate(3, endDate);
             rs = ps.executeQuery();
             while (rs.next()) {
                 return rs.getFloat("RevenueByCategoryID");
@@ -1101,24 +1106,118 @@ public class ReservationDAO extends MyDAO {
         return 0;
     }
 
+    public int countNewlyReservedMember(Date startDate, Date endDate) {
+        xSql = "  select count(*) as TotalCount  from (\n"
+                + "  select distinct UserID from Reservations\n"
+                + "  where DATEDIFF(DAY, ?, CreatedDate) >= 0 AND DATEDIFF(DAY, ?, CreatedDate) <= 0\n"
+                + "  ) as tempTable";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setDate(1, startDate);
+            ps.setDate(2, endDate);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt("TotalCount");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int getReservationTotalEachDay(Date reservationDate) {
+        xSql = "select count(*) as TotalCount from [dbo].[Reservations] where ReservationDate = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setDate(1, reservationDate);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt("TotalCount");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    public int getReservationTotalEachMonth(Date reservationDate) {
+        xSql = "select count(*) as TotalCount from [dbo].[Reservations] where MONTH(ReservationDate) = MONTH(?) and YEAR(ReservationDate) = YEAR(?)";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setDate(1, reservationDate);
+            ps.setDate(2, reservationDate);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt("TotalCount");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int getReservationDoneEachDay(Date reservationDate) {
+        xSql = "select count(*) as TotalCount from [dbo].[Reservations] where ReservationDate = ? and Status = 'done'";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setDate(1, reservationDate);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt("TotalCount");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    public int getReservationDoneEachMonth(Date reservationDate) {
+        xSql = "select count(*) as TotalCount from [dbo].[Reservations] where MONTH(ReservationDate) = MONTH(?) and YEAR(ReservationDate) = YEAR(?) and Status = 'done'";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setDate(1, reservationDate);
+            ps.setDate(2, reservationDate);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt("TotalCount");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     public static void main(String args[]) {
         ReservationDAO rd = new ReservationDAO();
-        int doneReservationCount=0, cancelReservationCount= 0, submittedReservationCount =0;
+        int doneReservationCount = 0, cancelReservationCount = 0, submittedReservationCount = 0;
         float totalRevenues = 0;
-        for (Reservation reservation : rd.getReservationsByDay(7)) {
-            if (reservation.getStatus().equals("done")) {
-                doneReservationCount++;
-            } else if (reservation.getStatus().equals("cancel")) {
-                cancelReservationCount++;
-            } else if (!reservation.getStatus().equals("pending")) {
-                submittedReservationCount++;
-            }
-            // Get the total revenues of the reservation
-            if (!reservation.getStatus().equals("cancel")) {
-                totalRevenues += (reservation.getStatus().equals("cancel") ? 0.0 : reservation.getCost());
-            }
-        }
-        System.out.println(doneReservationCount + " / " + cancelReservationCount + " / " + submittedReservationCount + " / " + totalRevenues);
+        // Get the current date
+        Date currentDate = new Date(System.currentTimeMillis());
+
+        // Create a Calendar instance and set it to the current date
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+
+        // Subtract 7 days
+        calendar.add(Calendar.MONTH, 2);
+        Date sevenDaysAgo = new Date(calendar.getTimeInMillis());
+        
+        
+
+//        for (Reservation reservation : rd.getReservationsByDay(sevenDaysAgo, currentDate)) {
+//            if (reservation.getStatus().equals("done")) {
+//                doneReservationCount++;
+//            } else if (reservation.getStatus().equals("cancel")) {
+//                cancelReservationCount++;
+//            } else if (!reservation.getStatus().equals("pending")) {
+//                submittedReservationCount++;
+//            }
+//            // Get the total revenues of the reservation
+//            if (!reservation.getStatus().equals("cancel")) {
+//                totalRevenues += (reservation.getStatus().equals("cancel") ? 0.0 : reservation.getCost());
+//            }
+//        }
+//        System.out.println(doneReservationCount + " / " + cancelReservationCount + " / " + submittedReservationCount + " / " + totalRevenues);
 //        String dateString = "2023-10-01 22:20:00";
 //        Timestamp sqlTimestamp = Timestamp.valueOf(dateString);
 //        System.out.println(rd.checkSlotForAvailable("4", "3", "26", "10", "2023"));

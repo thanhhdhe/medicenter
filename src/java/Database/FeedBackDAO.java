@@ -4,11 +4,11 @@
  */
 package Database;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import model.FeedBack;
 import model.MedicalExamination;
-import org.apache.jasper.tagplugins.jstl.core.ForEach;
 
 /**
  *
@@ -95,7 +95,7 @@ public class FeedBackDAO extends MyDAO {
             ps = con.prepareStatement(xSql);
             ps.setString(1, Fill);
             // set index for offser (page)
-            ps.setInt(2, (index - 1) * 10); //page 0 -> index 0 page 1 -> index 5
+            ps.setInt(2, (index - 1) * 10); //page 0 -> index 0 page 1 -> index 10
             rs = ps.executeQuery();
             while (rs.next()) {
                 feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
@@ -384,13 +384,14 @@ public class FeedBackDAO extends MyDAO {
         return (medical);
     }
 
-    public float getTotalAverageStarByDay(int day) {
-        xSql = "select AVG(f.RatedStar)as AverageStar from Feedbacks f "
-                + "left join MedicalExaminations m on f.MedicalExaminationID = m.MedicalExaminationID "
-                + "where DATEDIFF(DAY,GETDATE(),f.FeedbackDate) >= ?";
+    public float getTotalAverageStarByDay(Date startDate, Date endDate) {
+        xSql = "select AVG(Cast(f.RatedStar as Float)) as AverageStar from Feedbacks f "
+//                + "left join MedicalExaminations m on f.MedicalExaminationID = m.MedicalExaminationID "
+                + "where DATEDIFF(DAY, ? ,f.FeedbackDate) >= 0 AND DATEDIFF(DAY, ?, f.FeedbackDate) <= 0";
         try {
             ps = con.prepareStatement(xSql);
-            ps.setInt(1, -day);
+            ps.setDate(1, startDate);
+            ps.setDate(2, endDate);
             rs = ps.executeQuery();
             while (rs.next()) {
                 return rs.getFloat("AverageStar");
@@ -403,14 +404,15 @@ public class FeedBackDAO extends MyDAO {
         return 0;
     }
     
-    public float getAverageStarByDayAndService(int day, int serviceID) {
-        xSql = "select AVG(f.RatedStar)as AverageStar from Feedbacks f "
+    public float getAverageStarByDayAndService(Date startDate, Date endDate, int serviceID) {
+        xSql = "select AVG(Cast(f.RatedStar as Float)) as AverageStar from Feedbacks f "
                 + "left join MedicalExaminations m on f.MedicalExaminationID = m.MedicalExaminationID "
-                + "where DATEDIFF(DAY,GETDATE(),f.FeedbackDate) >= ? and m.ServiceID = ?";
+                + "where DATEDIFF(DAY, ? ,f.FeedbackDate) >= 0 AND DATEDIFF(DAY, ?, f.FeedbackDate) <= 0 AND m.ServiceID = ?";
         try {
             ps = con.prepareStatement(xSql);
-            ps.setInt(1, -day);
-            ps.setInt(2, serviceID);
+            ps.setDate(1, startDate);
+            ps.setDate(2, endDate);
+            ps.setInt(3, serviceID);
             rs = ps.executeQuery();
             while (rs.next()) {
                 return rs.getFloat("AverageStar");
@@ -425,9 +427,8 @@ public class FeedBackDAO extends MyDAO {
 
     public static void main(String[] args) {
         FeedBackDAO dao = new FeedBackDAO();
-        System.out.println(dao.getTotalAverageStarByDay(7));
         //System.out.println(dao.getTotalFeedback());
-        List<MedicalExamination> feedbacks = dao.getMedicalExamination(1);
+         
 //          FeedBack fe = dao.getFeedbackDetail(10);
 //          System.out.println(fe.getFullName());
 //        for (MedicalExamination f : feedbacks) {

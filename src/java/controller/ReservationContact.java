@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import model.Children;
+import model.Mail;
 import model.Reservation;
 import model.Service;
 import model.Staff;
@@ -123,14 +124,23 @@ public class ReservationContact extends HttpServlet {
             }
 
         } else if (event.equals("updatestatus")) {
+            //get information
             String status = request.getParameter("status");
             String reservationID = request.getParameter("reservationID");
+            // check for send mail
+            if(status.equals("done")){
+                UserDAO userdao = new UserDAO();              
+                User user= userdao.getUserByID(reservationdao.getReservationByID(Integer.parseInt(reservationID)).getUserID());
+                Mail.sendEmail(user.getEmail(), "THANK TO USE SERVICE", "Thank you for using our service\n"
+                            + "Please give us feedback about the service by clicking on feedback in the header on the homepage on the website");
+            }
+            
             reservationdao.updateStatus(status, reservationID);
         } else if (event.equals("updatedoctor")) {
             String doctorID = request.getParameter("doctorID");
             String reservationID = request.getParameter("reservationID");
             reservationdao.updateDoctor(doctorID, reservationID);
-        }
+        } 
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

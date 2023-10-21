@@ -4,6 +4,7 @@
  */
 package Database;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import model.User;
@@ -174,6 +175,25 @@ public class UserDAO extends MyDAO {
         }
         return null;
     }
+    
+    public User getUserByEmail(String email) {
+
+        xSql = "select * from [dbo].[Users] where Email = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, email);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                User user = new User(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4),
+                        rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8), rs.getString(9), rs.getBoolean(10), rs.getDate(11));
+                return user;
+            }
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public boolean loginAccount(String email, String password) {
         xSql = "select * from [dbo].[Users] where email = ? and password = ?";
@@ -294,65 +314,64 @@ public class UserDAO extends MyDAO {
     public List<User> getAllUsersByAdmin(int page, int pageSize, String sortBy, String searchFullName, String searchEmail, String searchMobile, String filterGender, String filterRole, int filterStatus) {
         List<User> userList = new ArrayList<>();
         String sql = "SELECT * FROM ("
-                + "SELECT UserID as ID, CONCAT(LastName , ' ', FirstName) as Name, Gender, Email, ProfileImage, PhoneNumber, CAST(Status AS BIT) as Status, 'user' as Role FROM Users "
+                + "SELECT UserID as ID, CONCAT(LastName, ' ', FirstName) as Name, Gender, Email, ProfileImage, PhoneNumber, CAST(Status AS BIT) as Status, 'user' as Role FROM Users "
                 + "UNION "
-                + "SELECT StaffID as ID, FullName as Name, Gender, Email, ProfileImage, PhoneNumber, CAST(1 AS BIT) AS Status, StaffRole as Role FROM Staff"
+                + "SELECT StaffID as ID, FullName as Name, Gender, Email, ProfileImage, PhoneNumber, 1 AS Status, StaffRole as Role FROM Staff"
                 + ") AS USERLIST WHERE 1=1";
 
-        // Xây dựng câu truy vấn dựa trên các điều kiện và mệnh đề đầu vào
+        // Create a list to store the prepared statement parameters
+        List<Object> parameters = new ArrayList<>();
+
+        // Build the SQL query based on input conditions
         if (searchFullName != null && !searchFullName.isEmpty()) {
             sql += " AND Name LIKE ?";
+            parameters.add("%" + searchFullName + "%");
         }
         if (searchEmail != null && !searchEmail.isEmpty()) {
             sql += " AND Email LIKE ?";
+            parameters.add("%" + searchEmail + "%");
         }
         if (searchMobile != null && !searchMobile.isEmpty()) {
             sql += " AND PhoneNumber LIKE ?";
+            parameters.add("%" + searchMobile + "%");
         }
         if (filterGender != null && !filterGender.isEmpty()) {
             sql += " AND Gender = ?";
+            parameters.add(filterGender);
         }
         if (filterRole != null && !filterRole.isEmpty()) {
             sql += " AND Role = ?";
+            parameters.add(filterRole);
         }
-        if (filterStatus != 0) {
-            sql += " AND Status = CAST(? AS BIT)";
-        }
-        if (sortBy != null && !sortBy.isEmpty()) {
-            sql += " ORDER BY ?";
+        if (filterStatus == 0 || filterStatus == 1) {
+            sql += " AND Status = ?";
+            parameters.add(filterStatus == 1);
         }
 
-        // Thực thi câu truy vấn và xử lý kết quả
+        // Perform pagination
+        int offset = (page - 1) * pageSize;
+        sql += " ORDER BY " + (sortBy != null && !sortBy.isEmpty() ? sortBy : "Name");
+        sql += " OFFSET " + offset + " ROWS FETCH NEXT " + pageSize + " ROWS ONLY";
+
+        // Execute the query and handle the results
         try {
             ps = connection.prepareStatement(sql);
-
-            // Đặt các giá trị vào câu truy vấn
+            // Bind parameters to the prepared statement
             int parameterIndex = 1;
-            if (searchFullName != null && !searchFullName.isEmpty()) {
-                ps.setString(parameterIndex++, "%" + searchFullName + "%");
+            for (Object parameter : parameters) {
+                if (parameter instanceof String) {
+                    ps.setString(parameterIndex, (String) parameter);
+                } else if (parameter instanceof Boolean) {
+                    ps.setBoolean(parameterIndex, (Boolean) parameter);
+                }
+                parameterIndex++;
             }
-            if (searchEmail != null && !searchEmail.isEmpty()) {
-                ps.setString(parameterIndex++, "%" + searchEmail + "%");
-            }
-            if (searchMobile != null && !searchMobile.isEmpty()) {
-                ps.setString(parameterIndex++, "%" + searchMobile + "%");
-            }
-            if (filterGender != null && !filterGender.isEmpty()) {
-                ps.setString(parameterIndex++, filterGender);
-            }
-            if (filterRole != null && !filterRole.isEmpty()) {
-                ps.setString(parameterIndex++, filterRole);
-            }
-            if (filterStatus != 0) {
-                ps.setInt(parameterIndex++, filterStatus);
-            }
-            if (sortBy != null && !sortBy.isEmpty()) {
-                ps.setString(parameterIndex, sortBy);
-            }
+
+//            if (sortBy != null && !sortBy.isEmpty()) {
+//                ps.setString(parameterIndex, sortBy);
+//            }
 
             rs = ps.executeQuery();
-
-            // Lấy dữ liệu từ ResultSet và tạo các đối tượng User
             while (rs.next()) {
                 String id = rs.getString("ID");
                 String name = rs.getString("Name");
@@ -366,20 +385,83 @@ public class UserDAO extends MyDAO {
                 userList.add(user);
             }
 
-            rs.close();
-            ps.close();
         } catch (Exception e) {
+            // Handle the exception appropriately, e.g., log or throw a custom exception
             e.printStackTrace();
         }
 
         return userList;
     }
 
-    public int getUserCountByCreatedDate(int day) {
-        xSql = "select count(*) as UserCount from [dbo].[Users] where DATEDIFF(DAY,GETDATE(),CreatedDate) >= ?";
+    public int countTotalUserByAdmin(String searchFullName, String searchEmail, String searchMobile, String filterGender, String filterRole, int filterStatus) {
+        int totalRecords = 0;
+        String sql = "SELECT COUNT(*) AS TotalRecords FROM ("
+                + "SELECT UserID as ID, CONCAT(LastName , ' ', FirstName) as Name, Gender, Email, ProfileImage, PhoneNumber, CAST(Status AS BIT) as Status, 'user' as Role FROM Users "
+                + "UNION "
+                + "SELECT StaffID as ID, FullName as Name, Gender, Email, ProfileImage, PhoneNumber, 1 AS Status, StaffRole as Role FROM Staff"
+                + ") AS USERLIST WHERE 1=1";
+
+        // Create a list to store the prepared statement parameters
+        List<Object> parameters = new ArrayList<>();
+
+        // Build the SQL query based on input conditions
+        if (searchFullName != null && !searchFullName.isEmpty()) {
+            sql += " AND Name LIKE ?";
+            parameters.add("%" + searchFullName + "%");
+        }
+        if (searchEmail != null && !searchEmail.isEmpty()) {
+            sql += " AND Email LIKE ?";
+            parameters.add("%" + searchEmail + "%");
+        }
+        if (searchMobile != null && !searchMobile.isEmpty()) {
+            sql += " AND PhoneNumber LIKE ?";
+            parameters.add("%" + searchMobile + "%");
+        }
+        if (filterGender != null && !filterGender.isEmpty()) {
+            sql += " AND Gender = ?";
+            parameters.add(filterGender);
+        }
+        if (filterRole != null && !filterRole.isEmpty()) {
+            sql += " AND Role = ?";
+            parameters.add(filterRole);
+        }
+        if (filterStatus == 0 || filterStatus == 1) {
+            sql += " AND Status = ?";
+            parameters.add(filterStatus == 1);
+        }
+
+        try {
+            ps = connection.prepareStatement(sql);
+            // Bind parameters to the prepared statement
+            int parameterIndex = 1;
+            for (Object parameter : parameters) {
+                if (parameter instanceof String) {
+                    ps.setString(parameterIndex, (String) parameter);
+                } else if (parameter instanceof Boolean) {
+                    ps.setBoolean(parameterIndex, (Boolean) parameter);
+                }
+                parameterIndex++;
+            }
+
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                totalRecords = rs.getInt("TotalRecords");
+            }
+        } catch (Exception e) {
+            // Handle the exception appropriately, e.g., log or throw a custom exception
+            e.printStackTrace();
+        }
+
+        return totalRecords;
+    }
+
+    public int getUserCountByCreatedDate(Date startDate, Date endDate) {
+        xSql = "select count(*) as UserCount from [dbo].[Users] where "
+                + "DATEDIFF(DAY, ? ,CreatedDate) >= 0 AND DATEDIFF(DAY, ? CreatedDate) <= 0";
         try {
             ps = con.prepareStatement(xSql);
-            ps.setInt(1, -day);
+            ps.setDate(1, startDate);
+            ps.setDate(2, endDate);
             rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getInt("UserCount");
@@ -393,11 +475,13 @@ public class UserDAO extends MyDAO {
 
     public static void main(String[] args) {
         UserDAO userDAO = new UserDAO();
-        List<User> users = userDAO.getAllUsersByAdmin(1, 10, "", "", "", "", "", "", 1);
+        List<User> users = userDAO.getAllUsersByAdmin(1, 10, "Email", "", "", "", "", "", 2);
+        
+//        System.out.println(userDAO.countTotalUserByAdmin("", "", "", "", "", 3));
 //        
-//        for (User user : users) {
-//            user.isStatus()
-//        }
+        for (User user : users) {
+            System.out.println(user.getFirstName());
+        }
 
     }
 }
