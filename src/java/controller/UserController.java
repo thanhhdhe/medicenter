@@ -17,10 +17,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
+import java.io.File;
 import java.io.PrintWriter;
 import java.nio.file.Paths;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.List;
 import model.Children;
 import model.Reservation;
@@ -32,7 +34,11 @@ import model.User;
  *
  * @author Admin
  */
-@MultipartConfig()
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 10, // 10 KB
+        maxFileSize = 1024 * 300, // 300 KB
+        maxRequestSize = 1024 * 1024 // 1 MB 
+)
 public class UserController extends HttpServlet {
 
     /**
@@ -253,11 +259,9 @@ public class UserController extends HttpServlet {
             }
             if (action.equals("render-user-by-admin")) {
                 renderUserByAdmin(request, response);
-            }
-            if (action.equals("send-to-adduser")) {
+            } else if (action.equals("send-to-adduser")) {
                 sendToAddUser(request, response);
-            }
-            if (action.equals("add-user-byadmin")) {
+            } else if (action.equals("add-user-byadmin")) {
                 addUserByAdmin(request, response);
             }
         } catch (IOException | ServletException e) {
@@ -295,14 +299,110 @@ public class UserController extends HttpServlet {
         processRequest(request, response);
 
     }
-    
+
     private void addUserByAdmin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(true);
+        UserDAO userDAO = new UserDAO();
         StaffDAO staffDAO = new StaffDAO();
+        String firstName = request.getParameter("firstname");
+        String lastName = request.getParameter("lastname");
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+        String status = request.getParameter("status");
+        String gender = request.getParameter("gender");
+        String role = request.getParameter("role");
+        String mobile = request.getParameter("mobile");
+        String address = request.getParameter("address");
+        String newImg = request.getParameter("avartarURL") + "";
+        String imageURL = "resources/img/avatar.png";
+        LocalDate currentDate = LocalDate.now();
+        Date updateDate = Date.valueOf(currentDate);
+
+        try {
+            Part filePart = request.getPart("avartar");
+            String fileName = filePart.getSubmittedFileName();
+
+            // Lưu tệp vào đường dẫn cụ thể trên server
+            String uploadPath = getServletContext().getRealPath("") + File.separator + "uploads";
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdir();
+            }
+            String url = uploadPath + File.separator + fileName;
+            if (fileName.length() > 0) {
+                imageURL = "./uploads/" + fileName;
+            } else {
+                throw new IOException();
+            }
+
+            filePart.write(url);
+        } catch (Exception e) {
+            if (newImg.length() > 0) {
+                imageURL = newImg;
+            }
+        }
+        //validate input
+        boolean check = true;
+        if (firstName.isEmpty()) {
+            check = false;
+            request.setAttribute("firstNameErr", "*First Name can not be left blank!");
+        }
+        if (lastName.isEmpty()) {
+            check = false;
+            request.setAttribute("lastNameErr", "*Last Name can not be left blank!");
+        }
+        if (email.isEmpty()) {
+            check = false;
+            request.setAttribute("emailErr", "*Email can not be left blank!");
+        } else if (userDAO.getUserByEmail(email) != null || staffDAO.getStaffByStaffEmail(email) != null) {
+            check = false;
+            request.setAttribute("emailErr", "*This email is existed");
+        }
+        if (password.isEmpty()) {
+            check = false;
+            request.setAttribute("passwordErr", "*Password can not be left blank!");
+        }
+        if (status.isEmpty()) {
+            check = false;
+            request.setAttribute("statusErr", "*Please choose status!");
+        }
+        if (gender.isEmpty()) {
+            check = false;
+            request.setAttribute("genderErr", "*Please choose gender!");
+        }
+        if (role.isEmpty()) {
+            check = false;
+            request.setAttribute("roleeErr", "*Please choose role for user!");
+        }
+        if (mobile.isEmpty()) {
+            check = false;
+            request.setAttribute("mobileErr", "*Mobile can not be left blank!");
+        }
+
+        HttpSession session = request.getSession(true);
         String adminEmail = (String) session.getAttribute("adminEmail");
         request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
-
-        request.getRequestDispatcher("./view/add-user-admin.jsp").forward(request, response);
+        if (!check) {
+            System.out.println("aa");
+            request.setAttribute("validate", check);
+            request.setAttribute("firstName", firstName);
+            request.setAttribute("lastName", lastName);
+            request.setAttribute("email", email);
+            request.setAttribute("status", status);
+            request.setAttribute("gender", gender);
+            request.setAttribute("role", role);
+            request.setAttribute("mobile", mobile);
+            request.setAttribute("address", address);
+            request.getRequestDispatcher("./view/add-user-admin.jsp").forward(request, response);
+        } else {
+            if (role.equals("user")) {
+                User newUser = new User(address, email, password, firstName, lastName, gender, mobile, imageURL, status.equals("active"), updateDate);
+                userDAO.insert(newUser);
+            } else {
+                Staff staff = new Staff("Dr." + firstName, password, email, lastName + " " + firstName, gender, mobile, imageURL, role, "", "", "");
+                staffDAO.addStaff(staff);
+            }
+            request.getRequestDispatcher("./view/customer-list-admin.jsp").forward(request, response);
+        }
     }
 
     private void sendToAddUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

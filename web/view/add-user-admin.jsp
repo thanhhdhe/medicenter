@@ -116,6 +116,8 @@
         Staff admin = (Staff) request.getAttribute("admin");
         
         int maximumDayDiff = 7;
+        String validate = request.getAttribute("validate")+"";
+        
         %>
         <nav class="navbar navbar-light bg-light p-3">
             <div class="d-flex col-12 col-md-3 col-lg-2 mb-2 mb-lg-0 flex-wrap flex-md-nowrap justify-content-between">
@@ -178,7 +180,28 @@
                     <div class="mb-4 py-3 border-bottom d-flex justify-content-between align-items-center">
                         <h5>Add User</h5>
                     </div>
-
+                    <%if(!validate.equals("null")&&validate.equals("false")){%>
+                    <div class="alert alert-danger" role="alert">
+                        Add User fail!
+                    </div>
+                    <%}
+                        String firstName = (request.getAttribute("firstName")+"").equals("null") ? "" : (request.getParameter("firstName") + "");
+                        String lastName = (request.getAttribute("lastName")+"").equals("null") ? "" : (request.getParameter("lastName") + "");
+                        String email = (request.getAttribute("email")+"").equals("null") ? "" : (request.getParameter("email") + "");
+                        String status = request.getAttribute("status")+"";
+                        String gender = request.getAttribute("gender")+"";
+                        String role = request.getAttribute("role")+"";
+                        String mobile = (request.getAttribute("mobile")+"").equals("null") ? "" : (request.getParameter("mobile") + "");
+                        String address = (request.getAttribute("address")+"").equals("null") ? "" : (request.getParameter("address") + "");
+                        String firstNameErr = request.getAttribute("firstNameErr")+"";
+                        String lastNameErr = request.getAttribute("lastNameErr")+"";
+                        String emailErr = request.getAttribute("emailErr")+"";
+                        String passwordErr = request.getAttribute("passwordErr")+"";
+                        String statusErr = request.getAttribute("statusErr")+"";
+                        String genderErr = request.getAttribute("genderErr")+"";
+                        String roleErr = request.getAttribute("roleeErr")+"";
+                        String mobileErr = request.getAttribute("mobileErr")+"";
+                    %>
 
                     <form action="user?action=add-user-byadmin" method="POST" enctype="multipart/form-data" class="d-flex flex-column align-items-center justify-content-between">
                         <div class="col-md-12 row justify-content-center">
@@ -188,73 +211,87 @@
                                 </div>
                                 <div class="form-group mt-3">
                                     <label for="serviceImage">Profile Image:</label>
-                                    <input type="file" class="form-control-file" id="serviceImage" name="serviceImage">
+                                    <input type="file" class="form-control-file" name="avartar">
                                 </div>
                                 <h5 class="d-flex justify-content-center mt-3">- Or -</h5>
                                 <div class="form-group mt-3">
                                     <label for="serviceURL">Profile Image:</label>
-                                    <input type="text" class="form-control" id="serviceURL" name="serviceURL">
+                                    <input type="text" class="form-control" id="serviceURL" name="avartarURL">
                                 </div>
                             </div>
                             <div class="col-md-6 px-5">
                                 <div class="d-flex">
                                     <div class="form-group pe-4">
                                         <label for="full-name" class="detail-info">First Name</label>
-                                        <input type="text" class="form-control"  name="firstname">
+                                        <input type="text" class="form-control"  name="firstname" value="<%=firstName%>">
+                                        <%if(!firstNameErr.equals("null")){%>    <p class="text-danger"><%=firstNameErr%></p><%}%>
                                     </div>
                                     <div class="form-group px-4">
                                         <label for="full-name" class="detail-info">Last Name</label>
-                                        <input type="text" class="form-control" name="lastname">
+                                        <input type="text" class="form-control" name="lastname" value="<%=lastName%>">
+                                        <%if(!lastNameErr.equals("null")){%>    <p class="text-danger"><%=lastNameErr%></p><%}%>
                                     </div>
                                 </div>
                                 <div class="form-group mt-3">
                                     <label for="email" class="detail-info">Email</label>
-                                    <input type="email" class="form-control w-75" id="email" name="email">
+                                    <input type="email" class="form-control w-75" id="email" name="email" value="<%=email%>">
+                                    <%if(!emailErr.equals("null")){%>    <p class="text-danger"><%=emailErr%></p><%}%>
                                 </div>
                                 <div class="form-group mt-3">
                                     <label for="password" class="detail-info">Password</label>
                                     <input type="password" class="form-control w-75" id="password" name="password">
+                                    <%if(!passwordErr.equals("null")){%>    <p class="text-danger"><%=passwordErr%></p><%}%>
                                 </div>
                                 <div class="d-flex">
                                     <div class="form-group mt-3 col-md-5 ps-5">
                                         <label for="status" class="detail-info">Status</label>
-                                        <select class="form-select text-primary mt-3 mb-4 w-50" name="status" >
-                                            <option value="active">Active</option>
-                                            <option value="inactive">Inactive</option>
+                                        <select class="form-select text-primary mt-3 mb-4 w-50" name="status">
+                                            <option value="active" <%= status.equals("active") || !status.equals("inactive") ? "selected" : "" %>>Active</option>
+                                            <option value="inactive" <%= status.equals("inactive") ? "selected" : "" %>>Inactive</option>
                                         </select>
+                                        <% if (!statusErr.equals("null")) { %>
+                                        <p class="text-danger"><%= statusErr %></p>
+                                        <% } %>
                                     </div>
                                     <div class="form-group mt-3 col-md-6 px-3">
                                         <label for="gender" class="detail-info">Gender</label>
-                                        <select class="form-select text-primary mt-3 mb-4 w-50" name="gender" >
-                                            <option value="male">Male</option>
-                                            <option value="female">Female</option>
-                                            <option value="other">Other</option>
+                                        <select class="form-select text-primary mt-3 mb-4 w-50" name="gender">
+                                            <option value="male" <%= gender.equals("male") ? "selected" : "" %>>Male</option>
+                                            <option value="female" <%= gender.equals("female") ? "selected" : "" %>>Female</option>
+                                            <option value="other" <%= gender.equals("other") ? "selected" : "" %>>Other</option>
                                         </select>
+                                        <% if (!genderErr.equals("null")) { %>
+                                        <p class="text-danger"><%= genderErr %></p>
+                                        <% } %>
                                     </div>
                                 </div>
-                                <div class="d-flex mt-3">
-                                    <p class="fit-content-width ms-3">User is:</p>
-                                    <div class="form-group col-md-6 px-3">
-                                        <select class="form-select text-primary w-50" name="role" >
-                                            <option value="user">User</option>
-                                            <option value="doctor">Doctor</option>
-                                            <option value="nurse">Nurse</option>
-                                            <option value="manager">Manager</option>
+                                <div class="form-group col-md-6">
+                                    <div class="d-flex">
+                                        <p class="fit-content-width ms-3">User is:</p>
+                                        <select class="form-select text-primary w-50 mx-3" name="role">
+                                            <option value="user" <%= role.equals("user") || (!role.equals("doctor") && !role.equals("nurse") && !role.equals("manager")) ? "selected" : "" %>>User</option>
+                                            <option value="doctor" <%= role.equals("doctor") ? "selected" : "" %>>Doctor</option>
+                                            <option value="nurse" <%= role.equals("nurse") ? "selected" : "" %>>Nurse</option>
+                                            <option value="manager" <%= role.equals("manager") ? "selected" : "" %>>Manager</option>
                                         </select>
                                     </div>
+                                    <% if (!roleErr.equals("null")) { %>
+                                    <p class="text-danger"><%= roleErr %></p>
+                                    <% } %>
                                 </div>
-                                
+
                                 <div class="form-group mt-3">
                                     <label for="mobile" class="detail-info">Mobile</label>
-                                    <input type="tel" class="form-control w-75" id="mobile" name="mobile">
+                                    <input type="tel" class="form-control w-75" id="mobile" name="mobile" value="<%=mobile%>">
+                                    <%if(!mobileErr.equals("null")){%>    <p class="text-danger"><%=mobileErr%></p><%}%>
                                 </div>
                                 <div class="form-group mt-3">
                                     <label for="address" class="detail-info">Address</label>
-                                    <input type="text" class="form-control w-75" id="address" name="address">
+                                    <input type="text" class="form-control w-75" id="address" name="address" value="<%=address%>">
                                 </div>
 
                             </div>
-                            
+
                         </div> 
                         <input class="btn btn-primary mt-5 w-25" type="submit" value="Add User" />
                     </form>

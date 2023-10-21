@@ -65,6 +65,19 @@ public class User {
         this.status = status;
         this.role = role;
     }
+
+    public User(String address, String email, String password, String firstName, String lastName, String gender, String phoneNumber, String profileImage, boolean status, Date createdDate) {
+        this.address = address;
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.phoneNumber = phoneNumber;
+        this.profileImage = profileImage;
+        this.status = status;
+        this.createdDate = createdDate;
+    }
     
 
     public String getRole() {
