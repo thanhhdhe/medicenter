@@ -195,7 +195,7 @@
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <form action="pay/" id="frmCreateOrder" method="post">  
+                    <form action="pay" id="frmCreateOrder" method="post">  
                         <div class="card border-m" style="width: 100%;">
                             <div class="card-header bg-primary text-white text-center bold">
                                 Payment Information
@@ -208,26 +208,21 @@
                                 <div class="mb-4">
                                     <div class="form-group">
                                         <p class="title-info"><strong>Total Payment:</strong></p>
-                                        
-                                        <input class="form-control" data-val="true" data-val-number="The field Amount must be a number."
+                                        <input readonly type="number" class="form-control" data-val="true" data-val-number="The field Amount must be a number."
                                                data-val-required="The Amount field is required." 
-                                                name="amount" value="${service.salePrice}" />
+                                               name="amount" value="${service.salePrice}" />
                                     </div>
 
                                 </div>
                                 <div class="form-group">
                                     <p class="title-info"><strong>Payment Method:</strong></p>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" Checked="True" id="bankCode" name="bankCode" value="offline">
-                                        <label  for="bankCode" class="form-check-label detail-info">Pay at center</label><br>
+                                        <input class="form-check-input" type="radio" Checked="True" name="payment" value="offline">
+                                        <label  for="" class="form-check-label detail-info">Pay at center</label><br>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="bankCode" name="bankCode" value="VNBANK">
-                                        <label  for="bankCode" class="form-check-label detail-info">Payment via ATM/Domestic Account</label><br>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio"  id="bankCode" name="bankCode" value="INTCARD">
-                                        <label  for="bankCode" class="form-check-label detail-info">Payment via International Card</label><br>
+                                        <input class="form-check-input" type="radio" id="bankCode" name="payment" value="vnpay">
+                                        <label  for="" class="form-check-label detail-info">Payment via VNPpay</label><br>
                                     </div>
                                     <input type="hidden" id="language" name="language" value="en">
                                     <input type="hidden" id="reserv" name="reservation" value="${reservation.reservationID}">
@@ -267,6 +262,8 @@
                                 $("#frmCreateOrder").submit(function () {
                                     var postData = $("#frmCreateOrder").serialize();
                                     var submitUrl = $("#frmCreateOrder").attr("action");
+                                    console.log("Data being sent:", postData);
+
                                     $.ajax({
                                         type: "POST",
                                         url: submitUrl,
@@ -274,17 +271,22 @@
                                         dataType: 'JSON',
                                         success: function (x) {
                                             if (x.code === '00') {
-                                                if (window.vnpay) {
-                                                    vnpay.open({width: 768, height: 600, url: x.data});
+                                                if (x.data && x.data !== "") {
+                                                    // Nếu có dữ liệu trả về từ máy chủ
+                                                    if (window.vnpay) {
+                                                        vnpay.open({width: 768, height: 600, url: x.data});
+                                                    } else {
+                                                        location.href = x.data;
+                                                    }
                                                 } else {
-                                                    location.href = x.data;
+                                                    location.href = "./view/reservationstatus.jsp";
                                                 }
-                                                return false;
                                             } else {
                                                 alert(x.Message);
                                             }
                                         }
                                     });
+
                                     return false;
                                 });
 </script>    

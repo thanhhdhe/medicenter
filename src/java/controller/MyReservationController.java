@@ -98,6 +98,17 @@ public class MyReservationController extends HttpServlet {
             String value = (String) request.getParameter("value");
             value = value.replaceAll("%20", " ");
             out.println(reservationDAO.getTotalPaginationWithCondition(Integer.toString(userDAO.getUser(email).getUserID()), 5, condition, value));
+        } else if (action.equals("cancel")) {
+            int reservationID = Integer.parseInt(request.getParameter("invoiceId"));
+            Reservation reservation = reservationDAO.getReservationByID(reservationID);
+
+            if (!reservation.getStatus().equals("done")) {
+                // Cancel reservation
+                reservation.setStatus("cancel");
+                reservationDAO.update(reservation);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"success\": true}");
+            }
         }
     }
 

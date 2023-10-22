@@ -53,7 +53,7 @@ public class PaymentController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        String bankCode = request.getParameter("bankCode");
+        String payment = request.getParameter("payment");
         int reservationID = Integer.parseInt(request.getParameter("reservation"));
         ReservationDAO reservationDAO = new ReservationDAO();
         Reservation reservation = reservationDAO.getReservationByID(reservationID);
@@ -70,16 +70,14 @@ public class PaymentController extends HttpServlet {
         request.setAttribute("doctor", doctor);
         request.setAttribute("children", children);
         request.setAttribute("cate", cate);
-        if (bankCode.equals("offline")) {
-            reservation.setStatus("Wait for examination");
-            reservationDAO.update(reservation);
-            session.setAttribute("method","Pay at center" );
-            request.getRequestDispatcher("/view/reservationstatus.jsp").forward(request, response);
-        } else {
+        long amount = (int) Math.round(Double.parseDouble(request.getParameter("amount")) * 100 * 24000);
+
+        if (payment.equals("vnpay")) {
             String vnp_Version = "2.1.0";
             String vnp_Command = "pay";
-            String orderType = "other";
-            long amount = (int) Math.round(Double.parseDouble(request.getParameter("amount")) * 100 * 24000);
+            String orderType = "270001";
+//            long amount = Integer.parseInt(request.getParameter("amount")) * 100;
+            String bankCode = null;
 
             String vnp_TxnRef = Config.getRandomNumber(8);
             String vnp_IpAddr = Config.getIpAddress(request);
@@ -93,11 +91,8 @@ public class PaymentController extends HttpServlet {
             vnp_Params.put("vnp_Amount", String.valueOf(amount));
             vnp_Params.put("vnp_CurrCode", "VND");
 
-            if (bankCode != null && !bankCode.isEmpty()) {
-                vnp_Params.put("vnp_BankCode", bankCode);
-            }
             vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
-            vnp_Params.put("vnp_OrderInfo", "Payment for booking medical reservation:" + vnp_TxnRef);
+            vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
             vnp_Params.put("vnp_OrderType", orderType);
 
             String locate = request.getParameter("language");
@@ -106,7 +101,7 @@ public class PaymentController extends HttpServlet {
             } else {
                 vnp_Params.put("vnp_Locale", "vn");
             }
-            vnp_Params.put("vnp_ReturnUrl", Config.vnp_ReturnUrl);
+            vnp_Params.put("vnp_ReturnUrl", Config.vnp_ReturnUrl + reservationID);
             vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
             Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
@@ -151,6 +146,16 @@ public class PaymentController extends HttpServlet {
             job.addProperty("data", paymentUrl);
             Gson gson = new Gson();
             response.getWriter().write(gson.toJson(job));
+        } else if (payment.equals("offline")) {
+            com.google.gson.JsonObject job = new JsonObject();
+            job.addProperty("code", "00");
+            job.addProperty("message", "success");
+            String paymentUrl = getServletContext().getContextPath() + "/pay?action=view&reservation="+reservationID;
+            job.addProperty("data", paymentUrl);
+            reservation.setStatus("Wait for examination");
+            reservationDAO.update(reservation);
+            Gson gson = new Gson();
+            response.getWriter().write(gson.toJson(job));
         }
     }
 
@@ -166,7 +171,26 @@ public class PaymentController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String action = request.getParameter("action");
+        if (action.equals("view")) {
+            int reservationID = Integer.parseInt(request.getParameter("reservation"));
+            ReservationDAO reservationDAO = new ReservationDAO();
+            Reservation reservation = reservationDAO.getReservationByID(reservationID);
+            ServiceDAO serviceDAO = new ServiceDAO();
+            Service service = serviceDAO.getServiceByID(String.valueOf(reservation.getServiceID()));
+            StaffDAO staffDAO = new StaffDAO();
+            Staff doctor = staffDAO.getStaffByStaffId(reservation.getStaffID());
+            ChildrenDAO childrenDAO = new ChildrenDAO();
+            Children children = childrenDAO.getChildrenByChildrenId(String.valueOf(reservation.getChildID()));
+            CategoryServiceDAO cateDAO = new CategoryServiceDAO();
+            CategoryService cate = cateDAO.getCategoryServiceByID(String.valueOf(service.getServiceID()));
+            request.setAttribute("reservation", reservation);
+            request.setAttribute("service", service);
+            request.setAttribute("doctor", doctor);
+            request.setAttribute("children", children);
+            request.setAttribute("cate", cate);
+            request.getRequestDispatcher("./view/reservationstatus.jsp").forward(request, response);
+        }
     }
 
     /**
