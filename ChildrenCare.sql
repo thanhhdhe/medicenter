@@ -24,7 +24,7 @@ CREATE TABLE Users (
     PhoneNumber VARCHAR(20) NOT NULL,
     ProfileImage VARCHAR(MAX),
 	Status bit default 0,
-	CreatedDate DATE NOT NULL
+	CreatedDate DATE NOT NULL,
 );
 
 -- Create the CategoryService table
@@ -141,8 +141,15 @@ CREATE TABLE Children (
 	Status TEXT,
 	Gender VARCHAR(10) NOT NULL,
 	Avatar VARCHAR(MAX),
+	RelationshipID INT NOT NULL,
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
+	FOREIGN KEY (RelationshipID) REFERENCES Relationship(RelationshipID)
 );
+CREATE TABLE Relationship (
+	RelationshipID INT IDENTITY(1,1) PRIMARY KEY,
+	RelationshipName VARCHAR(50),
+	
+)
 
 
 -- Create the Reservations table
@@ -157,6 +164,7 @@ CREATE TABLE Reservations (
 	CreatedDate DATETIME NOT NULL,
     Cost DECIMAL(10, 2) NOT NULL,
     Status VARCHAR(100) NOT NULL,
+	Payment VARCHAR(50),
     FOREIGN KEY (UserID) REFERENCES Users(UserID),
     FOREIGN KEY (ServiceID) REFERENCES Services(ServiceID),
 	FOREIGN KEY (StaffID) REFERENCES Staff(StaffID),
@@ -391,14 +399,14 @@ VALUES
 
 	
 -- Reservations
-INSERT INTO Reservations(UserID, ServiceID, StaffID, ChildID, CreatedDate, ReservationDate, ReservationSlot, Cost, Status) 
-VALUES (1, 15, 7, 1, DATEADD(MILLISECOND,-4105241,GETDATE()), DATEADD(DAY, 4, GETDATE()), 1, 100.0, 'waiting for examination'),
-(1, 9, 1, 1, DATEADD(MILLISECOND,-8104511,GETDATE()), DATEADD(DAY, 3, GETDATE()), 3, 450, 'waiting for examination'),
-(1, 6, 1, 2, DATEADD(MILLISECOND,-10122452,GETDATE()), DATEADD(DAY, 3, GETDATE()), 2, 70.0, 'waiting for examination'), 
-(1, 9, 3, 2, DATEADD(MILLISECOND,-16785745,GETDATE()), DATEADD(DAY, 14, GETDATE()), 2, 450.0, 'waiting for examination'), 
-(1, 6, 4, 1, DATEADD(MILLISECOND,-25642544,GETDATE()), DATEADD(DAY, 8, GETDATE()), 1, 70.0, 'pending'),
-(1, 6, 4, 2, DATEADD(MILLISECOND,-38454524,GETDATE()), DATEADD(DAY, 8, GETDATE()), 2, 70.0, 'waiting for examination'),
-(1, 10, 3, 2, DATEADD(MILLISECOND,-98545422,GETDATE()), DATEADD(DAY, 1, GETDATE()), 2, 120.0, 'cancel');
+INSERT INTO Reservations(UserID, ServiceID, StaffID, ChildID, CreatedDate, ReservationDate, ReservationSlot, Cost, Status,Payment) 
+VALUES (1, 15, 7, 1, DATEADD(MILLISECOND,-4105241,GETDATE()), DATEADD(DAY, 4, GETDATE()), 1, 100.0, 'waiting for examination','VNPay'),
+(1, 9, 1, 1, DATEADD(MILLISECOND,-8104511,GETDATE()), DATEADD(DAY, 3, GETDATE()), 3, 450, 'waiting for examination','Pay at center'),
+(1, 6, 1, 2, DATEADD(MILLISECOND,-10122452,GETDATE()), DATEADD(DAY, 3, GETDATE()), 2, 70.0, 'waiting for examination','VNPay'), 
+(1, 9, 3, 2, DATEADD(MILLISECOND,-16785745,GETDATE()), DATEADD(DAY, 14, GETDATE()), 2, 450.0, 'waiting for examination','VNPay'), 
+(1, 6, 4, 1, DATEADD(MILLISECOND,-25642544,GETDATE()), DATEADD(DAY, 8, GETDATE()), 1, 70.0, 'pending','Pay at Center'),
+(1, 6, 4, 2, DATEADD(MILLISECOND,-38454524,GETDATE()), DATEADD(DAY, 8, GETDATE()), 2, 70.0, 'waiting for examination','VNPay'),
+(1, 10, 3, 2, DATEADD(MILLISECOND,-98545422,GETDATE()), DATEADD(DAY, 1, GETDATE()), 2, 120.0, 'cancel','VNPay');
 -- Insert data into the Posts table
 INSERT INTO Posts (Title, Content, Thumbnail, Counts ,AuthorID, ServiceID, CreatedDate, CategoryPost, BriefInfo)
 VALUES

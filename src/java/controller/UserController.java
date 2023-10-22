@@ -5,6 +5,7 @@
 package controller;
 
 import Database.ChildrenDAO;
+import Database.RelationshipDAO;
 import Database.ReservationDAO;
 import Database.ServiceDAO;
 import Database.StaffDAO;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Random;
 import model.Children;
 import model.Mail;
+import model.Relationship;
 import model.Reservation;
 import model.Service;
 import model.Staff;
@@ -221,7 +223,10 @@ public class UserController extends HttpServlet {
                 String phoneNumber = request.getParameter("phoneNumber");
                 String dfImage = "https://cdn-icons-png.flaticon.com/512/3177/3177440.png";
                 Part filePart = request.getPart("images");
-
+                String relationshipIDstr = request.getParameter("relaID");
+                int relationshipID = Integer.parseInt(relationshipIDstr);
+                RelationshipDAO reDAO = new RelationshipDAO();
+                Relationship relationship = reDAO.getRelationByID(relationshipID);
                 Date sqlDOB = null;
                 try {
                     String date = day + "-" + month + "-" + year;
@@ -239,14 +244,14 @@ public class UserController extends HttpServlet {
                     filePart.write(realPath + "/" + fileName);
                     String newImg = "resources/img/" + fileName;
                     System.out.println("anh la " + newImg);
-                    Children newChild = new Children(users, fullName, sqlDOB, gender, newImg);
+                    Children newChild = new Children(users, fullName, sqlDOB, gender, newImg, relationship);
                     childDAO.createChildren(newChild);
                     users.setAddress(address);
                     users.setPhoneNumber(phoneNumber);
                     userdao.updateProfile(users);
                     session.setAttribute("message", "Add children profile successfully");
                 } else {
-                    Children newChild = new Children(users, fullName, sqlDOB, gender, dfImage);
+                    Children newChild = new Children(users, fullName, sqlDOB, gender, dfImage, relationship );
                     childDAO.createChildren(newChild);
                     session.setAttribute("message", "Add children profile successfully");
                 }

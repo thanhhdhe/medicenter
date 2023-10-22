@@ -198,6 +198,15 @@
                                                         <p>${c.user.phoneNumber}</p>
                                                     </div>
                                                 </div>
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <p class="title-info"><i class="fas fa-calendar-alt"></i> <strong>Relationship:</strong>
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-md-7 detail-info">
+                                                        <p>${c.relationship.relationshipName}</p>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="row justify-content-center">
@@ -247,12 +256,12 @@
                                                                 </span>
                                                             </button>
                                                         </div>
-<!--                                                        <div class="col-md-4">
-                                                            <button class="btn btn-primary btn-block border-m"><span
-                                                                    class="d-flex align-items-center">
-                                                                    <i class="fas fa-edit mr-2"></i> Edit
-                                                                </span></button>
-                                                        </div>-->
+                                                        <!--                                                        <div class="col-md-4">
+                                                                                                                    <button class="btn btn-primary btn-block border-m"><span
+                                                                                                                            class="d-flex align-items-center">
+                                                                                                                            <i class="fas fa-edit mr-2"></i> Edit
+                                                                                                                        </span></button>
+                                                                                                                </div>-->
                                                     </div>
                                                 </div>
                                                 <div class="">

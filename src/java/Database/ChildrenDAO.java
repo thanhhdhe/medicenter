@@ -8,6 +8,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import model.Children;
+import model.Relationship;
 import model.User;
 
 /**
@@ -33,7 +34,10 @@ public class ChildrenDAO extends MyDAO {
                 String status = rs.getString("Status");
                 String gender = rs.getString("Gender");
                 String avatar = rs.getString("Avatar");
-                children.add(new Children(user, childID, childName, birthday, status, gender, avatar));
+                int relationshipID = rs.getInt("RelationshipID");
+                RelationshipDAO re = new RelationshipDAO();
+                Relationship relationship = re.getRelationByID(relationshipID);
+                children.add(new Children(user, childID, childName, birthday, status, gender, avatar, relationship));
             }
             rs.close();
             ps.close();
@@ -45,7 +49,7 @@ public class ChildrenDAO extends MyDAO {
 
     public boolean createChildren(Children children) {
         boolean success = false;
-        xSql = "INSERT INTO Children (UserID, ChildName, Birthday, Gender, Avatar) VALUES (?, ?, ?, ?, ?)";
+        xSql = "INSERT INTO Children (UserID, ChildName, Birthday, Gender, Avatar, RelationshipID) VALUES (?, ?, ?, ?, ?, ?)";
         try {
             ps = con.prepareStatement(xSql);
             ps.setInt(1, children.getUser().getUserID()); // Lấy userID từ đối tượng User
@@ -53,7 +57,7 @@ public class ChildrenDAO extends MyDAO {
             ps.setDate(3, children.getBirthday());
             ps.setString(4, children.getGender());
             ps.setString(5, children.getImage());
-
+            ps.setInt(6, children.getRelationship().getRelationshipID());
             int rowsInserted = ps.executeUpdate();
             if (rowsInserted > 0) {
                 success = true;
@@ -84,7 +88,10 @@ public class ChildrenDAO extends MyDAO {
                 String status = rs.getString("Status");
                 String gender = rs.getString("Gender");
                 String avatar = rs.getString("Avatar");
-                children = new Children(user, childID, childName, birthday, status, gender, avatar);
+                int relationshipID = rs.getInt("RelationshipID");
+                RelationshipDAO re = new RelationshipDAO();
+                Relationship relationship = re.getRelationByID(relationshipID);
+                children = new Children(user, childID, childName, birthday, status, gender, avatar, relationship);
             }
             rs.close();
             ps.close();
@@ -111,7 +118,10 @@ public class ChildrenDAO extends MyDAO {
                 String status = rs.getString("Status");
                 String gender = rs.getString("Gender");
                 String avatar = rs.getString("Avatar");
-                children = new Children(user, childID, childName, birthday, status, gender, avatar);
+                int relationshipID = rs.getInt("RelationshipID");
+                RelationshipDAO re = new RelationshipDAO();
+                Relationship relationship = re.getRelationByID(relationshipID);
+                children = new Children(user, childID, childName, birthday, status, gender, avatar, relationship);
             }
             rs.close();
             ps.close();
@@ -139,7 +149,7 @@ public class ChildrenDAO extends MyDAO {
         }
         return check;
     }
-    
+
     public int countChildren() {
         int count = 0;
         String sql = "SELECT COUNT(*) FROM [dbo].[Children]";
@@ -176,11 +186,10 @@ public class ChildrenDAO extends MyDAO {
         }
         return success;
     }
-    
+
     public static void main(String[] args) {
         ChildrenDAO childrenDAO = new ChildrenDAO();
-        
-        
+
 //        System.out.println("ketquadelete là : " + childrenDAO.deleteChild("5"));
     }
 
