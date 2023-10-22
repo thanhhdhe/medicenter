@@ -271,12 +271,6 @@ Pediatric vaccinations, also known as childhood immunizations or vaccines, are a
 
 	GO
 -- Insert data into Staff
-INSERT INTO Staff (StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole, Rank, Specialty, Introduction)
-VALUES
-    ('thang', 'lethang@gmail.com', '1234', 'Le Minh Thang', 'Male', '0834398268', 'resources/img/thang.jpeg', 'manager', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for the second staff member.'),
-    ('jane_smith', 'jane@example.com', 'password456', 'Jane Smith', 'Female', '987654321', 'avatar.jpg', 'nurse', 'Meritorious Doctor', 'Internal Medicine Department', 'Introduction for Jane Smith.'),
-    ('nurse_johnson', 'nurse.johnson@example.com', 'nursepass', 'Nurse Johnson', 'Female', '555111222', 'nurse.jpg', 'nurse', 'Associate Doctor', 'Dermatology Department', 'Introduction for Nurse Johnson.'),
-    ('nurse_brown', 'nurse.brown@example.com', 'nursepass', 'Nurse Brown', 'Male', '555333444', 'nurse.jpg', 'nurse', 'Meritorious Doctor', 'Dermatology Department', 'Introduction for Nurse Brown.')
 	INSERT INTO Staff (StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole, Rank, Specialty, Introduction, SpecializedActivities, ProfessionalAchievements,DepthStudy)
 VALUES
     ('thang', 'lethanglrf@gmail.com', '1234', 'Le Minh Thang', 'Male', '0834398268', 'resources/img/thang.jpeg', 'doctor', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for the first staff member.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
@@ -419,7 +413,3 @@ VALUES
     ('Online Learning Tips', 'Effective tips for online learning and studying.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',90, 1, 9, '2023-09-18', 9, 'Education strategies'),
     ('Gaming News Update', 'Latest gaming news and reviews for gamers.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',200, 1, 10, '2023-09-19', 10, 'Gaming updates');
 
-
-	select distinct s.staffID, s.FullName, s.Gender, s.PhoneNumber, s.ProfileImage, s.Rank, s.Specialty, s.Introduction
-	from staff as s join ServiceStaff as ss on s.StaffID= ss.StaffID
-	where s.StaffRole= 'doctor' and s.FullName like '%%'
