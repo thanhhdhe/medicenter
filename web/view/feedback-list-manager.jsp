@@ -187,7 +187,7 @@
                             <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
                                 <h4>FEEDBACK RECORDS</h4>
 
-                                
+
                             </div>
                             <div class="d-flex justify-content-around">
                                 <div class="col-md-3 ">
@@ -282,7 +282,12 @@
                                                             </c:when>
                                                         </c:choose>
                                                         <c:if test="${not empty fill}">
-                                                        <li class="page-item"><a class="page-link" href="feedback?index=${i}&event=${fillevent}&${fillparameter}=${fill}">${i}</a></li>
+                                                            <c:if test="${not empty search}">
+                                                            <li class="page-item"><a class="page-link" href="feedback?index=${i}&event=${fillevent}&${fillparameter}=${fill}&search=${search}">${i}</a></li>
+                                                            </c:if>
+                                                            <c:if test="${ empty search}">
+                                                            <li class="page-item"><a class="page-link" href="feedback?index=${i}&event=${fillevent}&${fillparameter}=${fill}">${i}</a></li>
+                                                            </c:if>
                                                         </c:if>
 
                                                 </c:forEach>

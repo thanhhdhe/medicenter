@@ -220,23 +220,41 @@ public class FeedBackController extends HttpServlet {
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFill(1, Fillrate, "RatedStar");
                         // if search not null new list list contains feedback have search end send for jsp
                         if (search != null) {
-
+                            List<FeedBack> nfeedbacks = dao.getPageFeedBackByFill(-1, Fillrate, "RatedStar");
                             List<FeedBack> newfeedbacks = new ArrayList<>();
-                            for (FeedBack f : feedbacks) {
+                            List<FeedBack> countnewfeedbacks = new ArrayList<>();
+                            int count = 0;
+                            for (FeedBack f : nfeedbacks) {
                                 // get name user
                                 User userser = userdao.getUserByID(f.getUserID());
-                                if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
-                                        || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
-                                    newfeedbacks.add(f);
+                                if ((userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                        || userser.getLastName().toLowerCase().contains(search.toLowerCase()))) {
+                                    countnewfeedbacks.add(f);
+                                }
+                            }
+                            for (FeedBack f : nfeedbacks) {
+                                // get name user
+                                if (count < 10) {
+                                    User userser = userdao.getUserByID(f.getUserID());
+                                    if ((userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                            || userser.getLastName().toLowerCase().contains(search.toLowerCase()))) {
+
+                                        newfeedbacks.add(f);
+                                        count++;
+                                    }
+                                } else {
+                                    break;
                                 }
                             }
                             request.setAttribute("feedbacks", newfeedbacks);
-                            int newpage = newfeedbacks.size() / 10;
-
-                            if (newfeedbacks.size() % 10 != 0) {
+                            System.out.println(countnewfeedbacks.size());
+                            int newpage = countnewfeedbacks.size() / 10;
+                            System.out.println(newpage);
+                            if (countnewfeedbacks.size() % 10 != 0) {
                                 newpage++; // if endP not divide by 10 so that endPage + 1
                             }
-
+                            System.out.println(newpage);
+                            request.setAttribute("search", search);
                             request.setAttribute("endP", newpage);
                         } else {
                             request.setAttribute("feedbacks", feedbacks);
@@ -263,22 +281,43 @@ public class FeedBackController extends HttpServlet {
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFill(page, Fillrate, "RatedStar");
                         // if search not null new list list contains feedback have search end send for jsp
                         if (search != null) {
+                            List<FeedBack> nfeedbacks = dao.getPageFeedBackByFill(-1, Fillrate, "RatedStar");
+                            //new List to count page
+                            List<FeedBack> countnewfeedbacks = new ArrayList<>();
+                            //new List to search
                             List<FeedBack> newfeedbacks = new ArrayList<>();
-                            for (FeedBack f : feedbacks) {
+                            // count page
+                            int startIndex = (Integer.parseInt(index) - 1) * 10;
+                            int endIndex = startIndex + 10;
+                            int count = 0;
+                            for (FeedBack f : nfeedbacks) {
                                 // get name user
                                 User userser = userdao.getUserByID(f.getUserID());
                                 if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
                                         || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
-                                    newfeedbacks.add(f);
+                                    countnewfeedbacks.add(f);
+                                }
+                            }
+                            for (int i = startIndex; i < endIndex; i++) {
+                                if (i < nfeedbacks.size()) {
+                                    FeedBack f = nfeedbacks.get(i);
+                                    User userser = userdao.getUserByID(f.getUserID());
+                                    if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                            || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
+                                        newfeedbacks.add(f);
+                                        count++;
+                                    }
+                                } else {
+                                    break;
                                 }
                             }
                             request.setAttribute("feedbacks", newfeedbacks);
-                            int newpage = newfeedbacks.size() / 10;
+                            int newpage = countnewfeedbacks.size() / 10;
 
-                            if (newfeedbacks.size() % 10 != 0) {
+                            if (countnewfeedbacks.size() % 10 != 0) {
                                 newpage++; // if endP not divide by 10 so that endPage + 1
                             }
-
+                            request.setAttribute("search", search);
                             request.setAttribute("endP", newpage);
                         } else {
                             request.setAttribute("feedbacks", feedbacks);
@@ -306,23 +345,43 @@ public class FeedBackController extends HttpServlet {
 
                         // if search not null new list list contains feedback have search end send for jsp
                         if (search != null) {
+                            List<FeedBack> nfeedbacks = dao.getPageFeedBackByFillSer(-1, Fillservice);
+                            //new List to search 
                             List<FeedBack> newfeedbacks = new ArrayList<>();
-                            for (FeedBack f : feedbacks) {
+                            //new list to count page
+                            List<FeedBack> countnewfeedbacks = new ArrayList<>();
+                            int count = 0;
+                            for (FeedBack f : nfeedbacks) {
                                 // get name user
                                 User userser = userdao.getUserByID(f.getUserID());
-                                if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
-                                        || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
-                                    newfeedbacks.add(f);
+                                if ((userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                        || userser.getLastName().toLowerCase().contains(search.toLowerCase()))) {
+                                    countnewfeedbacks.add(f);
+                                }
+                            }
+                            for (FeedBack f : nfeedbacks) {
+                                // get name user
+                                if (count < 10) {
+                                    User userser = userdao.getUserByID(f.getUserID());
+                                    if ((userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                            || userser.getLastName().toLowerCase().contains(search.toLowerCase()))) {
+
+                                        newfeedbacks.add(f);
+                                        count++;
+                                    }
+                                } else {
+                                    break;
                                 }
                             }
                             request.setAttribute("feedbacks", newfeedbacks);
-                            System.out.println(newfeedbacks.size());
-                            int newpage = newfeedbacks.size() / 10;
+                            System.out.println(countnewfeedbacks.size());
+                            int newpage = countnewfeedbacks.size() / 10;
                             System.out.println(newpage);
-                            if (newfeedbacks.size() % 10 != 0) {
+                            if (countnewfeedbacks.size() % 10 != 0) {
                                 newpage++; // if endP not divide by 10 so that endPage + 1
                             }
                             System.out.println(newpage);
+                            request.setAttribute("search", search);
                             request.setAttribute("endP", newpage);
                         } else {
                             request.setAttribute("feedbacks", feedbacks);
@@ -347,22 +406,43 @@ public class FeedBackController extends HttpServlet {
                         List<FeedBack> feedbacks = dao.getPageFeedBackByFillSer(page, Fillservice);
                         // if search not null new list list contains feedback have search end send for jsp
                         if (search != null) {
+                            List<FeedBack> nfeedbacks = dao.getPageFeedBackByFillSer(-1, Fillservice);
+                            //new List to count page
+                            List<FeedBack> countnewfeedbacks = new ArrayList<>();
+                            //new List to search
                             List<FeedBack> newfeedbacks = new ArrayList<>();
-                            for (FeedBack f : feedbacks) {
+                            // count page
+                            int startIndex = (Integer.parseInt(index) - 1) * 10;
+                            int endIndex = startIndex + 10;
+                            int count = 0;
+                            for (FeedBack f : nfeedbacks) {
                                 // get name user
                                 User userser = userdao.getUserByID(f.getUserID());
                                 if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
                                         || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
-                                    newfeedbacks.add(f);
+                                    countnewfeedbacks.add(f);
+                                }
+                            }
+                            for (int i = startIndex; i < endIndex; i++) {
+                                if (i < nfeedbacks.size()) {
+                                    FeedBack f = nfeedbacks.get(i);
+                                    User userser = userdao.getUserByID(f.getUserID());
+                                    if (userser.getFirstName().toLowerCase().contains(search.toLowerCase())
+                                            || userser.getLastName().toLowerCase().contains(search.toLowerCase())) {
+                                        newfeedbacks.add(f);
+                                        count++;
+                                    }
+                                } else {
+                                    break;
                                 }
                             }
                             request.setAttribute("feedbacks", newfeedbacks);
-                            int newpage = newfeedbacks.size() / 10;
+                            int newpage = countnewfeedbacks.size() / 10;
 
-                            if (newfeedbacks.size() % 10 != 0) {
+                            if (countnewfeedbacks.size() % 10 != 0) {
                                 newpage++; // if endP not divide by 10 so that endPage + 1
                             }
-
+                            request.setAttribute("search", search);
                             request.setAttribute("endP", newpage);
                         } else {
                             request.setAttribute("feedbacks", feedbacks);
