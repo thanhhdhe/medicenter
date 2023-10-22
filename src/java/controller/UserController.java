@@ -263,6 +263,8 @@ public class UserController extends HttpServlet {
                 sendToAddUser(request, response);
             } else if (action.equals("add-user-byadmin")) {
                 addUserByAdmin(request, response);
+            } else if (action.equals("send-to-userdetail-admin")) {
+                sendToUserDetail(request, response);
             }
         } catch (IOException | ServletException e) {
             System.out.println(e);
@@ -413,6 +415,27 @@ public class UserController extends HttpServlet {
 
         request.getRequestDispatcher("./view/add-user-admin.jsp").forward(request, response);
     }
+    
+    private void sendToUserDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(true);
+        StaffDAO staffDAO = new StaffDAO();
+        UserDAO userDAO = new UserDAO();
+        String adminEmail = (String) session.getAttribute("adminEmail");
+        String role = request.getParameter("role")+"";
+        String id = request.getParameter("id")+"";
+        request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
+        if(role.equals("user")){
+            User user = userDAO.getUserByID(Integer.parseInt(id.trim()));
+            request.setAttribute("user", user);
+            request.getRequestDispatcher("./view/user-detail-admin.jsp").forward(request, response);
+        }else{
+            Staff staff = staffDAO.getStaffByStaffId(Integer.parseInt(id.trim()));
+            request.setAttribute("staff", staff);
+            request.getRequestDispatcher("./view/staff-detail-admin.jsp").forward(request, response);
+        }
+        
+    }
+    
 
     protected void renderUserByAdmin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -487,7 +510,12 @@ public class UserController extends HttpServlet {
         List<User> users = userDAO.getAllUsersByAdmin(pagination, 10, sortBy, nameSearch, emailSearch, mobileSearch, gender, role, statusUser);
         for (User user : users) {
             out.print("<tr>\n"
-                    + "                           <td>" + user.getUserID() + "</td>\n"
+                    + "                           <td>"
+                    + "                             <div class=\"d-flex\">\n" +
+"                                                       <img src=\""+user.getProfileImage()+"\" alt=\"avt\" width=\"27px\" height=\"27px\" class=\"rounded-circle me-2\"/>\n" +
+"                                                       <span>"+user.getFirstName()+"</span>\n" +
+"                                                   </div>"
+                    + "                            </td>\n"
                     + "                           <td>" + user.getFirstName() + "</td>\n"
                     + "                           <td>" + user.getGender() + "</td>\n"
                     + "                           <td>" + user.getEmail() + "</td>\n"

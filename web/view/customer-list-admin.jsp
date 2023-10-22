@@ -102,8 +102,10 @@
             rel="stylesheet"
             />
         <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
             rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous"
             />
     </head>
     <body>
@@ -240,13 +242,24 @@
                                 for (User user : users) {%>
                                 <tr>
                                     <td><%=user.getUserID()%></td>
-                                    <td><%=user.getFirstName()%></td>
+                                    <td>
+                                        <div class="d-flex">
+                                            <img src="<%=user.getProfileImage()%>" alt="avt" width="27px" height="27px" class="rounded-circle me-2"/>
+                                            <span><%=user.getFirstName()%></span>
+                                        </div>
+                                    </td>
                                     <td><%=user.getGender()%></td>
                                     <td><%=user.getEmail()%></td>
                                     <td><%=user.getPhoneNumber()%></td>
                                     <td><%=user.getRole()%></td>
                                     <td><%=user.isStatus()?"Active":"Inactive"%></td>
-                                    <td><a href="#"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></a></td>
+                                    <td>
+                                        <form action="user?action=send-to-userdetail-admin" method="POST">
+                                            <input type="hidden" name="role" value="<%=user.getRole()%>">
+                                            <input type="hidden" name="id" value="<%=user.getUserID()%>">
+                                            <button type="submit"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></button>
+                                        </form>
+                                    </td>    
                                 </tr>
                                 <%}%>
                             </tbody>
