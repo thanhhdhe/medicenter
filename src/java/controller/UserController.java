@@ -24,11 +24,14 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Random;
 import model.Children;
+import model.Mail;
 import model.Reservation;
 import model.Service;
 import model.Staff;
 import model.User;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
@@ -310,7 +313,6 @@ public class UserController extends HttpServlet {
         String firstName = request.getParameter("firstname");
         String lastName = request.getParameter("lastname");
         String email = request.getParameter("email");
-        String password = request.getParameter("password");
         String status = request.getParameter("status");
         String gender = request.getParameter("gender");
         String role = request.getParameter("role");
@@ -320,6 +322,16 @@ public class UserController extends HttpServlet {
         String imageURL = "resources/img/avatar.png";
         LocalDate currentDate = LocalDate.now();
         Date updateDate = Date.valueOf(currentDate);
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(10);
+        String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        
+        for (int i = 0; i < 10; i++) {
+            int randomIndex = random.nextInt(CHARACTERS.length());
+            char randomChar = CHARACTERS.charAt(randomIndex);
+            sb.append(randomChar);
+        }
+        String password = sb.toString();
 
         try {
             Part filePart = request.getPart("avartar");
@@ -361,10 +373,6 @@ public class UserController extends HttpServlet {
             check = false;
             request.setAttribute("emailErr", "*This email is existed");
         }
-        if (password.isEmpty()) {
-            check = false;
-            request.setAttribute("passwordErr", "*Password can not be left blank!");
-        }
         if (status.isEmpty()) {
             check = false;
             request.setAttribute("statusErr", "*Please choose status!");
@@ -398,8 +406,9 @@ public class UserController extends HttpServlet {
             request.setAttribute("address", address);
             request.getRequestDispatcher("./view/add-user-admin.jsp").forward(request, response);
         } else {
+            Mail.sendEmail(email, "Your Password of Medilab",password);
             if (role.equals("user")) {
-                User newUser = new User(address, email, password, firstName, lastName, gender, mobile, imageURL, status.equals("active"), updateDate);
+                User newUser = new User(address, email, DigestUtils.md5Hex(password), firstName, lastName, gender, mobile, imageURL, status.equals("active"), updateDate);
                 userDAO.insert(newUser);
             } else {
                 Staff staff = new Staff("Dr." + firstName, password, email, lastName + " " + firstName, gender, mobile, imageURL, role, "", "", "");

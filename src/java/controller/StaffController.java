@@ -154,10 +154,10 @@ public class StaffController extends HttpServlet {
                 renderReservationOfStaff(request, response);
                 break;
             case "changerole":
-//                if (!isAdmin) {
-//                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
-//                    break;
-//                }
+                if (!isAdmin) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
                 changeRole(request, response);
                 break;
 
@@ -212,9 +212,8 @@ public class StaffController extends HttpServlet {
             throws ServletException, IOException {
         String id = (String) request.getParameter("id");
         String role = (String) request.getParameter("role");
-        Logger logger = Logger.getLogger(StaffController.class.getName());
-        logger.log(Level.INFO, "vão ò :" +id +"  "+ role);
-        System.out.println("vão ò :" +id +"  "+ role);
+//        Logger logger = Logger.getLogger(StaffController.class.getName());
+//        logger.log(Level.INFO, "vão ò :" +id +"  "+ role);
         HttpSession session = request.getSession(true);
         StaffDAO staffDAO = new StaffDAO();
         String adminEmail = (String) session.getAttribute("adminEmail");
