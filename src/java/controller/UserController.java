@@ -24,11 +24,14 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Random;
 import model.Children;
+import model.Mail;
 import model.Reservation;
 import model.Service;
 import model.Staff;
 import model.User;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
@@ -265,6 +268,8 @@ public class UserController extends HttpServlet {
                 addUserByAdmin(request, response);
             } else if (action.equals("send-to-userdetail-admin")) {
                 sendToUserDetail(request, response);
+            } else if (action.equals("onoff-status")) {
+                onOffStatusUser(request, response);
             }
         } catch (IOException | ServletException e) {
             System.out.println(e);
@@ -308,7 +313,6 @@ public class UserController extends HttpServlet {
         String firstName = request.getParameter("firstname");
         String lastName = request.getParameter("lastname");
         String email = request.getParameter("email");
-        String password = request.getParameter("password");
         String status = request.getParameter("status");
         String gender = request.getParameter("gender");
         String role = request.getParameter("role");
@@ -318,6 +322,16 @@ public class UserController extends HttpServlet {
         String imageURL = "resources/img/avatar.png";
         LocalDate currentDate = LocalDate.now();
         Date updateDate = Date.valueOf(currentDate);
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(10);
+        String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        
+        for (int i = 0; i < 10; i++) {
+            int randomIndex = random.nextInt(CHARACTERS.length());
+            char randomChar = CHARACTERS.charAt(randomIndex);
+            sb.append(randomChar);
+        }
+        String password = sb.toString();
 
         try {
             Part filePart = request.getPart("avartar");
@@ -359,10 +373,6 @@ public class UserController extends HttpServlet {
             check = false;
             request.setAttribute("emailErr", "*This email is existed");
         }
-        if (password.isEmpty()) {
-            check = false;
-            request.setAttribute("passwordErr", "*Password can not be left blank!");
-        }
         if (status.isEmpty()) {
             check = false;
             request.setAttribute("statusErr", "*Please choose status!");
@@ -396,8 +406,9 @@ public class UserController extends HttpServlet {
             request.setAttribute("address", address);
             request.getRequestDispatcher("./view/add-user-admin.jsp").forward(request, response);
         } else {
+            Mail.sendEmail(email, "Your Password of Medilab",password);
             if (role.equals("user")) {
-                User newUser = new User(address, email, password, firstName, lastName, gender, mobile, imageURL, status.equals("active"), updateDate);
+                User newUser = new User(address, email, DigestUtils.md5Hex(password), firstName, lastName, gender, mobile, imageURL, status.equals("active"), updateDate);
                 userDAO.insert(newUser);
             } else {
                 Staff staff = new Staff("Dr." + firstName, password, email, lastName + " " + firstName, gender, mobile, imageURL, role, "", "", "");
@@ -528,11 +539,30 @@ public class UserController extends HttpServlet {
                 out.print("Inactive");
             }
             out.print("</td>\n"
-                    + "                           <td><a href=\"#\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\" width=\"25px\"/></a></td>\n"
+                    + "                           <td><form action=\"user?action=send-to-userdetail-admin\" method=\"POST\">\n" +
+"                                            <input type=\"hidden\" name=\"role\" value=\""+user.getRole()+"\">\n" +
+"                                            <input type=\"hidden\" name=\"id\" value=\""+user.getUserID()+"\">\n" +
+"                                            <button type=\"submit\" class=\"btn py-0\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\" width=\"25px\"/></button>\n" +
+"                                        </form></td>\n"
                     + "                       </tr>");
         }
     }
 
+    private void onOffStatusUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(true);
+        StaffDAO staffDAO = new StaffDAO();
+        UserDAO userDAO = new UserDAO();
+        String adminEmail = (String) session.getAttribute("adminEmail");
+        String id = request.getParameter("id")+"";
+        request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
+        User user = userDAO.getUserByID(Integer.parseInt(id.trim()));
+        user.setStatus(!user.isStatus());
+        userDAO.updateStatus(user.isStatus(), 0);
+        request.setAttribute("user", user);
+        request.getRequestDispatcher("./view/user-detail-admin.jsp").forward(request, response);
+        
+    }
+    
     /**
      * Returns a short description of the servlet.
      *
@@ -542,5 +572,6 @@ public class UserController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
 
 }

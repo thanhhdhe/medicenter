@@ -257,7 +257,7 @@
                                         <form action="user?action=send-to-userdetail-admin" method="POST">
                                             <input type="hidden" name="role" value="<%=user.getRole()%>">
                                             <input type="hidden" name="id" value="<%=user.getUserID()%>">
-                                            <button type="submit"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></button>
+                                            <button type="submit" class="btn py-0"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></button>
                                         </form>
                                     </td>    
                                 </tr>

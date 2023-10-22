@@ -196,7 +196,6 @@
                         String firstNameErr = request.getAttribute("firstNameErr")+"";
                         String lastNameErr = request.getAttribute("lastNameErr")+"";
                         String emailErr = request.getAttribute("emailErr")+"";
-                        String passwordErr = request.getAttribute("passwordErr")+"";
                         String statusErr = request.getAttribute("statusErr")+"";
                         String genderErr = request.getAttribute("genderErr")+"";
                         String roleErr = request.getAttribute("roleeErr")+"";
@@ -236,11 +235,6 @@
                                     <label for="email" class="detail-info">Email</label>
                                     <input type="email" class="form-control w-75" id="email" name="email" value="<%=email%>">
                                     <%if(!emailErr.equals("null")){%>    <p class="text-danger"><%=emailErr%></p><%}%>
-                                </div>
-                                <div class="form-group mt-3">
-                                    <label for="password" class="detail-info">Password</label>
-                                    <input type="password" class="form-control w-75" id="password" name="password">
-                                    <%if(!passwordErr.equals("null")){%>    <p class="text-danger"><%=passwordErr%></p><%}%>
                                 </div>
                                 <div class="d-flex">
                                     <div class="form-group mt-3 col-md-5 ps-5">

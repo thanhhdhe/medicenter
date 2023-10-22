@@ -87,15 +87,25 @@ public class FeedBackDAO extends MyDAO {
     // fillter
     public List<FeedBack> getPageFeedBackByFill(int index, String Fill, String Fillter) {
         List<FeedBack> feedbacks = new ArrayList<>();
-        xSql = "select * from Feedbacks\n"
+        if(index == -1){
+            xSql = "select * from Feedbacks\n"
+                + "where " + Fillter + " = ?\n"
+                + "ORDER BY FeedbackID;";
+        } else {
+            xSql = "select * from Feedbacks\n"
                 + "where " + Fillter + " = ?\n"
                 + "ORDER BY FeedbackID\n"
                 + "OFFSET ? Rows fetch next 10 rows ONLY;";
+        }
+        
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, Fill);
             // set index for offser (page)
-            ps.setInt(2, (index - 1) * 10); //page 0 -> index 0 page 1 -> index 10
+            
+            if (index != -1) {
+                ps.setInt(2, (index - 1) * 10);
+            } //page 0 -> index 0 page 1 -> index 10
             rs = ps.executeQuery();
             while (rs.next()) {
                 feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
@@ -128,17 +138,28 @@ public class FeedBackDAO extends MyDAO {
     //get list for fill service 
     public List<FeedBack> getPageFeedBackByFillSer(int index, String Fill) {
         List<FeedBack> feedbacks = new ArrayList<>();
-        xSql = "SELECT F.*, M.ServiceID\n"
-                + "FROM Feedbacks F\n"
-                + "INNER JOIN MedicalExaminations M ON F.MedicalExaminationID = M.MedicalExaminationID\n"
-                + "WHERE M.ServiceID = ?\n"
-                + "ORDER BY FeedbackID\n"
-                + "OFFSET ? Rows fetch next 10 rows ONLY;";
+        if (index == -1) {
+            xSql = "SELECT F.*, M.ServiceID\n"
+                    + "FROM Feedbacks F\n"
+                    + "INNER JOIN MedicalExaminations M ON F.MedicalExaminationID = M.MedicalExaminationID\n"
+                    + "WHERE M.ServiceID = ?\n"
+                    + "ORDER BY FeedbackID;";
+        } else {
+            xSql = "SELECT F.*, M.ServiceID\n"
+                    + "FROM Feedbacks F\n"
+                    + "INNER JOIN MedicalExaminations M ON F.MedicalExaminationID = M.MedicalExaminationID\n"
+                    + "WHERE M.ServiceID = ?\n"
+                    + "ORDER BY FeedbackID\n"
+                    + "OFFSET ? Rows fetch next 10 rows ONLY;";
+        }
+
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, Fill);
             // set index for offser (page)
-            ps.setInt(2, (index - 1) * 10); //page 0 -> index 0 page 1 -> index 5
+            if (index != -1) {
+                ps.setInt(2, (index - 1) * 10);
+            } //page 0 -> index 0 page 1 -> index 5
             rs = ps.executeQuery();
             while (rs.next()) {
                 feedbacks.add(new FeedBack(rs.getInt(1), rs.getInt(2), rs.getInt(3),
@@ -386,7 +407,7 @@ public class FeedBackDAO extends MyDAO {
 
     public float getTotalAverageStarByDay(Date startDate, Date endDate) {
         xSql = "select AVG(Cast(f.RatedStar as Float)) as AverageStar from Feedbacks f "
-//                + "left join MedicalExaminations m on f.MedicalExaminationID = m.MedicalExaminationID "
+                //                + "left join MedicalExaminations m on f.MedicalExaminationID = m.MedicalExaminationID "
                 + "where DATEDIFF(DAY, ? ,f.FeedbackDate) >= 0 AND DATEDIFF(DAY, ?, f.FeedbackDate) <= 0";
         try {
             ps = con.prepareStatement(xSql);
@@ -403,7 +424,7 @@ public class FeedBackDAO extends MyDAO {
         }
         return 0;
     }
-    
+
     public float getAverageStarByDayAndService(Date startDate, Date endDate, int serviceID) {
         xSql = "select AVG(Cast(f.RatedStar as Float)) as AverageStar from Feedbacks f "
                 + "left join MedicalExaminations m on f.MedicalExaminationID = m.MedicalExaminationID "
@@ -428,12 +449,11 @@ public class FeedBackDAO extends MyDAO {
     public static void main(String[] args) {
         FeedBackDAO dao = new FeedBackDAO();
         //System.out.println(dao.getTotalFeedback());
-         
+
 //          FeedBack fe = dao.getFeedbackDetail(10);
 //          System.out.println(fe.getFullName());
 //        for (MedicalExamination f : feedbacks) {
 //            System.out.println(f.getMchildrenID());
 //        }
-
     }
 }

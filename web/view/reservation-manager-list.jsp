@@ -88,7 +88,7 @@
                             <span><%=curStaff.getRole()%></span>
                         </div>
                     </div>
-                        <%if(isStaff){%>    
+                    <%if(isStaff){%>    
                     <div class="navbar-nav w-100  text-light">
                         <a href="staff?event=send-to-reservations-list" class="nav-item nav-link active"
                            ><i class="fas fa-list-alt"></i>Reservations List</a
@@ -202,11 +202,27 @@
 
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
-                    <div class="" >
-                        <button style="border: 0px; border-radius: 5px; background-color: #6994eb; font-family: fantasy" id="sortButton" onclick="toggleSort()">
-                            Unsort
-                        </button>
+                    <div class="d-flex justify-content-center">
+                        <div class="" >
+                            <button style="border: 0px; border-radius: 5px; background-color: #6994eb; font-family: fantasy" id="sortButton" onclick="toggleSort()">
+                                Unsort
+                            </button>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card p-3">
+                                <% List<Staff> staffList= staffDAO.getStaffsByRole("doctor"); %>
+                                <c:set var="staffList" value="<%= staffList %>" />
+                                <select class="dropdown-item" name="staff" id="staffid">
+                                    <c:forEach var="staff" items="${staffList}">                                                                                                                  
+                                        <option value="${staff.getStaffID()}">${staff.getStaffName()}</option>                                                                                                                  
+                                    </c:forEach>
+                                </select>
+
+                            </div>
+                        </div>
+                        
                     </div>
+
                     <div
                         class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0"
                         >
@@ -279,7 +295,7 @@
                                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                                             <c:forEach var="listdoctor" items="<%= staff %>">
                                                                 <li><a class="dropdown-item status-change" href="#" onclick="changeDoctor(this, ${listdoctor.getStaffID()},${reservation.getReservationID()})">${listdoctor.getStaffName()}</a></li>
-                                                            </c:forEach>
+                                                                </c:forEach>
                                                         </ul>
 
                                                     </div>
@@ -347,124 +363,177 @@
             integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
             crossorigin="anonymous"
         ></script>
-
-        <!-- Template Javascript -->
         <script>
-                                                                document.querySelector('.sidebar-toggler').addEventListener('click', function () {
-                                                                    var sidebar = document.querySelector('.sidebar');
-                                                                    var content = document.querySelector('.content');
+                                                                $(document).ready(function () {
+                                                                    // Sự kiện onmouseenter cho "Fillter"
+                                                                    $('.nav-item.dropdown').on('mouseenter', function () {
+                                                                        $(this).find('.dropdown-menu').first().stop(true, true).slideDown(200);
+                                                                    });
 
-                                                                    sidebar.classList.toggle('open');
-                                                                    content.classList.toggle('open');
-
-                                                                    return false;
-                                                                });
-                                                                // Khởi tạo biến để theo dõi trạng thái của nút
-                                                                var isSorted = false;
-                                                                var paginationButtons = document.querySelectorAll('.pagination-btn');
-                                                                paginationButtons.forEach(function (button) {
-                                                                    button.addEventListener('click', function (event) {
-                                                                        event.preventDefault(); // Ngăn chặn trình duyệt chuyển đến URL trong thẻ 'a'
-
-                                                                        if (!this.classList.contains('active')) {
-                                                                            document.querySelectorAll('.pagination-btn').forEach(function (paginationBtn) {
-                                                                                if (paginationBtn.classList.contains('active')) {
-                                                                                    paginationBtn.classList.remove('active');
-                                                                                }
-                                                                            });
-                                                                            this.classList.add('active');
-
-                                                                            var page = this.dataset.page;
-                                                                            if (isSorted) {
-                                                                                loadPageServices(page, "sort"); // Gọi hàm loadServices() để tải danh sách dịch vụ của trang được chọn
-                                                                            } else {
-                                                                                loadPageServices(page, "");
-                                                                            }
-
-                                                                        }
+                                                                    // Sự kiện onmouseleave để ẩn dropdown menu
+                                                                    $('.nav-item.dropdown').on('mouseleave', function () {
+                                                                        $(this).find('.dropdown-menu').first().stop(true, true).slideUp(200);
                                                                     });
                                                                 });
 
+        </script>
+        <!-- Template Javascript -->
+        <script>
+            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+                var sidebar = document.querySelector('.sidebar');
+                var content = document.querySelector('.content');
 
-                                                                // Hàm thực hiện việc thay đổi giá trị của nút và gọi loadPageServices
-                                                                function toggleSort() {
-                                                                    // Lấy thẻ button bằng id
-                                                                    var sortButton = document.querySelector('#sortButton');
+                sidebar.classList.toggle('open');
+                content.classList.toggle('open');
 
-                                                                    if (isSorted) {
-                                                                        // Nếu đã được sắp xếp (sort), thay đổi giá trị và gọi loadPageServices với giá trị "unsort"
-                                                                        sortButton.textContent = "Unsort";
-                                                                        loadPageServices(1, "");
-                                                                    } else {
-                                                                        // Nếu chưa được sắp xếp (unsort), thay đổi giá trị và gọi loadPageServices với giá trị "sort"
-                                                                        sortButton.textContent = "Sort";
-                                                                        loadPageServices(1, "sort");
-                                                                    }
+                return false;
+            });
+            // Khởi tạo biến để theo dõi trạng thái của nút
+            var isSorted = false;
+            var paginationButtons = document.querySelectorAll('.pagination-btn');
+            paginationButtons.forEach(function (button) {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault(); // Ngăn chặn trình duyệt chuyển đến URL trong thẻ 'a'
 
-                                                                    // Đảo ngược trạng thái của biến
-                                                                    isSorted = !isSorted;
-                                                                }
-                                                                // Hàm tải dữ liệu của trang bằng Ajax
-                                                                function loadPageServices(page, sortType) {
-                                                                    // Gửi yêu cầu Ajax đến Servlet với tham số trang
+                    if (!this.classList.contains('active')) {
+                        document.querySelectorAll('.pagination-btn').forEach(function (paginationBtn) {
+                            if (paginationBtn.classList.contains('active')) {
+                                paginationBtn.classList.remove('active');
+                            }
+                        });
+                        this.classList.add('active');
 
-                                                                    var xhr = new XMLHttpRequest();
-                                                                    xhr.open('POST', 'reservationcontactmanager?event=reservation-list-paging&page=' + page
-                                                                            + '&sortstatus=' + sortType);
+                        var page = this.dataset.page;
+                        if (isSorted) {
+                            loadPageServices(page, "sort"); // Gọi hàm loadServices() để tải danh sách dịch vụ của trang được chọn
+                        } else {
+                            loadPageServices(page, "");
+                        }
 
-                                                                    xhr.onload = function () {
-                                                                        if (xhr.status === 200) {
-                                                                            // Xử lý dữ liệu trả về từ máy chủ và cập nhật nội dung trang
-                                                                            document.querySelector('#service-list').innerHTML = xhr.responseText;
-                                                                        } else {
-                                                                            console.error('Error:', xhr.status);
-                                                                        }
-                                                                    };
+                    }
+                });
+            });
 
-                                                                    xhr.onerror = function () {
-                                                                        console.error('Error:', xhr.status);
-                                                                    };
 
-                                                                    xhr.send();
-                                                                }
-                                                                function changestatus(a, uid) {
-                                                                    var text = a.textContent;
-                                                                    var textchange = document.getElementById("statusBadge-" + uid);
-                                                                    textchange.textContent = text;
+            // Hàm thực hiện việc thay đổi giá trị của nút và gọi loadPageServices
+            function toggleSort() {
+                // Lấy thẻ button bằng id
+                var sortButton = document.querySelector('#sortButton');
 
-                                                                    // Gửi yêu cầu Ajax đến servlet
-                                                                    var xhr = new XMLHttpRequest();
-                                                                    xhr.open("POST", "reservationcontactmanager?event=updatestatus&status=" + text + "&reservationID=" + uid, true);
+                if (isSorted) {
+                    // Nếu đã được sắp xếp (sort), thay đổi giá trị và gọi loadPageServices với giá trị "unsort"
+                    sortButton.textContent = "Unsort";
+                    loadPageServices(1, "");
+                } else {
+                    // Nếu chưa được sắp xếp (unsort), thay đổi giá trị và gọi loadPageServices với giá trị "sort"
+                    sortButton.textContent = "Sort";
+                    loadPageServices(1, "sort");
+                }
 
-                                                                    xhr.onload = function () {
+                // Đảo ngược trạng thái của biến
+                isSorted = !isSorted;
+            }
+            // Hàm tải dữ liệu của trang bằng Ajax
+            function loadPageServices(page, sortType) {
+                // Gửi yêu cầu Ajax đến Servlet với tham số trang
 
-                                                                    };
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'reservationcontactmanager?event=reservation-list-paging&page=' + page
+                        + '&sortstatus=' + sortType);
 
-                                                                    xhr.onerror = function () {
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        // Xử lý dữ liệu trả về từ máy chủ và cập nhật nội dung trang
+                        document.querySelector('#service-list').innerHTML = xhr.responseText;
+                    } else {
+                        console.error('Error:', xhr.status);
+                    }
+                };
 
-                                                                    };
+                xhr.onerror = function () {
+                    console.error('Error:', xhr.status);
+                };
 
-                                                                    xhr.send();
-                                                                }
-                                                                function changeDoctor(a, doctorId, reservationID) {
-                                                                    var text = a.textContent;
-                                                                    var textchange = document.getElementById("doctorBadge-" + reservationID);
-                                                                    textchange.textContent = text;
+                xhr.send();
+            }
+            function changestatus(a, uid) {
+                var text = a.textContent;
+                var textchange = document.getElementById("statusBadge-" + uid);
+                textchange.textContent = text;
 
-                                                                    // Gửi yêu cầu Ajax đến servlet
-                                                                    var xhr = new XMLHttpRequest();
-                                                                    xhr.open("POST", "reservationcontactmanager?event=updatedoctor&doctorID=" + doctorId +"&reservationID="+reservationID, true);
+                // Gửi yêu cầu Ajax đến servlet
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "reservationcontactmanager?event=updatestatus&status=" + text + "&reservationID=" + uid, true);
 
-                                                                    xhr.onload = function () {
+                xhr.onload = function () {
 
-                                                                    };
+                };
 
-                                                                    xhr.onerror = function () {
+                xhr.onerror = function () {
 
-                                                                    };
+                };
 
-                                                                    xhr.send();
-                                                                }
+                xhr.send();
+            }
+            function changeDoctor(a, doctorId, reservationID) {
+                var text = a.textContent;
+                var textchange = document.getElementById("doctorBadge-" + reservationID);
+                textchange.textContent = text;
+
+                // Gửi yêu cầu Ajax đến servlet
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "reservationcontactmanager?event=updatedoctor&doctorID=" + doctorId + "&reservationID=" + reservationID, true);
+
+                xhr.onload = function () {
+
+                };
+
+                xhr.onerror = function () {
+
+                };
+
+                xhr.send();
+            }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                var searchInputs = document.querySelectorAll('select[name="staff"]');
+                searchInputs.forEach(function (input) {
+                    input.addEventListener('change', function () {
+                        var page = this.dataset.page;
+                        if(page === null){
+                            loadPageServicesBFill(1);
+                        } else {
+                            loadPageServicesBFill(page);
+                        }
+                        
+                    });
+                });
+            });
+
+
+            // Hàm tải dữ liệu của trang bằng Ajax
+            function loadPageServicesBFill(page) {
+                // Gửi yêu cầu Ajax đến Servlet với tham số trang
+                var staff = document.querySelector('select[name="staff"]').value;
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'reservationcontactmanager?event=fillter&page=' + page
+                        + "&staffId=" + staff);
+
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        // Xử lý dữ liệu trả về từ máy chủ và cập nhật nội dung trang
+                        document.querySelector('#service-list').innerHTML = xhr.responseText;
+                    } else {
+                        console.error('Error:', xhr.status);
+                    }
+                };
+
+                xhr.onerror = function () {
+                    console.error('Error:', xhr.status);
+                };
+
+                xhr.send();
+            }
         </script>
     </body>
 </html>

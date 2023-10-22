@@ -16,6 +16,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Reservation;
 import model.Staff;
 
@@ -53,6 +55,9 @@ public class StaffController extends HttpServlet {
         Staff curStaff = staffDAO.getStaffByStaffEmail(email);
         boolean isManager = false;
         boolean isStaff = false;
+        boolean isAdmin = false;
+        String adminEmail = (String) session.getAttribute("adminEmail")+"";
+        if(adminEmail.contains("@"))isAdmin=true;
         if (curStaff != null) {
             if (curStaff.getRole().equals("manager")) {
                 isManager = true;
@@ -148,6 +153,13 @@ public class StaffController extends HttpServlet {
                 }
                 renderReservationOfStaff(request, response);
                 break;
+            case "changerole":
+                if (!isAdmin) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
+                changeRole(request, response);
+                break;
 
         }
     }
@@ -194,6 +206,23 @@ public class StaffController extends HttpServlet {
             session.setAttribute("staff", staff);
             request.getRequestDispatcher("./view/staff-dashboard.jsp").forward(request, response);
         }
+    }
+    
+    protected void changeRole(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String id = (String) request.getParameter("id");
+        String role = (String) request.getParameter("role");
+//        Logger logger = Logger.getLogger(StaffController.class.getName());
+//        logger.log(Level.INFO, "vão ò :" +id +"  "+ role);
+        HttpSession session = request.getSession(true);
+        StaffDAO staffDAO = new StaffDAO();
+        String adminEmail = (String) session.getAttribute("adminEmail");
+        Staff staff = staffDAO.getStaffByStaffId(Integer.parseInt(id.trim()));
+        staff.setRole(role);
+        staffDAO.updateStaff(staff);
+        request.setAttribute("staff", staff);
+        request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
+        request.getRequestDispatcher("./view/staff-detail-admin.jsp").forward(request, response);
     }
 
     protected void renderReservationOfStaff(HttpServletRequest request, HttpServletResponse response)
@@ -299,5 +328,7 @@ public class StaffController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
+    
 
 }
