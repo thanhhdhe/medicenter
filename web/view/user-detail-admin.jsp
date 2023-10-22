@@ -212,7 +212,7 @@
                                                     <p class="text-secondary mb-1"><%=user.getGender()%></p>
                                                     <p class="text-muted font-size-sm"><%=user.getAddress()%></p>
                                                     <div class="form-check form-switch d-flex align-items-center">
-                                                        <input class="form-check-input me-2" type="checkbox" id="flexSwitchCheckDefault" <%=user.isStatus()?"checked":""%> onchange="sendToDetailManage(<%=user.getUserID()%>)" style="height: 24px;width: 47px;">
+                                                        <input class="form-check-input me-2" type="checkbox" id="flexSwitchCheckDefault" <%=user.isStatus()?"checked":""%> onchange="toggleStatusUser(<%=user.getUserID()%>)" style="height: 24px;width: 47px;">
                                                         <%if(user.isStatus()){%><p class="status bg-success text-white m-0 p-1 fit-content-width rounded-1 text-center">Active</p> 
                                                         <%}else{%> 
                                                         <p class="status bg-danger text-light m-0 p-1 fit-content-width rounded-1 text-center">Inactive</p><%}%>
@@ -366,6 +366,10 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
+        <script>
+            function  toggleStatusUser(userID){
+      window.location.href = "user?action=onoff-status&id="+userID;
+  }
+        </script>
     </body>
 </html>

@@ -265,6 +265,8 @@ public class UserController extends HttpServlet {
                 addUserByAdmin(request, response);
             } else if (action.equals("send-to-userdetail-admin")) {
                 sendToUserDetail(request, response);
+            } else if (action.equals("onoff-status")) {
+                onOffStatusUser(request, response);
             }
         } catch (IOException | ServletException e) {
             System.out.println(e);
@@ -533,6 +535,21 @@ public class UserController extends HttpServlet {
         }
     }
 
+    private void onOffStatusUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(true);
+        StaffDAO staffDAO = new StaffDAO();
+        UserDAO userDAO = new UserDAO();
+        String adminEmail = (String) session.getAttribute("adminEmail");
+        String id = request.getParameter("id")+"";
+        request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
+        User user = userDAO.getUserByID(Integer.parseInt(id.trim()));
+        user.setStatus(!user.isStatus());
+        userDAO.updateStatus(user.isStatus(), 0);
+        request.setAttribute("user", user);
+        request.getRequestDispatcher("./view/user-detail-admin.jsp").forward(request, response);
+        
+    }
+    
     /**
      * Returns a short description of the servlet.
      *
@@ -542,5 +559,6 @@ public class UserController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+
 
 }
