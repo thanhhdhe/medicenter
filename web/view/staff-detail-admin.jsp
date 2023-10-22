@@ -258,7 +258,15 @@
                                                     <h6 class="mb-0">Role</h6>
                                                 </div>
                                                 <div class="col-sm-9 text-secondary">
-                                                    <%=user.getRole()%>
+                                                    <%if(user.getRole().equals("admin")){%>
+                                                    Admin<%}else{%>
+                                                    <select class="form-control" onchange="changeRole(this.value,<%=user.getStaffID()%>)">
+                                                        <option value="doctor" <%=user.getRole().equals("doctor") ? "selected" : ""%>>Doctor</option>
+                                                        <option value="nurse" <%=user.getRole().equals("nurse") ? "selected" : ""%>>Nurse</option>
+                                                        <option value="manager" <%=user.getRole().equals("manager") ? "selected" : ""%>>Manager</option>
+                                                    </select>
+                                                    <%}%>
+                                                    
                                                 </div>
                                             </div>
                                             <hr>
@@ -345,6 +353,9 @@
         <script>
                                                             function  toggleStatusUser(userID) {
                                                                 window.location.href = "user?action=onoff-status&id=" + userID;
+                                                            }
+                                                            function changeRole(role,id){
+                                                                window.location.href = "staff?event=changerole&id=" + id+"&role="+role;
                                                             }
         </script>
     </body>

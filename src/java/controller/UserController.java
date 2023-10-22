@@ -530,7 +530,11 @@ public class UserController extends HttpServlet {
                 out.print("Inactive");
             }
             out.print("</td>\n"
-                    + "                           <td><a href=\"#\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\" width=\"25px\"/></a></td>\n"
+                    + "                           <td><form action=\"user?action=send-to-userdetail-admin\" method=\"POST\">\n" +
+"                                            <input type=\"hidden\" name=\"role\" value=\""+user.getRole()+"\">\n" +
+"                                            <input type=\"hidden\" name=\"id\" value=\""+user.getUserID()+"\">\n" +
+"                                            <button type=\"submit\" class=\"btn py-0\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\" width=\"25px\"/></button>\n" +
+"                                        </form></td>\n"
                     + "                       </tr>");
         }
     }

@@ -310,6 +310,32 @@ public class StaffDAO extends MyDAO {
             e.printStackTrace();
         }
     }
+    
+     public void updateStaff(Staff staff) {
+         String sql = "UPDATE Staff SET Email = ?, Password = ?, FullName = ?, Gender = ?, PhoneNumber = ?, ProfileImage = ?, StaffRole = ?, Rank = ?, Specialty = ?, Introduction = ?, SpecializedActivities = ?, ProfessionalAchievements = ?, DepthStudy = ? WHERE StaffId = ?";
+        try {
+            ps = connection.prepareStatement(sql);
+            ps.setString(1, staff.getEmail());
+            ps.setString(2, staff.getPassword());
+            ps.setString(3, staff.getFullName());
+            ps.setString(4, staff.getGender());
+            ps.setString(5, staff.getPhoneNumber());
+            ps.setString(6, staff.getProfileImage());
+            ps.setString(7, staff.getRole());
+            ps.setString(8, staff.getRank());
+            ps.setString(9, staff.getSpecialty());
+            ps.setString(10, staff.getIntroduction());
+            ps.setString(11, staff.getSpecializedActivities());
+            ps.setString(12, staff.getProfessionalAchievements());
+            ps.setString(13, staff.getDepthStudy());
+            ps.setInt(14, staff.getStaffID());
+
+            ps.executeUpdate();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void main(String[] args) {
         StaffDAO staffDAO = new StaffDAO();
@@ -320,11 +346,14 @@ public class StaffDAO extends MyDAO {
 
         //System.out.println(staffDAO.getStaffByStaffEmail("lethanglrf@gmail.com").getFullName());
 //        System.out.println(staffDAO.getStaffByStaffEmail("lethanglrf@gmail.com").getFullName());
-        List<Staff> list = staffDAO.getStaffListPage(0, 6, "", "");
-        for (Staff staff : list) {
-            System.out.println(staff.getFullName());
-        }
-        
-        
+//        List<Staff> list = staffDAO.getStaffListPage(0, 6, "", "");
+//        for (Staff staff : list) {
+//            System.out.println(staff.getFullName());
+//        }
+//        Staff staff = staffDAO.getStaffByStaffId(4);
+//        System.out.println(staff.getRole());
+//        staff.setRole("doctor");
+//        staffDAO.updateStaff(staff);
+//        System.out.println(staff.getRole());
     }
 }
