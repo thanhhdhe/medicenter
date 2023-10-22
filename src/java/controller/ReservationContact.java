@@ -94,12 +94,12 @@ public class ReservationContact extends HttpServlet {
                         + "<td>\n"
                         + "                                                    <div class=\"dropdown\">\n"
                         + "                                                        <button style=\"border: 0px; padding: 0px\" type=\"button\" id=\"dropdownMenuButton1\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">\n"
-                        + "                                                            <span class=\"badge bg-primary\"  id=\"statusBadge-" + staffa.getStaffID() + "\">" + staffa.getStaffName() + " </span>\n"
+                        + "                                                            <span class=\"badge bg-primary\"  id=\"doctorBadge-" + reservation.getReservationID() + "\">" + staffa.getStaffName() + " </span>\n"
                         + "                                                        </button>\n"
                         + "                                                        <ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenuLink\">\n");
                 for (Staff varstaff : stafflist) {
                     out.println(
-                            "                                                                <li><a class=\"dropdown-item status-change\" href=\"#\" onclick=\"changestatus(this, ${reservation.getReservationID()})\">" + varstaff.getStaffName() + "</a></li>\n");
+                            "                                                                <li><a class=\"dropdown-item status-change\" href=\"#\" onclick=\"changeDoctor(this," + varstaff.getStaffID()+ " , " + reservation.getReservationID() + ")\">" + varstaff.getStaffName() + "</a></li>\n");
                 }
                 out.println(
                         "                                                        </ul>\n"
@@ -140,7 +140,65 @@ public class ReservationContact extends HttpServlet {
             String doctorID = request.getParameter("doctorID");
             String reservationID = request.getParameter("reservationID");
             reservationdao.updateDoctor(doctorID, reservationID);
-        } 
+        } else if(event.equals("fillter")){
+            //get parameter
+            String page = request.getParameter("page");
+            String staffid = request.getParameter("staffId");
+            System.out.println(staffid);
+            // get list reservation
+            List<Reservation> listreservation = reservationdao.getReservationAllByPagingFill(1, staffid);
+            //get information of user
+            StaffDAO staffDAO = new StaffDAO();
+            ServiceDAO serviceDAO = new ServiceDAO();
+            UserDAO userdao = new UserDAO();
+            ChildrenDAO childrenDAO = new ChildrenDAO();
+            for (Reservation reservation : listreservation) {
+                Service service = serviceDAO.getServiceByID(reservation.getServiceID() + "");
+                User user = userdao.getUserByID(reservation.getUserID());
+                Staff staffa = staffDAO.getStaffByStaffId(reservation.getStaffID());
+                Children children = childrenDAO.getChildrenByChildrenId(reservation.getChildID() + "");
+                List<Staff> stafflist = staffDAO.getStaffsBySlot(String.valueOf(reservation.getReservationDate()), reservation.getReservationSlot() + "");
+
+                out.println("<tr>\n"
+                        + "                                                    <td>" + reservation.getReservationID() + "</td>\n"
+                        + "                                                    <td>" + service.getTitle() + "</td>\n"
+                        + "                                                    <td>" + user.getFirstName() + user.getLastName() + "</td>\n"
+                        + "                                                    <td>" + children.getChildName() + "</td>\n"
+                        + "                                                    <td>" + reservation.getReservationDate() + "</td>\n"
+                        + "                                                    <td>" + reservation.getReservationSlot() + "</td>\n"
+                        + "<td>\n"
+                        + "                                                    <div class=\"dropdown\">\n"
+                        + "                                                        <button style=\"border: 0px; padding: 0px\" type=\"button\" id=\"dropdownMenuButton1\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">\n"
+                        + "                                                            <span class=\"badge bg-primary\"  id=\"doctorBadge-" + reservation.getReservationID() + "\">" + staffa.getStaffName() + " </span>\n"
+                        + "                                                        </button>\n"
+                        + "                                                        <ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenuLink\">\n");
+                for (Staff varstaff : stafflist) {
+                    out.println(
+                            "                                                                <li><a class=\"dropdown-item status-change\" href=\"#\" onclick=\"changeDoctor(this," + varstaff.getStaffID()+ " ," + reservation.getReservationID() + ")\">" + varstaff.getStaffName() + "</a></li>\n");
+                }
+                out.println(
+                        "                                                        </ul>\n"
+                        + "\n"
+                        + "                                                    </div>\n"
+                        + "                                                </td>"
+                        + "<td><div class=\"dropdown\">\n"
+                        + "                                                        <button style=\"border: 0px ; padding: 0px;\" type=\"button\" id=\"dropdownMenuButton1\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">\n"
+                        + "                                                            <span class=\"badge bg-primary\"  id=\"statusBadge-" + reservation.getReservationID() + "\">" + reservation.getStatus() + "</span>\n"
+                        + "                                                        </button>\n"
+                        + "                                                        <ul class=\"dropdown-menu\" aria-labelledby=\"dropdownMenuLink\">\n"
+                        + "                                                            <li><a class=\"dropdown-item status-change\" href=\"#\" onclick=\"changestatus(this, " + reservation.getReservationID() + ")\">Cancel</a></li>\n"
+                        + "                                                            <li><a class=\"dropdown-item status-change\" href=\"#\" onclick=\"changestatus(this, " + reservation.getReservationID() + ")\">Pending</a></li>\n"
+                        + "                                                            <li><a class=\"dropdown-item status-change\" href=\"#\" onclick=\"changestatus(this, " + reservation.getReservationID() + ")\">waiting for examination</a></li>\n"
+                        + "                                                            <li><a class=\"dropdown-item status-change\" href=\"#\" onclick=\"changestatus(this, " + reservation.getReservationID() + ")\">waiting for examination</a></li>\n"
+                        + "                                                        </ul>\n"
+                        + "                                                    </div> </td>"
+                        + "                                                    <td>" + reservation.getCost() + "</td>\n"
+                        + "                                                    <td><a href=\"staff?event=send-to-reservation-manager-detail&reserdid=" + reservation.getReservationID() + "\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\" width=\"25px\"/></a></td>"
+                        + " </tr>");
+
+            }
+        }
+                
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

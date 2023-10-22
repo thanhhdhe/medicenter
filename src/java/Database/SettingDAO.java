@@ -80,9 +80,57 @@ public class SettingDAO extends MyDAO {
         }
         return settingList;
     }
-    
+
+    public int getTotalPageSettingBySearch() {
+        xSql = "SELECT count(*)\n"
+                + "FROM Settings\n"
+                + "WHERE Type LIKE ? OR Name LIKE ? OR Description LIKE ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+
+        }
+        return 0;
+    }
+
+    public List<Setting> getSettingListBySearch(int page, String stype, String sname, String sdescription) {
+        List<Setting> settingList = new ArrayList<>();
+        xSql = "SELECT *\n"
+                + "FROM Settings\n"
+                + "WHERE Type LIKE ? OR Name LIKE ? OR Description LIKE ?\n"
+                + "ORDER BY SettingID\n"
+                + "OFFSET ? Rows fetch next 10 rows ONLY;";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, stype);
+            ps.setString(2, sname);
+            ps.setString(3, sdescription);
+            ps.setInt(1, (page - 1) * 10);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int settingID = rs.getInt(1);
+                String type = rs.getString(2);
+                String settingName = rs.getString(3);
+                String value = rs.getString(4);
+                String description = rs.getString(5);
+                String status = rs.getString(6);
+                Setting setting = new Setting(settingID, type, settingName, value, description, status);
+                settingList.add(setting);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return settingList;
+    }
+
     // update
-    public void updateSetting(String status, String settingId, String Name, String type , String value, String description) {
+    public void updateSetting(String status, String settingId, String Name, String type, String value, String description) {
         xSql = "update Settings set Status = ?, Name=?, Type = ? , Description = ? , Value = ? where SettingID = ?;";
         try {
             ps = con.prepareStatement(xSql);

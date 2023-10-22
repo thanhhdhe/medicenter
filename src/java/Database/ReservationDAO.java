@@ -66,6 +66,59 @@ public class ReservationDAO extends MyDAO {
         return 0;
     }
 
+    //get total Reservation
+    public int getTotalReservationByFillter(String staffId) {
+        xSql = "SELECT count(*)\n"
+                + "FROM Reservations\n"
+                + "WHERE StaffID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, staffId);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+
+        }
+        return 0;
+    }
+
+    public List<Reservation> getReservationAllByPagingFill(int page, String staffId) {
+        List<Reservation> list = new ArrayList<>();
+
+        xSql = "SELECT *\n"
+                + "FROM Reservations\n"
+                + "WHERE StaffID = ?\n"
+                + "ORDER BY ReservationID\n"
+                + "OFFSET ? Rows fetch next 10 rows ONLY;";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, staffId);
+            ps.setInt(2, (page - 1) * 10);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int ReservationID = rs.getInt("ReservationID");
+                int UserID = rs.getInt("UserID");
+                int ServiceID = rs.getInt("ServiceID");
+                Date ReservationDate = rs.getDate("ReservationDate");
+                int ReservationSlot = rs.getInt("ReservationSlot");
+                Timestamp CreatedDate = rs.getTimestamp("CreatedDate");
+                float Cost = rs.getFloat("Cost");
+                String Status = rs.getString("Status");
+                int StaffID = rs.getInt("StaffID");
+                int ChildID = rs.getInt("ChildID");
+                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status);
+                list.add(reservation);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public List<Reservation> getReservationAllByPaging(int page, String sort) {
         List<Reservation> list = new ArrayList<>();
         String sortstatus = "";
@@ -1139,7 +1192,7 @@ public class ReservationDAO extends MyDAO {
         }
         return 0;
     }
-    
+
     public int getReservationTotalEachMonth(Date reservationDate) {
         xSql = "select count(*) as TotalCount from [dbo].[Reservations] where MONTH(ReservationDate) = MONTH(?) and YEAR(ReservationDate) = YEAR(?)";
         try {
@@ -1170,7 +1223,7 @@ public class ReservationDAO extends MyDAO {
         }
         return 0;
     }
-    
+
     public int getReservationDoneEachMonth(Date reservationDate) {
         xSql = "select count(*) as TotalCount from [dbo].[Reservations] where MONTH(ReservationDate) = MONTH(?) and YEAR(ReservationDate) = YEAR(?) and Status = 'done'";
         try {
@@ -1201,8 +1254,6 @@ public class ReservationDAO extends MyDAO {
         // Subtract 7 days
         calendar.add(Calendar.MONTH, 2);
         Date sevenDaysAgo = new Date(calendar.getTimeInMillis());
-        
-        
 
 //        for (Reservation reservation : rd.getReservationsByDay(sevenDaysAgo, currentDate)) {
 //            if (reservation.getStatus().equals("done")) {
