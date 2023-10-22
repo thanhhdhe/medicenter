@@ -146,14 +146,18 @@ public class PaymentController extends HttpServlet {
             job.addProperty("data", paymentUrl);
             Gson gson = new Gson();
             response.getWriter().write(gson.toJson(job));
+            reservation.setPayment("VNPay");
+            reservationDAO.update(reservation);
         } else if (payment.equals("offline")) {
             com.google.gson.JsonObject job = new JsonObject();
             job.addProperty("code", "00");
             job.addProperty("message", "success");
-            String paymentUrl = getServletContext().getContextPath() + "/pay?action=view&reservation="+reservationID;
+            String paymentUrl = getServletContext().getContextPath() + "/pay?action=view&reservation=" + reservationID;
             job.addProperty("data", paymentUrl);
-            reservation.setStatus("Wait for examination");
+            reservation.setStatus("Waitting for examination");
+            reservation.setPayment("Pay at center");
             reservationDAO.update(reservation);
+            request.setAttribute("reservation", reservation);
             Gson gson = new Gson();
             response.getWriter().write(gson.toJson(job));
         }
@@ -191,6 +195,7 @@ public class PaymentController extends HttpServlet {
             request.setAttribute("cate", cate);
             request.getRequestDispatcher("./view/reservationstatus.jsp").forward(request, response);
         }
+
     }
 
     /**

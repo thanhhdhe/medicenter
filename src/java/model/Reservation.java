@@ -21,6 +21,7 @@ public class Reservation {
     private Timestamp CreatedDate;
     private float Cost;
     private String Status;
+    private String payment;
 
     public Reservation() {
         
@@ -38,6 +39,21 @@ public class Reservation {
         this.Cost = Cost;
         this.Status = Status;
     }
+
+    public Reservation(int ReservationID, int UserID, int ServiceID, int StaffID, int ChildID, Date ReservationDate, int ReservationSlot, Timestamp CreatedDate, float Cost, String Status, String payment) {
+        this.ReservationID = ReservationID;
+        this.UserID = UserID;
+        this.ServiceID = ServiceID;
+        this.StaffID = StaffID;
+        this.ChildID = ChildID;
+        this.ReservationDate = ReservationDate;
+        this.ReservationSlot = ReservationSlot;
+        this.CreatedDate = CreatedDate;
+        this.Cost = Cost;
+        this.Status = Status;
+        this.payment = payment;
+    }
+    
 
     public int getReservationID() {
         return ReservationID;
@@ -119,4 +135,12 @@ public class Reservation {
         this.Status = Status;
     }
 
+    public String getPayment() {
+        return payment;
+    }
+
+    public void setPayment(String payment) {
+        this.payment = payment;
+    }
+    
 }

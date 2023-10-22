@@ -175,7 +175,8 @@ public class ReservationDAO extends MyDAO {
                 String Status = rs.getString("Status");
                 int StaffID = rs.getInt("StaffID");
                 int ChildID = rs.getInt("ChildID");
-                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status);
+                String payment = rs.getString("Payment");
+                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status,payment);
                 list.add(reservation);
             }
             rs.close();
@@ -1041,7 +1042,8 @@ public class ReservationDAO extends MyDAO {
                 String Status = rs.getString("Status");
                 int StaffID = rs.getInt("StaffID");
                 int ChildID = rs.getInt("ChildID");
-                reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status);
+                String payment = rs.getString("Payment");
+                reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status,payment);
             }
             rs.close();
             ps.close();
@@ -1088,10 +1090,10 @@ public class ReservationDAO extends MyDAO {
 
     public void update(Reservation reservation) {
         xSql = "update [dbo].[Reservations] set UserID = ?, ServiceID = ?, StaffID = ? "
-                + " ,ChildID = ?, ReservationDate = ?, ReservationSlot = ?, CreatedDate = ?, Cost = ?, Status = ?  where ReservationID = ? ";
+                + " ,ChildID = ?, ReservationDate = ?, ReservationSlot = ?, CreatedDate = ?, Cost = ?, Status = ?, Payment =?  where ReservationID = ? ";
         try {
             ps = con.prepareStatement(xSql);
-            ps.setInt(10, reservation.getReservationID());
+            ps.setInt(11, reservation.getReservationID());
             ps.setInt(1, reservation.getUserID());
             ps.setInt(2, reservation.getServiceID());
             ps.setInt(3, reservation.getStaffID());
@@ -1101,6 +1103,7 @@ public class ReservationDAO extends MyDAO {
             ps.setTimestamp(7, reservation.getCreatedDate());
             ps.setFloat(8, reservation.getCost());
             ps.setString(9, reservation.getStatus());
+            ps.setString(10, reservation.getPayment());
             ps.executeUpdate();
             ps.close();
         } catch (Exception e) {
@@ -1238,6 +1241,21 @@ public class ReservationDAO extends MyDAO {
             e.printStackTrace();
         }
         return 0;
+    }
+    
+   public void updatePayment(String payment, String reservationID) {
+        xSql = "UPDATE Reservations\n"
+                + "SET Payment = ?\n"
+                + "WHERE ReservationID = ?; ";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, payment);
+            ps.setString(2, reservationID);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String args[]) {

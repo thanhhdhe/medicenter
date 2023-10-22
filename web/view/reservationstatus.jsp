@@ -5,6 +5,8 @@
 --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="model.Reservation" %>
+<%@ page import="Database.ReservationDAO" %>
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -80,6 +82,15 @@
     </head>
 
     <body>
+        <%  String resCode = request.getParameter("vnp_ResponseCode");
+
+            if ("00".equals(resCode)) {
+                Reservation reservation = (Reservation) request.getAttribute("reservation");
+                ReservationDAO reservationDAO = new ReservationDAO();
+                reservation.setStatus("Waitting for examination");
+                reservationDAO.update(reservation);
+            }
+        %>
         <%--<jsp:include page="layout/Header.jsp"/>--%>
         <div class="container">
             <div class="row justify-content-center mt-5">
@@ -108,8 +119,14 @@
                                         </p>
                                     </label>
                                 </div>
-
-
+                                <div id="pending-lg" class="text-primary flex-column align-items-center">
+                                    <i class="far fa-clock fa-6x mb-3"></i>
+                                    <label for="">
+                                        <p class="text-uppercase">
+                                            <small>PENDING (PAY FAILED)</small>
+                                        </p>
+                                    </label>
+                                </div>
                                 <tr>
                                     <td class="detail-info">Reservation ID</td>
                                     <td id="reservationID">${reservation.reservationID}</td>
@@ -173,7 +190,7 @@
                                 </tr>
                                 <tr>
                                     <td class="detail-info">Method Payment</td>
-                                    <td>${sessionScope.method}</td>
+                                    <td>${reservation.payment}</td>
                                 </tr>
 
                                 </tbody>
@@ -225,14 +242,21 @@
     // Lấy phần tử có id "fail-lg" và "success-lg"
     var failElement = document.getElementById("fail-lg");
     var successElement = document.getElementById("success-lg");
+    var pendingElement = document.getElementById("pending-lg");
 
     // Kiểm tra giá trị của reservation.status và hiển thị tùy thuộc vào kết quả
     if (reservationStatus === "cancel") {
         failElement.style.display = "flex";
         successElement.style.display = "none";
-    } else {
+        pendingElement.style.display = "none";
+    } else if (reservationStatus === "Waitting for examination") {
         failElement.style.display = "none";
         successElement.style.display = "flex";
+        pendingElement.style.display = "none";
+    } else {
+        failElement.style.display = "none";
+        successElement.style.display = "none";
+        pendingElement.style.display = "flex";
     }
 </script>
 <script>
@@ -265,6 +289,7 @@
                             if (failElement) {
                                 failElement.style.display = "flex";
                                 successElement.style.display = "none";
+                                pendingElement.style.display = "none";
                                 cancelButton.disabled = true;
                             }
                         }
