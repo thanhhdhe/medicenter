@@ -29,6 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import model.CategoryService;
 import model.Children;
 import model.Mail;
@@ -162,9 +164,17 @@ public class PaymentController extends HttpServlet {
             reservation.setPayment("Pay at center");
             reservationDAO.update(reservation);
             request.setAttribute("reservation", reservation);
+            Thread emailThread = new Thread(() -> {
+                Mail.sendEmail(users.getEmail(), "Information about your reservations in Medilab", setInfo());
+            });
+            emailThread.start();
             Gson gson = new Gson();
-            response.getWriter().write(gson.toJson(job));
-            Mail.sendEmail(users.getEmail(), "Information about your reservations in Medilab", setInfo());
+            try {
+                response.getWriter().write(gson.toJson(job));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 
