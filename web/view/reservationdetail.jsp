@@ -381,6 +381,7 @@
                         let checkOutURL = null;
                         if (staffID === null || staffID === 'all') {
                             checkOutURL = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=all&action=save&serviceID=" + <%=service.getServiceID()%> + "&slot=" + (timeSlots.indexOf(selectedSlotValue) + 1) + "&ChildID=" + childID;
+                            
                         } else {
                             checkOutURL = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=save&serviceID=" + <%=service.getServiceID()%> + "&slot=" + (timeSlots.indexOf(selectedSlotValue) + 1) + "&ChildID=" + childID;
                         }

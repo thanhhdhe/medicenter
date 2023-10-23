@@ -907,7 +907,8 @@ public class ReservationDAO extends MyDAO {
 
     public int findReservationID(int userID, String childID, String serviceID, Date reservationDate, int slot) {
         int id = -1;
-        xSql = "select * from [dbo].[Reservations] where UserID = ? and ServiceID = ? and ReservationDate = ? and ReservationSlot = ? and ChildID = ?";
+        xSql = "select * from [dbo].[Reservations] where UserID = ? "
+                + "and ServiceID = ? and ReservationDate = ? and ReservationSlot = ? and ChildID = ? and Status <> 'cancel'";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, Integer.toString(userID));
