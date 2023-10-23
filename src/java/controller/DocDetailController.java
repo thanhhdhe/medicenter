@@ -60,6 +60,7 @@ public class DocDetailController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
         int docID = Integer.parseInt(request.getParameter("ID"));
         StaffDAO staffDAO = new StaffDAO();
         Staff staff = staffDAO.getStaffByStaffId(docID);
