@@ -46,12 +46,12 @@
             </thead>
             <tbody>
                 <tr class="text-center"> 
-                    <th><%=reservation.getReservationID()%></th>
-                    <th><%=createdDateFormat.format(reservation.getCreatedDate())%></th>
-                    <th><%=reservationDateFormat.format(reservation.getReservationDate())%></th>
-                    <th><%=reservation.getReservationSlot()%></th>
-                    <th><%=reservation.getCost()%></th>
-                    <th><%=reservation.getStatus()%></th>
+                    <td><%=reservation.getReservationID()%></td>
+                    <td><%=createdDateFormat.format(reservation.getCreatedDate())%></td>
+                    <td><%=reservationDateFormat.format(reservation.getReservationDate())%></td>
+                    <td><%=reservation.getReservationSlot()%></td>
+                    <td><%=reservation.getCost()%></td>
+                    <td><%=reservation.getStatus()%></td>
                 </tr>
             </tbody>
         </table>
@@ -68,11 +68,11 @@
             </thead>
             <tbody>
                 <tr class="text-center"> 
-                    <th><img style="width:64px;height:64px;" src="<%=children.getImage()%>" alt="Children avatar"/></th>
-                    <th><%=children.getChildName()%></th>
-                    <th><%=reservationDateFormat.format(children.getBirthday())%></th>
-                    <th><%=children.getGender()%></th>
-                    <th><%=children.getStatus()%></th>
+                    <td><img style="width:64px;height:64px;" src="<%=children.getImage()%>" alt="Children avatar"/></td>
+                    <td><%=children.getChildName()%></td>
+                    <td><%=reservationDateFormat.format(children.getBirthday())%></td>
+                    <td><%=children.getGender()%></td>
+                    <td><%=children.getStatus()%></td>
                 </tr>
             </tbody>
         </table>
@@ -89,17 +89,17 @@
             </thead>
             <tbody>
                 <tr class="text-center"> 
-                    <th><img style="width:64px;height:64px;" src="<%=service.getThumbnail()%>" alt="Service thumbnail"/></th>
-                    <th><%=service.getTitle()%></th>
-                    <th style="width: 40%;"><%=service.getBrief()%></th>
-                    <th><%=service.getServiceDetail()%></th>
-                    <th><%if (service.getSalePrice() > 0.0) { %>
+                    <td><img style="width:64px;height:64px;" src="<%=service.getThumbnail()%>" alt="Service thumbnail"/></td>
+                    <td><%=service.getTitle()%></td>
+                    <td style="width: 40%;"><%=service.getBrief()%></td>
+                    <td><%=service.getServiceDetail()%></td>
+                    <td><%if (service.getSalePrice() > 0.0) { %>
                         <del><%=service.getOriginalPrice()%></del>
                         <%=service.getSalePrice()%>
                         <% } else { %>
                         <%=service.getOriginalPrice()%>
                         <% } %>
-                    </th>
+                    </td>
                 </tr>
             </tbody>
         </table>

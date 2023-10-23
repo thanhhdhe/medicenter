@@ -37,6 +37,10 @@ public class ReservationInformationController extends HttpServlet {
             String id = (String) request.getParameter("id");
             String action = (String) request.getParameter("action");
             ReservationDAO reservationDAO = new ReservationDAO();
+            
+            // Update the database to cancel the pending reservation exceeds 5 minutes
+            reservationDAO.updateDatabase();
+
             int ReservationID = -1;
             if (action == null) {
                 try {

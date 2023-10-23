@@ -45,7 +45,7 @@ public class ReservationDetailController extends HttpServlet {
         }
         UserDAO userDAO = new UserDAO();
 
-        // Update database
+        // Update the database to cancel the pending reservation exceeds 5 minutes
         ReservationDAO reservationDAO = new ReservationDAO();
         reservationDAO.updateDatabase();
 
@@ -96,7 +96,7 @@ public class ReservationDetailController extends HttpServlet {
         ReservationDAO reservationDAO = new ReservationDAO();
         // This is slot that booked
         List<Integer> bookedSlots = new ArrayList<>();
-        // If database fall, everything fall 
+        
         for (Reservation reservation : reservationDAO.getSpecificReservation(staffID, selectedDate, selectedMonth, selectedYear)) {
             // Check if the reservation of the slot is not cancel
             if (!reservation.getStatus().equals("cancel")) {
