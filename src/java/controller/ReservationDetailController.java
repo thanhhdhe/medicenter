@@ -40,6 +40,7 @@ public class ReservationDetailController extends HttpServlet {
 
         HttpSession session = request.getSession(true);
         String email = (String) session.getAttribute("email");
+        // Check if user has been login
         if (email == null) {
             response.sendRedirect("home");
         }
@@ -96,7 +97,7 @@ public class ReservationDetailController extends HttpServlet {
         ReservationDAO reservationDAO = new ReservationDAO();
         // This is slot that booked
         List<Integer> bookedSlots = new ArrayList<>();
-        
+
         for (Reservation reservation : reservationDAO.getSpecificReservation(staffID, selectedDate, selectedMonth, selectedYear)) {
             // Check if the reservation of the slot is not cancel
             if (!reservation.getStatus().equals("cancel")) {
@@ -155,7 +156,8 @@ public class ReservationDetailController extends HttpServlet {
         }
         // Check duplicate if user click two times or user book for that chilren 2 service at one slot
         try {
-            if (reservationDAO.findReservationID(user.getUserID(), ChildID, serviceID, sqlDate, Integer.parseInt(slot)) != -1) {
+            int reservationID = reservationDAO.findReservationID(user.getUserID(), ChildID, serviceID, sqlDate, Integer.parseInt(slot));
+            if (!reservationDAO.getReservationByID(reservationID).getStatus().equals("cancel")) {
                 response.setContentType("text/plain");
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write("Duplicate reservation");

@@ -6,11 +6,10 @@ package Database;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import model.Reservation;
 
 /**
@@ -176,7 +175,7 @@ public class ReservationDAO extends MyDAO {
                 int StaffID = rs.getInt("StaffID");
                 int ChildID = rs.getInt("ChildID");
                 String payment = rs.getString("Payment");
-                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status,payment);
+                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status, payment);
                 list.add(reservation);
             }
             rs.close();
@@ -1006,7 +1005,7 @@ public class ReservationDAO extends MyDAO {
     }
 
     public boolean validateReservationByChildrenID(String ChildID, int ReservationSlot, Date ReservationDate) {
-        xSql = "select * from [dbo].[Reservations] where ChildID = ? and ReservationSlot = ? and ReservationDate = ?";
+        xSql = "select * from [dbo].[Reservations] where ChildID = ? and ReservationSlot = ? and ReservationDate = ? and Status <> 'cancel'";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, ChildID);
@@ -1043,7 +1042,7 @@ public class ReservationDAO extends MyDAO {
                 int StaffID = rs.getInt("StaffID");
                 int ChildID = rs.getInt("ChildID");
                 String payment = rs.getString("Payment");
-                reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status,payment);
+                reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status, payment);
             }
             rs.close();
             ps.close();
@@ -1242,8 +1241,8 @@ public class ReservationDAO extends MyDAO {
         }
         return 0;
     }
-    
-   public void updatePayment(String payment, String reservationID) {
+
+    public void updatePayment(String payment, String reservationID) {
         xSql = "UPDATE Reservations\n"
                 + "SET Payment = ?\n"
                 + "WHERE ReservationID = ?; ";
@@ -1260,79 +1259,6 @@ public class ReservationDAO extends MyDAO {
 
     public static void main(String args[]) {
         ReservationDAO rd = new ReservationDAO();
-        int doneReservationCount = 0, cancelReservationCount = 0, submittedReservationCount = 0;
-        float totalRevenues = 0;
-        // Get the current date
-        Date currentDate = new Date(System.currentTimeMillis());
 
-        // Create a Calendar instance and set it to the current date
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(currentDate);
-
-        // Subtract 7 days
-        calendar.add(Calendar.MONTH, 2);
-        Date sevenDaysAgo = new Date(calendar.getTimeInMillis());
-
-//        for (Reservation reservation : rd.getReservationsByDay(sevenDaysAgo, currentDate)) {
-//            if (reservation.getStatus().equals("done")) {
-//                doneReservationCount++;
-//            } else if (reservation.getStatus().equals("cancel")) {
-//                cancelReservationCount++;
-//            } else if (!reservation.getStatus().equals("pending")) {
-//                submittedReservationCount++;
-//            }
-//            // Get the total revenues of the reservation
-//            if (!reservation.getStatus().equals("cancel")) {
-//                totalRevenues += (reservation.getStatus().equals("cancel") ? 0.0 : reservation.getCost());
-//            }
-//        }
-//        System.out.println(doneReservationCount + " / " + cancelReservationCount + " / " + submittedReservationCount + " / " + totalRevenues);
-//        String dateString = "2023-10-01 22:20:00";
-//        Timestamp sqlTimestamp = Timestamp.valueOf(dateString);
-//        System.out.println(rd.checkSlotForAvailable("4", "3", "26", "10", "2023"));
-//        for (int i : rd.getListSelfBookedSlot("1", "15", "10", "2023")) {
-//            System.out.println(i);
-//        }
-//        LocalDateTime currentDateTime = LocalDateTime.now();
-//        Timestamp sqlTimestamp = Timestamp.valueOf(currentDateTime);
-//        Date sqlDate = null;
-//        try {
-//            // Define a date format for parsing
-//            SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-//
-//            // Parse the string into a java.util.Date object
-//            java.util.Date utilDate = dateFormat.parse("10-26-2023");
-//            // Convert java.util.Date to java.sql.Date
-//            sqlDate = new Date(utilDate.getTime());
-//        } catch (Exception e) {
-//
-//        }
-        ReservationDAO reservationDAO = new ReservationDAO();
-//        List<Reservation> reservations = reservationDAO.getFilteredReservationsOfStaff("1", "", "", "t", "", "", "", 1);
-//        for (Reservation reservation : reservations) {
-//            System.out.println(reservation.getUserID());
-//        }
-//        ServiceDAO serviceDAO = new ServiceDAO();
-//        List<Integer> serviceIDList = reservationDAO.getListChildrenIDByUserAndStaff("","1",1,10);
-//        for (Integer integer : serviceIDList) {
-//            System.out.println(integer);
-//        }
-
-//        Reservation r = new Reservation();
-//        r.setCost(300);
-//        r.setCreatedDate(sqlTimestamp);
-//        r.setReservationDate(sqlDate);
-//        r.setReservationSlot(3);
-//        r.setServiceID(3);
-//        
-////        r.setStaffID();
-//        
-//        r.setStatus("pending");
-//        r.setUserID(1);
-//        rd.insert(r);
-//        System.out.println(rd.getTotalReservationByUserID("1", 3));
-//        for (Reservation r : rd.getSpecificReservation("3", "27","9", "1")) {
-//            System.out.println(r.getReservationDate());
-//        }
     }
 }

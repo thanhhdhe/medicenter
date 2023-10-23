@@ -50,16 +50,14 @@ public class ReservationDetail extends HttpServlet {
             String childID = (String) request.getParameter("childID");
             String action = (String) request.getParameter("action");
 
-            // Validate children
-            if (childID == null) {
-                response.sendRedirect("home");
-                throw new ServletException("Null child ID");
-            }
             UserDAO userDAO = new UserDAO();
             ChildrenDAO childrenDAO = new ChildrenDAO();
             String email = (String) session.getAttribute("email");
+
+            // Validate children id
             if (!childrenDAO.validateChildren(childID, Integer.toString(userDAO.getUser(email).getUserID()))) {
-                throw new ServletException("Null email");
+                response.sendRedirect("404");
+                return;
             }
 
             // Get the current date
@@ -73,8 +71,14 @@ public class ReservationDetail extends HttpServlet {
             StaffScheduleDAO staffscheduleDAO = new StaffScheduleDAO();
             ServiceDAO serviceDAO = new ServiceDAO();
 
+            // Check the service id is not null
+            if (serviceID == null) {
+                response.sendRedirect("404");
+                return;
+            }
+
+            // Check is user choose service or choose staff
             if (staffID == null) {
-                // Check is user choose service or choose staff
                 if (serviceDAO.getServiceByID(serviceID) != null) {
                     // Set attribute to send to the page
                     Service service = serviceDAO.getServiceByID(serviceID);
@@ -91,16 +95,16 @@ public class ReservationDetail extends HttpServlet {
 
                     request.getRequestDispatcher("/view/reservationdetail.jsp").include(request, response);
                 } else {
-                    response.sendRedirect("home");
+                    response.sendRedirect("404");
                 }
             } else {
                 // Check the existence of the staff and services
                 if (staffDAO.getStaffByStaffId(Integer.parseInt(staffID)) != null && serviceDAO.getServiceByID(serviceID) != null) {
-
                     // Check if the Staff is correctly working for the service
                     ServiceStaffDAO servicestaffDAO = new ServiceStaffDAO();
                     if (!servicestaffDAO.checkExist(staffID, serviceID)) {
-                        throw new ServletException("Service id and staff id not right.");
+                        response.sendRedirect("404");
+                        return;
                     }
 
                     // Get the staff
@@ -142,7 +146,8 @@ public class ReservationDetail extends HttpServlet {
                         Reservation reservation = reservationDAO.getReservationByID(Integer.parseInt(reservationID));
                         // Check if the reservation belongs to the user 
                         if (reservation.getUserID() != userDAO.getUser(email).getUserID()) {
-                            throw new ServletException("The reservation is not belongs to user.");
+                            response.sendRedirect("404");
+                            return;
                         }
                         request.setAttribute("dateChange", reservation.getReservationDate());
                         request.setAttribute("reservationID", reservation.getReservationID());
@@ -151,7 +156,7 @@ public class ReservationDetail extends HttpServlet {
                         request.getRequestDispatcher("/view/reservationdetail.jsp").include(request, response);
                     }
                 } else {
-                    throw new ServletException("Null staff id or service id");
+                    response.sendRedirect("404");
                 }
             }
         }
