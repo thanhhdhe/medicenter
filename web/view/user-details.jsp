@@ -235,8 +235,8 @@
                                 <div class="card-body">
                                     <h5 class="card-title text-center">User information</h5>
                                     <div class="text-center">
-                                        <img id="img-preview" style="height: 160px;width: 160px;" class="rounded-circle mx-auto d-block"
-                                             src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png" />
+                                        <img id="img-preview" style="height: 160px;width: 160px; object-fit: cover;" class="rounded-circle mx-auto d-block"
+                                             src="${user.profileImage}" />
                                     </div>
                                     <form id="contact-form">
                                         <div class="form-group">
@@ -282,6 +282,7 @@
                                             <th>Full Name</th>
                                             <th>Date of Birth</th>
                                             <th>Gender</th>
+                                            <th>Relationship</th>
                                         </tr>
                                         <c:forEach items="${children}" var="c">
                                             <tr>
@@ -289,6 +290,7 @@
                                                 <td>${c.childName}</td>
                                                 <td>${c.birthday}</td>
                                                 <td>${c.gender}</td>
+                                                <td>${c.relationship.relationshipName}</td>
                                             </tr>
                                         </c:forEach>
                                     </table>

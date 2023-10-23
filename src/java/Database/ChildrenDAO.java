@@ -71,6 +71,29 @@ public class ChildrenDAO extends MyDAO {
         return success;
     }
 
+    public boolean updateChild(Children children) {
+        boolean success = false;
+        xSql = "UPDATE Children SET ChildName = ?, Birthday = ?, Gender = ?, Avatar = ?, RelationshipID = ? WHERE ChildID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, children.getChildName());
+            ps.setDate(2, children.getBirthday());
+            ps.setString(3, children.getGender());
+            ps.setString(4, children.getImage());
+            ps.setInt(5, children.getRelationship().getRelationshipID());
+            ps.setInt(6, children.getChildID());
+            int rowsUpdated = ps.executeUpdate();
+            if (rowsUpdated > 0) {
+                success = true;
+            }
+
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return success;
+    }
+
     public Children getChildrenByUserId(String id, String Cid) {
         Children children = null;
         xSql = "select * from Children where UserID = ? and ChildID = ?";
@@ -190,6 +213,9 @@ public class ChildrenDAO extends MyDAO {
 
     public static void main(String[] args) {
         ChildrenDAO childrenDAO = new ChildrenDAO();
+         Children u = childrenDAO.getChildrenByChildrenId("1");
+         u.setChildName("Can Quoc Viet");
+         System.out.println(childrenDAO.updateChild(u));
 
 //        System.out.println("ketquadelete là : " + childrenDAO.deleteChild("5"));
     }
