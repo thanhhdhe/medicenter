@@ -40,9 +40,9 @@ import org.apache.commons.codec.digest.DigestUtils;
  * @author Admin
  */
 @MultipartConfig(
-        fileSizeThreshold = 1024 * 10, // 10 KB
-        maxFileSize = 1024 * 300, // 300 KB
-        maxRequestSize = 1024 * 1024 // 1 MB 
+//        fileSizeThreshold = 1024 * 10, // 10 KB
+//        maxFileSize = 1024 * 300, // 300 KB
+//        maxRequestSize = 1024 * 1024 // 1 MB 
 )
 public class UserController extends HttpServlet {
 

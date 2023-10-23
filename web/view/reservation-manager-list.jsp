@@ -202,14 +202,14 @@
 
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
-                    <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-around">
                         <div class="" >
                             <button style="border: 0px; border-radius: 5px; background-color: #6994eb; font-family: fantasy" id="sortButton" onclick="toggleSort()">
                                 Unsort
                             </button>
                         </div>
-                        <div class="col-md-3">
-                            <div class="card p-3">
+                        <div class="border-0">
+                            <div class="">
                                 <% List<Staff> staffList= staffDAO.getStaffsByRole("doctor"); %>
                                 <c:set var="staffList" value="<%= staffList %>" />
                                 <select class="dropdown-item" name="staff" id="staffid">
@@ -224,7 +224,7 @@
                     </div>
 
                     <div
-                        class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0"
+                        class="row vh-100 bg-light rounded align-items-top justify-content-center mx-0"
                         >
                         <div class="col-md-12 text-center justify-content-center">
                             <div class="table-responsive p-4 w-100">
