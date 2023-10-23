@@ -58,6 +58,7 @@ public class ChildrenDAO extends MyDAO {
             ps.setString(4, children.getGender());
             ps.setString(5, children.getImage());
             ps.setInt(6, children.getRelationship().getRelationshipID());
+            System.out.println(children.getRelationship().getRelationshipName());
             int rowsInserted = ps.executeUpdate();
             if (rowsInserted > 0) {
                 success = true;

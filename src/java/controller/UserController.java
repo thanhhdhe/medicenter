@@ -204,7 +204,10 @@ public class UserController extends HttpServlet {
                 request.setAttribute("service", service);
                 ChildrenDAO cDao = new ChildrenDAO();
                 List<Children> childList = cDao.getListChildrenByUserId(userID + "");
+                RelationshipDAO reDAO = new RelationshipDAO();
+                List<Relationship> reList = reDAO.getRelationshipList();
                 request.setAttribute("child", childList);
+                request.setAttribute("relationship", reList);
                 // Set the "staff" attribute if staff is not null
                 if (staff != null) {
                     request.setAttribute("staff", staff);
@@ -238,23 +241,25 @@ public class UserController extends HttpServlet {
                 }
 
                 String contentType = filePart.getContentType();
+                // Common data for both image and non-image cases
+                Children newChild = new Children(users, fullName, sqlDOB, gender, dfImage, relationship);
+
                 if (contentType != null && contentType.startsWith("image")) {
                     String realPath = request.getServletContext().getRealPath("/resources/img");
                     String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
                     filePart.write(realPath + "/" + fileName);
                     String newImg = "resources/img/" + fileName;
-                    System.out.println("anh la " + newImg);
-                    Children newChild = new Children(users, fullName, sqlDOB, gender, newImg, relationship);
-                    childDAO.createChildren(newChild);
-                    users.setAddress(address);
-                    users.setPhoneNumber(phoneNumber);
-                    userdao.updateProfile(users);
-                    session.setAttribute("message", "Add children profile successfully");
-                } else {
-                    Children newChild = new Children(users, fullName, sqlDOB, gender, dfImage, relationship );
-                    childDAO.createChildren(newChild);
-                    session.setAttribute("message", "Add children profile successfully");
+                    newChild.setImage(newImg);
                 }
+
+                boolean statusUpdate = childDAO.createChildren(newChild);
+
+                users.setAddress(address);
+                users.setPhoneNumber(phoneNumber);
+                userdao.updateProfile(users);
+
+                String message = (statusUpdate) ? "Add children profile successfully" : "Add children profile failed";
+                session.setAttribute("message", message);
                 response.sendRedirect("user?action=my-children");
 //                request.getRequestDispatcher().forward(request, response);
 
@@ -330,7 +335,7 @@ public class UserController extends HttpServlet {
         Random random = new Random();
         StringBuilder sb = new StringBuilder(10);
         String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        
+
         for (int i = 0; i < 10; i++) {
             int randomIndex = random.nextInt(CHARACTERS.length());
             char randomChar = CHARACTERS.charAt(randomIndex);
@@ -411,7 +416,7 @@ public class UserController extends HttpServlet {
             request.setAttribute("address", address);
             request.getRequestDispatcher("./view/add-user-admin.jsp").forward(request, response);
         } else {
-            Mail.sendEmail(email, "Your Password of Medilab",password);
+            Mail.sendEmail(email, "Your Password of Medilab", password);
             if (role.equals("user")) {
                 User newUser = new User(address, email, DigestUtils.md5Hex(password), firstName, lastName, gender, mobile, imageURL, status.equals("active"), updateDate);
                 userDAO.insert(newUser);
@@ -431,27 +436,26 @@ public class UserController extends HttpServlet {
 
         request.getRequestDispatcher("./view/add-user-admin.jsp").forward(request, response);
     }
-    
+
     private void sendToUserDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(true);
         StaffDAO staffDAO = new StaffDAO();
         UserDAO userDAO = new UserDAO();
         String adminEmail = (String) session.getAttribute("adminEmail");
-        String role = request.getParameter("role")+"";
-        String id = request.getParameter("id")+"";
+        String role = request.getParameter("role") + "";
+        String id = request.getParameter("id") + "";
         request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
-        if(role.equals("user")){
+        if (role.equals("user")) {
             User user = userDAO.getUserByID(Integer.parseInt(id.trim()));
             request.setAttribute("user", user);
             request.getRequestDispatcher("./view/user-detail-admin.jsp").forward(request, response);
-        }else{
+        } else {
             Staff staff = staffDAO.getStaffByStaffId(Integer.parseInt(id.trim()));
             request.setAttribute("staff", staff);
             request.getRequestDispatcher("./view/staff-detail-admin.jsp").forward(request, response);
         }
-        
+
     }
-    
 
     protected void renderUserByAdmin(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -527,10 +531,10 @@ public class UserController extends HttpServlet {
         for (User user : users) {
             out.print("<tr>\n"
                     + "                           <td>"
-                    + "                             <div class=\"d-flex\">\n" +
-"                                                       <img src=\""+user.getProfileImage()+"\" alt=\"avt\" width=\"27px\" height=\"27px\" class=\"rounded-circle me-2\"/>\n" +
-"                                                       <span>"+user.getFirstName()+"</span>\n" +
-"                                                   </div>"
+                    + "                             <div class=\"d-flex\">\n"
+                    + "                                                       <img src=\"" + user.getProfileImage() + "\" alt=\"avt\" width=\"27px\" height=\"27px\" class=\"rounded-circle me-2\"/>\n"
+                    + "                                                       <span>" + user.getFirstName() + "</span>\n"
+                    + "                                                   </div>"
                     + "                            </td>\n"
                     + "                           <td>" + user.getFirstName() + "</td>\n"
                     + "                           <td>" + user.getGender() + "</td>\n"
@@ -544,11 +548,11 @@ public class UserController extends HttpServlet {
                 out.print("Inactive");
             }
             out.print("</td>\n"
-                    + "                           <td><form action=\"user?action=send-to-userdetail-admin\" method=\"POST\">\n" +
-"                                            <input type=\"hidden\" name=\"role\" value=\""+user.getRole()+"\">\n" +
-"                                            <input type=\"hidden\" name=\"id\" value=\""+user.getUserID()+"\">\n" +
-"                                            <button type=\"submit\" class=\"btn py-0\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\" width=\"25px\"/></button>\n" +
-"                                        </form></td>\n"
+                    + "                           <td><form action=\"user?action=send-to-userdetail-admin\" method=\"POST\">\n"
+                    + "                                            <input type=\"hidden\" name=\"role\" value=\"" + user.getRole() + "\">\n"
+                    + "                                            <input type=\"hidden\" name=\"id\" value=\"" + user.getUserID() + "\">\n"
+                    + "                                            <button type=\"submit\" class=\"btn py-0\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\" width=\"25px\"/></button>\n"
+                    + "                                        </form></td>\n"
                     + "                       </tr>");
         }
     }
@@ -558,16 +562,16 @@ public class UserController extends HttpServlet {
         StaffDAO staffDAO = new StaffDAO();
         UserDAO userDAO = new UserDAO();
         String adminEmail = (String) session.getAttribute("adminEmail");
-        String id = request.getParameter("id")+"";
+        String id = request.getParameter("id") + "";
         request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
         User user = userDAO.getUserByID(Integer.parseInt(id.trim()));
         user.setStatus(!user.isStatus());
         userDAO.updateStatus(user.isStatus(), 0);
         request.setAttribute("user", user);
         request.getRequestDispatcher("./view/user-detail-admin.jsp").forward(request, response);
-        
+
     }
-    
+
     /**
      * Returns a short description of the servlet.
      *
@@ -577,6 +581,5 @@ public class UserController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 
 }

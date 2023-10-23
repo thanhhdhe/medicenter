@@ -110,7 +110,6 @@
         <%--<jsp:include page="./layout/Header.jsp" />--%>
         <div class="container">
             <div class="justify-content-center mt-5">
-
                 <!-- Đây là hàng (row) chứa hai cột (columns) -->
                 <div class="row">
                     <!-- Cột cho thẻ card hiện có -->
@@ -158,15 +157,16 @@
                     <div class="col-md-8">
                         <div class="row choose-user justify-content-center ">
                             <h1 class="text-center">Choose Your Children Profile</h1>
-                            <% String message = (String) session.getAttribute("message"); %>
-                            <% if (message != null) { %>
-                            <div class="alert alert-warning alert-dismissible show" role="alert">
-                                <strong> <%= message %></strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            <% session.removeAttribute("message"); 
-                        }%>
                         </div>
+                        <% String message = (String) session.getAttribute("message"); %>
+                        <% if (message != null) { %>
+                        <div class="alert alert-warning alert-dismissible show" role="alert">
+                            <strong> <%= message %></strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <% session.removeAttribute("message"); 
+                        }%>
+
                         <c:forEach items="${requestScope.child}" var="c">
                             <div class="card mt-4 border-m shadow child-card">
                                 <div class="card-body" onclick="showFullInfo(${c.childID})">
@@ -374,6 +374,20 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <label for="relationship">Relationship</label>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <select required class="form-control" name="relaID">
+                                                    <option value="">Relationship</option>
+                                                    <c:forEach var="re" items="${requestScope.relationship}">
+                                                        <option value="${re.relationshipID}">${re.relationshipName}</option>
+                                                    </c:forEach>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="form-group">
                                         <label for="patientEmail">Parent's email:</label>
                                         <input disabled type="email" class="form-control" id="patientEmail" 

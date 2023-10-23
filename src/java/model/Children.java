@@ -52,6 +52,7 @@ public class Children {
         this.birthday = birthday;
         this.gender = gender;
         this.image = image;
+        this.relationship = relationship;
     }
 
     public Children(User user, int childID, String childName, Date birthday, String status, String gender, String image) {

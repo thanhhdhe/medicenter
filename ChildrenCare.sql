@@ -132,7 +132,11 @@ CREATE TABLE Slider (
     Backlink VARCHAR(200),
     Status VARCHAR(20)
 );
-
+CREATE TABLE Relationship (
+	RelationshipID INT IDENTITY(1,1) PRIMARY KEY,
+	RelationshipName VARCHAR(50),
+	
+)
 CREATE TABLE Children (
     ChildID INT IDENTITY(1,1) PRIMARY KEY,
     UserID INT NOT NULL,
@@ -142,14 +146,10 @@ CREATE TABLE Children (
 	Gender VARCHAR(10) NOT NULL,
 	Avatar VARCHAR(MAX),
 	RelationshipID INT NOT NULL,
-    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
 	FOREIGN KEY (RelationshipID) REFERENCES Relationship(RelationshipID)
 );
-CREATE TABLE Relationship (
-	RelationshipID INT IDENTITY(1,1) PRIMARY KEY,
-	RelationshipName VARCHAR(50),
-	
-)
+
 
 
 -- Create the Reservations table
@@ -336,14 +336,25 @@ VALUES
 -- Dữ liệu mẫu cho bảng Users
 INSERT INTO Users (Address, Email, Password, FirstName, LastName, Gender, PhoneNumber, ProfileImage, Status, CreatedDate)
 VALUES ('29HL', 'vietgame431@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', 'Viet', 'Can Quoc', 'Male', '123-456-7890', NULL, 1, '10-11-2023');
-
+-- Data for relationship 
+INSERT INTO Relationship (RelationshipName)
+VALUES
+    ('Grandfather'),
+    ('Grandmother'),
+    ('Father'),
+    ('Mother'),
+    ('Uncle'),
+    ('Aunt'),
+    ( 'Cousin'),
+    ( 'Sister'),
+    ('Brother');
 -- Dữ liệu mẫu cho bảng Children
-INSERT INTO Children (UserID, ChildName, Birthday, Status, Gender, Avatar)
-VALUES	(1, 'viet', '2013-09-01', 'Healthy','Male', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpmA-_2vvDLD4BjOCXyDfV2vXBD9KmqylfODng16S2u1xdsSrmIGFl1aPs5sKeCgB5CFo&usqp=CAU'),
-		(1, 'thanh', '2011-09-01', 'Healthy','Female', 'https://cdn-img.scalabs.com.au/uzjYWz5uFA99H9ilh_BLtPqAA1Dq0GhZ05-Iow7qAZM/aHR0cHM6Ly9zdy1o/aXQtcHJkLnNjYWRp/Z2l0YWwuaW8vbWVk/aWEvMTYyNjYvc2lk/ZS1leWUtY2hsb2Uu/anBnP3ByZXNldD1N/YWluSW1hZ2U'),
-		(3, 'thanhthut', '2010-09-01', 'Healthy','Male', 'https://www.meme-arsenal.com/memes/86be0b3ec5e7d4ef82860978308903dc.jpg'),
-		(3, 'quan', '2014-09-01', 'Healthy','Female', 'https://hips.hearstapps.com/hmg-prod/images/kailia-posey-dead-grinning-girl-meme-1651648895.jpg?crop=0.667xw:1.00xh;0.0898xw,0&resize=640:*'),
-        (2, 'hiu', '2013-09-01', 'Healthy','Male', 'https://i.redd.it/uuunx09z14b71.jpg');
+INSERT INTO Children (UserID, ChildName, Birthday, Status, Gender, Avatar, RelationshipID)
+VALUES	(1, 'viet', '2013-09-01', 'Healthy','Male', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpmA-_2vvDLD4BjOCXyDfV2vXBD9KmqylfODng16S2u1xdsSrmIGFl1aPs5sKeCgB5CFo&usqp=CAU',1),
+		(1, 'thanh', '2011-09-01', 'Healthy','Female', 'https://cdn-img.scalabs.com.au/uzjYWz5uFA99H9ilh_BLtPqAA1Dq0GhZ05-Iow7qAZM/aHR0cHM6Ly9zdy1o/aXQtcHJkLnNjYWRp/Z2l0YWwuaW8vbWVk/aWEvMTYyNjYvc2lk/ZS1leWUtY2hsb2Uu/anBnP3ByZXNldD1N/YWluSW1hZ2U',5),
+		(3, 'thanhthut', '2010-09-01', 'Healthy','Male', 'https://www.meme-arsenal.com/memes/86be0b3ec5e7d4ef82860978308903dc.jpg',2),
+		(3, 'quan', '2014-09-01', 'Healthy','Female', 'https://hips.hearstapps.com/hmg-prod/images/kailia-posey-dead-grinning-girl-meme-1651648895.jpg?crop=0.667xw:1.00xh;0.0898xw,0&resize=640:*',5),
+        (2, 'hiu', '2013-09-01', 'Healthy','Male', 'https://i.redd.it/uuunx09z14b71.jpg',3);
 
 
 -- Dữ liệu mẫu cho bảng MedicalExaminations
