@@ -203,11 +203,16 @@ boolean isManager = false;
                         >
                         <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
                             <h4>POST MANAGEMENT</h4>
-                            <a href="service?event=sent-to-add" class="ms-text-primary font-weight-bold">Add Service</a>
+                            <a href="postDetailManage?event=add" class="ms-text-primary font-weight-bold">Add Post</a>
                         </div>
                         <div class="col-md-12">
                             <div class="d-flex flex-column align-items-center justify-content-center mt-2">
                                 <form action="postManage">
+                                    <div class="d-flex justify-content-center mb-5" id="pagination-container">
+                                        <c:forEach var="p" begin="1" end="${numOfPage}">
+                                            <input class="pagination-btn ms-2 active" type="submit" name="page" value="${p}" /> 
+                                        </c:forEach>
+                                    </div>
                                     <div class="container d-flex justify-content-between">
 
                                         <input type="text" name="postTitle" placeholder="Search Title" class="form-control w-25 mx-3" value="${postTitle}" />
@@ -226,7 +231,6 @@ boolean isManager = false;
                                                 <option value="${s}">${s}</option>
                                             </c:forEach>
                                         </select>
-
                                     </div>
                                 </form>
                                 <div class="container row mt-5 mb-4">
@@ -260,9 +264,8 @@ boolean isManager = false;
                                                                     <div class="d-flex">
                                                                     <c:if test="${l.isStatusPost()}"> <a href="postManage?event=hide&postId=${l.getPostID()}"><button class="button-icon me-2 showhide hide-service-button"><img src="resources/img/icon/hide.png" alt="alt"/></button></a> </c:if>
                                                                     <c:if test="${!l.isStatusPost()}"> <a href="postManage?event=show&postId=${l.getPostID()}"><button class="button-icon me-2 showhide show-service-button"><img src="resources/img/icon/visual.png" alt="alt"/></button> </c:if>
-
-                                                                            <button class="button-icon me-2"><a href="postDetailManage?event=update"><img src="resources/img/icon/detail.png" alt="alt"/></a></button>
-                                                                            <button class="button-icon"><a href="service?event=edit&id="><img src="resources/img/icon/pen.png" alt="alt"/></a></button>
+                                                                            <!--<button class="button-icon me-2"><a href="postDetailManage?postId=${l.getPostID()}&event=update"><img src="resources/img/icon/detail.png" alt="alt"/></a></button>-->
+                                                                            <button class="button-icon"><a href="postDetailManage?event=update&postID=${l.getPostID()}"><img src="resources/img/icon/pen.png" alt="alt"/></a></button>
                                                                     </div></div>
                                                             </td>
                                                         </tr>
@@ -270,11 +273,7 @@ boolean isManager = false;
 
                                             </tbody>
                                         </table>
-                                        <div class="d-flex justify-content-center mb-5" id="pagination-container">
-                                            <c:forEach var="p" begin="1" end="${numOfPage}">
-                                                <input class="pagination-btn ms-2 active" type="submit" name="page" value="${p}" /> 
-                                            </c:forEach>
-                                        </div>
+
                                     </div>
                                 </div>
                             </div>

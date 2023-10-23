@@ -12,11 +12,10 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Admin/Documents/swp391-children-care/web/index.jsp</file>
-            <file>file:/C:/Users/Admin/Documents/swp391-children-care/src/java/Database/SliderDAO.java</file>
-            <file>file:/C:/Users/Admin/Documents/swp391-children-care/src/java/Database/MyDAO.java</file>
-            <file>file:/C:/Users/Admin/Documents/swp391-children-care/src/java/Database/DBContext.java</file>
-            <file>file:/C:/Users/Admin/Documents/swp391-children-care/src/java/Database/UserDAO.java</file>
+            <file>file:/D:/hoctap/swp/swp391-children-care/web/view/post-list-manage.jsp</file>
+            <file>file:/D:/hoctap/swp/swp391-children-care/src/java/controller/PostManageController.java</file>
+            <file>file:/D:/hoctap/swp/swp391-children-care/src/java/controller/PostDetailManage.java</file>
+            <file>file:/D:/hoctap/swp/swp391-children-care/web/view/post-detail-manage.jsp</file>
         </group>
     </open-files>
 </project-private>

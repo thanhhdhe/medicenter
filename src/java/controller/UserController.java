@@ -264,6 +264,53 @@ public class UserController extends HttpServlet {
 //                request.getRequestDispatcher().forward(request, response);
 
             }
+            if (action.equals("update-child")) {
+                ChildrenDAO childDAO = new ChildrenDAO();
+                String childID = request.getParameter("childID");
+                Children child = childDAO.getChildrenByChildrenId(childID);
+                String fullName = request.getParameter("fullname");
+                String year = request.getParameter("year");
+                String month = request.getParameter("month");
+                String day = request.getParameter("day");
+                String gender = request.getParameter("gender");
+                Part filePart = request.getPart("images");
+                String relationshipIDstr = request.getParameter("relaID");
+                int relationshipID = Integer.parseInt(relationshipIDstr);
+                RelationshipDAO reDAO = new RelationshipDAO();
+                Relationship relationship = reDAO.getRelationByID(relationshipID);
+                Date sqlDOB = null;
+                try {
+                    String date = day + "-" + month + "-" + year;
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    java.util.Date utilDate = dateFormat.parse(date);
+                    sqlDOB = new Date(utilDate.getTime());
+                } catch (Exception e) {
+
+                }
+
+                String contentType = filePart.getContentType();
+                // Common data for both image and non-image cases
+                child.setChildName(fullName);
+                child.setBirthday(sqlDOB);
+                child.setGender(gender);
+                child.setRelationship(relationship);
+
+                if (contentType != null && contentType.startsWith("image")) {
+                    String realPath = request.getServletContext().getRealPath("/resources/img");
+                    String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                    filePart.write(realPath + "/" + fileName);
+                    String newImg = "resources/img/" + fileName;
+                    child.setImage(newImg);
+                }
+
+                boolean statusUpdate = childDAO.updateChild(child);
+
+                String message = (statusUpdate) ? "Add update profile successfully" : "Add update profile failed";
+                session.setAttribute("message", message);
+                response.sendRedirect("user?action=my-children");
+//                request.getRequestDispatcher().forward(request, response);
+
+            }
             if (action.equals("delete-child")) {
                 String childID = request.getParameter("childID");
                 System.out.println(childID);
