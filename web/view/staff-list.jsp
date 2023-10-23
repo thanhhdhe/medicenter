@@ -66,7 +66,7 @@
                             <%= sDao.getServiceNameByID(ser) %>  ,   
                             <%}%>
                         </p>
-                        <p><img src="https://hongngochospital.vn/wp-content/themes/hongngoc/images/icon-map.png" alt=""> Bệnh viện Đa khoa Hồng Ngọc Phúc Trường Minh,</p>
+                        <p><img src="https://hongngochospital.vn/wp-content/themes/hongngoc/images/icon-map.png" alt=""> Medilab</p>
                     </div>
                 </div>
                 <%}%>

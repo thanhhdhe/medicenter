@@ -457,4 +457,8 @@ VALUES
     ('Mental Health Awareness', 'Promoting mental health awareness and self-care.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',10, 3, 8, '2023-09-17', 8, 'Mental wellness'),
     ('Online Learning Tips', 'Effective tips for online learning and studying.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',90, 1, 9, '2023-09-18', 9, 'Education strategies'),
     ('Gaming News Update', 'Latest gaming news and reviews for gamers.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',200, 1, 10, '2023-09-19', 10, 'Gaming updates');
-
+Insert Into Settings(Type,Name,Value,Description,Status)
+Values
+('Slider', 'BOOK QUICK MEDICAL EXAMINATION', 'resources/img/image1.jpg', 'Book your examination quickly and economically time, safety and convenience','Active'),
+('Slider', 'SPECIAL OFFER: 20% OFF', 'resources/img/image2.jpg', 'Limited time offer: Get 20% off on selected products. Grab the deal now!','Active'),
+('Slider', 'OUR SERVICE', 'resources/img/football.jpg', 'Limited time offer: Get 20% off on selected products. Grab the deal now!','Active');

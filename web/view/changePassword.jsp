@@ -63,9 +63,9 @@
                 font-family: 'Montserrat', sans-serif;
             }
             .button1 input{
-                width: 50%;
+                width: 30%;
                 background-color: #f2f2f2;
-                box-shadow: 0px 0px 10px 0px #000;
+                box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
             }
             /* Toggle this class - hide and show the popup */
             .popup .show {
@@ -93,6 +93,7 @@
                 }
             }
         </style>
+
         <title>JSP Page</title>
     </head>
     <body>
@@ -105,29 +106,29 @@
 
                 <div class=" popup" > 
                     <div class="popuptext" id="myPopup"> 
-                        <div class="title1"><h1>CHANGE PASSWORD</h1></div> 
+                        <div class="title1"><h1 style="font-family: 'Poppins';color: gray;">CHANGE PASSWORD</h1></div> 
                         <p>
                         <div>
-                            <input type="password" name="currentpassword" 
+                            <input class="form-control" type="password" name="currentpassword" 
                                    value="" placeholder="Current Password" required/>
                         </div> 
                         <p>
                         <div>
-                            <input type="password" name="newPassword" 
+                            <input class="form-control" type="password" name="newPassword" 
                                    value="" placeholder="New Password" required />
                         </div>     
                         <p>
                         <div>
-                            <input type="password" name="conPassword" 
+                            <input class="form-control" type="password" name="conPassword" 
                                    value="" placeholder="Confirm password" required/>
                         </div>
                         <p>
                         <div class="button1">
-                            <input type="button" value="ENTER" onclick="validatePassword();"/>
+                            <input  class="btn" style="border: 0px;border-radius: 5px; background-color: #6ac3f0" type="button" value="ENTER" onclick="validatePassword();"/>
                         </div>
                         <p>
                         <div class="button1">
-                            <input type="button" value="CANCEL" onclick="changePassowrd()" />
+                            <input  class="btn" style="border: 0px; border-radius: 5px; background-color: #6ac3f0" type="button" value="CANCEL" onclick="changePassowrd()" />
                         </div> 
                         <p>
                         <div id="error" style="color: red;"></div>
@@ -139,7 +140,6 @@
 
 
         </form>
-
 
 
 
@@ -192,5 +192,6 @@
                 xhr.send(formData);
             }
         </script>
+
     </body>
 </html>
