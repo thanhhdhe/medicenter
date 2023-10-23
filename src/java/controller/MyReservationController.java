@@ -40,8 +40,12 @@ public class MyReservationController extends HttpServlet {
         if (email == null) {
             response.sendRedirect("home");
         } else {
+            // Update the database to cancel the pending reservation exceeds 5 minutes
+            ReservationDAO reservationDAO = new ReservationDAO();
+            reservationDAO.updateDatabase();
+
             request.setAttribute("page", page);
-            request.getRequestDispatcher("/view/myreservation.jsp").forward(request, response);;
+            request.getRequestDispatcher("/view/myreservation.jsp").forward(request, response);
         }
     }
 
@@ -55,6 +59,10 @@ public class MyReservationController extends HttpServlet {
         HttpSession session = request.getSession(true);
         String email = (String) session.getAttribute("email");
         String action = (String) request.getParameter("action");
+
+        // Update the database to cancel the pending reservation exceeds 5 minutes
+        reservationDAO.updateDatabase();
+
         if (action == null) {
             String page = (String) request.getParameter("page");
             int numberPerPage = 5;

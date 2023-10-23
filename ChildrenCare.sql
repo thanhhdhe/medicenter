@@ -24,7 +24,7 @@ CREATE TABLE Users (
     PhoneNumber VARCHAR(20) NOT NULL,
     ProfileImage VARCHAR(MAX),
 	Status bit default 0,
-	CreatedDate DATE NOT NULL
+	CreatedDate DATE NOT NULL,
 );
 
 -- Create the CategoryService table
@@ -132,7 +132,11 @@ CREATE TABLE Slider (
     Backlink VARCHAR(200),
     Status VARCHAR(20)
 );
-
+CREATE TABLE Relationship (
+	RelationshipID INT IDENTITY(1,1) PRIMARY KEY,
+	RelationshipName VARCHAR(50),
+	
+)
 CREATE TABLE Children (
     ChildID INT IDENTITY(1,1) PRIMARY KEY,
     UserID INT NOT NULL,
@@ -141,8 +145,11 @@ CREATE TABLE Children (
 	Status TEXT,
 	Gender VARCHAR(10) NOT NULL,
 	Avatar VARCHAR(MAX),
-    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+	RelationshipID INT NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+	FOREIGN KEY (RelationshipID) REFERENCES Relationship(RelationshipID)
 );
+
 
 
 -- Create the Reservations table
@@ -157,6 +164,7 @@ CREATE TABLE Reservations (
 	CreatedDate DATETIME NOT NULL,
     Cost DECIMAL(10, 2) NOT NULL,
     Status VARCHAR(100) NOT NULL,
+	Payment VARCHAR(50),
     FOREIGN KEY (UserID) REFERENCES Users(UserID),
     FOREIGN KEY (ServiceID) REFERENCES Services(ServiceID),
 	FOREIGN KEY (StaffID) REFERENCES Staff(StaffID),
@@ -328,14 +336,25 @@ VALUES
 -- Dữ liệu mẫu cho bảng Users
 INSERT INTO Users (Address, Email, Password, FirstName, LastName, Gender, PhoneNumber, ProfileImage, Status, CreatedDate)
 VALUES ('29HL', 'vietgame431@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', 'Viet', 'Can Quoc', 'Male', '123-456-7890', NULL, 1, '10-11-2023');
-
+-- Data for relationship 
+INSERT INTO Relationship (RelationshipName)
+VALUES
+    ('Grandfather'),
+    ('Grandmother'),
+    ('Father'),
+    ('Mother'),
+    ('Uncle'),
+    ('Aunt'),
+    ( 'Cousin'),
+    ( 'Sister'),
+    ('Brother');
 -- Dữ liệu mẫu cho bảng Children
-INSERT INTO Children (UserID, ChildName, Birthday, Status, Gender, Avatar)
-VALUES	(1, 'viet', '2013-09-01', 'Healthy','Male', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpmA-_2vvDLD4BjOCXyDfV2vXBD9KmqylfODng16S2u1xdsSrmIGFl1aPs5sKeCgB5CFo&usqp=CAU'),
-		(1, 'thanh', '2011-09-01', 'Healthy','Female', 'https://cdn-img.scalabs.com.au/uzjYWz5uFA99H9ilh_BLtPqAA1Dq0GhZ05-Iow7qAZM/aHR0cHM6Ly9zdy1o/aXQtcHJkLnNjYWRp/Z2l0YWwuaW8vbWVk/aWEvMTYyNjYvc2lk/ZS1leWUtY2hsb2Uu/anBnP3ByZXNldD1N/YWluSW1hZ2U'),
-		(3, 'thanhthut', '2010-09-01', 'Healthy','Male', 'https://www.meme-arsenal.com/memes/86be0b3ec5e7d4ef82860978308903dc.jpg'),
-		(3, 'quan', '2014-09-01', 'Healthy','Female', 'https://hips.hearstapps.com/hmg-prod/images/kailia-posey-dead-grinning-girl-meme-1651648895.jpg?crop=0.667xw:1.00xh;0.0898xw,0&resize=640:*'),
-        (2, 'hiu', '2013-09-01', 'Healthy','Male', 'https://i.redd.it/uuunx09z14b71.jpg');
+INSERT INTO Children (UserID, ChildName, Birthday, Status, Gender, Avatar, RelationshipID)
+VALUES	(1, 'viet', '2013-09-01', 'Healthy','Male', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpmA-_2vvDLD4BjOCXyDfV2vXBD9KmqylfODng16S2u1xdsSrmIGFl1aPs5sKeCgB5CFo&usqp=CAU',1),
+		(1, 'thanh', '2011-09-01', 'Healthy','Female', 'https://cdn-img.scalabs.com.au/uzjYWz5uFA99H9ilh_BLtPqAA1Dq0GhZ05-Iow7qAZM/aHR0cHM6Ly9zdy1o/aXQtcHJkLnNjYWRp/Z2l0YWwuaW8vbWVk/aWEvMTYyNjYvc2lk/ZS1leWUtY2hsb2Uu/anBnP3ByZXNldD1N/YWluSW1hZ2U',5),
+		(3, 'thanhthut', '2010-09-01', 'Healthy','Male', 'https://www.meme-arsenal.com/memes/86be0b3ec5e7d4ef82860978308903dc.jpg',2),
+		(3, 'quan', '2014-09-01', 'Healthy','Female', 'https://hips.hearstapps.com/hmg-prod/images/kailia-posey-dead-grinning-girl-meme-1651648895.jpg?crop=0.667xw:1.00xh;0.0898xw,0&resize=640:*',5),
+        (2, 'hiu', '2013-09-01', 'Healthy','Male', 'https://i.redd.it/uuunx09z14b71.jpg',3);
 
 
 -- Dữ liệu mẫu cho bảng MedicalExaminations
@@ -391,14 +410,14 @@ VALUES
 
 	
 -- Reservations
-INSERT INTO Reservations(UserID, ServiceID, StaffID, ChildID, CreatedDate, ReservationDate, ReservationSlot, Cost, Status) 
-VALUES (1, 15, 7, 1, DATEADD(MILLISECOND,-4105241,GETDATE()), DATEADD(DAY, 4, GETDATE()), 1, 100.0, 'waiting for examination'),
-(1, 9, 1, 1, DATEADD(MILLISECOND,-8104511,GETDATE()), DATEADD(DAY, 3, GETDATE()), 3, 450, 'waiting for examination'),
-(1, 6, 1, 2, DATEADD(MILLISECOND,-10122452,GETDATE()), DATEADD(DAY, 3, GETDATE()), 2, 70.0, 'waiting for examination'), 
-(1, 9, 3, 2, DATEADD(MILLISECOND,-16785745,GETDATE()), DATEADD(DAY, 14, GETDATE()), 2, 450.0, 'waiting for examination'), 
-(1, 6, 4, 1, DATEADD(MILLISECOND,-25642544,GETDATE()), DATEADD(DAY, 8, GETDATE()), 1, 70.0, 'pending'),
-(1, 6, 4, 2, DATEADD(MILLISECOND,-38454524,GETDATE()), DATEADD(DAY, 8, GETDATE()), 2, 70.0, 'waiting for examination'),
-(1, 10, 3, 2, DATEADD(MILLISECOND,-98545422,GETDATE()), DATEADD(DAY, 1, GETDATE()), 2, 120.0, 'cancel');
+INSERT INTO Reservations(UserID, ServiceID, StaffID, ChildID, CreatedDate, ReservationDate, ReservationSlot, Cost, Status,Payment) 
+VALUES (1, 15, 7, 1, DATEADD(MILLISECOND,-4105241,GETDATE()), DATEADD(DAY, 4, GETDATE()), 1, 100.0, 'waiting for examination','VNPay'),
+(1, 9, 1, 1, DATEADD(MILLISECOND,-8104511,GETDATE()), DATEADD(DAY, 3, GETDATE()), 3, 450, 'waiting for examination','Pay at center'),
+(1, 6, 1, 2, DATEADD(MILLISECOND,-10122452,GETDATE()), DATEADD(DAY, 3, GETDATE()), 2, 70.0, 'waiting for examination','VNPay'), 
+(1, 9, 3, 2, DATEADD(MILLISECOND,-16785745,GETDATE()), DATEADD(DAY, 14, GETDATE()), 2, 450.0, 'waiting for examination','VNPay'), 
+(1, 6, 4, 1, DATEADD(MILLISECOND,-25642544,GETDATE()), DATEADD(DAY, 8, GETDATE()), 1, 70.0, 'pending','Pay at Center'),
+(1, 6, 4, 2, DATEADD(MILLISECOND,-38454524,GETDATE()), DATEADD(DAY, 8, GETDATE()), 2, 70.0, 'waiting for examination','VNPay'),
+(1, 10, 3, 2, DATEADD(MILLISECOND,-98545422,GETDATE()), DATEADD(DAY, 1, GETDATE()), 2, 120.0, 'cancel','VNPay');
 -- Insert data into the Posts table
 INSERT INTO Posts (Title, Content, Thumbnail, Counts ,AuthorID, ServiceID, CreatedDate, CategoryPost, BriefInfo)
 VALUES

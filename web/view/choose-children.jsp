@@ -110,7 +110,6 @@
         <%--<jsp:include page="./layout/Header.jsp" />--%>
         <div class="container">
             <div class="justify-content-center mt-5">
-
                 <!-- Đây là hàng (row) chứa hai cột (columns) -->
                 <div class="row">
                     <!-- Cột cho thẻ card hiện có -->
@@ -158,15 +157,16 @@
                     <div class="col-md-8">
                         <div class="row choose-user justify-content-center ">
                             <h1 class="text-center">Choose Your Children Profile</h1>
-                            <% String message = (String) session.getAttribute("message"); %>
-                            <% if (message != null) { %>
-                            <div class="alert alert-warning alert-dismissible show" role="alert">
-                                <strong> <%= message %></strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                            <% session.removeAttribute("message"); 
-                        }%>
                         </div>
+                        <% String message = (String) session.getAttribute("message"); %>
+                        <% if (message != null) { %>
+                        <div class="alert alert-warning alert-dismissible show" role="alert">
+                            <strong> <%= message %></strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <% session.removeAttribute("message"); 
+                        }%>
+
                         <c:forEach items="${requestScope.child}" var="c">
                             <div class="card mt-4 border-m shadow child-card">
                                 <div class="card-body" onclick="showFullInfo(${c.childID})">
@@ -196,6 +196,15 @@
                                                     </div>
                                                     <div class="col-md-7 detail-info">
                                                         <p>${c.user.phoneNumber}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <p class="title-info"><i class="fas fa-calendar-alt"></i> <strong>Relationship:</strong>
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-md-7 detail-info">
+                                                        <p>${c.relationship.relationshipName}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -247,12 +256,13 @@
                                                                 </span>
                                                             </button>
                                                         </div>
-<!--                                                        <div class="col-md-4">
-                                                            <button class="btn btn-primary btn-block border-m"><span
+                                                        <div class="col-md-4">
+                                                            <button class="btn btn-primary btn-block border-m" data-toggle="modal"
+                                                                    data-target="#updatePatientModal${c.childID}"><span
                                                                     class="d-flex align-items-center">
                                                                     <i class="fas fa-edit mr-2"></i> Edit
                                                                 </span></button>
-                                                        </div>-->
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="">
@@ -275,6 +285,129 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="modal fade" id="updatePatientModal${c.childID}" tabindex="-1" role="dialog" aria-labelledby="patientModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <form action="user?action=update-child" method="POST" enctype="multipart/form-data">
+                                        <div class="modal-content border-m">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="patientModalLabel">Patient Profile</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="container">
+                                                    <!-- Image Upload -->
+                                                    <input type="hidden"  name="childID" value="${c.childID}">
+                                                    <div class="form-group text-center">
+                                                        <input type="file" style="display: none;" name="images" id="file" class="inputfile" onchange="readURL(this)" accept="image/*" />
+                                                        <label for="file">
+                                                            <img id="img-preview" style="height: 100px; width: 100px;" class="rounded-circle mx-auto d-block image-create" name="default-image" src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png" />
+                                                            <i class="bi bi-pencil-square image-create"></i>
+                                                        </label>
+                                                    </div>
+                                                    <!-- Fullname -->
+                                                    <div class="form-group">
+                                                        <label for="patientName">Fullname:</label>
+                                                        <input required type="text" class="form-control" oninvalid="CheckFullName(this);" oninput="CheckFullName(this);" id="patientName" name="fullname" placeholder="Enter fullname of your child" value="${c.childName}">
+                                                    </div>
+                                                    <!-- Date of Birth -->
+                                                    <div class="row">
+                                                        <div class="form-group mx-3">
+                                                            <label for="patientDOB">Date of birth:</label>
+                                                            <div class="row">
+                                                                <div class="col-md-4">
+                                                                    <select required class="form-control patientDOBYear" id="patientDOBYear${c.childID}" name="year">
+                                                                        <option value="">Year</option>
+                                                                        <!-- Include years here -->
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <select required class="form-control patientDOBMonth" id="patientDOBMonth${c.childID}" name="month">
+                                                                        <option value="">Month</option>
+                                                                        <!-- Include months here -->
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <select required class="form-control patientDOBDay" id="patientDOBDay${c.childID}" name="day">
+                                                                        <option value="">Day</option>
+                                                                        <!-- Include days here -->
+                                                                    </select>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-2">
+                                                            <label>Gender:</label>
+                                                            <div class="form-check">
+                                                                <input required type="radio" class="form-check-input" id="maleGender" name="gender" value="Male" ${c.gender eq 'Male' ? 'checked' : ''}>
+                                                                <label class="form-check-label" for="maleGender">Male</label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input required type="radio" class="form-check-input" id="femaleGender" name="gender" value="Female" ${c.gender eq 'Female' ? 'checked' : ''}>
+                                                                <label class="form-check-label" for="femaleGender">Female</label>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <!-- Relationship -->
+                                                    <div class="form-group">
+                                                        <label for="relaID">Relationship</label>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <select required class="form-control" name="relaID">
+                                                                    <option value="">Relationship</option>
+                                                                    <c:forEach var="re" items="${requestScope.relationship}">
+                                                                        <c:choose>
+                                                                            <c:when test="${c.relationship.relationshipID eq re.relationshipID}">
+                                                                                <option value="${re.relationshipID}" selected>${re.relationshipName}</option>
+                                                                            </c:when>
+                                                                            <c:otherwise>
+                                                                                <option value="${re.relationshipID}">${re.relationshipName}</option>
+                                                                            </c:otherwise>
+                                                                        </c:choose>
+                                                                    </c:forEach>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <!-- Parent's Email -->
+                                                    <!--                                                    <div class="form-group">
+                                                                                                            <label for="patientEmail">Parent's email:</label>
+                                                                                                            <input disabled type="email" class="form-control" id="patientEmail" name="email" placeholder="Enter email address" value="${sessionScope.user.email}">
+                                                                                                        </div>
+                                                                                                         Parent's Phone Number 
+                                                                                                        <div class="form-group">
+                                                                                                            <label for="patientPhoneNumber">Parent's phone:</label>
+                                                                                                            <input type="text" class="form-control" id="patientPhoneNumber" oninvalid="CheckPhone(this);" oninput="CheckPhone(this);" name="phoneNumber" placeholder="Enter phone number" value="${sessionScope.user.phoneNumber}">
+                                                                                                        </div>
+                                                                                                         Address 
+                                                                                                        <div class="form-group">
+                                                                                                            <label for="patientAddress">Address:</label>
+                                                                                                            <input type="text" class="form-control" id="patientAddress" name="address" placeholder="Enter address" value="${sessionScope.user.address}">
+                                                                                                        </div>
+                                                                                                        <div class="alert alert-warning" style="font-size: 12px">
+                                                                                                            When editing the address and phone number, profile information will change.
+                                                                                                        </div>-->
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger border-m" data-dismiss="modal">
+                                                    <span class="d-flex align-items-center">
+                                                        <i class="fas fa-times mr-2"></i> Close
+                                                    </span>
+                                                </button>
+                                                <button type="submit" class="btn btn-continue text-white">
+                                                    <span class="d-flex align-items-center">
+                                                        <i class="fas fa-save mr-2"></i> Update
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>                   
                         </c:forEach>
                     </div>
                 </div>
@@ -336,21 +469,24 @@
                                             <label for="patientDOB">Date of birth:</label>
                                             <div class="row">
                                                 <div class="col-md-4">
-                                                    <select required class="form-control" id="patientDOBYear" name="year">
+                                                    <select required class="form-control patientDOBYear" id="patientDOBYear0" name="year">
                                                         <option value="">Year</option>
+                                                        <!-- Include years here -->
                                                     </select>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <select required class="form-control" id="patientDOBMonth" name="month">
+                                                    <select required class="form-control patientDOBMonth" id="patientDOBMonth0" name="month">
                                                         <option value="">Month</option>
+                                                        <!-- Include months here -->
                                                     </select>
                                                 </div>
                                                 <div class="col-md-4">
-                                                    <select required class="form-control" id="patientDOBDay" name="day">
+                                                    <select required class="form-control patientDOBDay" id="patientDOBDay0" name="day">
                                                         <option value="">Day</option>
-                                                        <!-- Thêm các tùy chọn cho ngày tại đây -->
+                                                        <!-- Include days here -->
                                                     </select>
                                                 </div>
+
                                             </div>
                                         </div>
                                         <div class="form-group col-md-2">
@@ -365,6 +501,20 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="form-group">
+                                        <label for="relationship">Relationship</label>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <select required class="form-control" name="relaID">
+                                                    <option value="">Relationship</option>
+                                                    <c:forEach var="re" items="${requestScope.relationship}">
+                                                        <option value="${re.relationshipID}">${re.relationshipName}</option>
+                                                    </c:forEach>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="form-group">
                                         <label for="patientEmail">Parent's email:</label>
                                         <input disabled type="email" class="form-control" id="patientEmail" 
@@ -403,6 +553,10 @@
                     </form>
                 </div>
             </div>
+            <!-- Modal to Add or Update Patient -->
+
+
+
         </div>
         <jsp:include page="layout/footer.jsp" />
 
@@ -480,44 +634,52 @@
                                                 initializeMonthCombobox();
 
                                                 // Lắng nghe sự kiện khi thay đổi các combobox và cập nhật lại ngày tháng
-                                                $('#patientDOBYear, #patientDOBMonth').change(function () {
-                                                    updateDayCombobox();
+                                                $('.patientDOBYear, .patientDOBMonth').change(function () {
+                                                    var childID = $(this).attr('id').match(/\d+/)[0]; // Lấy childID từ ID của select box
+                                                    updateDayCombobox(childID);
                                                 });
 
                                                 // Hàm khởi tạo combobox cho năm
                                                 function initializeYearCombobox() {
                                                     var currentYear = new Date().getFullYear();
-                                                    for (var i = currentYear; i >= (currentYear - 18); i--) {
-                                                        $('#patientDOBYear').append($('<option>', {
-                                                            value: i,
-                                                            text: i
-                                                        }));
-                                                    }
+                                                    $('.patientDOBYear').each(function () {
+                                                        var childID = $(this).attr('id').match(/\d+/)[0]; // Lấy childID từ ID của select box
+                                                        for (var i = currentYear; i >= (currentYear - 18); i--) {
+                                                            $(this).append($('<option>', {
+                                                                value: i,
+                                                                text: i
+                                                            }));
+                                                        }
+                                                    });
                                                 }
 
                                                 // Hàm khởi tạo combobox cho tháng
                                                 function initializeMonthCombobox() {
-                                                    for (var i = 1; i <= 12; i++) {
-                                                        $('#patientDOBMonth').append($('<option>', {
-                                                            value: i,
-                                                            text: i
-                                                        }));
-                                                    }
+                                                    $('.patientDOBMonth').each(function () {
+                                                        var childID = $(this).attr('id').match(/\d+/)[0]; // Lấy childID từ ID của select box
+                                                        for (var i = 1; i <= 12; i++) {
+                                                            $(this).append($('<option>', {
+                                                                value: i,
+                                                                text: i
+                                                            }));
+                                                        }
+                                                    });
                                                 }
 
                                                 // Hàm cập nhật combobox cho ngày (tùy theo năm và tháng đã chọn)
-                                                function updateDayCombobox() {
-                                                    $('#patientDOBDay').empty().append($('<option>', {
+                                                function updateDayCombobox(childID) {
+                                                    var daySelect = $('#patientDOBDay' + childID);
+                                                    daySelect.empty().append($('<option>', {
                                                         value: '',
                                                         text: 'Day'
                                                     }));
 
-                                                    var selectedYear = $('#patientDOBYear').val();
-                                                    var selectedMonth = $('#patientDOBMonth').val();
+                                                    var selectedYear = $('#patientDOBYear' + childID).val();
+                                                    var selectedMonth = $('#patientDOBMonth' + childID).val();
                                                     if (selectedYear && selectedMonth) {
                                                         var daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
                                                         for (var i = 1; i <= daysInMonth; i++) {
-                                                            $('#patientDOBDay').append($('<option>', {
+                                                            daySelect.append($('<option>', {
                                                                 value: i,
                                                                 text: i
                                                             }));
@@ -525,6 +687,9 @@
                                                     }
                                                 }
                                             });
+
+
+
                                             function CheckFullName(text) {
                                                 var name = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ ]{4,}(?:[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễếệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ]+){0,2}$/;
                                                 if (!name.test(text.value)) {

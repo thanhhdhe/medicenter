@@ -21,10 +21,22 @@ public class Children {
     private String status;
     private String gender;
     private String image;
+    private Relationship relationship;
 
     public Children() {
     }
 
+    public Children(User user, int childID, String childName, Date birthday, String status, String gender, String image, Relationship relationship) {
+        this.user = user;
+        this.childID = childID;
+        this.childName = childName;
+        this.birthday = birthday;
+        this.status = status;
+        this.gender = gender;
+        this.image = image;
+        this.relationship = relationship;
+    }
+    
     public Children(User user, int childID, String childName, Date birthday, String gender, String image) {
         this.user = user;
         this.childID = childID;
@@ -34,12 +46,13 @@ public class Children {
         this.image = image;
     }
 
-    public Children(User user, String childName, Date birthday, String gender, String image) {
+    public Children(User user, String childName, Date birthday, String gender, String image,Relationship relationship ) {
         this.user = user;
         this.childName = childName;
         this.birthday = birthday;
         this.gender = gender;
         this.image = image;
+        this.relationship = relationship;
     }
 
     public Children(User user, int childID, String childName, Date birthday, String status, String gender, String image) {
@@ -112,5 +125,14 @@ public class Children {
         LocalDate currentDate = LocalDate.now();
         return Period.between(localBirthDate, currentDate).getYears();
     }
+
+    public Relationship getRelationship() {
+        return relationship;
+    }
+
+    public void setRelationship(Relationship relationship) {
+        this.relationship = relationship;
+    }
+    
 
 }

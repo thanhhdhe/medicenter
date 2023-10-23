@@ -49,11 +49,15 @@ public class AdminController extends HttpServlet {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(currentDate);
 
-        // Subtract 6 days
+        // Subtract 7 days
         calendar.add(Calendar.DAY_OF_MONTH, -7);
 
         // Get the date seven days ago as a java.sql.Date
         Date sevenDaysAgo = new Date(calendar.getTimeInMillis());
+
+        // Update the database to cancel the pending reservation exceeds 5 minutes
+        ReservationDAO reservationDAO = new ReservationDAO();
+        reservationDAO.updateDatabase();
 
         if (session.getAttribute("adminEmail") == null) {
             request.getRequestDispatcher("/staff?event=sent-to-login").forward(request, response);
@@ -217,20 +221,20 @@ public class AdminController extends HttpServlet {
             request.getRequestDispatcher("./view/admin-dashboard.jsp").forward(request, response);
         }
     }
-    
-    private void sendToCustomerList(HttpSession session,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    private void sendToCustomerList(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         StaffDAO staffDAO = new StaffDAO();
         String adminEmail = (String) session.getAttribute("adminEmail");
         request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
-        
+
         request.getRequestDispatcher("./view/customer-list-admin.jsp").forward(request, response);
     }
-    
-    private void sendToSettingList(HttpSession session,HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    private void sendToSettingList(HttpSession session, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         StaffDAO staffDAO = new StaffDAO();
         String adminEmail = (String) session.getAttribute("adminEmail");
         request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
-        
+
         request.getRequestDispatcher("./view/setting-list-admin.jsp").forward(request, response);
     }
 }
