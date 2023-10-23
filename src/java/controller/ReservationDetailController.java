@@ -123,7 +123,7 @@ public class ReservationDetailController extends HttpServlet {
                 java.util.Date utilDate = dateFormat.parse(date);
                 sqlDate = new Date(utilDate.getTime());
             } catch (Exception e) {
-
+                
             }
             Reservation reservation = reservationDAO.getReservationByID(Integer.parseInt(reservationID));
             reservation.setReservationDate(sqlDate);
@@ -152,7 +152,7 @@ public class ReservationDetailController extends HttpServlet {
             java.util.Date utilDate = dateFormat.parse(date);
             sqlDate = new Date(utilDate.getTime());
         } catch (Exception e) {
-            response.sendDirect("404");
+            
         }
         // Check duplicate if user click two times or user book for that chilren 2 service at one slot
         try {
@@ -171,7 +171,7 @@ public class ReservationDetailController extends HttpServlet {
             }
 
         } catch (Exception e) {
-            response.sendDirect("500");
+            response.sendRedirect("500");
         }
         Reservation reservation = new Reservation();
         if (staffID.equals("all") || staffID == null) {

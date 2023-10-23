@@ -88,7 +88,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
             </div>
-            
+
             <div class="col-12 col-md-5 col-lg-8 d-flex align-items-center justify-content-md-end mt-3 mt-md-0">
                 <div class="dropdown">
 
@@ -238,13 +238,13 @@
                 datasets: [
                     {
                         label: 'Successful Reservations',
-                        data: [1, 3], // Provide data for successful reservations for the last n days 
+                        data: <%=doneReservation%>, // Provide data for successful reservations for the last n days 
                         fill: false,
                         borderColor: 'blue'
                     },
                     {
                         label: 'All Reservations',
-                        data: [1, 3], // Provide data for all reservations for the last n days
+                        data: <%=allReservation%>, // Provide data for all reservations for the last n days
                         fill: false,
                         borderColor: 'green'
                     }
@@ -259,6 +259,18 @@
                 const dateOfEnd = new Date(endDate);
                 if (dateOfStart > dateOfEnd) {
                     alert("End date cannot be in the past of the start date.");
+                    return;
+                }
+
+                // Validate the start date
+                if (isNaN(dateOfStart.getTime())) {
+                    alert("Start date invalid.");
+                    return;
+                }
+
+                // Validate the end date
+                if (isNaN(dateOfEnd.getTime())) {
+                    alert("End date invalid.");
                     return;
                 }
 
@@ -346,19 +358,6 @@
                             }
                         });
 
-                        // Now you can use the assigned variables as needed
-//                        console.log(cancelReservationCount);
-//                        console.log(doneReservationCount);
-//                        console.log(submittedReservationCount);
-//                        console.log(newlyUserCount);
-//                        console.log(newlyUserReservedCount);
-//                        console.log(totalRevenues);
-//                        console.log(revenueCategory);
-//                        console.log(averageStarByServiceID);
-//                        console.log(doneReservation);
-//                        console.log(allReservation);
-//                        console.log(totalAverageStar);
-
                         // update label
                         updateChartLabel();
 
@@ -368,7 +367,7 @@
                         document.getElementById("submittedReservation").textContent = submittedReservationCount + " reservations submitted";
                         document.getElementById("doneReservation").textContent = doneReservationCount + " reservations done";
                         document.getElementById("cancelReservation").textContent = cancelReservationCount + " reservations cancelled";
-                        document.getElementById("totalRevenues").textContent = "$" + totalRevenues;
+                        document.getElementById("totalRevenues").textContent = "Total revenues : $" + totalRevenues;
                         document.getElementById("newlyRegister").textContent = "Newly registered : " + newlyUserCount;
                         document.getElementById("newlyReserved").textContent = "Newly reserved : " + newlyUserReservedCount;
                         document.getElementById("totalRating").textContent = "Newly registered : " + totalAverageStar;
@@ -465,7 +464,10 @@
                     options: {
                         scales: {
                             y: {
-                                beginAtZero: true
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
                             }
                         }
                     }
