@@ -36,20 +36,7 @@
                                 <div class="col-md-4"> 
                                     <img src="${staff.getProfileImage()}">
                                     <div class="text-center">
-                                        <button class="more">Make an appointment</button>
-                                    </div>
-                                    <div class="modal fade" id="exampleModal5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog" role="document">
-                                            <div class="modal-content">
-                                                <button class="modal-close modal-toggle " data-dismiss="modal" aria-label="Close">X</button>
-                                                <div class="modal-body">
-                                                    <h2 class="modal-title">Make an appointment</h2>
-                                                    <div class="appointment-form-popup">
-                                                        <p class="wpcf7-contact-form-not-found"><strong>Error:</strong> Contact form not found.</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                       <a href="service?event=doc&staffID=${staff.getStaffID()}"> <button class="more" >Make an appointment</button></a>
                                     </div>
                                 </div>
                                 <div class="col-md-8">

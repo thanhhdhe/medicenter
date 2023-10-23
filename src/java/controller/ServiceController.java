@@ -142,6 +142,13 @@ public class ServiceController extends HttpServlet {
                 }
                 onOffStatus(request, response);
                 break;
+            case "doc":
+                PrintWriter out = response.getWriter();
+                out.print("dcm");
+                String staffID = request.getParameter("staffID");
+                request.setAttribute("staffID", staffID);
+                out.print(staffID);
+                request.getRequestDispatcher("./view/service-by-doc.jsp").forward(request, response);
             default:
                 break;
         }
