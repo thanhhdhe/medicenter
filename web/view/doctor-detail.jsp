@@ -36,7 +36,7 @@
                                 <div class="col-md-4"> 
                                     <img src="${staff.getProfileImage()}">
                                     <div class="text-center">
-                                        <button class="more" data-toggle="modal" data-target="#exampleModal5">Make an appointment</button>
+                                        <button class="more">Make an appointment</button>
                                     </div>
                                     <div class="modal fade" id="exampleModal5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
@@ -70,7 +70,7 @@
                                                     <td> <strong>Education</strong></td>
                                                     <td>
                                                         <p class="detail"></p>
-                                                        <p>- ${staff.getDepthStudy()}
+                                                        <p>${staff.getDepthStudy()}
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -79,7 +79,7 @@
                                                     </td>
                                                     <td>
                                                         <p class="detail"></p>
-                                                        <p>- ${staff.getSpecializedActivities()}
+                                                        <p>${staff.getSpecializedActivities()}
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -88,7 +88,7 @@
                                                     </td>
                                                     <td>
                                                         <p class="detail"></p>
-                                                        <p>- ${staff.getIntroduction()}</p><p></p>
+                                                        <p>${staff.getIntroduction()}</p><p></p>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -99,7 +99,7 @@
                             <div class="achievement">
                                 <h3>Professional Achievements</h3>
                                 <div class="detail">
-                                    <p><span data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;- ${staff.getProfessionalAchievements()}\r&quot;}" data-sheets-userformat="{&quot;2&quot;:957,&quot;3&quot;:{&quot;1&quot;:0},&quot;5&quot;:{&quot;1&quot;:[{&quot;1&quot;:2,&quot;2&quot;:0,&quot;5&quot;:{&quot;1&quot;:2,&quot;2&quot;:0}},{&quot;1&quot;:0,&quot;2&quot;:0,&quot;3&quot;:3},{&quot;1&quot;:1,&quot;2&quot;:0,&quot;4&quot;:1}]},&quot;6&quot;:{&quot;1&quot;:[{&quot;1&quot;:2,&quot;2&quot;:0,&quot;5&quot;:{&quot;1&quot;:2,&quot;2&quot;:0}},{&quot;1&quot;:0,&quot;2&quot;:0,&quot;3&quot;:3},{&quot;1&quot;:1,&quot;2&quot;:0,&quot;4&quot;:1}]},&quot;7&quot;:{&quot;1&quot;:[{&quot;1&quot;:2,&quot;2&quot;:0,&quot;5&quot;:{&quot;1&quot;:2,&quot;2&quot;:0}},{&quot;1&quot;:0,&quot;2&quot;:0,&quot;3&quot;:3},{&quot;1&quot;:1,&quot;2&quot;:0,&quot;4&quot;:1}]},&quot;8&quot;:{&quot;1&quot;:[{&quot;1&quot;:2,&quot;2&quot;:0,&quot;5&quot;:{&quot;1&quot;:2,&quot;2&quot;:0}},{&quot;1&quot;:0,&quot;2&quot;:0,&quot;3&quot;:3},{&quot;1&quot;:1,&quot;2&quot;:0,&quot;4&quot;:1}]},&quot;10&quot;:1,&quot;11&quot;:4,&quot;12&quot;:0}">– ${staff.getProfessionalAchievements()}<br> <br>
+                                    <p><span data-sheets-value="{&quot;1&quot;:2,&quot;2&quot;:&quot;${staff.getProfessionalAchievements()}\r&quot;}" data-sheets-userformat="{&quot;2&quot;:957,&quot;3&quot;:{&quot;1&quot;:0},&quot;5&quot;:{&quot;1&quot;:[{&quot;1&quot;:2,&quot;2&quot;:0,&quot;5&quot;:{&quot;1&quot;:2,&quot;2&quot;:0}},{&quot;1&quot;:0,&quot;2&quot;:0,&quot;3&quot;:3},{&quot;1&quot;:1,&quot;2&quot;:0,&quot;4&quot;:1}]},&quot;6&quot;:{&quot;1&quot;:[{&quot;1&quot;:2,&quot;2&quot;:0,&quot;5&quot;:{&quot;1&quot;:2,&quot;2&quot;:0}},{&quot;1&quot;:0,&quot;2&quot;:0,&quot;3&quot;:3},{&quot;1&quot;:1,&quot;2&quot;:0,&quot;4&quot;:1}]},&quot;7&quot;:{&quot;1&quot;:[{&quot;1&quot;:2,&quot;2&quot;:0,&quot;5&quot;:{&quot;1&quot;:2,&quot;2&quot;:0}},{&quot;1&quot;:0,&quot;2&quot;:0,&quot;3&quot;:3},{&quot;1&quot;:1,&quot;2&quot;:0,&quot;4&quot;:1}]},&quot;8&quot;:{&quot;1&quot;:[{&quot;1&quot;:2,&quot;2&quot;:0,&quot;5&quot;:{&quot;1&quot;:2,&quot;2&quot;:0}},{&quot;1&quot;:0,&quot;2&quot;:0,&quot;3&quot;:3},{&quot;1&quot;:1,&quot;2&quot;:0,&quot;4&quot;:1}]},&quot;10&quot;:1,&quot;11&quot;:4,&quot;12&quot;:0}">${staff.getProfessionalAchievements()}<br> <br>
                                         </span></p>
                                 </div>
                             </div>

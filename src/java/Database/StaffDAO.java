@@ -156,7 +156,11 @@ public class StaffDAO extends MyDAO {
                 String rank = rs.getString("Rank");
                 String specialty = rs.getString("Specialty");
                 String introduction = rs.getString("Introduction");
-                staff = new Staff(staffID, staffName, password, email, fullName, gender, phoneNumber, profileImage, role, rank, specialty, introduction);
+                String depthStudy = rs.getString("DepthStudy");
+                String professionalAchievements = rs.getString("ProfessionalAchievements");
+                String specializedActivities = rs.getString("SpecializedActivities");
+                
+                staff = new Staff(staffID, fullName, gender, phoneNumber, profileImage, rank, specialty, introduction, specializedActivities, professionalAchievements, depthStudy);
             }
             rs.close();
             ps.close();
@@ -283,10 +287,10 @@ public class StaffDAO extends MyDAO {
 
         return numOfPage;
     }
-    
+
     public void addStaff(Staff staff) {
-        String sql = "INSERT INTO Staff (StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole, Rank, Specialty, Introduction, SpecializedActivities, ProfessionalAchievements, DepthStudy) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Staff (StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole, Rank, Specialty, Introduction, SpecializedActivities, ProfessionalAchievements, DepthStudy) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
             ps = con.prepareStatement(sql);
             ps.setString(1, staff.getStaffName());
@@ -303,16 +307,16 @@ public class StaffDAO extends MyDAO {
             ps.setString(12, staff.getSpecializedActivities());
             ps.setString(13, staff.getProfessionalAchievements());
             ps.setString(14, staff.getDepthStudy());
-            
+
             ps.executeUpdate();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
-     public void updateStaff(Staff staff) {
-         String sql = "UPDATE Staff SET Email = ?, Password = ?, FullName = ?, Gender = ?, PhoneNumber = ?, ProfileImage = ?, StaffRole = ?, Rank = ?, Specialty = ?, Introduction = ?, SpecializedActivities = ?, ProfessionalAchievements = ?, DepthStudy = ? WHERE StaffId = ?";
+
+    public void updateStaff(Staff staff) {
+        String sql = "UPDATE Staff SET Email = ?, Password = ?, FullName = ?, Gender = ?, PhoneNumber = ?, ProfileImage = ?, StaffRole = ?, Rank = ?, Specialty = ?, Introduction = ?, SpecializedActivities = ?, ProfessionalAchievements = ?, DepthStudy = ? WHERE StaffId = ?";
         try {
             ps = connection.prepareStatement(sql);
             ps.setString(1, staff.getEmail());
@@ -331,7 +335,7 @@ public class StaffDAO extends MyDAO {
             ps.setInt(14, staff.getStaffID());
 
             ps.executeUpdate();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -355,5 +359,7 @@ public class StaffDAO extends MyDAO {
 //        staff.setRole("doctor");
 //        staffDAO.updateStaff(staff);
 //        System.out.println(staff.getRole());
+        Staff staff = staffDAO.getStaffByStaffId(3);
+        System.out.println(staff.getProfessionalAchievements());
     }
 }
