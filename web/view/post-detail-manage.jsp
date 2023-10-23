@@ -96,6 +96,7 @@
                             </c:if>
 
                             <div class="d-flex justify-content-center">
+                                <input hidden="" name="event" value="${event}">
                                 <input class="btn btn-primary mt-3 w-25" type="submit" value="${event}" name="event" />
                             </div>
 

@@ -84,21 +84,25 @@ public class PostDetailManage extends HttpServlet {
         if (!isManager) {
             request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
         }
+        String event = request.getParameter("event");
+        request.setAttribute("event", event);
 
         PostDAO postDAO = new PostDAO();
+        int ID;
         Post post = new Post();
-        int ID = Integer.parseInt(request.getParameter("postId"));
-        if (ID == -1) {
-            ID = postDAO.getLastPostID() + 1;
-            post = new Post(ID, "", "", "", "", 0, /*curStaff.getStaffID() */ 1, 1, Date.valueOf(LocalDate.now()), "", true);
-        } else {
-            post = postDAO.getPostByID(ID);
+        switch (event) {
+            case "update":
+                ID = Integer.parseInt(request.getParameter("postID"));
+                post = postDAO.getPostByID(ID);
+                break;
+            case "add":
+                ID = postDAO.getLastPostID() + 1;
+                post = new Post(ID, "", "", "", "", 0, /*curStaff.getStaffID() */ 1, 1, Date.valueOf(LocalDate.now()), "", true);
+                break;
+            default:
+                throw new AssertionError();
         }
-        String event = request.getParameter("event");
-        PrintWriter out = response.getWriter();
-        out.print(event);
-        request.setAttribute("event", event);
-        loadPostDetail(request, response, post);
+        loadPostDetail(request, response, post, event);
         request.getRequestDispatcher("/view/post-detail-manage.jsp").forward(request, response);
     }
 
@@ -113,33 +117,32 @@ public class PostDetailManage extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PrintWriter out = response.getWriter();
         String event = request.getParameter("event");
-        out.print(event);
+        PostDAO postDAO = new PostDAO();
+        int ID;
+        Post post = new Post();
         switch (event) {
             case "update":
-                if (updatePost(request, response)) {
-                    request.getRequestDispatcher("/postManage").forward(request, response);
-                } else {
-                    request.getRequestDispatcher("/view/post-detail-manage.jsp").forward(request, response);
-                }
+                ID = Integer.parseInt(request.getParameter("postID"));
+                post = postDAO.getPostByID(ID);
+                post = newPost(request, response, post, event);
+                loadPostDetail(request, response, post, event);
+                request.getRequestDispatcher("/view/post-detail-manage.jsp").forward(request, response);
                 break;
             case "add":
-                PostDAO postDAO = new PostDAO();
-                int ID = postDAO.getLastPostID() + 1;
-                Post post = new Post(ID, "", "", "", "", 0, /*curStaff.getStaffID() */ 1, 1, Date.valueOf(LocalDate.now()), "", true);
-                if (addPost(request, response, post)) {
-                    request.getRequestDispatcher("/postManage").forward(request, response);
-                } else {
-                    request.getRequestDispatcher("/view/post-detail-manage.jsp").forward(request, response);
-                }
+                ID = postDAO.getLastPostID() + 1;
+                post = new Post(ID, "", "", "", "", 0, /*curStaff.getStaffID() */ 1, 1, Date.valueOf(LocalDate.now()), "", true);
+                post = newPost(request, response, post, event);
+                loadPostDetail(request, response, post, event);
+                request.getRequestDispatcher("/view/post-detail-manage.jsp").forward(request, response);
                 break;
             default:
                 throw new AssertionError();
         }
+
     }
 
-    protected void loadPostDetail(HttpServletRequest request, HttpServletResponse response, Post post) {
+    protected void loadPostDetail(HttpServletRequest request, HttpServletResponse response, Post post, String event) {
         PostDAO postDAO = new PostDAO();
 //        Post post = postDAO.getPostByID(ID);
         List<String> categoryList = postDAO.allCategoryPost();
@@ -149,9 +152,11 @@ public class PostDetailManage extends HttpServlet {
         request.setAttribute("avatar", postDAO.getAvatarByUserID(post.getAuthorID()));
         request.setAttribute("categoryList", categoryList);
         request.setAttribute("post", post);
+        request.setAttribute("event", event);
     }
 
-    protected boolean addPost(HttpServletRequest request, HttpServletResponse response, Post post) {
+    protected Post newPost(HttpServletRequest request, HttpServletResponse response, Post post, String event) {
+
         PostDAO postDAO = new PostDAO();
 
         String title = request.getParameter("Title");
@@ -162,81 +167,26 @@ public class PostDetailManage extends HttpServlet {
         String categoryPost = request.getParameter("postCategory");
         String status = request.getParameter("status");
 
-        boolean canInsert = true;
+        boolean validate = true;
         if (content.isEmpty()) {
             String errorMessage3 = "content can't be empty";
             request.setAttribute("errorMessage3", errorMessage3);
-            canInsert = false;
+            validate = false;
         }
         if (title.isEmpty()) {
             String errorMessage1 = "title can't be empty";
             request.setAttribute("errorMessage1", errorMessage1);
-            canInsert = false;
+            validate = false;
 
         }
         if (briefInfo.isEmpty()) {
             String errorMessage2 = "brief can't be empty";
             request.setAttribute("errorMessage2", errorMessage2);
-            canInsert = false;
+            validate = false;
 
         }
-        if (canInsert) {
-            if (status.equals("true")) {
-                post.setStatusPost(true);
-            }
-            if (status.equals("false")) {
-                post.setStatusPost(false);
-            }
-            if (canInsert) {
-                post.setTitle(title);
-                post.setContent(content);
-                post.setBriefInfo(briefInfo);
-                post.setThumbnail(thumbnail);
-                post.setCreatedDate(createdDate);
-                post.setCategoryPost(categoryPost);
 
-                postDAO.insert(post);
-//            request.getRequestDispatcher("/postManage?event=").forward(request, response);
-            } else {
-//            
-            }
-
-        }
-        return canInsert;
-    }
-
-    protected boolean updatePost(HttpServletRequest request, HttpServletResponse response) {
-        PostDAO postDAO = new PostDAO();
-        int id = Integer.parseInt(request.getParameter("postID"));
-        Post post = postDAO.getPostByID(id);
-        String title = request.getParameter("Title");
-        String content = request.getParameter("Content");
-        String briefInfo = request.getParameter("Brief");
-        String thumbnail = request.getParameter("Thumbnail");
-        Date createdDate = Date.valueOf(LocalDate.now());
-        String categoryPost = request.getParameter("postCategory");
-        String status = request.getParameter("status");
-
-        boolean canUpdate = true;
-        if (content.isEmpty()) {
-            String errorMessage3 = "content can't be empty";
-            request.setAttribute("errorMessage3", errorMessage3);
-            canUpdate = false;
-
-        }
-        if (title.isEmpty()) {
-            String errorMessage1 = "title can't be empty";
-            request.setAttribute("errorMessage1", errorMessage1);
-            canUpdate = false;
-
-        }
-        if (briefInfo.isEmpty()) {
-            String errorMessage2 = "brief can't be empty";
-            request.setAttribute("errorMessage2", errorMessage2);
-            canUpdate = false;
-
-        }
-        if (canUpdate) {
+        if (validate) {
             post.setTitle(title);
             post.setContent(content);
             post.setBriefInfo(briefInfo);
@@ -246,16 +196,21 @@ public class PostDetailManage extends HttpServlet {
             if (status.equals("true")) {
                 post.setStatusPost(true);
             }
-            if (status.equals(false)) {
+            if (status.equals("false")) {
                 post.setStatusPost(false);
             }
-            postDAO.update(id, post);
-//            request.getRequestDispatcher("/postManage?event=").forward(request, response);
-        } else {
-            loadPostDetail(request, response, post);
-//            request.getRequestDispatcher("/view/post-detail-manage.jsp").forward(request, response);
+            switch (event) {
+                case "add":
+                    postDAO.insert(post);
+                    break;
+                case "update":
+                    postDAO.update(post.getPostID(), post);
+                    break;
+                default:
+                    throw new AssertionError();
+            }
         }
-        return canUpdate;
+        return post;
     }
 
     /**
