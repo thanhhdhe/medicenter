@@ -77,11 +77,44 @@ public class ServiceDAO extends MyDAO {
         }
         return serviceList;
     }
+    public List<Service> getSortedActivePaged(int offSetPage, int numberOfPage) {
+        List<Service> serviceList = new ArrayList<>();
+        xSql = "SELECT *  FROM [dbo].[Services] where Status = 1 "
+                + "ORDER BY UpdateDate DESC "
+                + "OFFSET ? ROWS \n "
+                + "FETCH NEXT ? ROWS ONLY;";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, offSetPage);
+            ps.setInt(2, numberOfPage);
+            
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int ServiceID = rs.getInt("ServiceID");
+                String title = rs.getString("Title");
+                String brief = rs.getString("BriefInfo");
+                String thumbnail = rs.getString("Thumbnail");
+                int categoryID = rs.getInt("CategoryID");
+                double originalPrice = rs.getDouble("OriginalPrice");
+                double salePrice = rs.getDouble("SalePrice");
+                String serviceDetail = rs.getString("ServiceDetails");
+                Date updateDate = rs.getDate("UpdateDate");
+                boolean status = rs.getBoolean("Status");
+                Service service = new Service(ServiceID, title, brief, thumbnail, categoryID, originalPrice, salePrice, serviceDetail, updateDate, status);
+                serviceList.add(service);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return serviceList;
+    }
     
     public List<Service> getSortedPagedServicesBySearch(int offSetPage, int numberOfPage, String keyword) {
         List<Service> serviceList = new ArrayList<>();
         xSql = "SELECT *  FROM [dbo].[Services]  "
-                + "where Title like ? "
+                + "where Title like ? and Status = 1 "
                 + "ORDER BY UpdateDate DESC "
                 + "OFFSET ? ROWS \n "
                 + "FETCH NEXT ? ROWS ONLY;";
@@ -155,7 +188,7 @@ public class ServiceDAO extends MyDAO {
         xSql = "SELECT s.ServiceID, s.Title, s.Thumbnail, s.CategoryID, s.OriginalPrice, s.SalePrice, s.ServiceDetails, s.BriefInfo, s.UpdateDate, s.Status "
                 + "FROM ( "
                 + "    SELECT * FROM [dbo].[Services] "
-                + "    WHERE Title LIKE ? AND CategoryID = ? "
+                + "    WHERE Title LIKE ? AND CategoryID = ? and Status = 1 "
                 + ") AS s "
                 + "JOIN ServiceStaff ss ON s.ServiceID = ss.ServiceID "
                 + "WHERE ss.StaffID = ?"
@@ -210,7 +243,7 @@ public class ServiceDAO extends MyDAO {
     public List<Service> getSortedPagedServicesByType(int offSetPage, int numberOfPage, String keyword, String categoryIDInput) {
         List<Service> serviceList = new ArrayList<>();
         xSql = "    SELECT * FROM [dbo].[Services] "
-                + "    WHERE Title LIKE ? AND CategoryID = ? "
+                + "    WHERE Title LIKE ? AND CategoryID = ? and Status = 1 "
                 + "    ORDER BY UpdateDate DESC "
                 + "    OFFSET ? ROWS "
                 + "    FETCH NEXT ? ROWS ONLY ";
@@ -248,7 +281,7 @@ public class ServiceDAO extends MyDAO {
         xSql = "SELECT s.ServiceID, s.Title, s.Thumbnail, s.CategoryID, s.OriginalPrice, s.SalePrice, s.ServiceDetails, s.BriefInfo, s.UpdateDate, s.Status "
                 + "FROM ( "
                 + "    SELECT * FROM [dbo].[Services] "
-                + "    WHERE Title LIKE ?"
+                + "    WHERE Title LIKE ? and Status = 1 "
                 + ") AS s "
                 + "JOIN ServiceStaff ss ON s.ServiceID = ss.ServiceID "
                 + "WHERE ss.StaffID = ?"
@@ -471,12 +504,30 @@ public class ServiceDAO extends MyDAO {
         return total;
     }
     
+    public int getActiveServiceCount() {
+        Service service = null;
+        xSql = "SELECT COUNT(*) AS TotalRecords FROM Services where and Status = 1 ";
+        int total = 0;
+        try {
+            ps = con.prepareStatement(xSql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                total = rs.getInt("TotalRecords");
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+    
     public int getCountOfServicesUserChoose(String keyword, String categoryIDInput, String staffIDInput) {
         int count = 0;
         String sql = "SELECT  COUNT(DISTINCT s.ServiceID) AS count "
                 + "FROM [dbo].[Services] AS s "
                 + "JOIN ServiceStaff ss ON s.ServiceID = ss.ServiceID "
-                + "WHERE s.Title LIKE ? ";
+                + "WHERE s.Title LIKE ? and Status = 1 ";
         
         if (!categoryIDInput.isEmpty()) {
             sql += "AND s.CategoryID = ? ";

@@ -240,7 +240,7 @@
                                             </thead>
                                             <tbody id="service-list">
                                                 <%List<Service> list = serviceDAO.getSortedPaged(0, 10);
-            if(!list.isEmpty())   { for (Service service : list) {%>
+                                                if(!list.isEmpty())   { for (Service service : list) {%>
                                                 <tr id="<%=service.getServiceID()%>" class="service p-3 <%=!service.getStatus()?"inactives":"" %>">
                                                     <th scope="row"><%=service.getServiceID()%></th>
                                                     <td><img src="<%=service.getThumbnail()%>" alt="ìmg" style="width: 12rem;height: 8rem;object-fit: cover;" /></td>

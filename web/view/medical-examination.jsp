@@ -52,9 +52,9 @@
 
     <body>
         <%
-            ServiceDAO serviceDAO = new ServiceDAO();
        String email = (String) session.getAttribute("email");
        StaffDAO staffDAO = new StaffDAO();
+       ServiceDAO serviceDAO = new ServiceDAO();
        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
        ChildrenDAO childrenDAO = new ChildrenDAO();
        MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
@@ -212,11 +212,28 @@
                                 <h4>MEDICAL RECORDS</h4>
                                 <a href="staff?event=send-to-children-list" class="ms-text-primary font-weight-bold">Add Medical Record</a>
                             </div>
-                            <div class="mb-4 px-4 py-3 d-flex justify-content-start align-items-center">
-                                <div class="col-md-4">
+                            <div class="mb-4 px-4 py-3 d-flex justify-content-between align-items-center">
+                                <div class="col-md-3">
                                     <input class="form-control" name="patientName" id="patientName" type="search" placeholder="Search Child Name" />
                                 </div>
-                            </div>
+                            
+                            <div class="col-md-4 px-4 d-flex">
+                                    <div class="input-group text-black-50">
+                                        <input type="date" class="form-control" name="from" id="from">
+                                        <span class="input-group-text">to</span>
+                                        <input type="date" class="form-control"name="to" id="to">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 px-4">
+                                    <select class="form-select" id="service">
+                                        <option selected value="">Service</option>
+                                        <%List<Integer> list = medicalExaminationDAO.getListServiceIDsByStaffID(curStaff.getStaffID());
+                                        for (Integer integer : list) {%>
+                                            <option value="<%=integer%>"><%=serviceDAO.getServiceByID(integer + "").getTitle()%></option>
+                                        <%}%>
+                                    </select>
+                                </div>
+                            </div>        
                             <div class="table-responsive p-4">
                                 <%if(curStaff!=null){%>
                                 <table class="table table-striped table-hover">

@@ -162,6 +162,9 @@ public class MedicalExaminationController extends HttpServlet {
         PrintWriter out = response.getWriter();
         Logger logger = Logger.getLogger(MedicalExaminationController.class.getName());
         String childName = request.getParameter("patientName");
+        String fromDate = request.getParameter("fromDate");
+        String toDate = request.getParameter("toDate");
+        String service = request.getParameter("service");
         HttpSession session = request.getSession(true);
         String email = (String) session.getAttribute("email");
 //        logger.info("Giá trị của biến email là: " + email);
@@ -172,8 +175,9 @@ public class MedicalExaminationController extends HttpServlet {
         MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
         ChildrenDAO childrenDAO = new ChildrenDAO();
         ServiceDAO serviceDAO = new ServiceDAO();
-        int numberOfPage = (medicalExaminationDAO.countMedicalExaminationsByStaffAndChildName(curStaff.getStaffID() + "", childName) + 9) / 10;
-        int numberOfRecord = medicalExaminationDAO.countMedicalExaminationsByStaffAndChildName(curStaff.getStaffID() + "", childName);
+        int numberOfRecord = medicalExaminationDAO.countFilterMedicalExaminationsOfStaff(curStaff.getStaffID() + "", childName,service,fromDate,toDate);
+        int numberOfPage = (numberOfRecord + 9) / 10;
+        
         // Generate the pagination HTML
         String paginationHtml = "";
         if (numberOfRecord <= 40) {
@@ -220,7 +224,7 @@ public class MedicalExaminationController extends HttpServlet {
         // Add the pagination HTML to the response header
         response.addHeader("pagination", paginationHtml);
         
-        List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getPageMedicalExaminationsByStaffAndChildName(curStaff.getStaffID() + "",childName, pagination, 10);
+        List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getPageFilterMedicalExaminationsOfStaff(curStaff.getStaffID() + "",childName, pagination, 10,service,fromDate,toDate);
         if (listMedicalExamination != null) {
             for (MedicalExamination medicalExamination : listMedicalExamination) {
                 out.print("<tr>\n"
