@@ -160,7 +160,7 @@ public class StaffDAO extends MyDAO {
                 String professionalAchievements = rs.getString("ProfessionalAchievements");
                 String specializedActivities = rs.getString("SpecializedActivities");
                 
-                staff = new Staff(staffID, fullName, gender, phoneNumber, profileImage, rank, specialty, introduction, specializedActivities, professionalAchievements, depthStudy);
+                staff = new Staff(staffID, staffName, password, email, fullName, gender, phoneNumber, profileImage, role, rank, specialty, introduction);
             }
             rs.close();
             ps.close();

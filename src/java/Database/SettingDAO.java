@@ -81,12 +81,46 @@ public class SettingDAO extends MyDAO {
         return settingList;
     }
 
-    public int getTotalPageSettingBySearch() {
-        xSql = "SELECT count(*)\n"
-                + "FROM Settings\n"
-                + "WHERE Type LIKE ? OR Name LIKE ? OR Description LIKE ?";
+    public int getTotalPageSettingBySearch(String stype, String sname, String sdescription, String sstatus, String svalue) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM Settings WHERE 1=1");
+
+        // Create a list to store the prepared statement parameters
+        List<Object> parameters = new ArrayList<>();
+
+        if (stype != null && !stype.isEmpty()) {
+            sql.append(" AND Type = ?");
+            parameters.add(stype);
+        }
+
+        if (sname != null && !sname.isEmpty()) {
+            sql.append(" AND Name LIKE ?");
+            parameters.add("%" + sname + "%");
+        }
+
+        if (sdescription != null && !sdescription.isEmpty()) {
+            sql.append(" AND Description = ?");
+            parameters.add(sdescription);
+        }
+
+        if (sstatus != null && !sstatus.isEmpty()) {
+            sql.append(" AND Status = ?");
+            parameters.add(sstatus);
+        }
+
+        if (svalue != null && !svalue.isEmpty()) {
+            sql.append(" AND Value LIKE ?");
+            parameters.add("%" + svalue + "%");
+        }
+        
         try {
-            ps = con.prepareStatement(xSql);
+            ps = con.prepareStatement(sql.toString());
+            int parameterIndex = 1;
+            for (Object parameter : parameters) {
+                if (parameter instanceof String) {
+                    ps.setString(parameterIndex, (String) parameter);
+                }
+                parameterIndex++;
+            }
             rs = ps.executeQuery();
             while (rs.next()) {
                 return rs.getInt(1);
@@ -97,19 +131,70 @@ public class SettingDAO extends MyDAO {
         return 0;
     }
 
-    public List<Setting> getSettingListBySearch(int page, String stype, String sname, String sdescription) {
+    public List<Setting> getSettingListBySearch(int page, String stype, String sname, String sdescription, String sstatus, String svalue, String sortBy) {
         List<Setting> settingList = new ArrayList<>();
-        xSql = "SELECT *\n"
-                + "FROM Settings\n"
-                + "WHERE Type LIKE ? OR Name LIKE ? OR Description LIKE ?\n"
-                + "ORDER BY SettingID\n"
-                + "OFFSET ? Rows fetch next 10 rows ONLY;";
+        StringBuilder sql = new StringBuilder("SELECT * FROM Settings WHERE 1=1");
+
+        // Create a list to store the prepared statement parameters
+        List<Object> parameters = new ArrayList<>();
+
+        if (stype != null && !stype.isEmpty()) {
+            sql.append(" AND Type = ?");
+            parameters.add(stype);
+        }
+
+        if (sname != null && !sname.isEmpty()) {
+            sql.append(" AND Name LIKE ?");
+            parameters.add("%" + sname + "%");
+        }
+
+        if (sdescription != null && !sdescription.isEmpty()) {
+            sql.append(" AND Description = ?");
+            parameters.add(sdescription);
+        }
+
+        if (sstatus != null && !sstatus.isEmpty()) {
+            sql.append(" AND Status = ?");
+            parameters.add(sstatus);
+        }
+
+        if (svalue != null && !svalue.isEmpty()) {
+            sql.append(" AND Value LIKE ?");
+            parameters.add("%" + svalue + "%");
+        }
+
+        String orderBy = "SettingID";
+        if (sortBy != null && !sortBy.isEmpty()) {
+            switch (sortBy) {
+                case "type":
+                    orderBy = "Type";
+                    break;
+                case "Value":
+                    orderBy = "Value";
+                    break;
+                case "Status":
+                    orderBy = "Status";
+                    break;
+                default:
+                    orderBy = "SettingID";
+            }
+        }
+        sql.append(" ORDER BY ").append(orderBy);
+
+        int offset = (page - 1) * 10;
+        sql.append(" OFFSET ? ROWS FETCH NEXT 10 ROWS ONLY");
+
         try {
-            ps = con.prepareStatement(xSql);
-            ps.setString(1, stype);
-            ps.setString(2, sname);
-            ps.setString(3, sdescription);
-            ps.setInt(1, (page - 1) * 10);
+            ps = con.prepareStatement(sql.toString());
+            int parameterIndex = 1;
+            for (Object parameter : parameters) {
+                if (parameter instanceof String) {
+                    ps.setString(parameterIndex, (String) parameter);
+                }
+                parameterIndex++;
+            }
+            ps.setInt(parameterIndex, offset);
+
             rs = ps.executeQuery();
             while (rs.next()) {
                 int settingID = rs.getInt(1);
@@ -121,11 +206,10 @@ public class SettingDAO extends MyDAO {
                 Setting setting = new Setting(settingID, type, settingName, value, description, status);
                 settingList.add(setting);
             }
-            rs.close();
-            ps.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return settingList;
     }
 
@@ -161,4 +245,12 @@ public class SettingDAO extends MyDAO {
         }
     }
 
+    public static void main(String[] args) {
+        SettingDAO dao = new SettingDAO();
+//        List<Setting> settingList = dao.getSettingListBySearch(1, "", "OUR SERVICE", "", "","","");
+//        System.out.println(dao.getTotalPageSettingBySearch( "", "OUR SERVICE", "", "","")+"sad");
+//        for (Setting setting : settingList) {
+//            System.out.println(setting.getSettingID());
+//        }
+    }
 }
