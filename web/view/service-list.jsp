@@ -58,7 +58,7 @@
                 <div class="col-md-9" id="service-list">
 
                     <!-- Services List -->
-                    <%List<Service> list = serviceDAO.getSortedPaged(0, 5);
+                    <%List<Service> list = serviceDAO.getSortedActivePaged(0, 5);
                 for (Service service : list) {%>
                     <div class="service row p-3">
                         <div class="col-md-3">
@@ -99,7 +99,7 @@
         </div>
         <div class="d-flex justify-content-center mb-5" id="pagination-container">
             <button class="pagination-btn ms-2 active" data-page="1">1</button>
-            <%for (int i = 2; i <=(serviceDAO.getServiceCount()+4)/5; i++) {%>
+            <%for (int i = 2; i <=(serviceDAO.getActiveServiceCount()+4)/5; i++) {%>
             <button class="pagination-btn ms-2 inactive" data-page="<%=i%>"><%=i%></button>
             <%}%>
         </div>

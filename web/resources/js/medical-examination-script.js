@@ -7,8 +7,14 @@
 
 document.addEventListener('DOMContentLoaded', function () {
     var patientNameInput = document.getElementById('patientName');
+    var fromDateInput = document.getElementById('from');
+    var toDateInput = document.getElementById('to');
+    var serviceInput = document.getElementById('service');
 
     patientNameInput.addEventListener('input',function(){handleInputChange(1);} );
+    fromDateInput.addEventListener('change', function(){handleInputChange(1);});
+    toDateInput.addEventListener('change', function(){handleInputChange(1);});
+    serviceInput.addEventListener('change', function(){handleInputChange(1);});
 
     // Xử lý sự kiện khi người dùng nhấp vào nút phân trang
     var paginationButtons = document.querySelectorAll('.pagination-btn a');
@@ -31,11 +37,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function handleInputChange(page = 1) {
         var patientName = patientNameInput.value;
+        var fromDate = fromDateInput.value;
+        var toDate = toDateInput.value;
+        var service = serviceInput.value;
 
         // Gửi yêu cầu Ajax đến máy chủ để lấy danh sách dịch vụ
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'medical-examination?event=get-medical-examination-page&patientName=' + encodeURIComponent(patientName)
-                +'&page=' + encodeURIComponent(page));
+        xhr.open('GET', 'medical-examination?event=get-medical-examination-page&patientName=' + encodeURIComponent(patientName)+
+                '&fromDate=' + encodeURIComponent(fromDate) +
+                '&toDate=' + encodeURIComponent(toDate) +
+                '&service=' + encodeURIComponent(service) +
+                '&page=' + encodeURIComponent(page));
 
         xhr.onload = function () {
             if (xhr.status === 200) {
@@ -58,11 +70,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function handlePageChange(page = 1) {
         var patientName = document.getElementById('patientName').value;
+        var fromDate = document.getElementById('from').value;
+        var toDate = document.getElementById('to').value;
+        var service = document.getElementById('service').value;
 
         // Gửi yêu cầu Ajax đến máy chủ để lấy danh sách dịch vụ
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'medical-examination?event=get-medical-examination-page&patientName=' + encodeURIComponent(patientName)
-                +'&page=' + encodeURIComponent(page));
+        xhr.open('GET', 'medical-examination?event=get-medical-examination-page&patientName=' + encodeURIComponent(patientName)+
+                '&fromDate=' + encodeURIComponent(fromDate) +
+                '&toDate=' + encodeURIComponent(toDate) +
+                '&service=' + encodeURIComponent(service) +
+                '&page=' + encodeURIComponent(page));
 
         xhr.onload = function () {
             if (xhr.status === 200) {

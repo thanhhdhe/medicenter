@@ -181,31 +181,20 @@
                     </div>
                     <div class="col-md-12 row justify-content-between mb-3">
                         <div class="col-md-3">
-                            <input type="text" name="name" class="form-control" placeholder="Search By Name" id="nameUser">
-                            <input type="text" name="email" class="form-control mt-2" placeholder="Search By Email" id="emailUser">
-                            <input type="text" name="mobile" class="form-control mt-2" placeholder="Search By Mobile" id="mobileUser">
+                            <input type="text" name="value" class="form-control" placeholder="Search By Value" id="valuSetting">
                         </div>
                         <div class="col-md-3">
-                            <select class="form-select" id="filterUser">
+                            <select class="form-select" id="filterSetting">
                                 <option selected value="">Filtered User List</option>
-                                <option value="user">Customer</option>
-                                <option value="doctor">Doctor</option>
-                                <option value="nurse">Nurse</option> 
-                                <option value="manager">Manager</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">FeMale</option>
-                                <option value="1">Active</option>
-                                <option value="0">Inactive</option>
+                                <option value="type">type</option>
+                                
                             </select>
 
                             <select class="form-select mt-3" id="sort">
                                 <option selected value="">Sort By</option>
                                 <option value="ID">Sort By ID</option>
-                                <option value="Name">Sort By Name</option>
-                                <option value="Gender">Sort By Gender</option>
-                                <option value="Email">Sort By Email</option>
-                                <option value="PhoneNumber">Sort By Mobile</option> 
-                                <option value="Role">Sort By Role</option>
+                                <option value="Type">Sort By Type</option>
+                                <option value="Value">Sort By Value</option>                            
                                 <option value="Status">Sort By status</option>
                             </select>
 
@@ -340,5 +329,6 @@
                                                                     xhr.send();
                                                                 }
         </script>
+        <<script src="./resources/js/setting-list-admin.js"></script>
     </body>
 </html>
