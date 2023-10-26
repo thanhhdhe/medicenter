@@ -5,7 +5,8 @@
         <title>Reservation Detail</title>
         <link rel="stylesheet" href="./resources/css/reservation-detail-style.css">
         <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-        <jsp:include page="layout/Head.jsp"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link href="./resources/css/style.css" rel="stylesheet">
     </head>
     <body>
         <jsp:include page="layout/Header.jsp"/>
@@ -381,7 +382,7 @@
                         let checkOutURL = null;
                         if (staffID === null || staffID === 'all') {
                             checkOutURL = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=all&action=save&serviceID=" + <%=service.getServiceID()%> + "&slot=" + (timeSlots.indexOf(selectedSlotValue) + 1) + "&ChildID=" + childID;
-                            
+
                         } else {
                             checkOutURL = "reservationdetailcontroller?selectedDate=" + selectedDate.textContent + "&selectedMonth=" + (currentMonth + 1) + "&selectedYear=" + currentYear + "&staffID=" + staffID + "&action=save&serviceID=" + <%=service.getServiceID()%> + "&slot=" + (timeSlots.indexOf(selectedSlotValue) + 1) + "&ChildID=" + childID;
                         }

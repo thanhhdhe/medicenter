@@ -15,7 +15,9 @@
         <!-- Google Fonts Roboto -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"/>
 
-        <jsp:include page="layout/Head.jsp"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link href="./resources/css/style.css" rel="stylesheet">
+
     </head>
     <body>
         <%@ page import="java.util.List,java.util.ArrayList,java.text.SimpleDateFormat,jakarta.servlet.http.HttpSession" %>
@@ -95,6 +97,14 @@
             let selectedOption = null;
 
             const selectElement = document.getElementById('pageOption');
+            selectElement.textContent = "";
+            <% for (int i = 1;i<= reservationDAO.getTotalPagination(userID,5);i++) { %>
+            var option = document.createElement("option");
+            option.className = "text-lg-start";
+            option.textContent = "Page <%=i%>";
+            selectElement.appendChild(option);
+            <% } %>
+
             //  Check if user enter
             function checkEnter(event) {
                 if (event.keyCode === 13) { // Enter key pressed
@@ -106,6 +116,14 @@
                 if (userInput.trim() === "") {
                     action = "viewAll";
                     totalPagePagination = <%=reservationDAO.getTotalPagination(userID,5)%>;
+                    pageNumber = 1;
+                    selectElement.textContent = "";
+            <% for (int i = 1;i<= reservationDAO.getTotalPagination(userID,5);i++) { %>
+                    var option = document.createElement("option");
+                    option.className = "text-lg-start";
+                    option.textContent = "Page <%=i%>";
+                    selectElement.appendChild(option);
+            <% } %>
                     getReservationsAndDisplayTable();
                     return;
                 }
@@ -134,7 +152,7 @@
             });
 
             function changePage(page) {
-                if (pageNumber <= 0 || pageNumber > totalPagePagination) {
+                if (page <= 0 || page > totalPagePagination) {
                     return;
                 }
                 pageNumber = page;
@@ -143,7 +161,7 @@
 
             async function getSpecificPagination() {
                 const url = "/ChildrenCare/myreservation?action=paginationNumber&condition=" + selectedOption + "&value=" + encodeURIComponent(userInput);
-                console.log(url);
+
                 const response = await fetch(url, {
                     method: "POST",
                 });
@@ -158,6 +176,13 @@
                 } else {
                     totalPagePagination = parseInt(number);
                     pageNumber = 1;
+                    selectElement.textContent = "";
+                    for (let i = 1; i <= totalPagePagination; i++) {
+                        var option = document.createElement("option");
+                        option.className = "text-lg-start";
+                        option.textContent = "Page " + i;
+                        selectElement.appendChild(option);
+                    }
                     getReservationsAndDisplayTable();
                 }
             }
@@ -166,23 +191,9 @@
                 let url = null;
                 if (action === "viewAll") {
                     url = "/ChildrenCare/myreservation?page=" + pageNumber;
-                    selectElement.textContent = "";
-            <% for (int i = 1;i<= reservationDAO.getTotalPagination(userID,5);i++) { %>
-                    var option = document.createElement("option");
-                    option.className = "text-lg-start";
-                    option.textContent = "Page <%=i%>";
-                    selectElement.appendChild(option);
-            <% } %>
+
                 } else {
-                    console.log(encodeURIComponent(userInput));
                     url = "/ChildrenCare/myreservation?page=" + pageNumber + "&condition=" + selectedOption + "&value=" + encodeURIComponent(userInput);
-                    selectElement.textContent = "";
-                    for (let i = 1; i <= totalPagePagination; i++) {
-                        var option = document.createElement("option");
-                        option.className = "text-lg-start";
-                        option.textContent = "Page " + i;
-                        selectElement.appendChild(option);
-                    }
                 }
 
 
@@ -275,7 +286,6 @@
 
                             row.appendChild(cell);
                         });
-
                         table.appendChild(row);
                     }
                 });
