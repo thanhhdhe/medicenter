@@ -205,34 +205,9 @@ boolean isManager = false;
                             <h4>POST MANAGEMENT</h4>
                             <a href="postDetailManage?event=add" class="ms-text-primary font-weight-bold">Add Post</a>
                         </div>
+
                         <div class="col-md-12">
                             <div class="d-flex flex-column align-items-center justify-content-center mt-2">
-                                <form action="postManage">
-                                    <div class="d-flex justify-content-center mb-5" id="pagination-container">
-                                        <c:forEach var="p" begin="1" end="${numOfPage}">
-                                            <input class="pagination-btn ms-2 active" type="submit" name="page" value="${p}" /> 
-                                        </c:forEach>
-                                    </div>
-                                    <div class="container d-flex justify-content-between">
-
-                                        <input type="text" name="postTitle" placeholder="Search Title" class="form-control w-25 mx-3" value="${postTitle}" />
-                                        <select class="form-select text-primary w-25 me-3" name="postAuthor" >
-                                            <c:forEach var="a" items="${authorList}">
-                                                <option value="${a.getUserID()}">${a.getFirstName()} ${a.getLastName()} </option>
-                                            </c:forEach>
-                                        </select>
-                                        <select class="form-select text-primary w-25 me-3" name="postCategory" >
-                                            <c:forEach var="c" items="${categoryList}">
-                                                <option value="${c}">${c} </option>
-                                            </c:forEach>
-                                        </select>
-                                        <select class="form-select text-primary w-25 me-3" name="sortBy" >
-                                            <c:forEach var="s" items="${sortList}">
-                                                <option value="${s}">${s}</option>
-                                            </c:forEach>
-                                        </select>
-                                    </div>
-                                </form>
                                 <div class="container row mt-5 mb-4">
                                     <div class="col-md-12">
                                         <!-- Services List -->
@@ -264,21 +239,43 @@ boolean isManager = false;
                                                                     <div class="d-flex">
                                                                     <c:if test="${l.isStatusPost()}"> <a href="postManage?event=hide&postId=${l.getPostID()}"><button class="button-icon me-2 showhide hide-service-button"><img src="resources/img/icon/hide.png" alt="alt"/></button></a> </c:if>
                                                                     <c:if test="${!l.isStatusPost()}"> <a href="postManage?event=show&postId=${l.getPostID()}"><button class="button-icon me-2 showhide show-service-button"><img src="resources/img/icon/visual.png" alt="alt"/></button> </c:if>
-                                                                            <!--<button class="button-icon me-2"><a href="postDetailManage?postId=${l.getPostID()}&event=update"><img src="resources/img/icon/detail.png" alt="alt"/></a></button>-->
-                                                                            <button class="button-icon"><a href="postDetailManage?event=update&postID=${l.getPostID()}"><img src="resources/img/icon/pen.png" alt="alt"/></a></button>
-                                                                    </div></div>
-                                                            </td>
-                                                        </tr>
+                                                                        <button class="button-icon"><a href="postDetailManage?event=update&postID=${l.getPostID()}"><img src="resources/img/icon/pen.png" alt="alt"/></a></button>
+                                                                </div></div>
+                                                        </td>
+                                                    </tr>
                                                 </c:forEach>
 
                                             </tbody>
                                         </table>
-
+                                        <form action="postManage">
+                                            <div class="container d-flex justify-content-between">
+                                                <input type="text" name="postTitle" placeholder="Search Title" class="form-control w-25 mx-3" value="${postTitle}" />
+                                                <select class="form-select text-primary w-25 me-3" name="postAuthor" >
+                                                    <c:forEach var="a" items="${authorList}">
+                                                        <option value="${a.getUserID()}">${a.getFirstName()} ${a.getLastName()} </option>
+                                                    </c:forEach>
+                                                </select>
+                                                <select class="form-select text-primary w-25 me-3" name="postCategory" >
+                                                    <c:forEach var="c" items="${categoryList}">
+                                                        <option value="${c}">${c} </option>
+                                                    </c:forEach>
+                                                </select>
+                                                <select class="form-select text-primary w-25 me-3" name="sortBy" >
+                                                    <c:forEach var="s" items="${sortList}">
+                                                        <option value="${s}">${s}</option>
+                                                    </c:forEach>
+                                                </select>
+                                            </div>
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="d-flex justify-content-center mb-5" id="pagination-container">
+                                <c:forEach var="p" begin="1" end="${numOfPage}">
+                                    <input class="pagination-btn ms-2 active" type="submit" name="page" value="${p}" /> 
+                                </c:forEach>
+                            </div>
                         </div>
+                        </form>
                     </div>
                 </div>
 

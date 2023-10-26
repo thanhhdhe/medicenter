@@ -96,5 +96,6 @@
             </div>
         </div>
         <!--doctor detail end-->
+                <jsp:include page="layout/footer.jsp" />
     </body>
 </html>

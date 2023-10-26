@@ -80,30 +80,30 @@ public class PostDetailManage extends HttpServlet {
                 isManager = true;
             }
         }
-        isManager = true;
         if (!isManager) {
             request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
-        }
-        String event = request.getParameter("event");
-        request.setAttribute("event", event);
+        } else {
+            String event = request.getParameter("event");
+            request.setAttribute("event", event);
 
-        PostDAO postDAO = new PostDAO();
-        int ID;
-        Post post = new Post();
-        switch (event) {
-            case "update":
-                ID = Integer.parseInt(request.getParameter("postID"));
-                post = postDAO.getPostByID(ID);
-                break;
-            case "add":
-                ID = postDAO.getLastPostID() + 1;
-                post = new Post(ID, "", "", "", "", 0, /*curStaff.getStaffID() */ 1, 1, Date.valueOf(LocalDate.now()), "", true);
-                break;
-            default:
-                throw new AssertionError();
+            PostDAO postDAO = new PostDAO();
+            int ID;
+            Post post = new Post();
+            switch (event) {
+                case "update":
+                    ID = Integer.parseInt(request.getParameter("postID"));
+                    post = postDAO.getPostByID(ID);
+                    break;
+                case "add":
+                    ID = postDAO.getLastPostID() + 1;
+                    post = new Post(ID, "", "", "", "", 0, /*curStaff.getStaffID() */ 1, 1, Date.valueOf(LocalDate.now()), "", true);
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+            loadPostDetail(request, response, post, event);
+            request.getRequestDispatcher("/view/post-detail-manage.jsp").forward(request, response);
         }
-        loadPostDetail(request, response, post, event);
-        request.getRequestDispatcher("/view/post-detail-manage.jsp").forward(request, response);
     }
 
     /**

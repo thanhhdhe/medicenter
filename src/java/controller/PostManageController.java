@@ -65,14 +65,12 @@ public class PostManageController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        PrintWriter out = response.getWriter();
         HttpSession session = request.getSession(true);
         String email = (String) session.getAttribute("email");
         StaffDAO staffDAO = new StaffDAO();
         Staff curStaff = staffDAO.getStaffByStaffEmail(email);
         boolean isManager = false;
-
-        isManager = true;
         if (curStaff != null) {
             if (curStaff.getRole().equals("manager")) {
                 isManager = true;
@@ -80,26 +78,27 @@ public class PostManageController extends HttpServlet {
         }
         if (!isManager) {
             request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
-        }
 
-        String event = request.getParameter("event");
-        if (event == null || event.isEmpty()) {
-            loadPageWithChoice(request, response);
-            request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
         } else {
-            switch (event) {
-                case "hide":
-                    hidePost(request, response);
-                    loadPageWithChoice(request, response);
-                    request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
-                    break;
-                case "show":
-                    showPost(request, response);
-                    loadPageWithChoice(request, response);
-                    request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
-                    break;
-                default:
-                    break;
+            String event = request.getParameter("event");
+            if (event == null || event.isEmpty()) {
+                loadPageWithChoice(request, response);
+                request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
+            } else {
+                switch (event) {
+                    case "hide":
+                        hidePost(request, response);
+                        loadPageWithChoice(request, response);
+                        request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
+                        break;
+                    case "show":
+                        showPost(request, response);
+                        loadPageWithChoice(request, response);
+                        request.getRequestDispatcher("./view/post-list-manage.jsp").forward(request, response);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
