@@ -386,7 +386,7 @@ public class PostDAO extends MyDAO {
             xSql += " and AuthorID = ? ";
         }
         if (!postStatus.isEmpty()) {
-            xSql += "and StatusPost=";
+            xSql += "and StatusPost= ? ";
         }
         try {
             ps = con.prepareStatement(xSql);
@@ -552,7 +552,7 @@ public class PostDAO extends MyDAO {
         System.out.println(newPost.getAuthorID() + title + content + briefInfo + thumbnail + 1 + createdDate + categoryPost + statusPost);
         postDAO.insert(newPost);
         postDAO.getAllPosts();
-        
+
         System.out.println("DOCTOR'S ADVICE".toLowerCase());
         System.out.println("PROFESSIONAL ACHIEVEMENTS".toLowerCase());
     }

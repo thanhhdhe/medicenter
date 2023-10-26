@@ -118,7 +118,7 @@ CREATE TABLE Settings (
   SettingID INT IDENTITY(1,1) PRIMARY KEY,
   Type VARCHAR(50) NOT NULL,
   Name VARCHAR(100) NOT NULL,
-  Value varchar(max),
+  Value TEXT,
   Description TEXT,
   Status VARCHAR(20) NOT NULL
 );
@@ -416,49 +416,61 @@ VALUES (1, 15, 7, 1, DATEADD(MILLISECOND,-4105241,GETDATE()), DATEADD(DAY, 4, GE
 (1, 6, 1, 2, DATEADD(MILLISECOND,-10122452,GETDATE()), DATEADD(DAY, 3, GETDATE()), 2, 70.0, 'waiting for examination','VNPay'), 
 (1, 9, 3, 2, DATEADD(MILLISECOND,-16785745,GETDATE()), DATEADD(DAY, 14, GETDATE()), 2, 450.0, 'waiting for examination','VNPay'), 
 (1, 6, 4, 1, DATEADD(MILLISECOND,-25642544,GETDATE()), DATEADD(DAY, 8, GETDATE()), 1, 70.0, 'pending','Pay at Center'),
-(1, 6, 4, 2, DATEADD(MILLISECOND,-38454524,GETDATE()), DATEADD(DAY, 8, GETDATE()), 2, 70.0, 'waiting for examination','VNPay');
+(1, 6, 4, 2, DATEADD(MILLISECOND,-38454524,GETDATE()), DATEADD(DAY, 8, GETDATE()), 2, 70.0, 'waiting for examination','VNPay'),
+(1, 10, 3, 2, DATEADD(MILLISECOND,-98545422,GETDATE()), DATEADD(DAY, 1, GETDATE()), 2, 120.0, 'cancel','VNPay');
 
--- Insert data into Reservations 
-INSERT INTO Reservations(UserID, ServiceID, StaffID, ChildID, CreatedDate, ReservationDate, ReservationSlot, Cost, Status,Payment) 
-VALUES (1, 1, 1, 1, '2023-02-15 10:30:00', '2023-02-20', 3, 50.00, 'done', 'VNPay'),
-(1, 2, 1, 2, '2023-03-10 14:45:00', '2023-03-15', 5, 40.00, 'cancel', 'Pay at center'),
-(3, 3, 3, 3, '2023-04-05 08:15:00', '2023-04-10', 2, 60.00, 'done', 'VNPay'),
-(3, 4, 3, 4, '2023-04-20 16:00:00', '2023-04-25', 4, 70.00, 'done', 'Pay at center'),
-(2, 5, 2, 5, '2023-05-10 09:30:00', '2023-05-15', 1, 55.00, 'cancel', 'VNPay'),
-(1, 6, 1, 1, '2023-06-05 11:00:00', '2023-06-10', 6, 45.00, 'done', 'VNPay'),
-(1, 1, 1, 2, '2023-06-15 13:45:00', '2023-06-20', 3, 65.00, 'done', 'VNPay'),
-(3, 3, 3, 4, '2023-07-05 09:30:00', '2023-07-10', 2, 55.00, 'done', 'VNPay'),
-(1, 2, 1, 5, '2023-07-20 15:15:00', '2023-07-25', 5, 60.00, 'cancel', 'Pay at center'),
-(1, 1, 1, 1, '2023-08-10 14:00:00', '2023-08-15', 4, 70.00, 'done', 'VNPay'),
-(3, 3, 3, 3, '2023-02-25 16:30:00', '2023-02-28', 1, 45.00, 'done', 'Pay at center'),
-(3, 4, 3, 4, '2023-03-05 10:45:00', '2023-03-10', 3, 55.00, 'cancel', 'VNPay'),
-(2, 5, 2, 5, '2023-03-20 08:00:00', '2023-03-25', 2, 50.00, 'done', 'Pay at center'),
-(1, 6, 1, 1, '2023-04-10 11:30:00', '2023-04-15', 6, 60.00, 'done', 'VNPay'),
-(1, 2, 1, 2, '2023-04-25 14:15:00', '2023-04-30', 4, 65.00, 'done', 'VNPay'),
-(3, 3, 3, 4, '2023-05-10 16:45:00', '2023-05-15', 1, 70.00, 'cancel', 'Pay at center'),
-(3, 4, 3, 4, '2023-06-05 09:00:00', '2023-06-10', 5, 45.00, 'done', 'VNPay'),
-(2, 5, 2, 5, '2023-06-15 13:30:00', '2023-06-20', 2, 55.00, 'done', 'VNPay'),
-(1, 1, 1, 1, '2023-07-05 10:15:00', '2023-07-10', 4, 60.00, 'done', 'VNPay'),
-(3, 3, 3, 3, '2023-07-20 16:00:00', '2023-07-25', 3, 65.00, 'done', 'Pay at center'),
-(3, 4, 3, 4, '2023-08-10 08:45:00', '2023-08-15', 1, 70.00, 'cancel', 'VNPay'),
-(2, 5, 2, 5, '2023-08-25 11:30:00', '2023-08-30', 6, 50.00, 'done', 'VNPay'),
-(1, 6, 1, 1, '2023-09-05 14:00:00', '2023-09-10', 5, 55.00, 'done', 'VNPay');
-
--- Insert data into the Posts table
-INSERT INTO Posts (Title, Content, Thumbnail, Counts ,AuthorID, ServiceID, CreatedDate, CategoryPost, BriefInfo)
-VALUES
-    ('Football Championship', 'Exciting football championship match highlights.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',100, 1, 1, '2023-09-10', 1, 'Football highlights'),
-    ('Concert Live Stream', 'Live stream of a famous band''s concert.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',20012, 2, 2, '2023-09-11', 2, 'Live music performance'),
-    ('New Smartphone Release', 'Announcement of the latest smartphone release.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',101, 2, 3, '2023-09-12', 3, 'Tech news update'),
-    ('Beach Vacation Guide', 'Explore the best beach destinations for your vacation.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',200, 2, 4, '2023-09-13', 4, 'Travel guide'),
-    ('Summer Fashion Trends', 'Discover the latest summer fashion trends.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',300, 3, 5, '2023-09-14', 5, 'Fashion updates'),
-    ('Healthy Eating Tips', 'Tips for maintaining a healthy diet and lifestyle.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',400, 1, 6, '2023-09-15', 6, 'Nutrition advice'),
-    ('Movie Review: Blockbuster', 'Review of the latest blockbuster movie.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',0, 3, 7, '2023-09-16', 7, 'Film critique'),
-    ('Mental Health Awareness', 'Promoting mental health awareness and self-care.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',10, 3, 8, '2023-09-17', 8, 'Mental wellness'),
-    ('Online Learning Tips', 'Effective tips for online learning and studying.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',90, 1, 9, '2023-09-18', 9, 'Education strategies'),
-    ('Gaming News Update', 'Latest gaming news and reviews for gamers.', 'https://thicao.com/wp-content/uploads/2019/07/logo-y-te-suc-khoe-benh-vien.jpg',200, 1, 10, '2023-09-19', 10, 'Gaming updates');
 Insert Into Settings(Type,Name,Value,Description,Status)
 Values
 ('Slider', 'BOOK QUICK MEDICAL EXAMINATION', 'resources/img/image1.jpg', 'Book your examination quickly and economically time, safety and convenience','Active'),
 ('Slider', 'SPECIAL OFFER: 20% OFF', 'resources/img/image2.jpg', 'Limited time offer: Get 20% off on selected products. Grab the deal now!','Active'),
 ('Slider', 'OUR SERVICE', 'resources/img/football.jpg', 'Limited time offer: Get 20% off on selected products. Grab the deal now!','Active');
+
+-- Insert data into the Posts table
+INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
+VALUES ('Important Guidelines for Preventing the Flu', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Learn effective strategies to protect yourself from the flu.', 'resources/img/thumbnail_flu.jpg', 500, 1, 1, '2023-10-25 10:30:00', 'Health', 1);
+
+INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
+VALUES ('Understanding Diabetes: Causes, Symptoms, and Treatment', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Get comprehensive information about diabetes and its management.', 'resources/img/thumbnail_diabetes.jpg', 250, 2, 1, '2023-10-24 15:45:00', 'Health', 1);
+
+INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
+VALUES ('Tips for Better Sleep and Healthy Sleeping Habits', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Discover practical tips to improve your sleep quality and establish healthy sleeping habits.', 'resources/img/thumbnail_sleep.jpg', 800, 3, 1, '2023-10-23 09:15:00', 'Wellness', 1);
+
+INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
+VALUES ('The Benefits of Regular Exercise', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Learn about the various advantages of incorporating regular exercise into your daily routine.', 'resources/img/thumbnail_exercise.jpg', 350, 3, 1, '2023-10-22 14:20:00', 'Fitness', 1);
+
+INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
+VALUES ('Managing Stress: Effective Techniques and Strategies', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Discover practical methods to manage and reduce stress in your life.', 'resources/img/thumbnail_stress.jpg', 600, 2, 1, '2023-10-21 11:10:00', 'Wellness', 1);
+
+INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
+VALUES ('Healthy Eating: Tips for a Balanced Diet', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Learn about the principles of healthy eating and how to maintain a balanced diet.', 'resources/img/thumbnail_healthy_eating.jpg', 450, 1, 1, '2023-10-20 16:55:00', 'Nutrition', 1);
+
+INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
+VALUES ('The Importance of Regular Check-ups and Screenings', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Understand the significance of regular medical check-ups and screenings for early detection of health issues.', 'resources/img/thumbnail_checkups.jpg', 300, 2, 1, '2023-10-19 13:45:00', 'Health', 1);
+
+INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
+VALUES ('Common Allergies: Causes, Symptoms, and Treatment', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Explore common allergies, their causes, symptoms, and available treatment options.', 'resources/img/thumbnail_allergies.jpg', 400, 3, 1, '2023-10-18 08:25:00', 'Health', 1);
+
+INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
+VALUES ('Tips for Maintaining a Healthy Heart', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Learn essential tips for maintaining a healthy heart and preventing cardiovascular diseases.', 'resources/img/thumbnail_heart.jpg', 700, 3, 1, '2023-10-17 12:35:00', 'Cardiology', 1);
+
+INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
+VALUES ('The Importance of Vaccinations: Protecting Yourself and Others', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Understand the significance of vaccinations in preventing the spread of infectious diseases.', 'resources/img/thumbnail_vaccinations.jpg', 550, 2, 1,'2023-10-17 12:35:00', 'Cardiology', 1);
+
+
+INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
+VALUES ('The Importance of Vaccinations: Protecting Yourself and Others', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Understand the significance of vaccinations in preventing the spread of infectious diseases.', 'resources/img/thumbnail_vaccinations.jpg', 550, 1, 1, '2023-10-16 09:40:00', 'Health', 1);
+
+INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
+VALUES ('Healthy Habits for a Strong Immune System', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Discover healthy habits that can boost your immune system and enhance your overall well-being.', 'resources/img/thumbnail_immune.jpg', 400, 2, 1, '2023-10-15 14:50:00', 'Wellness', 1);
+
+INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
+VALUES ('Understanding Mental Health: Common Conditions and Support', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Gain insights into various mental health conditions and available support resources.', 'resources/img/thumbnail_mental_health.jpg', 600, 1, 1, '2023-10-14 11:30:00', 'Mental Health', 1);
+
+INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
+VALUES ('Tips for Maintaining a Healthy Weight', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Learn practical tips and strategies for achieving and maintaining a healthy weight.', 'resources/img/thumbnail_weight.jpg', 350, 2, 1, '2023-10-13 16:15:00', 'Fitness', 1);
+
+INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
+VALUES ('Preventing the Spread of Infectious Diseases', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Discover effective measures to prevent the spread of infectious diseases in your community.', 'resources/img/thumbnail_infectious_diseases.jpg', 500, 3, 1, '2023-10-12 13:20:00', 'Health', 1);
+
+INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
+VALUES ('Healthy Aging: Tips for a Fulfilling and Active Lifestyle', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Explore tips for healthy aging and maintaining an active lifestyle as you grow older.', 'resources/img/thumbnail_aging.jpg', 450, 1, 1, '2023-10-11 09:55:00', 'Wellness', 1);
