@@ -177,7 +177,7 @@
                 <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4 py-4">
                     <div class="mb-4 py-3 border-bottom d-flex justify-content-between align-items-center">
                         <h5>Settings Manage</h5>
-                        <a href="#" class="ms-text-primary text-decoration-none"><i class="fas fa-pencil-alt ms-text-primary"></i> Add New Setting</a>
+                        <a href="setting?event=add" class="ms-text-primary text-decoration-none"><i class="fas fa-pencil-alt ms-text-primary"></i> Add New Setting</a>
                     </div>
                     <div class="col-md-12 row justify-content-between mb-3">
                         <div class="col-md-3">
@@ -220,7 +220,7 @@
                                     <td><%=setting.getSettingID() %></td>
                                     <td><%=setting.getType() %></td>
                                     <td><%=setting.getSettingName() %></td>
-                                    <td><%=setting.getValue() %></td>
+                                    <td><%=setting.getValue().substring(0, 15)+"..." %></td>
                                     <td><%=setting.getDescription().substring(0, 25)+"..." %></td>
                                     
                                     <td>
