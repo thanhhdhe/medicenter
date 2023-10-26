@@ -14,6 +14,38 @@ import model.Slider;
  * @author pc
  */
 public class SettingDAO extends MyDAO {
+    
+    public static String getLastSegment(String inputString) {
+        int lastSlashIndex = inputString.lastIndexOf('/');
+
+        if (lastSlashIndex != -1) {
+            // Trích xuất chuỗi từ vị trí cuối cùng của '/' đến cuối chuỗi
+            String result = inputString.substring(lastSlashIndex + 1);
+            return result;
+        } else {
+            // Trường hợp không tìm thấy '/'
+            return inputString;
+        }
+    }
+    
+    //insert feedback of user
+    public void InsertSetting(String type, String name, String value, String Description, String status) {
+        xSql = "Insert Into Settings(Type,Name,Value,Description,Status)\n"
+                + "Values\n"
+                + "(?,?,?,?,?);";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, type);
+            ps.setString(2, name);
+            ps.setString(3, "resources/img/"+getLastSegment(value));
+            ps.setString(4, Description);
+            ps.setString(5, status);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public int getTotalPageSetting() {
         xSql = "select count(*) from Settings;";
@@ -111,7 +143,7 @@ public class SettingDAO extends MyDAO {
             sql.append(" AND Value LIKE ?");
             parameters.add("%" + svalue + "%");
         }
-        
+
         try {
             ps = con.prepareStatement(sql.toString());
             int parameterIndex = 1;
@@ -247,6 +279,8 @@ public class SettingDAO extends MyDAO {
 
     public static void main(String[] args) {
         SettingDAO dao = new SettingDAO();
+//        System.out.println(getLastSegment("resources/imgimage1.jpg"));
+//        dao.InsertSetting("Slider", "BOOK QUICK MEDICAL EXAMINATION", "resources/img/image1.jpg", "Book your examination quickly and economically time, safety and convenience", "Active");
 //        List<Setting> settingList = dao.getSettingListBySearch(1, "", "OUR SERVICE", "", "","","");
 //        System.out.println(dao.getTotalPageSettingBySearch( "", "OUR SERVICE", "", "","")+"sad");
 //        for (Setting setting : settingList) {

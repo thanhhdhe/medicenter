@@ -226,7 +226,7 @@ public class ReservationContact extends HttpServlet {
                 if (i == Integer.parseInt(page)) {
                     pagehtml += "<span style=\"border: 0px; border-radius: 5px; background-color: #6994eb\" class=\"btn pagination-btn ms-2 active\" data-page=\"" + i + "\" onclick=\"paging(" + i + ")\">" + i + "</span>\n";
                 } else {
-                    pagehtml += "<span style=\"border: 0px; border-radius: 5px; background-color: #6994eb\" class=\"btn pagination-btn ms-2 inactive\" data-page=\"" + i + "\" onclick=\"paging(" + i + ")\">" + i + "</button>\n";
+                    pagehtml += "<button style=\"border: 0px; border-radius: 5px; background-color: #6994eb\" class=\"btn pagination-btn ms-2 inactive\" data-page=\"" + i + "\" onclick=\"paging(" + i + ")\">" + i + "</button>\n";
                 }
             }
             pagehtml += "</div> ";
