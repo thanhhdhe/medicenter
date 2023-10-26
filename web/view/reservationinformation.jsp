@@ -216,8 +216,10 @@
             backButton.id = "back";
             groupButton.appendChild(backButton);
             document.getElementById("back").addEventListener('click', function () {
-                // Go back to the previous page
-                window.history.back();
+//                 Go back to the previous page
+//                window.history.back();
+                
+                 location.href = "myreservation";
             });
             function checkout() {
                 location.href = "reservation?action=confirm&reservationID=" +<%=reservation.getReservationID()%>;

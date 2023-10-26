@@ -118,7 +118,7 @@ CREATE TABLE Settings (
   SettingID INT IDENTITY(1,1) PRIMARY KEY,
   Type VARCHAR(50) NOT NULL,
   Name VARCHAR(100) NOT NULL,
-  Value TEXT,
+  Value varchar(max),
   Description TEXT,
   Status VARCHAR(20) NOT NULL
 );
@@ -416,8 +416,34 @@ VALUES (1, 15, 7, 1, DATEADD(MILLISECOND,-4105241,GETDATE()), DATEADD(DAY, 4, GE
 (1, 6, 1, 2, DATEADD(MILLISECOND,-10122452,GETDATE()), DATEADD(DAY, 3, GETDATE()), 2, 70.0, 'waiting for examination','VNPay'), 
 (1, 9, 3, 2, DATEADD(MILLISECOND,-16785745,GETDATE()), DATEADD(DAY, 14, GETDATE()), 2, 450.0, 'waiting for examination','VNPay'), 
 (1, 6, 4, 1, DATEADD(MILLISECOND,-25642544,GETDATE()), DATEADD(DAY, 8, GETDATE()), 1, 70.0, 'pending','Pay at Center'),
-(1, 6, 4, 2, DATEADD(MILLISECOND,-38454524,GETDATE()), DATEADD(DAY, 8, GETDATE()), 2, 70.0, 'waiting for examination','VNPay'),
-(1, 10, 3, 2, DATEADD(MILLISECOND,-98545422,GETDATE()), DATEADD(DAY, 1, GETDATE()), 2, 120.0, 'cancel','VNPay');
+(1, 6, 4, 2, DATEADD(MILLISECOND,-38454524,GETDATE()), DATEADD(DAY, 8, GETDATE()), 2, 70.0, 'waiting for examination','VNPay');
+
+-- Insert data into Reservations 
+INSERT INTO Reservations(UserID, ServiceID, StaffID, ChildID, CreatedDate, ReservationDate, ReservationSlot, Cost, Status,Payment) 
+VALUES (1, 1, 1, 1, '2023-02-15 10:30:00', '2023-02-20', 3, 50.00, 'done', 'VNPay'),
+(1, 2, 1, 2, '2023-03-10 14:45:00', '2023-03-15', 5, 40.00, 'cancel', 'Pay at center'),
+(3, 3, 3, 3, '2023-04-05 08:15:00', '2023-04-10', 2, 60.00, 'done', 'VNPay'),
+(3, 4, 3, 4, '2023-04-20 16:00:00', '2023-04-25', 4, 70.00, 'done', 'Pay at center'),
+(2, 5, 2, 5, '2023-05-10 09:30:00', '2023-05-15', 1, 55.00, 'cancel', 'VNPay'),
+(1, 6, 1, 1, '2023-06-05 11:00:00', '2023-06-10', 6, 45.00, 'done', 'VNPay'),
+(1, 1, 1, 2, '2023-06-15 13:45:00', '2023-06-20', 3, 65.00, 'done', 'VNPay'),
+(3, 3, 3, 4, '2023-07-05 09:30:00', '2023-07-10', 2, 55.00, 'done', 'VNPay'),
+(1, 2, 1, 5, '2023-07-20 15:15:00', '2023-07-25', 5, 60.00, 'cancel', 'Pay at center'),
+(1, 1, 1, 1, '2023-08-10 14:00:00', '2023-08-15', 4, 70.00, 'done', 'VNPay'),
+(3, 3, 3, 3, '2023-02-25 16:30:00', '2023-02-28', 1, 45.00, 'done', 'Pay at center'),
+(3, 4, 3, 4, '2023-03-05 10:45:00', '2023-03-10', 3, 55.00, 'cancel', 'VNPay'),
+(2, 5, 2, 5, '2023-03-20 08:00:00', '2023-03-25', 2, 50.00, 'done', 'Pay at center'),
+(1, 6, 1, 1, '2023-04-10 11:30:00', '2023-04-15', 6, 60.00, 'done', 'VNPay'),
+(1, 2, 1, 2, '2023-04-25 14:15:00', '2023-04-30', 4, 65.00, 'done', 'VNPay'),
+(3, 3, 3, 4, '2023-05-10 16:45:00', '2023-05-15', 1, 70.00, 'cancel', 'Pay at center'),
+(3, 4, 3, 4, '2023-06-05 09:00:00', '2023-06-10', 5, 45.00, 'done', 'VNPay'),
+(2, 5, 2, 5, '2023-06-15 13:30:00', '2023-06-20', 2, 55.00, 'done', 'VNPay'),
+(1, 1, 1, 1, '2023-07-05 10:15:00', '2023-07-10', 4, 60.00, 'done', 'VNPay'),
+(3, 3, 3, 3, '2023-07-20 16:00:00', '2023-07-25', 3, 65.00, 'done', 'Pay at center'),
+(3, 4, 3, 4, '2023-08-10 08:45:00', '2023-08-15', 1, 70.00, 'cancel', 'VNPay'),
+(2, 5, 2, 5, '2023-08-25 11:30:00', '2023-08-30', 6, 50.00, 'done', 'VNPay'),
+(1, 6, 1, 1, '2023-09-05 14:00:00', '2023-09-10', 5, 55.00, 'done', 'VNPay');
+
 -- Insert data into the Posts table
 INSERT INTO Posts (Title, Content, Thumbnail, Counts ,AuthorID, ServiceID, CreatedDate, CategoryPost, BriefInfo)
 VALUES

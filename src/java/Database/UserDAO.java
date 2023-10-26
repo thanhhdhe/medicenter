@@ -5,6 +5,8 @@
 package Database;
 
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import model.User;
@@ -457,7 +459,7 @@ public class UserDAO extends MyDAO {
 
     public int getUserCountByCreatedDate(Date startDate, Date endDate) {
         xSql = "select count(*) as UserCount from [dbo].[Users] where "
-                + "DATEDIFF(DAY, ? ,CreatedDate) >= 0 AND DATEDIFF(DAY, ? CreatedDate) <= 0";
+                + "DATEDIFF(DAY, ? ,CreatedDate) >= 0 AND DATEDIFF(DAY, ? , CreatedDate) <= 0";
         try {
             ps = con.prepareStatement(xSql);
             ps.setDate(1, startDate);
@@ -473,15 +475,19 @@ public class UserDAO extends MyDAO {
         return 0;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
         UserDAO userDAO = new UserDAO();
-        List<User> users = userDAO.getAllUsersByAdmin(1, 10, "Email", "", "", "", "", "", 2);
+//        List<User> users = userDAO.getAllUsersByAdmin(1, 10, "Email", "", "", "", "", "", 2);
+    SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+            java.util.Date utilDate = dateFormat.parse("10-26-2023");
+            Date startDate = new Date(utilDate.getTime());
+            utilDate = dateFormat.parse("01-01-2023");
+            Date endDate = new Date(utilDate.getTime());
+            System.out.println(userDAO.getUserCountByCreatedDate(startDate, endDate));
         
 //        System.out.println(userDAO.countTotalUserByAdmin("", "", "", "", "", 3));
 //        
-        for (User user : users) {
-            System.out.println(user.getFirstName());
-        }
+       
 
     }
 }
