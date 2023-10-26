@@ -220,14 +220,14 @@
 
                             </div>
                         </div>
-                        
+
                     </div>
 
                     <div
                         class="row vh-100 bg-light rounded align-items-top justify-content-center mx-0"
                         >
                         <div class="col-md-12 text-center justify-content-center">
-                            <div class="table-responsive p-4 w-100">
+                            <div class="table-responsive p-4 w-100"  id="service-list">
                                 <%if(curStaff!=null){%>
 
                                 <table class="table table-striped table-hover">
@@ -247,7 +247,7 @@
                                         </tr>
                                     </thead>
 
-                                    <tbody id="service-list">
+                                    <tbody>
 
                                         <c:forEach var="reservation" items="${requestScope.Reservation}"> 
 
@@ -332,9 +332,9 @@
                                     <button style="border: 0px; border-radius: 5px; background-color: #6994eb" class="pagination-btn ms-2 inactive" data-page="<%=i%>"><%=i%></button>
                                     <%}%>
                                 </div> 
-
-
                                 <%}%>
+
+                                
                             </div>
                         </div>
                     </div>
@@ -499,13 +499,10 @@
                 var searchInputs = document.querySelectorAll('select[name="staff"]');
                 searchInputs.forEach(function (input) {
                     input.addEventListener('change', function () {
-                        var page = this.dataset.page;
-                        if(page === null){
-                            loadPageServicesBFill(1);
-                        } else {
-                            loadPageServicesBFill(page);
-                        }
                         
+                            loadPageServicesBFill(1);
+                        
+
                     });
                 });
             });
@@ -513,6 +510,7 @@
 
             // Hàm tải dữ liệu của trang bằng Ajax
             function loadPageServicesBFill(page) {
+                
                 // Gửi yêu cầu Ajax đến Servlet với tham số trang
                 var staff = document.querySelector('select[name="staff"]').value;
                 var xhr = new XMLHttpRequest();
@@ -522,7 +520,9 @@
                 xhr.onload = function () {
                     if (xhr.status === 200) {
                         // Xử lý dữ liệu trả về từ máy chủ và cập nhật nội dung trang
-                        document.querySelector('#service-list').innerHTML = xhr.responseText;
+                        document.querySelector('#service-list').innerHTML = xhr.responseText ;
+                        //console.log(xhr.getResponseHeader('pagination'));
+                        document.querySelector('#pagination-container').innerHTML = xhr.getResponseHeader('pagination');
                     } else {
                         console.error('Error:', xhr.status);
                     }
@@ -533,6 +533,46 @@
                 };
 
                 xhr.send();
+            }
+            function paging(page) {
+
+                var staff = document.querySelector('select[name="staff"]').value;
+                // Gửi yêu cầu Ajax đến máy chủ để lấy danh sách dịch vụ
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'reservationcontactmanager?event=fillter&page=' + page
+                        + "&staffId=" + staff);
+
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        // Xử lý dữ liệu trả về từ máy chủ và cập nhật nội dung trang
+                        document.querySelector('#service-list').innerHTML = xhr.responseText;
+                        document.querySelector('#pagination-container').innerHTML = xhr.getResponseHeader('pagination');
+                    } else {
+                        console.error('Error:', xhr.status);
+                    }
+                };
+
+                xhr.onerror = function () {
+                    console.error('Error:', xhr.status);
+                };
+
+                xhr.send();
+
+                var paginationButtons = document.querySelectorAll('.pagination-btn');
+                paginationButtons.forEach(function (button) {
+                    button.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        if (!this.classList.contains('active')) {
+                            document.querySelectorAll('.pagination-btn').forEach(function (paginationBtn) {
+                                if (paginationBtn.classList.contains('active')) {
+                                    paginationBtn.classList.remove('active');
+                                }
+                            });
+                            this.classList.remove('inactive');
+                            this.classList.add('active');
+                        }
+                    });
+                });
             }
         </script>
     </body>
