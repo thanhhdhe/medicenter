@@ -144,15 +144,34 @@ public class ReservationContact extends HttpServlet {
         } else if (event.equals("fillter")) {
             //get parameter
             String page = request.getParameter("page");
+            System.out.println(page);
             String staffid = request.getParameter("staffId");
             System.out.println(staffid);
             // get list reservation
-            List<Reservation> listreservation = reservationdao.getReservationAllByPagingFill(1, staffid);
+            List<Reservation> listreservation = reservationdao.getReservationAllByPagingFill(Integer.parseInt(page), staffid);
             //get information of user
             StaffDAO staffDAO = new StaffDAO();
             ServiceDAO serviceDAO = new ServiceDAO();
             UserDAO userdao = new UserDAO();
             ChildrenDAO childrenDAO = new ChildrenDAO();
+            out.print("<table class=\"table table-striped table-hover\">\n"
+                    + "                                    <thead class=\"text-light\" style=\"background: #1977cc;\">\n"
+                    + "                                        <tr>\n"
+                    + "                                            <th scope=\"col\">ID</th>\n"
+                    + "                                            <th scope=\"col\">Service Name</th>\n"
+                    + "                                            <th scope=\"col\">Full name</th>\n"
+                    + "                                            <th scope=\"col\">Children</th>\n"
+                    + "                                            <th scope=\"col\">Reservation Date</th>\n"
+                    + "                                            <th scope=\"col\">Slot</th>\n"
+                    + "                                            <th scope=\"col\">Doctor</th>\n"
+                    + "                                            <th scope=\"col\">Status</th>\n"
+                    + "                                            <th scope=\"col\">Cost</th>\n"
+                    + "                                            <th scope=\"col\">Detail</th>\n"
+                    + "\n"
+                    + "                                        </tr>\n"
+                    + "                                    </thead>\n"
+                    + "\n"
+                    + "                                    <tbody>");
             for (Reservation reservation : listreservation) {
                 Service service = serviceDAO.getServiceByID(reservation.getServiceID() + "");
                 User user = userdao.getUserByID(reservation.getUserID());
@@ -198,6 +217,23 @@ public class ReservationContact extends HttpServlet {
                         + " </tr>");
 
             }
+            out.println( " </tbody> \n" +
+"                                </table>");
+            String pagehtml = "<div class=\"d-flex w-100 justify-content-center mb-5\">";
+            System.out.println(reservationdao.getTotalReservationByFillter(staffid));
+            System.out.println(staffid);
+            for (int i = 1; i <= (reservationdao.getTotalReservationByFillter(staffid) + 9) / 10; i++) {
+                if (i == Integer.parseInt(page)) {
+                    pagehtml += "<span style=\"border: 0px; border-radius: 5px; background-color: #6994eb\" class=\"btn pagination-btn ms-2 active\" data-page=\"" + i + "\" onclick=\"paging(" + i + ")\">" + i + "</span>\n";
+                } else {
+                    pagehtml += "<span style=\"border: 0px; border-radius: 5px; background-color: #6994eb\" class=\"btn pagination-btn ms-2 inactive\" data-page=\"" + i + "\" onclick=\"paging(" + i + ")\">" + i + "</button>\n";
+                }
+            }
+            pagehtml += "</div> ";
+            out.println(pagehtml);
+//            System.out.println(pagehtml);
+            response.addHeader("pagination", "");
+//            System.out.println(pagehtml+"sau");
         }
 
     }
