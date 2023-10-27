@@ -169,6 +169,38 @@ public class StaffDAO extends MyDAO {
         }
         return staff;
     }
+        public Staff getDocByStaffId(int staffID) {
+        Staff staff = null;
+        xSql = "SELECT *  FROM [dbo].[Staff] where StaffID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, staffID);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                String staffName = rs.getString("StaffName");
+                String password = rs.getString("Password");
+                String email = rs.getString("Email");
+                String fullName = rs.getString("FullName");
+                String gender = rs.getString("Gender");
+                String phoneNumber = rs.getString("PhoneNumber");
+                String profileImage = rs.getString("ProfileImage");
+                String role = rs.getString("StaffRole");
+                String rank = rs.getString("Rank");
+                String specialty = rs.getString("Specialty");
+                String introduction = rs.getString("Introduction");
+                String depthStudy = rs.getString("DepthStudy");
+                String professionalAchievements = rs.getString("ProfessionalAchievements");
+                String specializedActivities = rs.getString("SpecializedActivities");
+                
+                staff = new Staff(staffID, fullName, gender, phoneNumber, profileImage, rank, specialty, introduction, specializedActivities, professionalAchievements, depthStudy);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return staff;
+    }
 
     public List<Staff> getStaffsBySlot(String reservationDate, String slot) {
         List<Staff> staffList = new ArrayList<>();

@@ -63,7 +63,7 @@ public class DocDetailController extends HttpServlet {
         PrintWriter out = response.getWriter();
         int docID = Integer.parseInt(request.getParameter("ID"));
         StaffDAO staffDAO = new StaffDAO();
-        Staff staff = staffDAO.getStaffByStaffId(docID);
+        Staff staff = staffDAO.getDocByStaffId(docID);
         request.setAttribute("staff", staff);
         request.getRequestDispatcher("./view/doctor-detail.jsp").forward(request, response);
     }
