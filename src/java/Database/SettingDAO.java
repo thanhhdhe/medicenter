@@ -254,7 +254,7 @@ public class SettingDAO extends MyDAO {
             ps.setString(2, Name);
             ps.setString(3, type);
             ps.setString(4, description);
-            ps.setString(5, value);
+            ps.setString(5, "resources/img/"+value);
             ps.setString(6, settingId);
             ps.executeUpdate();
             ps.close();
