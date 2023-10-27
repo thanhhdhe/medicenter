@@ -147,8 +147,18 @@ public class ReservationContact extends HttpServlet {
             System.out.println(page);
             String staffid = request.getParameter("staffId");
             System.out.println(staffid);
-            // get list reservation
-            List<Reservation> listreservation = reservationdao.getReservationAllByPagingFill(Integer.parseInt(page), staffid);
+            String name = (request.getParameter("name")==null)?"":request.getParameter("name");
+            //get action
+            List<Reservation> listreservation = new ArrayList<>();
+            String action = request.getParameter("action");
+            if(action.equals("fillterdoctor")){
+                // get list reservation
+                listreservation = reservationdao.getReservationAllByPagingFill(Integer.parseInt(page), staffid);
+            } else{
+                listreservation = reservationdao.getReservationAllBySearch(Integer.parseInt(page), name);
+            }
+                
+            
             //get information of user
             StaffDAO staffDAO = new StaffDAO();
             ServiceDAO serviceDAO = new ServiceDAO();
@@ -220,20 +230,27 @@ public class ReservationContact extends HttpServlet {
             out.println( " </tbody> \n" +
 "                                </table>");
             String pagehtml = "<div class=\"d-flex w-100 justify-content-center mb-5\">";
-            System.out.println(reservationdao.getTotalReservationByFillter(staffid));
-            System.out.println(staffid);
-            for (int i = 1; i <= (reservationdao.getTotalReservationByFillter(staffid) + 9) / 10; i++) {
+            int length= 0;
+            String fillter = "";
+            if(action.equals("fillterdoctor")){
+                // get list reservation
+                length = reservationdao.getTotalReservationByFillter(staffid);
+                fillter= action;
+            } else{
+                length = reservationdao.getTotalReservationBySearch(name);
+                fillter = action;
+            }
+            
+            for (int i = 1; i <= (length + 9) / 10; i++) {
                 if (i == Integer.parseInt(page)) {
-                    pagehtml += "<span style=\"border: 0px; border-radius: 5px; background-color: #6994eb\" class=\"btn pagination-btn ms-2 active\" data-page=\"" + i + "\" onclick=\"paging(" + i + ")\">" + i + "</span>\n";
+                    pagehtml += "<span style=\"border: 0px; border-radius: 5px; background-color: #6994eb\" class=\"btn pagination-btn ms-2 active\" data-page=\"" + i + "\" onclick=\"paging(" + i + ",'"+fillter+"')\">" + i + "</span>\n";
                 } else {
-                    pagehtml += "<button style=\"border: 0px; border-radius: 5px; background-color: #6994eb\" class=\"btn pagination-btn ms-2 inactive\" data-page=\"" + i + "\" onclick=\"paging(" + i + ")\">" + i + "</button>\n";
+                    pagehtml += "<button style=\"border: 0px; border-radius: 5px; background-color: #6994eb\" class=\"btn pagination-btn ms-2 inactive\" data-page=\"" + i + "\" onclick=\"paging(" + i + ",'"+fillter+"')\">" + i + "</button>\n";
                 }
             }
             pagehtml += "</div> ";
             out.println(pagehtml);
-//            System.out.println(pagehtml);
             response.addHeader("pagination", "");
-//            System.out.println(pagehtml+"sau");
         }
 
     }

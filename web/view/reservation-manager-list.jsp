@@ -220,14 +220,16 @@
 
                             </div>
                         </div>
-
+                        <div class="col-md-3 px-4 d-flex flex-column">
+                            <input type="text" name="customerName" id="customerName" class="mt-2 form-control" placeholder="Search Customer Name">
+                        </div>
                     </div>
 
                     <div
                         class="row vh-100 bg-light rounded align-items-top justify-content-center mx-0"
                         >
                         <div class="col-md-12 text-center justify-content-center">
-                            <div class="table-responsive p-4 w-100"  id="service-list">
+                            <div class="table-responsive p-4 w-100"  id="reservation-list">
                                 <%if(curStaff!=null){%>
 
                                 <table class="table table-striped table-hover">
@@ -247,7 +249,7 @@
                                         </tr>
                                     </thead>
 
-                                    <tbody>
+                                    <tbody id="sort-list">
 
                                         <c:forEach var="reservation" items="${requestScope.Reservation}"> 
 
@@ -334,7 +336,7 @@
                                 </div> 
                                 <%}%>
 
-                                
+
                             </div>
                         </div>
                     </div>
@@ -444,7 +446,7 @@
                 xhr.onload = function () {
                     if (xhr.status === 200) {
                         // Xử lý dữ liệu trả về từ máy chủ và cập nhật nội dung trang
-                        document.querySelector('#service-list').innerHTML = xhr.responseText;
+                        document.querySelector('#sort-list').innerHTML = xhr.responseText;
                     } else {
                         console.error('Error:', xhr.status);
                     }
@@ -499,28 +501,31 @@
                 var searchInputs = document.querySelectorAll('select[name="staff"]');
                 searchInputs.forEach(function (input) {
                     input.addEventListener('change', function () {
-                        
-                            loadPageServicesBFill(1);
-                        
+
+                        loadPageServicesBFill(1, 'fillterdoctor');
+
 
                     });
                 });
+                var customerNameInput = document.getElementById('customerName');
+                customerNameInput.addEventListener('input', function(){loadPageServicesBFill(1, 'searchname'); });
             });
 
 
             // Hàm tải dữ liệu của trang bằng Ajax
-            function loadPageServicesBFill(page) {
-                
+            function loadPageServicesBFill(page, action) {
+                 var customerNameInput = document.getElementById('customerName');
                 // Gửi yêu cầu Ajax đến Servlet với tham số trang
+                var customerName = customerNameInput.value;
                 var staff = document.querySelector('select[name="staff"]').value;
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', 'reservationcontactmanager?event=fillter&page=' + page
-                        + "&staffId=" + staff);
+                        + "&staffId=" + staff + '&action=' + action + '&name=' + customerName);
 
                 xhr.onload = function () {
                     if (xhr.status === 200) {
                         // Xử lý dữ liệu trả về từ máy chủ và cập nhật nội dung trang
-                        document.querySelector('#service-list').innerHTML = xhr.responseText ;
+                        document.querySelector('#reservation-list').innerHTML = xhr.responseText;
                         //console.log(xhr.getResponseHeader('pagination'));
                         document.querySelector('#pagination-container').innerHTML = xhr.getResponseHeader('pagination');
                     } else {
@@ -534,18 +539,20 @@
 
                 xhr.send();
             }
-            function paging(page) {
-
+            function paging(page, action) {
+                var customerNameInput = document.getElementById('customerName');
+                // Gửi yêu cầu Ajax đến Servlet với tham số trang
+                var customerName = customerNameInput.value;
                 var staff = document.querySelector('select[name="staff"]').value;
                 // Gửi yêu cầu Ajax đến máy chủ để lấy danh sách dịch vụ
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', 'reservationcontactmanager?event=fillter&page=' + page
-                        + "&staffId=" + staff);
+                        + "&staffId=" + staff + '&action=' + action + '&name=' + customerName);
 
                 xhr.onload = function () {
                     if (xhr.status === 200) {
                         // Xử lý dữ liệu trả về từ máy chủ và cập nhật nội dung trang
-                        document.querySelector('#service-list').innerHTML = xhr.responseText;
+                        document.querySelector('#reservation-list').innerHTML = xhr.responseText;
                         document.querySelector('#pagination-container').innerHTML = xhr.getResponseHeader('pagination');
                     } else {
                         console.error('Error:', xhr.status);
@@ -574,6 +581,7 @@
                     });
                 });
             }
+            
         </script>
     </body>
 </html>

@@ -83,6 +83,63 @@ public class ReservationDAO extends MyDAO {
         return 0;
     }
 
+    //get total Reservation
+    public int getTotalReservationBySearch(String Name) {
+        xSql = "SELECT Count(*)\n"
+                + "FROM Reservations AS R\n"
+                + "INNER JOIN Users AS U ON R.UserID = U.UserID\n"
+                + "WHERE (U.FirstName LIKE ? OR U.LastName LIKE ?);";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, "%"+Name+"%");
+            ps.setString(2, "%"+Name+"%");
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+
+        }
+        return 0;
+    }
+
+    public List<Reservation> getReservationAllBySearch(int page, String Name) {
+        List<Reservation> list = new ArrayList<>();
+
+        xSql = "SELECT R.*\n"
+                + "FROM Reservations AS R\n"
+                + "INNER JOIN Users AS U ON R.UserID = U.UserID\n"
+                + "WHERE (U.FirstName LIKE ? OR U.LastName LIKE ?)"
+                + "ORDER BY ReservationID\n"
+                + "OFFSET ? Rows fetch next 10 rows ONLY;";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, "%"+Name+ "%");
+            ps.setString(2, "%"+Name+"%");
+            ps.setInt(3, (page - 1) * 10);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int ReservationID = rs.getInt("ReservationID");
+                int UserID = rs.getInt("UserID");
+                int ServiceID = rs.getInt("ServiceID");
+                Date ReservationDate = rs.getDate("ReservationDate");
+                int ReservationSlot = rs.getInt("ReservationSlot");
+                Timestamp CreatedDate = rs.getTimestamp("CreatedDate");
+                float Cost = rs.getFloat("Cost");
+                String Status = rs.getString("Status");
+                int StaffID = rs.getInt("StaffID");
+                int ChildID = rs.getInt("ChildID");
+                Reservation reservation = new Reservation(ReservationID, UserID, ServiceID, StaffID, ChildID, ReservationDate, ReservationSlot, CreatedDate, Cost, Status);
+                list.add(reservation);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public List<Reservation> getReservationAllByPagingFill(int page, String staffId) {
         List<Reservation> list = new ArrayList<>();
 
@@ -1260,6 +1317,10 @@ public class ReservationDAO extends MyDAO {
 
     public static void main(String args[]) {
         ReservationDAO rd = new ReservationDAO();
-        
+//        List<Reservation> listreservation = rd.getReservationAllBySearch(1, "v");
+//        System.out.println(rd.getTotalReservationBySearch("v"));
+//        for(Reservation reservation : listreservation){
+//            System.out.println(reservation.getUserID());
+//        }
     }
 }
