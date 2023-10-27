@@ -234,7 +234,10 @@
                             </div>
 
                         </div> 
+                        
                         <input style="margin-top: 100px" class="btn btn-primary w-25" type="submit" value="ADD" />
+                        <button class="btn btn-primary mt-3"><a style="color: white" href="setting"> Back</a></button>
+                        <h5 style="color: red">${error}</h5>
                     </form>
 
                 </main>

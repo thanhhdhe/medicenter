@@ -96,15 +96,35 @@ public class SettingController extends HttpServlet {
             String settingDes = request.getParameter("description");
             String settingValue = request.getParameter("avartar");
             String settingStatus = request.getParameter("status");
+            int minLength = 5; // Độ dài tối thiểu cho mỗi tham số, bạn có thể thay đổi giá trị này.
+            String error = "";
+            if (settingName == null || settingName.length() < minLength
+                    || settingType == null || settingType.length() < minLength
+                    || settingDes == null || settingDes.length() < minLength
+                    || settingValue == null || settingValue.length() < minLength) {
+                // Nếu bất kỳ tham số nào là null hoặc có độ dài ngắn hơn giá trị minLength, in ra thông báo lỗi hoặc xử lý lỗi ở đây.
+                error = "You must enter password more than 6";
+                request.setAttribute("error", error);
+                StaffDAO staffDAO = new StaffDAO();
+                HttpSession session = request.getSession();
+                String adminEmail = (String) session.getAttribute("adminEmail");
+                request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
 
-            settingDAO.updateSetting(settingStatus, settingid, settingName, settingType, settingValue, settingDes);
-            StaffDAO staffDAO = new StaffDAO();
-            HttpSession session = request.getSession();
-            String adminEmail = (String) session.getAttribute("adminEmail");
-            request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
+                request.getRequestDispatcher("./view/add-setting.jsp").forward(request, response);
+            } else {
+                //update new setting 
+                settingDAO.updateSetting(settingStatus, settingid, settingName, settingType, settingValue, settingDes);
+                StaffDAO staffDAO = new StaffDAO();
+                HttpSession session = request.getSession();
+                String adminEmail = (String) session.getAttribute("adminEmail");
+                request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
+
+                request.getRequestDispatcher("./view/setting-list-admin.jsp").forward(request, response);
+            }
+            
 
             request.getRequestDispatcher("./view/setting-list-admin.jsp").forward(request, response);
-        }else if (event.equals("add")) {
+        } else if (event.equals("add")) {
             //get information
             String settingID = request.getParameter("settingID");
             //get setting from database
@@ -116,22 +136,40 @@ public class SettingController extends HttpServlet {
             request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
             request.setAttribute("settingDeatil", settingdetail);
             request.getRequestDispatcher("./view/add-setting.jsp").forward(request, response);
-        }else if(event.equals("addnewsetting")){
+        } else if (event.equals("addnewsetting")) {
             //get information   
             String settingName = request.getParameter("name");
             String settingType = request.getParameter("type");
             String settingDes = request.getParameter("description");
             String settingValue = request.getParameter("avartar");
             String settingStatus = request.getParameter("status");
-            //add new setting 
-            settingDAO.InsertSetting(settingName, settingType, settingValue, settingDes,settingStatus);
-            StaffDAO staffDAO = new StaffDAO();
-            HttpSession session = request.getSession();
-            String adminEmail = (String) session.getAttribute("adminEmail");
-            request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
+            int minLength = 5; // Độ dài tối thiểu cho mỗi tham số, bạn có thể thay đổi giá trị này.
+            String error = "";
+            if (settingName == null || settingName.length() < minLength
+                    || settingType == null || settingType.length() < minLength
+                    || settingDes == null || settingDes.length() < minLength
+                    || settingValue == null || settingValue.length() < minLength) {
+                // Nếu bất kỳ tham số nào là null hoặc có độ dài ngắn hơn giá trị minLength, in ra thông báo lỗi hoặc xử lý lỗi ở đây.
+                error = "You must enter password more than 6";
+                request.setAttribute("error", error);
+                StaffDAO staffDAO = new StaffDAO();
+                HttpSession session = request.getSession();
+                String adminEmail = (String) session.getAttribute("adminEmail");
+                request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
 
-            request.getRequestDispatcher("./view/setting-list-admin.jsp").forward(request, response);
-        }else if (event.equals("fillter")) {
+                request.getRequestDispatcher("./view/add-setting.jsp").forward(request, response);
+            } else {
+                //add new setting 
+                settingDAO.InsertSetting(settingName, settingType, settingValue, settingDes, settingStatus);
+                StaffDAO staffDAO = new StaffDAO();
+                HttpSession session = request.getSession();
+                String adminEmail = (String) session.getAttribute("adminEmail");
+                request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
+
+                request.getRequestDispatcher("./view/setting-list-admin.jsp").forward(request, response);
+            }
+
+        } else if (event.equals("fillter")) {
             //get parameter
             String page = request.getParameter("page");
             String value = (request.getParameter("value") == null) ? "" : request.getParameter("value");
@@ -161,12 +199,13 @@ public class SettingController extends HttpServlet {
                         + "                                </tr>");
             }
             String pagehtml = "";
-            
+
             for (int i = 1; i <= (settingDAO.getTotalPageSettingBySearch(type, "", "", "", value) + 9) / 10; i++) {
-                if(i == Integer.parseInt(page)){
-                    pagehtml += "<span style=\"border: 0px; border-radius: 5px; background-color: #6994eb\" class=\"btn pagination-btn ms-2 active\" data-page=\""+i+"\" onclick=\"paging("+i+")\">"+i+"</span>\n";
-                }else 
-                pagehtml +="<button style=\"border: 0px; border-radius: 5px; background-color: #6994eb\" class=\"btn pagination-btn ms-2 inactive\" data-page=\""+i+"\" onclick=\"paging("+i+")\">"+i+"</button>\n";
+                if (i == Integer.parseInt(page)) {
+                    pagehtml += "<span style=\"border: 0px; border-radius: 5px; background-color: #6994eb\" class=\"btn pagination-btn ms-2 active\" data-page=\"" + i + "\" onclick=\"paging(" + i + ")\">" + i + "</span>\n";
+                } else {
+                    pagehtml += "<button style=\"border: 0px; border-radius: 5px; background-color: #6994eb\" class=\"btn pagination-btn ms-2 inactive\" data-page=\"" + i + "\" onclick=\"paging(" + i + ")\">" + i + "</button>\n";
+                }
             }
             response.addHeader("pagination", pagehtml);
         }
