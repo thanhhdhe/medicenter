@@ -41,7 +41,7 @@
                 </div> 
                 <button class="more">
                     <i class="fa fa-search"></i>
-                    <span class="d-block d-md-none">Tìm kiếm</span>
+                    <span class="d-block d-md-none">Search</span>
                 </button>
             </div>
             <!--search bar end-->
