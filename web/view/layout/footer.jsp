@@ -5,8 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
+
     <!-- Footer -->
     <footer
         class="text-center text-lg-start text-white"
@@ -105,4 +104,3 @@
         <!-- Grid container -->
     </footer>
     <!-- Footer -->
-</html>

@@ -297,8 +297,11 @@ boolean isStaff = false;
                     </form>
                 </diV>
             </div>
+
         </div>
+        <jsp:include page="layout/footer.jsp" />    
     </body>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const imageUpload = document.getElementById('imageUpload');

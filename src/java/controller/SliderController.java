@@ -5,6 +5,7 @@
 package controller;
 
 import Database.SliderDAO;
+import Database.StaffDAO;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,12 +14,14 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import model.Slider;
+import model.Staff;
 
 /**
  *
@@ -58,13 +61,32 @@ public class SliderController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
-        if (action.equals("all")) {
-            request.getRequestDispatcher("./view/slider-list.jsp").forward(request, response);
-        } else if (action.equals("search")) {
-            renderServiceListByOption(request, response);
-        } else if (action.equals("detail")) {
-            viewSliderDetail(request, response);
+        HttpSession session = request.getSession(true);
+        String email = (String) session.getAttribute("email");
+        StaffDAO staffDAO = new StaffDAO();
+        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+        if (curStaff != null) {
+            if (!curStaff.getRole().equals("manager")) {
+                response.sendRedirect("./view/403.jsp");
+            } else {
+                switch (action) {
+                    case "all":
+                        request.getRequestDispatcher("./view/slider-list.jsp").forward(request, response);
+                        break;
+                    case "search":
+                        renderServiceListByOption(request, response);
+                        break;
+                    case "detail":
+                        viewSliderDetail(request, response);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        } else {
+            response.sendRedirect("./view/403.jsp");
         }
+
     }
 
     /**
@@ -79,15 +101,28 @@ public class SliderController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
-        if (action.equals("changeStatus")) {
-            changeStatus(request, response);
-        } else if (action.equals("delete")) {
-            deleteSlide(request, response);
-        } else if (action.equals("add")) {
-            addSlide(request, response);
-        } else if (action.equals("update")) {
-            updateSlide(request, response);
+        HttpSession session = request.getSession(true);
+        String email = (String) session.getAttribute("email");
+        StaffDAO staffDAO = new StaffDAO();
+        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+        if (curStaff != null) {
+            if (!curStaff.getRole().equals("manager")) {
+                response.sendRedirect("./view/403.jsp");
+            } else {
+                if (action.equals("changeStatus")) {
+                    changeStatus(request, response);
+                } else if (action.equals("delete")) {
+                    deleteSlide(request, response);
+                } else if (action.equals("add")) {
+                    addSlide(request, response);
+                } else if (action.equals("update")) {
+                    updateSlide(request, response);
+                }
+            }
+        } else {
+            response.sendRedirect("./view/403.jsp");
         }
+
     }
 
     /**

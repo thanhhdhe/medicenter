@@ -229,7 +229,7 @@ h6 {
     Slider 
 */
 .carousel-item {
-    height: 100vh;
+
     min-height: 300px;
 }
 .carousel-caption {
@@ -255,14 +255,6 @@ h6 {
     line-height: 1.9;
 }
 .carousel-inner {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 1;
     border-radius: 20px;
 }
 .first-row {
@@ -287,10 +279,10 @@ h6 {
     height: 100%;
 }
 
-img {
+.carousel-item img {
     object-fit: cover;
-    width: 100%;
-    height: 100%;
+/*    width: 100%;
+    height: 100%;*/
     border-radius: 20px;
 }
 
