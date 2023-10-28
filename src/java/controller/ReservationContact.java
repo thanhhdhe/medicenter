@@ -46,10 +46,30 @@ public class ReservationContact extends HttpServlet {
         PrintWriter out = response.getWriter();
         // Get the user's email from the session
         HttpSession session = request.getSession();
+
         String email = (String) session.getAttribute("email");
         // Create a UserDAO instance to interact with the user data
         StaffDAO staffdao = new StaffDAO();
         Staff staff = staffdao.getStaffByStaffEmail(email);
+        boolean isManager = false;
+        boolean isStaff = false;
+        boolean isAdmin = false;
+        String adminEmail = (String) session.getAttribute("adminEmail") + "";
+        if (adminEmail.contains("@")) {
+            isAdmin = true;
+        }
+        if (staff != null) {
+            if (staff.getRole().equals("manager")) {
+                isManager = true;
+            }
+            if (staff.getRole().equals("doctor") || staff.getRole().equals("nurse")) {
+                isStaff = true;
+            }
+        }
+        if (!isManager) {
+            request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+            return;
+        }
         //get event
         String event = request.getParameter("event");
         ReservationDAO reservationdao = new ReservationDAO();
@@ -147,18 +167,17 @@ public class ReservationContact extends HttpServlet {
             System.out.println(page);
             String staffid = request.getParameter("staffId");
             System.out.println(staffid);
-            String name = (request.getParameter("name")==null)?"":request.getParameter("name");
+            String name = (request.getParameter("name") == null) ? "" : request.getParameter("name");
             //get action
             List<Reservation> listreservation = new ArrayList<>();
             String action = request.getParameter("action");
-            if(action.equals("fillterdoctor")){
+            if (action.equals("fillterdoctor")) {
                 // get list reservation
                 listreservation = reservationdao.getReservationAllByPagingFill(Integer.parseInt(page), staffid);
-            } else{
+            } else {
                 listreservation = reservationdao.getReservationAllBySearch(Integer.parseInt(page), name);
             }
-                
-            
+
             //get information of user
             StaffDAO staffDAO = new StaffDAO();
             ServiceDAO serviceDAO = new ServiceDAO();
@@ -227,25 +246,25 @@ public class ReservationContact extends HttpServlet {
                         + " </tr>");
 
             }
-            out.println( " </tbody> \n" +
-"                                </table>");
+            out.println(" </tbody> \n"
+                    + "                                </table>");
             String pagehtml = "<div class=\"d-flex w-100 justify-content-center mb-5\">";
-            int length= 0;
+            int length = 0;
             String fillter = "";
-            if(action.equals("fillterdoctor")){
+            if (action.equals("fillterdoctor")) {
                 // get list reservation
                 length = reservationdao.getTotalReservationByFillter(staffid);
-                fillter= action;
-            } else{
+                fillter = action;
+            } else {
                 length = reservationdao.getTotalReservationBySearch(name);
                 fillter = action;
             }
-            
+
             for (int i = 1; i <= (length + 9) / 10; i++) {
                 if (i == Integer.parseInt(page)) {
-                    pagehtml += "<span style=\"width: 25px;height: 25px\" class=\"pagination-btn rounded-circle ms-2 inactive d-flex justify-content-center align-items-center\" data-page=\"" + i + "\" onclick=\"paging(" + i + ",'"+fillter+"')\">" + i + "</span>\n";
+                    pagehtml += "<span style=\"width: 25px;height: 25px\" class=\"pagination-btn rounded-circle ms-2 inactive d-flex justify-content-center align-items-center\" data-page=\"" + i + "\" onclick=\"paging(" + i + ",'" + fillter + "')\">" + i + "</span>\n";
                 } else {
-                    pagehtml += "<button style=\"width: 25px;height: 25px\" class=\"pagination-btn btn btn-primary rounded-circle ms-2 inactive d-flex justify-content-center align-items-center\" data-page=\"" + i + "\" onclick=\"paging(" + i + ",'"+fillter+"')\">" + i + "</button>\n";
+                    pagehtml += "<button style=\"width: 25px;height: 25px\" class=\"pagination-btn btn btn-primary rounded-circle ms-2 inactive d-flex justify-content-center align-items-center\" data-page=\"" + i + "\" onclick=\"paging(" + i + ",'" + fillter + "')\">" + i + "</button>\n";
                 }
             }
             pagehtml += "</div> ";
