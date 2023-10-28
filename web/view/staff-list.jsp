@@ -30,7 +30,7 @@
             <!--search bar start-->
             <div class="search-group d-flex">
                 <div class="form-group"> 
-                    <input type="text" name="staffName" value="${staffName}" placeholder="Tìm theo tên">
+                    <input type="text" name="staffName" value="${staffName}" placeholder="Search by doctor name">
                 </div>
                 <div class="form-group">
                     <select name="serviceID">
