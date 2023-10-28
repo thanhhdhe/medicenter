@@ -40,8 +40,8 @@
                     </select>
                 </div> 
                 <button class="more">
-                    <i class="fa fa-search"></i>
-                    <span class="d-block d-md-none">Search</span>
+                    <!--<i class="fa fa-search"></i>-->
+                    <span class="d-block">Search</span>
                 </button>
             </div>
             <!--search bar end-->
