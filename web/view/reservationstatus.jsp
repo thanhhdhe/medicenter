@@ -4,7 +4,20 @@
     Author     : Admin
 --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page import="java.net.URLEncoder"%>
+<%@page import="java.nio.charset.StandardCharsets"%>
+<%@page import="com.vnpay.common.Config"%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+<%@page import="java.util.Iterator"%>
+<%@page import="java.util.Collections"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.Enumeration"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
+
 <%@ page import="model.Reservation" %>
 <%@ page import="Database.ReservationDAO" %>
 <!DOCTYPE html>
@@ -82,14 +95,48 @@
     </head>
 
     <body>
-        <%  String resCode = request.getParameter("vnp_ResponseCode");
+        <%
+    //Begin process return from VNPAY
+    Map fields = new HashMap();
+    for (Enumeration params = request.getParameterNames(); params.hasMoreElements();) {
+        String fieldName = URLEncoder.encode((String) params.nextElement(), StandardCharsets.US_ASCII.toString());
+        String fieldValue = URLEncoder.encode(request.getParameter(fieldName), StandardCharsets.US_ASCII.toString());
+        if ((fieldValue != null) && (fieldValue.length() > 0)) {
+            fields.put(fieldName, fieldValue);
+        }
+    }
 
-            if ("00".equals(resCode)) {
-                Reservation reservation = (Reservation) request.getAttribute("reservation");
-                ReservationDAO reservationDAO = new ReservationDAO();
-                reservation.setStatus("Waitting for examination");
-                reservationDAO.update(reservation);
-            }
+    String vnp_SecureHash = request.getParameter("vnp_SecureHash");
+    if (fields.containsKey("vnp_SecureHashType")) {
+        fields.remove("vnp_SecureHashType");
+    }
+    if (fields.containsKey("vnp_SecureHash")) {
+        fields.remove("vnp_SecureHash");
+    }
+    String signValue = Config.hashAllFields(fields);
+
+        %>
+        <%
+                            if (signValue.equals(vnp_SecureHash)) {
+                                if ("00".equals(request.getParameter("vnp_TransactionStatus"))) {
+                                    Reservation reservation = (Reservation) request.getAttribute("reservation");
+                                    ReservationDAO reservationDAO = new ReservationDAO();
+                                    reservation.setStatus("Waitting for examination");
+                                    reservationDAO.update(reservation);
+                                } else {  %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>PAYMENT FAILED</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <%
+        }
+
+        } else { %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>INVALID SIGNATURE</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+       <% }
         %>
         <%--<jsp:include page="layout/Header.jsp"/>--%>
         <div class="container">
