@@ -199,7 +199,7 @@
                                         <div class="col-md-9">
                                             <form class="d-flex" style="width: 50%; margin-left: 430px; margin-top: 20px" action="feedback?event=searchfeedback" method="POST">
                                                 <input class="form-control me-2" type="search" name="search" value="" placeholder="Search" aria-label="Search">
-                                                <button class="btn btn-outline-success" type="submit">Search</button>
+                                                <button class="btn btn-primary rounded-pill" type="submit">Search</button>
                                             </form>
                                         </div>
                                     </c:when>
@@ -208,7 +208,7 @@
                                         <div class="col-md-9">
                                             <form class="d-flex" action="feedback?event=${fillevent}&${fillparameter}=${fill}" method="POST">
                                                 <input class="form-control me-2" type="search" name="search" value="" placeholder="Search" aria-label="Search">
-                                                <button style="background-color: black" class="btn btn-outline-success" type="submit">Search</button>
+                                                <button style="background-color: black" class="btn btn-primary rounded-pill" type="submit">Search</button>
                                             </form>
                                         </div>
                                     </c:otherwise>
@@ -278,15 +278,15 @@
                                                     <c:set var="fillstatus" value="${requestScope.fillstatus}"/>
                                                     <c:choose>
                                                         <c:when test="${empty fill}">
-                                                            <li class="page-item"><a class="page-link" href="feedback?index=${i}">${i}</a></li>
+                                                            <li class="page-item"><a style="height: 25px; width: 25px" class="page-link btn-primary rounded-circle me-2 d-flex justify-content-center align-items-center" href="feedback?index=${i}">${i}</a></li>
                                                             </c:when>
                                                         </c:choose>
                                                         <c:if test="${not empty fill}">
                                                             <c:if test="${not empty search}">
-                                                            <li class="page-item"><a class="page-link" href="feedback?index=${i}&event=${fillevent}&${fillparameter}=${fill}&search=${search}">${i}</a></li>
+                                                            <li class="page-item"><a style="height: 25px; width: 25px" class="page-link btn-primary rounded-circle me-2 d-flex justify-content-center align-items-center" href="feedback?index=${i}&event=${fillevent}&${fillparameter}=${fill}&search=${search}">${i}</a></li>
                                                             </c:if>
-                                                            <c:if test="${ empty search}">
-                                                            <li class="page-item"><a class="page-link" href="feedback?index=${i}&event=${fillevent}&${fillparameter}=${fill}">${i}</a></li>
+                                                            <c:if test="${empty search}">
+                                                            <li class="page-item"><a style="height: 25px; width: 25px" class="page-link btn-primary rounded-circle me-2 d-flex justify-content-center align-items-center" href="feedback?index=${i}&event=${fillevent}&${fillparameter}=${fill}">${i}</a></li>
                                                             </c:if>
                                                         </c:if>
 
