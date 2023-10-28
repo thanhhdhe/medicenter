@@ -62,7 +62,7 @@ public class CheckResultController extends HttpServlet {
      * Trả kết quả ghi nhận lại cho VNPAY
          */
         HttpSession session = request.getSession();
-        if (!request.getParameter("method").isEmpty()) {
+        if (request.getParameter("method") != null && !request.getParameter("method").isEmpty()) {
             String reservationIDStr = request.getParameter("reservation");
             int reservationID = Integer.parseInt(reservationIDStr);
             ReservationDAO reservationDAO = new ReservationDAO();
@@ -136,7 +136,10 @@ public class CheckResultController extends HttpServlet {
                 request.setAttribute("doctor", doctor);
                 request.setAttribute("children", children);
                 request.setAttribute("cate", cate);
-                boolean checkOrderStatus = true; // Giả sử PaymnentStatus = 0 (pending) là trạng thái thanh toán của giao dịch khởi tạo chưa có IPN.
+                boolean checkOrderStatus = false;
+                if(reservation.getStatus().equals("pending")) {
+                    checkOrderStatus = true;
+                }
                 if (checkOrderId) {
                     if (checkAmount) {
                         if (checkOrderStatus) {
@@ -169,8 +172,8 @@ public class CheckResultController extends HttpServlet {
             request.getRequestDispatcher("./view/reservationstatus.jsp").forward(request, response);
         }
     }
-// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
 
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

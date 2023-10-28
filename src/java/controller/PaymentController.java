@@ -150,26 +150,47 @@ public class PaymentController extends HttpServlet {
             queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
             String paymentUrl = Config.vnp_PayUrl + "?" + queryUrl;
             com.google.gson.JsonObject job = new JsonObject();
-            job.addProperty("code", "00");
-            job.addProperty("message", "success");
-            job.addProperty("data", paymentUrl);
-            Gson gson = new Gson();
-            response.getWriter().write(gson.toJson(job));
-            reservation.setPayment("VNPay");
-            reservationDAO.update(reservation);
+            if (reservation.getStatus().equals("pending")) {
+                job.addProperty("code", "00");
+                job.addProperty("message", "success");
+                job.addProperty("data", paymentUrl);
+                Gson gson = new Gson();
+                response.getWriter().write(gson.toJson(job));
+                reservation.setPayment("VNPay");
+                reservationDAO.update(reservation);
+            } else {
+                job.addProperty("code", "01");
+                job.addProperty("message", "You have the same examinaton!");
+                job.addProperty("data", paymentUrl);
+                Gson gson = new Gson();
+                response.getWriter().write(gson.toJson(job));
+            }
         } else if (payment.equals("offline")) {
             com.google.gson.JsonObject job = new JsonObject();
-            job.addProperty("code", "00");
-            job.addProperty("message", "success");
-            reservation.setPayment("Pay at Center");
-            reservationDAO.update(reservation);
-            String paymentUrl = getServletContext().getContextPath() + "/check?method=off&reservation=" + reservationID;
-            job.addProperty("data", paymentUrl);
-            Gson gson = new Gson();
-            try {
-                response.getWriter().write(gson.toJson(job));
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (reservation.getStatus().equals("pending")) {
+                job.addProperty("code", "00");
+                job.addProperty("message", "success");
+                reservation.setPayment("Pay at Center");
+                reservationDAO.update(reservation);
+                String paymentUrl = getServletContext().getContextPath() + "/check?method=off&reservation=" + reservationID;
+                job.addProperty("data", paymentUrl);
+                Gson gson = new Gson();
+                try {
+                    response.getWriter().write(gson.toJson(job));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                job.addProperty("code", "01");
+                job.addProperty("message", "You have the same examinaton!");
+                String paymentUrl = getServletContext().getContextPath() + "/check?method=off&reservation=" + reservationID;
+                job.addProperty("data", paymentUrl);
+                Gson gson = new Gson();
+                try {
+                    response.getWriter().write(gson.toJson(job));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
         }

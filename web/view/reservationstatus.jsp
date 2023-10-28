@@ -96,7 +96,13 @@
 
     <body>
         <jsp:include page="layout/Header.jsp"/>
-        <% 
+
+
+        <div class="container">
+            <div class="row justify-content-center mt-5">
+                <div class="col-md-4 mb-5">
+                    <div class="card border-m mb-5">
+                        <% 
                String message = (String) request.getSession().getAttribute("message");
                String alertClass = "alert-success";
 
@@ -104,23 +110,19 @@
                    if (message.contains("error")) {
                        alertClass = "alert-danger";
                    }
-        %>
-        <div class="alert <%= alertClass %> alert-dismissible fade show" role="alert">
-            <strong><%= message %></strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <%
-            request.getSession().removeAttribute("message");
-        }
-        %>
-        
-        <div class="container">
-            <div class="row justify-content-center mt-5">
-                <div class="col-md-4 mb-5">
-                    <div class="card border-m mb-5">
+                        %>
+                        <div class="alert <%= alertClass %> alert-dismissible fade show" role="alert">
+                            <strong><%= message %></strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <%
+                            request.getSession().removeAttribute("message");
+                        }
+                        %>
                         <div class="card-header bg-primary text-white text-center bold">
                             Medical examination information
                         </div>
+
                         <div class="card-body">
                             <table class="table custom-table">
                                 <tbody>
