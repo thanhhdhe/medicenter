@@ -68,7 +68,39 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-function handlePageChange(page = 1) {
+function handlePageChangex( page = 1) {
+        var patientName = document.getElementById('patientName').value;
+        var fromDate = document.getElementById('from').value;
+        var toDate = document.getElementById('to').value;
+        var service = document.getElementById('service').value;
+
+        // Gửi yêu cầu Ajax đến máy chủ để lấy danh sách dịch vụ
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'medical-examination?event=get-medical-examination-page-manager&patientName=' + encodeURIComponent(patientName)+
+                '&fromDate=' + encodeURIComponent(fromDate) +
+                '&toDate=' + encodeURIComponent(toDate) +
+                '&service=' + encodeURIComponent(service) +
+                '&page=' + encodeURIComponent(page));
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                // Xử lý dữ liệu trả về từ máy chủ và cập nhật nội dung trang
+                document.querySelector('#medical-list').innerHTML = xhr.responseText;
+                document.querySelector('#pagination-container').innerHTML = xhr.getResponseHeader('pagination');
+            } else {
+                console.error('Error:', xhr.status);
+            }
+        };
+
+        xhr.onerror = function () {
+            console.error('Error:', xhr.status);
+        };
+
+        xhr.send();
+    }
+
+function handlePageChange(event, page = 1) {
+    event.preventDefault();
         var patientName = document.getElementById('patientName').value;
         var fromDate = document.getElementById('from').value;
         var toDate = document.getElementById('to').value;
