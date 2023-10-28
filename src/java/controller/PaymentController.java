@@ -153,7 +153,10 @@ public class PaymentController extends HttpServlet {
             response.getWriter().write(gson.toJson(job));
             reservation.setPayment("VNPay");
             reservationDAO.update(reservation);
-            Mail.sendEmail(users.getEmail(), "Information about your reservations in Medilab", setInfo());
+            Thread emailThread = new Thread(() -> {
+                Mail.sendEmail(users.getEmail(), "Information about your reservations in Medilab", setInfo());
+            });
+            emailThread.start();
         } else if (payment.equals("offline")) {
             com.google.gson.JsonObject job = new JsonObject();
             job.addProperty("code", "00");

@@ -8,7 +8,15 @@
 <html lang="en">
     <jsp:include page="./layout/Head.jsp"/> 
     <link rel="stylesheet" href="./resources/css/services-style.css">
-
+    <style>
+        img {
+            width: 100%;
+        }
+        #service-list img {
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
     <body>
         <jsp:include page="./layout/Header.jsp"/>
 
@@ -67,38 +75,7 @@
                                 </div>
 
                             </div>
-                            <div class="row p-4 mt-sm-0">
-                                <h4 class="title mt-4 text-center"><strong>Doctor</strong></h4>
-                                <div class="row">
-                                    <c:forEach items="${requestScope.doctor}" var="doc">
-                                        <div class="col-lg-4 col-md-6 col-12 mb-4">
-                                            <div class="custom-block bg-white shadow-lg">
-                                                <!--                                                <input class="form-check-input" type="radio" name="doctorRadio" value="no1">-->
-                                                <img src="${doc.profileImage}" class="mt-0 custom-block-image img-fluid" alt="">
-                                                <div class="d-flex mt-4">
-                                                    <div>
-                                                        <h4><strong>${doc.fullName}</strong></h4>
 
-                                                        <p class="mb-0">${doc.gender}</p>
-                                                    </div>
-
-                                                    <span class="badge bg-design rounded-pill ms-auto">14</span>
-                                                </div>
-                                                <form method="post" action="user?action=my-children">
-                                                    <input type="hidden" name="serviceID" value="${service.serviceID}">
-                                                    <input type="hidden" name="staffID" value="${doc.staffID}">
-                                                    <div class="text-center">
-                                                        <button type="submit" class="btn btn-primary mb-4">Book Now</button>
-                                                    </div>
-                                                </form>
-
-
-
-                                            </div>
-                                        </div>
-                                    </c:forEach>
-                                </div>
-                            </div>
                             <div class="text-center">
                                 <form method="post" action="user?action=my-children">
                                     <input type="hidden" name="serviceID" value="${service.serviceID}">

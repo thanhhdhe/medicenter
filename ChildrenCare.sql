@@ -26,7 +26,17 @@ CREATE TABLE Users (
 	Status bit default 0,
 	CreatedDate DATE NOT NULL,
 );
-
+CREATE TABLE HistoricalContact (
+    ContactID INT IDENTITY(1,1) PRIMARY KEY,
+    UserID INT NOT NULL,
+    Address NVARCHAR(300) NOT NULL,
+    FirstName NVARCHAR(50) NOT NULL,
+    LastName NVARCHAR(50) NOT NULL,
+    Gender VARCHAR(10) NOT NULL,
+    PhoneNumber VARCHAR(20) NOT NULL,
+    UpdatedDate datetime DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
 -- Create the CategoryService table
 CREATE TABLE CategoryService (
     CategoryID INT IDENTITY(1,1) PRIMARY KEY,

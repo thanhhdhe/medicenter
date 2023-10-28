@@ -5,6 +5,7 @@
 package controller;
 
 import Database.ChildrenDAO;
+import Database.ContactDAO;
 import Database.RelationshipDAO;
 import Database.ReservationDAO;
 import Database.ServiceDAO;
@@ -27,6 +28,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 import model.Children;
+import model.Contact;
 import model.Mail;
 import model.Relationship;
 import model.Reservation;
@@ -93,13 +95,15 @@ public class UserController extends HttpServlet {
                 String gender = request.getParameter("gender");
                 String address = request.getParameter("address");
                 Part filePart = request.getPart("images");
-                
+
+                Contact contact = new Contact(user, user.getAddress(), user.getFirstName(), user.getLastName(), user.getGender(), user.getPhoneNumber());
+
                 user.setLastName(lastname);
                 user.setFirstName(firstname);
                 user.setPhoneNumber(phone);
                 user.setGender(gender);
                 user.setAddress(address);
-                
+
                 String newImg = uploadImage(request);
                 if (newImg != null) {
                     user.setProfileImage(newImg);
@@ -107,6 +111,8 @@ public class UserController extends HttpServlet {
 
                 boolean success = userdao.updateProfile(user);
                 if (success) {
+                    ContactDAO contactData = new ContactDAO();
+                    contactData.addContact(contact);
                     request.getSession().setAttribute("message", "Your profile updated successfully");
                 } else {
                     request.getSession().setAttribute("message", "Your profile updated error");
@@ -254,10 +260,15 @@ public class UserController extends HttpServlet {
                 }
 
                 boolean statusUpdate = childDAO.createChildren(newChild);
-
-                users.setAddress(address);
-                users.setPhoneNumber(phoneNumber);
-                userdao.updateProfile(users);
+                if (statusUpdate) {
+                    Contact contact = new Contact(users, users.getAddress(), users.getFirstName(), users.getLastName(), users.getGender(), users.getPhoneNumber());
+                    ContactDAO contactData = new ContactDAO();
+                    contactData.addContact(contact);
+                    users.setAddress(address);
+                    users.setPhoneNumber(phoneNumber);
+                    userdao.updateProfile(users);
+                    return;
+                } 
 
                 String message = (statusUpdate) ? "Add children profile successfully" : "Add children profile failed";
                 session.setAttribute("message", message);
