@@ -108,6 +108,10 @@
         <servlet-name>SliderController</servlet-name>
         <servlet-class>controller.SliderController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CheckResultController</servlet-name>
+        <servlet-class>controller.CheckResultController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServiceController</servlet-name>
         <url-pattern>/service</url-pattern>
@@ -239,6 +243,10 @@
     <servlet-mapping>
         <servlet-name>SliderController</servlet-name>
         <url-pattern>/slider</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CheckResultController</servlet-name>
+        <url-pattern>/check</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
