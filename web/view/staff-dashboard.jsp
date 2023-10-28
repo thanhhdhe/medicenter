@@ -51,16 +51,16 @@
     </head>
 
     <body>
-         <%
-       String email = (String) session.getAttribute("email");
-       StaffDAO staffDAO = new StaffDAO();
-       ChildrenDAO childrenDAO = new ChildrenDAO();
-       ReservationDAO reservationDAO = new ReservationDAO();
-       Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-       UserDAO userDAO = new UserDAO();
-       ServiceDAO serviceDAO = new ServiceDAO();
-       boolean isManager = false;
-       boolean isStaff = false;
+        <%
+      String email = (String) session.getAttribute("email");
+      StaffDAO staffDAO = new StaffDAO();
+      ChildrenDAO childrenDAO = new ChildrenDAO();
+      ReservationDAO reservationDAO = new ReservationDAO();
+      Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+      UserDAO userDAO = new UserDAO();
+      ServiceDAO serviceDAO = new ServiceDAO();
+      boolean isManager = false;
+      boolean isStaff = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){
@@ -129,6 +129,11 @@
                            ><i class="fas fa-stethoscope"></i>Services</a
                         >
                     </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="slider?action=all" class="nav-item nav-link"
+                           ><i class="bi bi-image-fill"></i>Slider</a
+                        >
+                    </div>
                     <%}%>
                 </nav>
             </div>
@@ -138,7 +143,7 @@
             <div class="content <%if(curStaff==null){%>ms-0 w-100<%}%>">
                 <!-- Navbar Start -->
                 <nav class="navbar navbar-expand navbar-light sticky-top px-4 py-0" style="background-color: #1977cc;">
-                    
+
                     <a href="#" class="sidebar-toggler flex-shrink-0 text-decoration-none text-light">
                         <i class="fa fa-bars"></i>
                     </a>
@@ -201,7 +206,7 @@
                                 <a href="logout" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
-                         <%}else{%>
+                        <%}else{%>
                         <a href="staff?event=sent-to-login" id="login" class="btn btn-outline-primary ms-3 bg-light rounded-pill text-decoration-none"><span class="d-none d-md-inline">Login</a>
                         <%}%>
                     </div>
@@ -253,51 +258,51 @@
                                 </div>
                             </div>
                         </div>
-                                        
-                        <h3 class="px-4 mt-3">Patient Appoinment Today</h3>
-                        
-                         <div class="table-responsive p-4 bg-light border-2 border-light">
-                                <%if(curStaff!=null){%>
-                                <table class="table table-striped table-hover">
-                                    <thead class="text-light" style="background: #1977cc;">
-                                        <tr>
-                                            <th scope="col">ID</th>
-                                            <th scope="col">Reserved date</th>
-                                            <th scope="col">Customer name</th>
-                                            <th scope="col">Service</th>
-                                            <th scope="col">Cost</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Detail</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="reservations-list">
-                                        <%
-                                        List<Reservation> reservations = reservationDAO.getApoinmentTodayOfStaff(curStaff.getStaffID()+"");
-        
-                                        if(reservations!=null){
-                                        for (Reservation reservation : reservations) {
-                                        %>
-                                        <tr>
-                                            <th scope="row"><a href="staff?event=send-to-reservation-detail&reserdid=<%=reservation.getReservationID()%>" class="text-decoration-none text-dark"><%=reservation.getReservationID()%></a></th>
-                                            <td><%=reservation.getReservationDate()%></td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <img class="rounded-circle object-cover me-3" src="<%=userDAO.getUserByID(reservation.getUserID()).getProfileImage()%>" alt="alt" width="30px" height="30px"/>
-                                                    <div><%=userDAO.getUserByID(reservation.getUserID()).getFirstName()%></div>
-                                                </div>
-                                            </td>
-                                            <td><%=serviceDAO.getServiceByID(reservation.getServiceID()+"").getTitle()%></td>
-                                            <td><%=reservation.getCost()%></td>
-                                            <td><%=reservation.getStatus()%></td>
-                                            <td><a href="staff?event=send-to-reservation-detail&reserdid=<%=reservation.getReservationID()%>"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></a></td>
-                                        </tr>
-                                        <%}}%>
 
-                                    </tbody>
-                                </table>
-                                    <%}%>    
-                            </div>
-                        
+                        <h3 class="px-4 mt-3">Patient Appoinment Today</h3>
+
+                        <div class="table-responsive p-4 bg-light border-2 border-light">
+                            <%if(curStaff!=null){%>
+                            <table class="table table-striped table-hover">
+                                <thead class="text-light" style="background: #1977cc;">
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Reserved date</th>
+                                        <th scope="col">Customer name</th>
+                                        <th scope="col">Service</th>
+                                        <th scope="col">Cost</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Detail</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="reservations-list">
+                                    <%
+                                    List<Reservation> reservations = reservationDAO.getApoinmentTodayOfStaff(curStaff.getStaffID()+"");
+        
+                                    if(reservations!=null){
+                                    for (Reservation reservation : reservations) {
+                                    %>
+                                    <tr>
+                                        <th scope="row"><a href="staff?event=send-to-reservation-detail&reserdid=<%=reservation.getReservationID()%>" class="text-decoration-none text-dark"><%=reservation.getReservationID()%></a></th>
+                                        <td><%=reservation.getReservationDate()%></td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img class="rounded-circle object-cover me-3" src="<%=userDAO.getUserByID(reservation.getUserID()).getProfileImage()%>" alt="alt" width="30px" height="30px"/>
+                                                <div><%=userDAO.getUserByID(reservation.getUserID()).getFirstName()%></div>
+                                            </div>
+                                        </td>
+                                        <td><%=serviceDAO.getServiceByID(reservation.getServiceID()+"").getTitle()%></td>
+                                        <td><%=reservation.getCost()%></td>
+                                        <td><%=reservation.getStatus()%></td>
+                                        <td><a href="staff?event=send-to-reservation-detail&reserdid=<%=reservation.getReservationID()%>"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></a></td>
+                                    </tr>
+                                    <%}}%>
+
+                                </tbody>
+                            </table>
+                            <%}%>    
+                        </div>
+
                     </div>
                 </div>
                 <!-- Blank End -->
@@ -311,32 +316,33 @@
             <!-- Content End -->
 
         </div>
+    </div>
 
-        <!-- JavaScript Libraries -->
-        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-            crossorigin="anonymous"
-        ></script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-            crossorigin="anonymous"
-        ></script>
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"
+    ></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+        crossorigin="anonymous"
+    ></script>
 
-        <!-- Template Javascript -->
-        <script>
-            document.querySelector('.sidebar-toggler').addEventListener('click', function() {
-                var sidebar = document.querySelector('.sidebar');
-                var content = document.querySelector('.content');
+    <!-- Template Javascript -->
+    <script>
+        document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+            var sidebar = document.querySelector('.sidebar');
+            var content = document.querySelector('.content');
 
-                sidebar.classList.toggle('open');
-                content.classList.toggle('open');
+            sidebar.classList.toggle('open');
+            content.classList.toggle('open');
 
-                return false;
-            });
-        </script>
-    </body>
+            return false;
+        });
+    </script>
+</body>
 </html>
 

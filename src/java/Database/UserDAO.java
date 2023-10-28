@@ -177,7 +177,7 @@ public class UserDAO extends MyDAO {
         }
         return null;
     }
-    
+
     public User getUserByEmail(String email) {
 
         xSql = "select * from [dbo].[Users] where Email = ?";
@@ -253,7 +253,7 @@ public class UserDAO extends MyDAO {
         }
     }
 
-    public void updateProfile(User user) {
+    public boolean updateProfile(User user) {
         String xSql = "UPDATE [dbo].[Users]\n"
                 + "   SET [Address] = ?\n"
                 + "      ,[FirstName] = ?\n"
@@ -272,10 +272,12 @@ public class UserDAO extends MyDAO {
             ps.setString(5, user.getPhoneNumber());
             ps.setString(6, user.getProfileImage());
             ps.setInt(7, user.getUserID());
-            ps.executeUpdate();
+            int rowsAffected = ps.executeUpdate();
             ps.close();
+            return rowsAffected > 0; // Return true if at least one row was updated
         } catch (Exception e) {
             e.printStackTrace();
+            return false; // Return false in case of an exception
         }
     }
 
@@ -372,7 +374,6 @@ public class UserDAO extends MyDAO {
 //            if (sortBy != null && !sortBy.isEmpty()) {
 //                ps.setString(parameterIndex, sortBy);
 //            }
-
             rs = ps.executeQuery();
             while (rs.next()) {
                 String id = rs.getString("ID");
@@ -478,16 +479,14 @@ public class UserDAO extends MyDAO {
     public static void main(String[] args) throws ParseException {
         UserDAO userDAO = new UserDAO();
 //        List<User> users = userDAO.getAllUsersByAdmin(1, 10, "Email", "", "", "", "", "", 2);
-    SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-            java.util.Date utilDate = dateFormat.parse("10-26-2023");
-            Date startDate = new Date(utilDate.getTime());
-            utilDate = dateFormat.parse("01-01-2023");
-            Date endDate = new Date(utilDate.getTime());
-            System.out.println(userDAO.getUserCountByCreatedDate(startDate, endDate));
-        
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        java.util.Date utilDate = dateFormat.parse("10-26-2023");
+        Date startDate = new Date(utilDate.getTime());
+        utilDate = dateFormat.parse("01-01-2023");
+        Date endDate = new Date(utilDate.getTime());
+        System.out.println(userDAO.getUserCountByCreatedDate(startDate, endDate));
+
 //        System.out.println(userDAO.countTotalUserByAdmin("", "", "", "", "", 3));
 //        
-       
-
     }
 }
