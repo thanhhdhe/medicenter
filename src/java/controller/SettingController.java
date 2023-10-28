@@ -64,7 +64,7 @@ public class SettingController extends HttpServlet {
                         + "                                    <td>" + setting.getType() + "</td>\n"
                         + "                                    <td>" + setting.getSettingName() + "</td>\n"
                         + "                                    <td>" + setting.getValue().substring(0, 15) + "</td>\n"
-                        + "                                    <td>" + setting.getDescription().substring(0, 25) + "" + "</td>\n"
+                        + "                                    <td>" + setting.getDescription().substring(0, 15) + "" + "</td>\n"
                         + "                                    <td><div class=\"dropdown\">\n"
                         + "                                            <button style=\"border: 0px; padding: 0px\" type=\"button\" id=\"dropdownMenuButton1\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">\n"
                         + "                                                <span class=\"badge bg-primary\"  id=\"statusBadge-" + setting.getSettingID() + "\">" + setting.getStatus() + "</span>\n"
@@ -108,7 +108,7 @@ public class SettingController extends HttpServlet {
                     || settingDes == null || settingDes.length() < minLength
                     || settingValue == null || settingValue.length() < minLength) {
                 // Nếu bất kỳ tham số nào là null hoặc có độ dài ngắn hơn giá trị minLength, in ra thông báo lỗi hoặc xử lý lỗi ở đây.
-                error = "You must enter password more than 6";
+                error = "You must enter character more than 6";
                 request.setAttribute("error", error);
                 StaffDAO staffDAO = new StaffDAO();
                 request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
@@ -147,7 +147,7 @@ public class SettingController extends HttpServlet {
                     || settingDes == null || settingDes.length() < minLength
                     || settingValue == null || settingValue.length() < minLength) {
                 // Nếu bất kỳ tham số nào là null hoặc có độ dài ngắn hơn giá trị minLength, in ra thông báo lỗi hoặc xử lý lỗi ở đây.
-                error = "You must enter password more than 6";
+                error = "You must enter character more than 6";
                 request.setAttribute("error", error);
                 StaffDAO staffDAO = new StaffDAO();
                 request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
@@ -178,7 +178,7 @@ public class SettingController extends HttpServlet {
                         + "                                    <td>" + setting.getType() + "</td>\n"
                         + "                                    <td>" + setting.getSettingName() + "</td>\n"
                         + "                                    <td>" + setting.getValue().substring(0, 15) + "</td>\n"
-                        + "                                    <td>" + setting.getDescription().substring(0, 25) + "" + "</td>\n"
+                        + "                                    <td>" + setting.getDescription().substring(0, 15) + "" + "</td>\n"
                         + "                                    <td><div class=\"dropdown\">\n"
                         + "                                            <button style=\"border: 0px; padding: 0px\" type=\"button\" id=\"dropdownMenuButton1\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">\n"
                         + "                                                <span class=\"badge bg-primary\"  id=\"statusBadge-" + setting.getSettingID() + "\">" + setting.getStatus() + "</span>\n"
@@ -195,9 +195,9 @@ public class SettingController extends HttpServlet {
 
             for (int i = 1; i <= (settingDAO.getTotalPageSettingBySearch(type, "", "", "", value) + 9) / 10; i++) {
                 if (i == Integer.parseInt(page)) {
-                    pagehtml += "<span style=\"border: 0px; border-radius: 5px; background-color: #6994eb\" class=\"btn pagination-btn ms-2 active\" data-page=\"" + i + "\" onclick=\"paging(" + i + ")\">" + i + "</span>\n";
+                    pagehtml += "<span style=\"color: black\" class=\"pagination-btn btn btn-primary rounded-circle ms-2 active ml-2\" data-page=\"" + i + "\" onclick=\"paging(" + i + ")\">" + i + "</span>\n";
                 } else {
-                    pagehtml += "<button style=\"border: 0px; border-radius: 5px; background-color: #6994eb\" class=\"btn pagination-btn ms-2 inactive\" data-page=\"" + i + "\" onclick=\"paging(" + i + ")\">" + i + "</button>\n";
+                    pagehtml += "<button style=\"color: black\" class=\"pagination-btn btn btn-primary rounded-circle ms-2 inactive ml-2\" data-page=\"" + i + "\" onclick=\"paging(" + i + ")\">" + i + "</button>\n";
                 }
             }
             response.addHeader("pagination", pagehtml);

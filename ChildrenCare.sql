@@ -118,7 +118,7 @@ CREATE TABLE Settings (
   SettingID INT IDENTITY(1,1) PRIMARY KEY,
   Type VARCHAR(50) NOT NULL,
   Name VARCHAR(100) NOT NULL,
-  Value TEXT,
+  Value VARCHAR(max),
   Description TEXT,
   Status VARCHAR(20) NOT NULL
 );
