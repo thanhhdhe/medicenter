@@ -36,14 +36,20 @@ public class SettingController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         SettingDAO settingDAO = new SettingDAO();
+        HttpSession session = request.getSession();
+        boolean isAdmin = false;
+        String adminEmail = (String) session.getAttribute("adminEmail")+"";
+        if(adminEmail.contains("@"))isAdmin=true;
+        if (!isAdmin) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    return;
+                }
         //get event for settingcontroller
         String event = request.getParameter("event");
         System.out.println(event);
         if (event == null) {
 
             StaffDAO staffDAO = new StaffDAO();
-            HttpSession session = request.getSession();
-            String adminEmail = (String) session.getAttribute("adminEmail");
             request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
 
             request.getRequestDispatcher("./view/setting-list-admin.jsp").forward(request, response);
@@ -83,8 +89,6 @@ public class SettingController extends HttpServlet {
             Setting settingdetail = settingDAO.getSettingByID(settingID);
             // redirect from detail
             StaffDAO staffDAO = new StaffDAO();
-            HttpSession session = request.getSession();
-            String adminEmail = (String) session.getAttribute("adminEmail");
             request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
             request.setAttribute("settingDeatil", settingdetail);
             request.getRequestDispatcher("./view/setting-detail.jsp").forward(request, response);
@@ -106,8 +110,6 @@ public class SettingController extends HttpServlet {
                 error = "You must enter password more than 6";
                 request.setAttribute("error", error);
                 StaffDAO staffDAO = new StaffDAO();
-                HttpSession session = request.getSession();
-                String adminEmail = (String) session.getAttribute("adminEmail");
                 request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
 
                 request.getRequestDispatcher("./view/add-setting.jsp").forward(request, response);
@@ -115,8 +117,6 @@ public class SettingController extends HttpServlet {
                 //update new setting 
                 settingDAO.updateSetting(settingStatus, settingid, settingName, settingType, settingValue, settingDes);
                 StaffDAO staffDAO = new StaffDAO();
-                HttpSession session = request.getSession();
-                String adminEmail = (String) session.getAttribute("adminEmail");
                 request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
 
                 request.getRequestDispatcher("./view/setting-list-admin.jsp").forward(request, response);
@@ -131,8 +131,6 @@ public class SettingController extends HttpServlet {
             Setting settingdetail = settingDAO.getSettingByID(settingID);
             // redirect from detail
             StaffDAO staffDAO = new StaffDAO();
-            HttpSession session = request.getSession();
-            String adminEmail = (String) session.getAttribute("adminEmail");
             request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
             request.setAttribute("settingDeatil", settingdetail);
             request.getRequestDispatcher("./view/add-setting.jsp").forward(request, response);
@@ -153,8 +151,6 @@ public class SettingController extends HttpServlet {
                 error = "You must enter password more than 6";
                 request.setAttribute("error", error);
                 StaffDAO staffDAO = new StaffDAO();
-                HttpSession session = request.getSession();
-                String adminEmail = (String) session.getAttribute("adminEmail");
                 request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
 
                 request.getRequestDispatcher("./view/add-setting.jsp").forward(request, response);
@@ -162,8 +158,6 @@ public class SettingController extends HttpServlet {
                 //add new setting 
                 settingDAO.InsertSetting(settingName, settingType, settingValue, settingDes, settingStatus);
                 StaffDAO staffDAO = new StaffDAO();
-                HttpSession session = request.getSession();
-                String adminEmail = (String) session.getAttribute("adminEmail");
                 request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
 
                 request.getRequestDispatcher("./view/setting-list-admin.jsp").forward(request, response);

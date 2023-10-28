@@ -253,7 +253,7 @@ public class StaffController extends HttpServlet {
                     if (i == pagination) {
                         paginationHtml += "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>";
                     } else {
-                        paginationHtml += "<li class=\"pagination-btn inactive\"><a data-page=\"" + i + "\" href=\"#\">" + i + "</a></li>";
+                        paginationHtml += "<li class=\"pagination-btn inactive\"><a data-page=\"" + i + "\" onclick=\"loadReservation(event," + i + ")\" href=\"#\">" + i + "</a></li>";
                     }
                 }
             }
@@ -261,30 +261,31 @@ public class StaffController extends HttpServlet {
 
             if (pagination == 1) {
                 paginationHtml += "<li class=\"pagination-btn active\"><span>1</span></li>"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"2\">2</a></li>\n"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"3\">3</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"2\" onclick=\"loadReservation(event, 2)\">2</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"3\" onclick=\"loadReservation(event, 3)\">3</a></li>\n"
                         + "<span>...</span>\n"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\">&gt;</a></li>";
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"loadReservation(event, " + numberOfPage + ")\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"loadReservation(event, " + (pagination+1) + ")\">&gt;</a></li>";
             } else if (pagination > numberOfPage - 4) {
-                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\">&lt;</a></li>"
+                paginationHtml += "<li class=\"pagination-btn inactive\" ><a href=\"#\" onclick=\"loadReservation(event, " + (pagination-1) + ")\">&lt;</a></li>"
                         + "<span>...</span>\n";
                 for (int i = numberOfPage - 3; i <= numberOfPage; i++) {
                     if (i == pagination) {
                         paginationHtml += "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>";
                     } else {
-                        paginationHtml += "<li class=\"pagination-btn inactive\"><a data-page=\"" + i + "\" href=\"#\">" + i + "</a></li>";
+                        paginationHtml += "<li class=\"pagination-btn inactive\"><a onclick=\"loadReservation(event, " + i + ")\" data-page=\"" + i + "\" href=\"#\">" + i + "</a></li>";
                     }
                 }
-                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\">&gt;</a></li>";
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"loadReservation(event, " + (pagination+1) + ")\">&gt;</a></li>";
             } else {
-                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\">&lt;</a></li>"
+                int pagination1 =pagination+1,pagination2=pagination+2;
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"loadReservation(event, " + (pagination-1) + ")\">&lt;</a></li>"
                         + "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"" + pagination + "\">" + pagination + "</a></li>\n"
-                        + "                                    <li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"" + pagination + "\">" + pagination + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"loadReservation(event, " + pagination1 + ")\" data-page=\"" + (pagination+1) + "\">" + (int)(pagination+1) + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a onclick=\"loadReservation(event, " + pagination2 + ")\" href=\"#\" data-page=\"" + (pagination+2) + "\">" + (int)(pagination+2) + "</a></li>\n"
                         + "<span>...</span>\n"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\">&gt;</a></li>";
+                        + "<li class=\"pagination-btn inactive\"><a onclick=\"loadReservation(event, " + numberOfPage + ")\" href=\"#\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a onclick=\"loadReservation(event, " + numberOfPage + ")\" href=\"#\" onclick=\"loadReservation(event, " + (pagination+1) + ")\">&gt;</a></li>";
             }
 
         }
