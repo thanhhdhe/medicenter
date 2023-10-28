@@ -98,7 +98,8 @@ public class SettingController extends HttpServlet {
             String settingName = request.getParameter("name");
             String settingType = request.getParameter("type");
             String settingDes = request.getParameter("description");
-            String settingValue = request.getParameter("avartar");
+            String settingValue = (request.getParameter("avartar").equals("")||request.getParameter("avartar")==null)?request.getParameter("avartarURL"):request.getParameter("avartar");
+            System.out.println(settingValue);
             String settingStatus = request.getParameter("status");
             int minLength = 5; // Độ dài tối thiểu cho mỗi tham số, bạn có thể thay đổi giá trị này.
             String error = "";
@@ -122,8 +123,6 @@ public class SettingController extends HttpServlet {
                 request.getRequestDispatcher("./view/setting-list-admin.jsp").forward(request, response);
             }
             
-
-            request.getRequestDispatcher("./view/setting-list-admin.jsp").forward(request, response);
         } else if (event.equals("add")) {
             //get information
             String settingID = request.getParameter("settingID");
