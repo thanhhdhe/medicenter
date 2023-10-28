@@ -246,7 +246,7 @@
                                         <div class="card-body">
                                             <!-- Status -->
                                             <c:set var="FDid" value="${requestScope.FDid}" />
-                                            
+
                                             <div class="d-flex justify-content-between">
                                                 <div>
                                                     <h5 class="card-title">Service: ${ser.getTitle()}</h5>
@@ -262,18 +262,18 @@
                                                     </div>
                                                 </div>
 
-                                                    <div class="dropdown">
-                                                        <button style="border: 0px; background-color: #ffffff;" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                                            <span class="badge bg-primary"  id="statusBadge-${FDid}">${fe.getFstatus()}</span>
-                                                        </button>
-                                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${FDid})">Appored</a></li>
-                                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${FDid})">Unresolved</a></li>
-                                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${FDid}})">Resolved</a></li>
-                                                            <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${FDid})">Reviewed</a></li>
-                                                        </ul>
+                                                <div class="dropdown">
+                                                    <button style="border: 0px; background-color: #ffffff;" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <span class="badge bg-primary"  id="statusBadge-${FDid}">${fe.getFstatus()}</span>
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 
-                                                    </div>
+                                                        <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${FDid})">Unresolved</a></li>
+                                                        <li><a class="dropdown-item status-change" href="#" onclick="changestatus(this, ${FDid})">Resolved</a></li>
+
+                                                    </ul>
+
+                                                </div>
                                                 <div style="margin-right: 100px; width: 400px;height: 300px;">
                                                     <img style="object-fit: contain; height: 100%"  src="${ser.getThumbnail()}" alt="alt"/>
 
@@ -320,34 +320,34 @@
         <!-- Template Javascript -->
 
         <script>
-                                        function changestatus(a, uid) {
-                                        var text = a.textContent;
-                                        var textchange = document.getElementById("statusBadge-" + uid);
-                                        textchange.textContent = text;
-                                        // Gửi yêu cầu Ajax đến servlet
-                                        var xhr = new XMLHttpRequest();
-                                        xhr.open("POST", "feedback?event=updatestatus&Fstatus=" + text + "&UID=" + uid, true);
-                                        xhr.onload = function () {
+                                                            function changestatus(a, uid) {
+                                                                var text = a.textContent;
+                                                                var textchange = document.getElementById("statusBadge-" + uid);
+                                                                textchange.textContent = text;
+                                                                // Gửi yêu cầu Ajax đến servlet
+                                                                var xhr = new XMLHttpRequest();
+                                                                xhr.open("POST", "feedback?event=updatestatus&Fstatus=" + text + "&UID=" + uid, true);
+                                                                xhr.onload = function () {
 
-                                        };
-                                        xhr.onerror = function () {
+                                                                };
+                                                                xhr.onerror = function () {
 
-                                        };
-                                        xhr.send();
-                                        }
+                                                                };
+                                                                xhr.send();
+                                                            }
         </script>
 
         <script>
-            document.querySelector('.sidebar-toggler').addEventListener('click', function() {
-            var sidebar = document.querySelector('.sidebar');
-            var content = document.querySelector('.content');
-            sidebar.classList.toggle('open');
-            content.classList.toggle('open');
-            return false;
+            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+                var sidebar = document.querySelector('.sidebar');
+                var content = document.querySelector('.content');
+                sidebar.classList.toggle('open');
+                content.classList.toggle('open');
+                return false;
             });
         </script>
     </body>
 
-    
+
 </html>
 

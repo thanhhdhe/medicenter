@@ -110,6 +110,15 @@ public class FeedBackController extends HttpServlet {
                     // get infor for update
                     String Fstatus = request.getParameter("Fstatus");
                     String UID = request.getParameter("UID");
+                    if (Fstatus.equals("Resolved")) {
+                        // Get user's email 
+                        UserDAO userDao = new UserDAO();
+                        String email = userDao.getUserByID(Integer.parseInt(UID)).getEmail();
+                        System.out.println(email);
+                        // Send an email with a feedback request
+                        Mail.sendEmail(email, "THANK TO USE SERVICE", "Thank you for using our service");
+                        
+                    }
                     dao.updateStatus(Fstatus, Integer.parseInt(UID));
 
                     //fillter for status
