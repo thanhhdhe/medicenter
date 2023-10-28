@@ -221,7 +221,7 @@
                                     <td><%=setting.getType() %></td>
                                     <td><%=setting.getSettingName() %></td>
                                     <td><%=setting.getValue().substring(0, 15)+"..." %></td>
-                                    <td><%=setting.getDescription().substring(0, 25)+"..." %></td>
+                                    <td><%=setting.getDescription().substring(0, 15)+"..." %></td>
                                     
                                     <td>
                                         <div class="dropdown">
@@ -241,9 +241,9 @@
                         </table>
 
                         <div class="d-flex justify-content-center mb-5" id="pagination-container">
-                            <button style="border: 0px; border-radius: 5px; background-color: #6994eb" class="pagination-btn ms-2 active" data-page="1">1</button>
+                            <button style="color: black" class="pagination-btn btn btn-primary rounded-circle ms-2 active ml-2" data-page="1">1</button>
                             <%for (int i = 2; i <=(settingDAO.getTotalPageSetting()+9)/10; i++) {%>
-                            <button style="border: 0px; border-radius: 5px; background-color: #6994eb" class="pagination-btn ms-2 inactive" data-page="<%=i%>"><%=i%></button>
+                            <button style="color: black" class="pagination-btn btn btn-primary rounded-circle ms-2 inactive ml-2" data-page="<%=i%>"><%=i%></button>
                             <%}%>
                         </div>
 

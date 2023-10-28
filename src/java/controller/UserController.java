@@ -64,12 +64,15 @@ public class UserController extends HttpServlet {
         Staff curStaff = (Staff) session.getAttribute("staff");
         boolean isManager = false;
         boolean isAdmin = false;
+        boolean isStaff = false;
+        String adminEmail = (String) session.getAttribute("adminEmail")+"";
+        if(adminEmail.contains("@"))isAdmin=true;
         if (curStaff != null) {
+            if (curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) {
+                isStaff = true;
+            }
             if (curStaff.getRole().equals("manager")) {
                 isManager = true;
-            }
-            if (curStaff.getRole().equals("admin")) {
-                isAdmin = true;
             }
         }
         List<User> userList = null;
@@ -318,14 +321,34 @@ public class UserController extends HttpServlet {
                 childDAO.deleteChild(childID);
             }
             if (action.equals("render-user-by-admin")) {
+                if (!isAdmin) {
+                    return;
+                }
                 renderUserByAdmin(request, response);
             } else if (action.equals("send-to-adduser")) {
+                if (!isAdmin) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    return;
+                }
                 sendToAddUser(request, response);
             } else if (action.equals("add-user-byadmin")) {
+                if (!isAdmin) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    return;
+                }
                 addUserByAdmin(request, response);
             } else if (action.equals("send-to-userdetail-admin")) {
+                if (!isAdmin) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    return;
+                }
                 sendToUserDetail(request, response);
             } else if (action.equals("onoff-status")) {
+                if (!isAdmin) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    return;
+                }
+                System.out.println("admin: "+isAdmin);
                 onOffStatusUser(request, response);
             }
         } catch (IOException | ServletException e) {
@@ -541,33 +564,34 @@ public class UserController extends HttpServlet {
                 }
             }
         } else {
-
+            
             if (pagination == 1) {
                 paginationHtml += "<li class=\"pagination-btn active\"><span>1</span></li>"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"2\" onclick=\"pagination(event, 2);\">2</a></li>\n"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"3\" onclick=\"pagination(event, 3);\">3</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"2\" onclick=\"pagination(event, 2)\">2</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"3\" onclick=\"pagination(event, 3)\">3</a></li>\n"
                         + "<span>...</span>\n"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"pagination(event, " + numberOfPage + ");\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\">&gt;</a></li>";
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"pagination(event, " + numberOfPage + ")\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"pagination(event, " + (pagination+1) + ")\">&gt;</a></li>";
             } else if (pagination > numberOfPage - 4) {
-                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\">&lt;</a></li>"
+                paginationHtml += "<li class=\"pagination-btn inactive\" ><a href=\"#\" onclick=\"pagination(event, " + (pagination-1) + ")\">&lt;</a></li>"
                         + "<span>...</span>\n";
                 for (int i = numberOfPage - 3; i <= numberOfPage; i++) {
                     if (i == pagination) {
                         paginationHtml += "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>";
                     } else {
-                        paginationHtml += "<li class=\"pagination-btn inactive\"><a data-page=\"" + i + "\" href=\"#\" onclick=\"pagination(event, " + i + ");\">" + i + "</a></li>";
+                        paginationHtml += "<li class=\"pagination-btn inactive\"><a onclick=\"pagination(event, " + i + ")\" data-page=\"" + i + "\" href=\"#\">" + i + "</a></li>";
                     }
                 }
-                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\">&gt;</a></li>";
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"pagination(event, " + (pagination+1) + ")\">&gt;</a></li>";
             } else {
-                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\">&lt;</a></li>"
+                int pagination1 =pagination+1,pagination2=pagination+2;
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"pagination(event, " + (pagination-1) + ")\">&lt;</a></li>"
                         + "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"" + pagination + "\" onclick=\"pagination(event, " + pagination + ");\">" + pagination + "</a></li>\n"
-                        + "                                    <li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"" + pagination + "\" onclick=\"pagination(event, " + pagination + ");\">" + pagination + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"pagination(event, " + pagination1 + ")\" data-page=\"" + (pagination+1) + "\">" + (int)(pagination+1) + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a onclick=\"pagination(event, " + pagination2 + ")\" href=\"#\" data-page=\"" + (pagination+2) + "\">" + (int)(pagination+2) + "</a></li>\n"
                         + "<span>...</span>\n"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"" + numberOfPage + "\" onclick=\"pagination(event, " + numberOfPage + ");\">" + numberOfPage + "</a></li>\n"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\">&gt;</a></li>";
+                        + "<li class=\"pagination-btn inactive\"><a onclick=\"pagination(event, " + numberOfPage + ")\" href=\"#\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a onclick=\"pagination(event, " + numberOfPage + ")\" href=\"#\" onclick=\"pagination(event, " + (pagination+1) + ")\">&gt;</a></li>";
             }
 
         }
@@ -613,7 +637,7 @@ public class UserController extends HttpServlet {
         request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
         User user = userDAO.getUserByID(Integer.parseInt(id.trim()));
         user.setStatus(!user.isStatus());
-        userDAO.updateStatus(user.isStatus(), 0);
+        userDAO.updateStatus(user.isStatus(),user.getUserID());
         request.setAttribute("user", user);
         request.getRequestDispatcher("./view/user-detail-admin.jsp").forward(request, response);
 

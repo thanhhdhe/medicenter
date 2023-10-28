@@ -95,6 +95,26 @@ public class MedicalExaminationDAO extends MyDAO {
 
         return serviceIDs;
     }
+    
+    public List<Integer> getListServiceIDs() {
+        List<Integer> serviceIDs = new ArrayList<>();
+        xSql = "SELECT DISTINCT ServiceID FROM MedicalExaminations";
+        try {
+            ps = connection.prepareStatement(xSql);
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int serviceID = rs.getInt("ServiceID");
+                serviceIDs.add(serviceID);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace(); // Handle or log the exception as per your requirement
+        }
+
+        return serviceIDs;
+    }
 
     public List<MedicalExamination> getPageMedicalExaminations(int page, int pageSize) {
         List<MedicalExamination> medicalExaminationList = new ArrayList<>();
@@ -216,6 +236,59 @@ public class MedicalExaminationDAO extends MyDAO {
         }
         return medicalExaminationList;
     }
+    
+    public List<MedicalExamination> getPageFilterMedicalExaminations(String childrenName, int page, int pageSize, String serviceID, String fromDate, String toDate) {
+        List<MedicalExamination> medicalExaminationList = new ArrayList<>();
+        xSql = "SELECT * FROM MedicalExaminations me "
+                + "INNER JOIN Children c ON me.ChildrenID = c.ChildID "
+                + "WHERE c.ChildName LIKE ? ";
+        if (serviceID != null && !serviceID.isEmpty()) {
+            xSql += "AND me.ServiceID = ? ";
+        }
+        if (fromDate != null && !fromDate.isEmpty()) {
+            xSql += "AND me.ExaminationDate >= ? ";
+        }
+        if (toDate != null && !toDate.isEmpty()) {
+            xSql += "AND me.ExaminationDate <= ? ";
+        }
+        xSql += "ORDER BY me.ExaminationDate DESC "
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        int offset = (page - 1) * pageSize;
+        try {
+            ps = con.prepareStatement(xSql);
+            int paramIndex = 1;
+            ps.setString(paramIndex++, "%" + childrenName + "%");
+            if (serviceID != null && !serviceID.isEmpty()) {
+                ps.setString(paramIndex++, serviceID);
+            }
+            if (fromDate != null && !fromDate.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(fromDate));
+            }
+            if (toDate != null && !toDate.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(toDate));
+            }
+            ps.setInt(paramIndex++, offset);
+            ps.setInt(paramIndex++, pageSize);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int MedicalExaminationID = rs.getInt("MedicalExaminationID");
+                int MuserID = rs.getInt("UserID");
+                int MchildrenID = rs.getInt("ChildrenID");
+                int MstaffID = rs.getInt("StaffID");
+                Date examinationDate = rs.getDate("ExaminationDate");
+                int medicalExaminationID = rs.getInt("MedicalExaminationID");
+                String medicalPrescription = rs.getString("MedicalPrescription");
+                String disease = rs.getString("Disease");
+                MedicalExamination medicalExamination = new MedicalExamination(MedicalExaminationID, MuserID, MchildrenID, MstaffID, examinationDate, medicalExaminationID, medicalPrescription, disease);
+                medicalExaminationList.add(medicalExamination);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return medicalExaminationList;
+    }
 
     public int countMedicalExaminationsByStaffAndChildName(String staffID, String childrenName) {
         int count = 0;
@@ -260,6 +333,47 @@ public class MedicalExaminationDAO extends MyDAO {
             ps = con.prepareStatement(xSql);
            int paramIndex = 1;
             ps.setString(paramIndex++, staffID);
+            ps.setString(paramIndex++, "%" + childrenName + "%");
+            if (serviceID != null && !serviceID.isEmpty()) {
+                ps.setString(paramIndex++, serviceID);
+            }
+            if (fromDate != null && !fromDate.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(fromDate));
+            }
+            if (toDate != null && !toDate.isEmpty()) {
+                ps.setDate(paramIndex++, Date.valueOf(toDate));
+            }
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+    
+    public int countFilterMedicalExaminations(String childrenName, String serviceID, String fromDate, String toDate) {
+        int count = 0;
+        xSql = "SELECT COUNT(*) AS RecordCount\n"
+                + "FROM (SELECT me.MedicalExaminationID FROM MedicalExaminations me "
+                + "INNER JOIN Children c ON me.ChildrenID = c.ChildID "
+                + "WHERE c.ChildName LIKE ? ";
+        if (serviceID != null && !serviceID.isEmpty()) {
+            xSql += "AND me.ServiceID = ?";
+        }
+        if (fromDate != null && !fromDate.isEmpty()) {
+            xSql += "AND me.ExaminationDate >= ? ";
+        }
+        if (toDate != null && !toDate.isEmpty()) {
+            xSql += "AND me.ExaminationDate <= ? ";
+        }
+        xSql += ") AS SubQuery;";
+        try {
+            ps = con.prepareStatement(xSql);
+           int paramIndex = 1;
             ps.setString(paramIndex++, "%" + childrenName + "%");
             if (serviceID != null && !serviceID.isEmpty()) {
                 ps.setString(paramIndex++, serviceID);

@@ -118,7 +118,7 @@ CREATE TABLE Settings (
   SettingID INT IDENTITY(1,1) PRIMARY KEY,
   Type VARCHAR(50) NOT NULL,
   Name VARCHAR(100) NOT NULL,
-  Value TEXT,
+  Value VARCHAR(max),
   Description TEXT,
   Status VARCHAR(20) NOT NULL
 );
@@ -283,10 +283,10 @@ Pediatric vaccinations, also known as childhood immunizations or vaccines, are a
 VALUES
     ('thang', 'lethanglrf@gmail.com', '1234', 'Le Minh Thang', 'Male', '0834398268', 'resources/img/thang.jpeg', 'doctor', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for the first staff member.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
 	('thang', 'lethang@gmail.com', '1234', 'Le Minh Thang', 'Male', '0834398268', 'resources/img/thang.jpeg', 'manager', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for the second staff member.','','',''),
-    ('john_doe', 'john@example.com', 'password123', 'John Doe', 'Male', '123456789', 'resources\img\doc\doc1.jpg', 'doctor', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for John Doe.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
-    ('dr_smith', 'dr.smith@example.com', 'doctorpass', 'Smith', 'Male', '555123456', 'resources\img\doc\doc2.jpg', 'doctor', 'Associate Doctor', 'Internal Medicine Department', 'Introduction for Dr. Smith.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
-    ('dr_anderson', 'dr.anderson@example.com', 'doctorpass', 'Anderson', 'Female', '555987654', 'resources\img\doc\doc5.jpg', 'doctor', 'Associate Doctor', 'Internal Medicine Department', 'Introduction for Dr. Anderson.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
-    ('dr_jackson', 'dr.jackson@example.com', 'doctorpass', 'Jackson', 'Male', '555111333', 'resources\img\doc\doc3.jpg', 'doctor', 'Meritorious Doctor', 'Internal Medicine Department', 'Introduction for Dr. Jackson.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
+    ('john_doe', 'john@example.com', 'password123', 'John Doe', 'Male', '123456789', 'resources/img/doc/doc1.jpg', 'doctor', 'Associate Professor', 'Department of Obstetrics and gynaecology', 'Introduction for John Doe.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
+    ('dr_smith', 'dr.smith@example.com', 'doctorpass', 'Smith', 'Male', '555123456', 'resources/img/doc/doc2.jpg', 'doctor', 'Associate Doctor', 'Internal Medicine Department', 'Introduction for Dr. Smith.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
+    ('dr_anderson', 'dr.anderson@example.com', 'doctorpass', 'Anderson', 'Female', '555987654', 'resources/img/doc/doc5.jpg', 'doctor', 'Associate Doctor', 'Internal Medicine Department', 'Introduction for Dr. Anderson.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
+    ('dr_jackson', 'dr.jackson@example.com', 'doctorpass', 'Jackson', 'Male', '555111333', 'resources/img/doc/doc3.jpg', 'doctor', 'Meritorious Doctor', 'Internal Medicine Department', 'Introduction for Dr. Jackson.','2015: Surgeon treating hand and foot fractures, Department of Orthopedics, Nam Dinh Provincial General Hospital','Fractures due to trauma: broken arm, broken leg, broken collarbone -Congenital bone and joint deformities: polydactyly, syndactyly, split thumb,..','2 Grassroots level scientific topics: Forearm fusion surgery in 2019 and skin flap surgery to treat polydactyly in 2022'),
     ('jane_smith', 'jane@example.com', 'password456', 'Jane Smith', 'Female', '987654321', 'avatar.jpg', 'nurse', 'Meritorious Doctor', 'Internal Medicine Department', 'Introduction for Jane Smith.','','',''),
     ('nurse_johnson', 'nurse.johnson@example.com', 'nursepass', 'Nurse Johnson', 'Female', '555111222', 'nurse.jpg', 'nurse', 'Associate Doctor', 'Dermatology Department', 'Introduction for Nurse Johnson.','','',''),
     ('nurse_brown', 'nurse.brown@example.com', 'nursepass', 'Nurse Brown', 'Male', '555333444', 'nurse.jpg', 'nurse', 'Meritorious Doctor', 'Dermatology Department', 'Introduction for Nurse Brown.','','','');
@@ -294,23 +294,23 @@ VALUES
 	-- Insert data doctor into Staff
 	INSERT INTO Staff (StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole, Rank, Specialty, Introduction, SpecializedActivities, ProfessionalAchievements, DepthStudy)
 VALUES
-    ('John Doe', 'john.doe@example.com', 'password123', 'John Doe', 'Male', '1234567890', 'resources\img\doc\doc4.jpg', 'doctor', 'Senior', 'Cardiology', 'I am a cardiologist with 10 years of experience.', 'Cardiac catheterization, Echocardiography', 'Published research papers on heart diseases', 'Attended advanced cardiology courses at top institutions');
+    ('John Doe', 'john.doe@example.com', 'password123', 'John Doe', 'Male', '1234567890', 'resources/img/doc/doc4.jpg', 'doctor', 'Senior', 'Cardiology', 'I am a cardiologist with 10 years of experience.', 'Cardiac catheterization, Echocardiography', 'Published research papers on heart diseases', 'Attended advanced cardiology courses at top institutions');
 
 INSERT INTO Staff (StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole, Rank, Specialty, Introduction, SpecializedActivities, ProfessionalAchievements, DepthStudy)
 VALUES
-    ('Jane Smith', 'jane.smith@example.com', 'password456', 'Jane Smith', 'Female', '9876543210', 'resources\img\doc\doc7.jpg', 'doctor', 'Junior', 'Pediatrics', 'I am a pediatrician dedicated to providing comprehensive care for children.', 'Childhood vaccinations, Developmental assessments', 'Received "Outstanding Pediatrician" award', 'Completed specialized fellowship in pediatric critical care');
+    ('Jane Smith', 'jane.smith@example.com', 'password456', 'Jane Smith', 'Female', '9876543210', 'resources/img/doc/doc7.jpg', 'doctor', 'Junior', 'Pediatrics', 'I am a pediatrician dedicated to providing comprehensive care for children.', 'Childhood vaccinations, Developmental assessments', 'Received "Outstanding Pediatrician" award', 'Completed specialized fellowship in pediatric critical care');
 
 
 INSERT INTO Staff (StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole, Rank, Specialty, Introduction, SpecializedActivities, ProfessionalAchievements, DepthStudy)
 VALUES
-    ('David Johnson', 'david.johnson@example.com', 'password789', 'David Johnson', 'Male', '2345678901', 'resources\img\doc\doc6.jpg', 'doctor', 'Senior', 'Orthopedics', 'I am an orthopedic surgeon specializing in joint replacements.', 'Hip and knee replacements', 'Performed over 500 successful joint replacement surgeries', 'Attended international conferences on advancements in orthopedic surgery');
+    ('David Johnson', 'david.johnson@example.com', 'password789', 'David Johnson', 'Male', '2345678901', 'resources/img/doc/doc6.jpg', 'doctor', 'Senior', 'Orthopedics', 'I am an orthopedic surgeon specializing in joint replacements.', 'Hip and knee replacements', 'Performed over 500 successful joint replacement surgeries', 'Attended international conferences on advancements in orthopedic surgery');
 
 INSERT INTO Staff (StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole, Rank, Specialty, Introduction, SpecializedActivities, ProfessionalAchievements, DepthStudy)
 VALUES
-    ('Emily Wilson', 'emily.wilson@example.com', 'passwordabc', 'Emily Wilson', 'Female', '3456789012', 'resources\img\doc\doc10.jpg', 'doctor', 'Junior', 'Dermatology', 'I am a dermatologist providing comprehensive skin care services.', 'Skin cancer screenings, Cosmetic procedures', 'Published articles on dermatological treatments', 'Completed residency in dermatology at renowned medical center');
+    ('Emily Wilson', 'emily.wilson@example.com', 'passwordabc', 'Emily Wilson', 'Female', '3456789012', 'resources/img/doc/doc10.jpg', 'doctor', 'Junior', 'Dermatology', 'I am a dermatologist providing comprehensive skin care services.', 'Skin cancer screenings, Cosmetic procedures', 'Published articles on dermatological treatments', 'Completed residency in dermatology at renowned medical center');
 
 -- ADMIN
-INSERT INTO Staff(StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole) VALUES ('Hieu','chtalong@gmail.com','1234','Bui Chung Hieu','Male','037399128','resources\img\adminHieu.jpg', 'admin')
+INSERT INTO Staff(StaffName, Email, Password, FullName, Gender, PhoneNumber, ProfileImage, StaffRole) VALUES ('Hieu','chtalong@gmail.com','1234','Bui Chung Hieu','Male','037399128','resources/img/adminHieu.jpg', 'admin')
 -- Insert data into ServiceStaff
 INSERT INTO ServiceStaff (ServiceID, StaffID)
 VALUES
@@ -432,13 +432,13 @@ VALUES
 	
 -- Reservations
 INSERT INTO Reservations(UserID, ServiceID, StaffID, ChildID, CreatedDate, ReservationDate, ReservationSlot, Cost, Status,Payment) 
-VALUES (1, 15, 7, 1, DATEADD(MILLISECOND,-4105241,GETDATE()), DATEADD(DAY, 4, GETDATE()), 1, 100.0, 'waiting for examination','VNPay'),
+VALUES (1, 15, 1, 1, DATEADD(MILLISECOND,-4105241,GETDATE()), DATEADD(DAY, 4, GETDATE()), 1, 100.0, 'waiting for examination','VNPay'),
 (1, 9, 1, 1, DATEADD(MILLISECOND,-8104511,GETDATE()), DATEADD(DAY, 3, GETDATE()), 3, 450, 'waiting for examination','Pay at center'),
 (1, 6, 1, 2, DATEADD(MILLISECOND,-10122452,GETDATE()), DATEADD(DAY, 3, GETDATE()), 2, 70.0, 'waiting for examination','VNPay'), 
-(1, 9, 3, 2, DATEADD(MILLISECOND,-16785745,GETDATE()), DATEADD(DAY, 14, GETDATE()), 2, 450.0, 'waiting for examination','VNPay'), 
-(1, 6, 4, 1, DATEADD(MILLISECOND,-25642544,GETDATE()), DATEADD(DAY, 8, GETDATE()), 1, 70.0, 'pending','Pay at Center'),
-(1, 6, 4, 2, DATEADD(MILLISECOND,-38454524,GETDATE()), DATEADD(DAY, 8, GETDATE()), 2, 70.0, 'waiting for examination','VNPay'),
-(1, 10, 3, 2, DATEADD(MILLISECOND,-98545422,GETDATE()), DATEADD(DAY, 1, GETDATE()), 2, 120.0, 'cancel','VNPay');
+(1, 9, 1, 2, DATEADD(MILLISECOND,-16785745,GETDATE()), DATEADD(DAY, 14, GETDATE()), 2, 450.0, 'waiting for examination','VNPay'), 
+(1, 6, 1, 1, DATEADD(MILLISECOND,-25642544,GETDATE()), DATEADD(DAY, 8, GETDATE()), 1, 70.0, 'pending','Pay at Center'),
+(1, 6, 1, 2, DATEADD(MILLISECOND,-38454524,GETDATE()), DATEADD(DAY, 8, GETDATE()), 2, 70.0, 'waiting for examination','VNPay'),
+(1, 10, 1, 2, DATEADD(MILLISECOND,-98545422,GETDATE()), DATEADD(DAY, 1, GETDATE()), 2, 120.0, 'cancel','VNPay');
 
 Insert Into Settings(Type,Name,Value,Description,Status)
 Values

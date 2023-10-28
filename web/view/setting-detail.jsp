@@ -194,7 +194,7 @@
                                 <h5 class="d-flex justify-content-center mt-3">- Or -</h5>
                                 <div class="form-group mt-3">
                                     <label for="serviceURL">Profile Image:</label>
-                                    <input type="text" class="form-control" id="serviceURL" name="avartarURL">
+                                    <input type="text" class="form-control" id="serviceURL" name="avartarURL" value="${setting.getValue()}">
                                 </div>
                             </div>
 
@@ -237,6 +237,7 @@
 
                         </div> 
                         <input style="margin-top: 100px" class="btn btn-primary w-25" type="submit" value="Update" />
+                        <button class="btn btn-primary mt-3"><a style="color: white" href="setting"> Back</a></button>
                     </form>
 
                 </main>

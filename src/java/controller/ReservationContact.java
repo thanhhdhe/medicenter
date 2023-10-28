@@ -243,9 +243,9 @@ public class ReservationContact extends HttpServlet {
             
             for (int i = 1; i <= (length + 9) / 10; i++) {
                 if (i == Integer.parseInt(page)) {
-                    pagehtml += "<span style=\"border: 0px; border-radius: 5px; background-color: #6994eb\" class=\"btn pagination-btn ms-2 active\" data-page=\"" + i + "\" onclick=\"paging(" + i + ",'"+fillter+"')\">" + i + "</span>\n";
+                    pagehtml += "<span style=\"width: 25px;height: 25px\" class=\"pagination-btn rounded-circle ms-2 inactive d-flex justify-content-center align-items-center\" data-page=\"" + i + "\" onclick=\"paging(" + i + ",'"+fillter+"')\">" + i + "</span>\n";
                 } else {
-                    pagehtml += "<button style=\"border: 0px; border-radius: 5px; background-color: #6994eb\" class=\"btn pagination-btn ms-2 inactive\" data-page=\"" + i + "\" onclick=\"paging(" + i + ",'"+fillter+"')\">" + i + "</button>\n";
+                    pagehtml += "<button style=\"width: 25px;height: 25px\" class=\"pagination-btn btn btn-primary rounded-circle ms-2 inactive d-flex justify-content-center align-items-center\" data-page=\"" + i + "\" onclick=\"paging(" + i + ",'"+fillter+"')\">" + i + "</button>\n";
                 }
             }
             pagehtml += "</div> ";

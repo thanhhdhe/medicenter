@@ -210,13 +210,29 @@
                         <div class="col-md-12 p-0">
                             <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
                                 <h4>MEDICAL RECORDS</h4>
-                                <a href="staff?event=send-to-children-list" class="ms-text-primary font-weight-bold">Add Medical Record</a>
                             </div>
-                            <div class="mb-4 px-4 py-3 d-flex justify-content-start align-items-center">
-                                <div class="col-md-4">
+                            <div class="mb-4 px-4 py-3 d-flex justify-content-between align-items-center">
+                                <div class="col-md-3">
                                     <input class="form-control" name="patientName" id="patientName" type="search" placeholder="Search Child Name" />
                                 </div>
-                            </div>
+                            
+                            <div class="col-md-4 px-4 d-flex">
+                                    <div class="input-group text-black-50">
+                                        <input type="date" class="form-control" name="from" id="from">
+                                        <span class="input-group-text">to</span>
+                                        <input type="date" class="form-control"name="to" id="to">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 px-4">
+                                    <select class="form-select" id="service">
+                                        <option selected value="">Service</option>
+                                        <%List<Integer> list = medicalExaminationDAO.getListServiceIDs();
+                                        for (Integer integer : list) {%>
+                                            <option value="<%=integer%>"><%=serviceDAO.getServiceByID(integer + "").getTitle()%></option>
+                                        <%}%>
+                                    </select>
+                                </div>
+                            </div> 
                             <div class="table-responsive p-4">
                                 <%if(curStaff!=null){%>
                                 <table class="table table-striped table-hover">
@@ -298,7 +314,7 @@
 
             <!-- JavaScript Libraries -->
             <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-            <script src="./resources/js/medical-examination-script.js"></script>
+            <script src="./resources/js/medical-examination-manager-script.js"></script>
             <script
                 src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
                 integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"

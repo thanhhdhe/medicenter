@@ -87,6 +87,12 @@ public class MedicalExaminationController extends HttpServlet {
                 }
                 renderPageMedicalExaminationOfStaff(request, response);
                 break;
+            case "get-medical-examination-page-manager":
+                if (!isManager) {
+                    break;
+                }
+                renderPageMedicalExamination(request, response);
+                break;
         }
     }
 
@@ -194,30 +200,31 @@ public class MedicalExaminationController extends HttpServlet {
             
             if (pagination == 1) {
                 paginationHtml += "<li class=\"pagination-btn active\"><span>1</span></li>"
-                        + "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange(2)\" data-page=\"2\">2</button></li>\n"
-                        + "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange(3)\" data-page=\"3\">3</button></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"2\" onclick=\"handlePageChange(event, 2)\">2</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"3\" onclick=\"handlePageChange(event, 3)\">3</a></li>\n"
                         + "<span>...</span>\n"
-                        + "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange("+numberOfPage+")\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</button></li>\n"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\">&gt;</a></li>";
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"handlePageChange(event, " + numberOfPage + ")\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"handlePageChange(event, " + (pagination+1) + ")\">&gt;</a></li>";
             } else if (pagination > numberOfPage - 4) {
-                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\">&lt;</a></li>"
+                paginationHtml += "<li class=\"pagination-btn inactive\" ><a href=\"#\" onclick=\"handlePageChange(event, " + (pagination-1) + ")\">&lt;</a></li>"
                         + "<span>...</span>\n";
                 for (int i = numberOfPage - 3; i <= numberOfPage; i++) {
                     if (i == pagination) {
                         paginationHtml += "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>";
                     } else {
-                        paginationHtml += "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange("+i+")\" data-page=\"" + i + "\" href=\"#\">" + i + "</a></li>";
+                        paginationHtml += "<li class=\"pagination-btn inactive\"><a onclick=\"handlePageChange(event, " + i + ")\" data-page=\"" + i + "\" href=\"#\">" + i + "</a></li>";
                     }
                 }
-                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\">&gt;</a></li>";
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"handlePageChange(event, " + (pagination+1) + ")\">&gt;</a></li>";
             } else {
-                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\">&lt;</a></li>"
+                int pagination1 =pagination+1,pagination2=pagination+2;
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"handlePageChange(event, " + (pagination-1) + ")\">&lt;</a></li>"
                         + "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>"
-                        + "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange("+(pagination+1)+")\" data-page=\"" + pagination + "\">" + pagination + "</a></li>\n"
-                        + "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange("+(pagination+1)+")\" data-page=\"" + pagination + "\">" + pagination + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"handlePageChange(event, " + pagination1 + ")\" data-page=\"" + (pagination+1) + "\">" + (int)(pagination+1) + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a onclick=\"handlePageChange(event, " + pagination2 + ")\" href=\"#\" data-page=\"" + (pagination+2) + "\">" + (int)(pagination+2) + "</a></li>\n"
                         + "<span>...</span>\n"
-                        + "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange("+(pagination+1)+")\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\">&gt;</a></li>";
+                        + "<li class=\"pagination-btn inactive\"><a onclick=\"handlePageChange(event, " + numberOfPage + ")\" href=\"#\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a onclick=\"handlePageChange(event, " + numberOfPage + ")\" href=\"#\" onclick=\"handlePageChange(event, " + (pagination+1) + ")\">&gt;</a></li>";
             }
             
         }
@@ -225,6 +232,102 @@ public class MedicalExaminationController extends HttpServlet {
         response.addHeader("pagination", paginationHtml);
         
         List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getPageFilterMedicalExaminationsOfStaff(curStaff.getStaffID() + "",childName, pagination, 10,service,fromDate,toDate);
+        if (listMedicalExamination != null) {
+            for (MedicalExamination medicalExamination : listMedicalExamination) {
+                out.print("<tr>\n"
+                        + "    <th scope=\"row\">"+medicalExamination.getMedicalExaminationID()+"</th>\n"
+                        + "    <td>\n"
+                        + "        <div class=\"d-flex\">\n"
+                        + "            <img class=\"rounded-circle object-cover me-3\" src=\""+childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getImage()+"\" alt=\"alt\" width=\"30px\" height=\"30px\"/>\n"
+                        + "            <div>"+childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getChildName()+"</div>\n"
+                        + "        </div>\n"
+                        + "    </td>\n"
+                        + "    <td>"+childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getBirthday()+"</td>\n"
+                        + "    <td>"+serviceDAO.getServiceByID(medicalExamination.getMuserID()+"").getTitle()+"</td>\n"
+                        + "    <td>"+medicalExamination.getExaminationDate()+"</td>\n"
+                        + "    <td>"+medicalExamination.getDisease()+"</td>\n"
+                        + "    <td>\n"
+                        + "        <div class=\"d-flex\">\n"
+                        + "            <a class=\"me-3\" href=\"staff?event=send-to-edit&id="+medicalExamination.getMedicalExaminationID()+"\"><i class=\"fas fa-pencil-alt ms-text-primary\"></i></a>\n"
+                        + "            <a href=\"medical-examination?event=delete&id="+medicalExamination.getMedicalExaminationID()+"\" style=\"color: #d9534f;\"><i class=\"far fa-trash-alt ms-text-danger\"></i></a>\n"
+                        + "        </div>\n"
+                        + "    </td>\n"
+                        + "</tr>");
+            }
+        }
+        
+    }
+    
+    protected void renderPageMedicalExamination(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        Logger logger = Logger.getLogger(MedicalExaminationController.class.getName());
+        String childName = request.getParameter("patientName");
+        String fromDate = request.getParameter("fromDate");
+        String toDate = request.getParameter("toDate");
+        String service = request.getParameter("service");
+        HttpSession session = request.getSession(true);
+        String email = (String) session.getAttribute("email");
+//        logger.info("Giá trị của biến email là: " + email);
+        StaffDAO staffDAO = new StaffDAO();
+        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+        String page = (String) request.getParameter("page");
+        int pagination = Integer.parseInt(page.trim());
+        MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
+        ChildrenDAO childrenDAO = new ChildrenDAO();
+        ServiceDAO serviceDAO = new ServiceDAO();
+        int numberOfRecord = medicalExaminationDAO.countFilterMedicalExaminations(childName,service,fromDate,toDate);
+        int numberOfPage = (numberOfRecord + 9) / 10;
+        
+        // Generate the pagination HTML
+        String paginationHtml = "";
+        if (numberOfRecord <= 40) {
+            if (numberOfRecord > 0) {
+                for (int i = 1; i <= numberOfPage; i++) {
+                    if (i == pagination) {
+                        paginationHtml += "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>";
+                    } else {
+                        paginationHtml += "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange("+i+")\" data-page=\"" + i + "\" href=\"#\">" + i + "</a></li>";
+                    }
+                }
+            }
+        } else {
+            if (pagination == 1) {
+                paginationHtml += "<li class=\"pagination-btn active\"><span>1</span></li>"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"2\" onclick=\"handlePageChange(event, 2)\">2</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"3\" onclick=\"handlePageChange(event, 3)\">3</a></li>\n"
+                        + "<span>...</span>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"handlePageChange(event, " + numberOfPage + ")\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"handlePageChange(event, " + (pagination+1) + ")\">&gt;</a></li>";
+            } else if (pagination > numberOfPage - 4) {
+                paginationHtml += "<li class=\"pagination-btn inactive\" ><a href=\"#\" onclick=\"handlePageChange(event, " + (pagination-1) + ")\">&lt;</a></li>"
+                        + "<span>...</span>\n";
+                for (int i = numberOfPage - 3; i <= numberOfPage; i++) {
+                    if (i == pagination) {
+                        paginationHtml += "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>";
+                    } else {
+                        paginationHtml += "<li class=\"pagination-btn inactive\"><a onclick=\"handlePageChange(event, " + i + ")\" data-page=\"" + i + "\" href=\"#\">" + i + "</a></li>";
+                    }
+                }
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"handlePageChange(event, " + (pagination+1) + ")\">&gt;</a></li>";
+            } else {
+                int pagination1 =pagination+1,pagination2=pagination+2;
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"handlePageChange(event, " + (pagination-1) + ")\">&lt;</a></li>"
+                        + "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"handlePageChange(event, " + pagination1 + ")\" data-page=\"" + (pagination+1) + "\">" + (int)(pagination+1) + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a onclick=\"handlePageChange(event, " + pagination2 + ")\" href=\"#\" data-page=\"" + (pagination+2) + "\">" + (int)(pagination+2) + "</a></li>\n"
+                        + "<span>...</span>\n"
+                        + "<li class=\"pagination-btn inactive\"><a onclick=\"handlePageChange(event, " + numberOfPage + ")\" href=\"#\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a onclick=\"handlePageChange(event, " + numberOfPage + ")\" href=\"#\" onclick=\"handlePageChange(event, " + (pagination+1) + ")\">&gt;</a></li>";
+            }
+            
+            
+        }
+        // Add the pagination HTML to the response header
+        response.addHeader("pagination", paginationHtml);
+        
+        List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getPageFilterMedicalExaminations(childName, pagination, 10,service,fromDate,toDate);
         if (listMedicalExamination != null) {
             for (MedicalExamination medicalExamination : listMedicalExamination) {
                 out.print("<tr>\n"

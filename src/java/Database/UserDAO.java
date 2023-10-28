@@ -93,7 +93,7 @@ public class UserDAO extends MyDAO {
                 + " WHERE UserID = ?";
         try {
             ps = con.prepareStatement(xSql);
-            System.out.println(xSql);
+            ps.setBoolean(1, status);
             ps.setInt(2, UserID);
             ps.setBoolean(1, status);
             ps.executeUpdate();

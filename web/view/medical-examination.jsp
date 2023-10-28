@@ -292,7 +292,7 @@
                                     <li class="pagination-btn inactive"><a href="#" data-page="3">3</a></li>
                                     <span>...</span>
                                     <li class="pagination-btn inactive"><a href="#" data-page="<%=(medicalExaminationDAO.countMedicalExaminationsByStaff(curStaff.getStaffID()+"")+9)/10%>"><%=(medicalExaminationDAO.countMedicalExaminationsByStaff(curStaff.getStaffID()+"")+9)/10%></a></li>
-                                    <li class="pagination-btn inactive"><a href="#">&gt;</a></li>
+                                    <li class="pagination-btn inactive"><a href="#" data-page="2">&gt;</a></li>
                                         <%}%>
 
                                 </ul>

@@ -328,10 +328,10 @@
 
                                 </table>
                                 <% ReservationDAO reservationdao = new ReservationDAO(); %>
-                                <div class="d-flex justify-content-center mb-5" id="pagination-container">
-                                    <button style="border: 0px; border-radius: 5px; background-color: #6994eb" class="pagination-btn ms-2 active" data-page="1">1</button>
+                                <div  class="d-flex justify-content-center mb-5" id="pagination-container">
+                                    <span style="width: 25px;height: 25px" class="pagination-btn rounded-circle ms-2 inactive d-flex justify-content-center align-items-center" data-page="1">1</span>
                                     <%for (int i = 2; i <=(reservationdao.getTotalReservation()+9)/10; i++) {%>
-                                    <button style="border: 0px; border-radius: 5px; background-color: #6994eb" class="pagination-btn ms-2 inactive" data-page="<%=i%>"><%=i%></button>
+                                    <button style="width: 25px;height: 25px" class="pagination-btn rounded-circle ms-2 inactive d-flex justify-content-center align-items-center"  data-page="<%=i%>"><%=i%></button>
                                     <%}%>
                                 </div> 
                                 <%}%>

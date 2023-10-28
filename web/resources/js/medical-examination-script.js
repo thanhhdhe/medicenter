@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 '&fromDate=' + encodeURIComponent(fromDate) +
                 '&toDate=' + encodeURIComponent(toDate) +
                 '&service=' + encodeURIComponent(service) +
-                '&page=' + encodeURIComponent(page));
+                '&page=' + page);
 
         xhr.onload = function () {
             if (xhr.status === 200) {
@@ -68,7 +68,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-function handlePageChange(page = 1) {
+function handlePageChange(event, page = 1) {
+    event.preventDefault();
         var patientName = document.getElementById('patientName').value;
         var fromDate = document.getElementById('from').value;
         var toDate = document.getElementById('to').value;
