@@ -48,6 +48,38 @@ public class ContactDAO extends MyDAO {
         return contactList;
     }
 
+    public List<Contact> getContacts(int userID) {
+        List<Contact> contactList = new ArrayList<>();
+        String sql = "SELECT * FROM HistoricalContact WHERE UserID = ?";
+
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, userID);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                UserDAO userdao = new UserDAO();
+                Contact contact = new Contact(
+                        rs.getInt("ContactID"),
+                        userdao.getUserByID(rs.getInt("UserID")),
+                        rs.getString("Address"),
+                        rs.getString("FirstName"),
+                        rs.getString("LastName"),
+                        rs.getString("Gender"),
+                        rs.getString("PhoneNumber"),
+                        rs.getTimestamp("UpdatedDate")
+                );
+                contactList.add(contact);
+            }
+
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return contactList;
+    }
+
     public boolean addContact(Contact contact) {
         String sql = "INSERT INTO HistoricalContact (UserID, Address, FirstName, LastName, Gender, PhoneNumber) VALUES (?, ?, ?, ?, ?, ?)";
 

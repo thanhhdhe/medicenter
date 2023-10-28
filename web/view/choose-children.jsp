@@ -13,9 +13,13 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Choose children profile</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+              rel="stylesheet"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Include Bootstrap JavaScript and jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <style>
             body {
                 background-color: #e8f2f7;
@@ -158,14 +162,23 @@
                         <div class="row choose-user justify-content-center ">
                             <h1 class="text-center">Choose Your Children Profile</h1>
                         </div>
-                        <% String message = (String) session.getAttribute("message"); %>
-                        <% if (message != null) { %>
-                        <div class="alert alert-warning alert-dismissible show" role="alert">
-                            <strong> <%= message %></strong>
+                        <% 
+ String message = (String) request.getSession().getAttribute("message");
+ String alertClass = "alert-success";
+
+ if (message != null) { 
+     if (message.contains("error")) {
+         alertClass = "alert-danger";
+     }
+                        %>
+                        <div class="alert <%= alertClass %> alert-dismissible fade show" role="alert">
+                            <strong><%= message %></strong>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        <% session.removeAttribute("message"); 
-                        }%>
+                        <%
+                            request.getSession().removeAttribute("message");
+                        }
+                        %>
 
                         <c:forEach items="${requestScope.child}" var="c">
                             <div class="card mt-4 border-m shadow child-card">
@@ -246,7 +259,7 @@
                                             </div>
                                         </div>
                                         <div class="card-footer mt-3">
-                                            <div class="row mt-3">
+                                            <div class="row mt-3" style="flex-wrap: nowrap;">
                                                 <div class="col-md-9">
                                                     <div class="row">
                                                         <div class="col-md-4">
@@ -313,7 +326,7 @@
                                                     </div>
                                                     <!-- Date of Birth -->
                                                     <div class="row">
-                                                        <div class="form-group mx-3">
+                                                        <div class="form-group">
                                                             <label for="patientDOB">Date of birth:</label>
                                                             <div class="row">
                                                                 <div class="col-md-4">
@@ -414,7 +427,7 @@
             </div>
             <div class="row justify-content-center mb-5">
                 <div class="footer-nav mt-5 col-md-6">
-                    <div class="row">
+                    <div class="row" style="flex-wrap: nowrap;">
                         <div class="col-md-3">
                             <button type="button" class="btn btn-none btn-block border-m" onclick="goBack()">
                                 <span class="d-flex align-items-center">
@@ -465,7 +478,7 @@
                                                id="patientName" name="fullname" placeholder="Enter fullname of your child">
                                     </div>
                                     <div class="row">
-                                        <div class="form-group mx-3">
+                                        <div class="form-group">
                                             <label for="patientDOB">Date of birth:</label>
                                             <div class="row">
                                                 <div class="col-md-4">
@@ -561,8 +574,6 @@
         <jsp:include page="layout/footer.jsp" />
 
         <!-- Thêm script của Bootstrap JS và JavaScript tùy chỉnh -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>

@@ -6,6 +6,7 @@ package controller;
 
 import Database.ChildrenDAO;
 import Database.ContactDAO;
+import Database.MedicalExaminationDAO;
 import Database.RelationshipDAO;
 import Database.ReservationDAO;
 import Database.ServiceDAO;
@@ -30,6 +31,7 @@ import java.util.Random;
 import model.Children;
 import model.Contact;
 import model.Mail;
+import model.MedicalExamination;
 import model.Relationship;
 import model.Reservation;
 import model.Service;
@@ -158,6 +160,12 @@ public class UserController extends HttpServlet {
                     int userID = Integer.parseInt(userIDstr);
                     User userDetail = userdao.getUserByID(userID);
                     request.setAttribute("user", userDetail);
+                    ContactDAO contactDAO = new ContactDAO();
+                    List<Contact> contactList = contactDAO.getContacts(userID);
+                    request.setAttribute("contact", contactList);
+                    MedicalExaminationDAO mdDAO = new MedicalExaminationDAO();
+                    List<MedicalExamination> medicalExamination = mdDAO.getMedicalExaminationsByUserID(userID);
+                    request.setAttribute("medical", medicalExamination);
                     ChildrenDAO childrenDAO = new ChildrenDAO();
                     List<Children> childrenList = childrenDAO.getListChildrenByUserId(userIDstr);
                     request.setAttribute("children", childrenList);
@@ -267,10 +275,9 @@ public class UserController extends HttpServlet {
                     users.setAddress(address);
                     users.setPhoneNumber(phoneNumber);
                     userdao.updateProfile(users);
-                    return;
                 } 
 
-                String message = (statusUpdate) ? "Add children profile successfully" : "Add children profile failed";
+                String message = (statusUpdate) ? "Add children profile successfully" : "An error when add children profile";
                 session.setAttribute("message", message);
                 response.sendRedirect("user?action=my-children");
 //                request.getRequestDispatcher().forward(request, response);
