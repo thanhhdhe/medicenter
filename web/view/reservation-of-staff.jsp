@@ -278,7 +278,7 @@
                                             <td><%=reservation.getCost()%></td>
                                             <td><%if(reservation.getStatus().equals("done")){%>
                                                    <p class="bg-success rounded-2 text-white m-0 p-1 px-2" style="width: fit-content;"><%=reservation.getStatus()%></p>
-                                                <%}else if(reservation.getStatus().equals("done")){%>
+                                                <%}else if(reservation.getStatus().equals("cancel")){%>
                                                    <p class="bg-danger rounded-2 text-white m-0 p-1 px-2" style="width: fit-content;"><%=reservation.getStatus()%></p>
                                                 <%}else{%>
                                                    <p class="bg-primary rounded-2 text-white m-0 p-1 px-2" style="width: fit-content;"><%=reservation.getStatus()%></p>

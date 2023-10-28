@@ -86,11 +86,6 @@
                             <span><%=curStaff.getRole()%></span>
                         </div>
                     </div>
-                    <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
-                           ><i class="far fa-check-square"></i>Medical examination</a
-                        >
-                    </div>
                     <%if(isManager){%>
                     <div class="navbar-nav w-100  text-light">
                         <a href="staff?event=send-to-medical-examination-manage" class="nav-item nav-link"
@@ -119,7 +114,7 @@
                     </div>
                     <div class="navbar-nav w-100 text-light">
                         <a href="postManage" class="nav-item nav-link"
-                           ><i class="fas fa-stethoscope"></i>Post</a
+                           ><i class="bi bi-file-earmark-post"></i>Post</a
                         >
                     </div>
                     <%}%>

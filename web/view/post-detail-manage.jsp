@@ -120,7 +120,7 @@ boolean isManager = false;
                     </div>
                     <div class="navbar-nav w-100 text-light">
                         <a href="postManage" class="nav-item nav-link active"
-                           ><i class="fas fa-stethoscope"></i>Post</a
+                           ><i class="bi bi-file-earmark-post"></i>Post</a
                         >
                     </div>
                     <%}%>

@@ -303,6 +303,7 @@ public class StaffController extends HttpServlet {
                     + "        </div>\n"
                     + "    </td>\n"
                     + "    <td>" + serviceDAO.getServiceByID(reservation.getServiceID() + "").getTitle() + "</td>\n"
+                    + "    <td>" + reservation.getCost()+ "</td>\n"        
                     + "    <td>");
             if (reservation.getStatus().equals("done")) {
                 out.print("<p class=\"bg-success rounded-2 text-white m-0 p-1 px-2\" style=\"width: fit-content;\">" + reservation.getStatus() + "</p>");
@@ -313,7 +314,6 @@ public class StaffController extends HttpServlet {
             }
 
             out.print("</td>\n"
-                    + "    <td>" + reservation.getStatus() + "</td>\n"
                     + "    <td><a href=\"staff?event=send-to-reservation-detail&reserdid=" + reservation.getReservationID() + "\"><img src=\"resources/img/icon/detail.png\" alt=\"alt\" width=\"25px\"/></a></td>\n"
                     + "</tr>");
         }
