@@ -186,7 +186,7 @@
                         <div class="col-md-3">
                             <select class="form-select" id="filterSetting">
                                 <option selected value="">Filtered User List</option>
-                                <option value="type">type</option>
+                                <option value="type">Slider</option>
                                 
                             </select>
 
@@ -329,6 +329,6 @@
                                                                     xhr.send();
                                                                 }
         </script>
-        <<script src="./resources/js/setting-list-admin.js"></script>
+        <script src="./resources/js/setting-list-admin.js"></script>
     </body>
 </html>

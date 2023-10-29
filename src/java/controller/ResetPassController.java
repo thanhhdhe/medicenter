@@ -126,7 +126,7 @@ public class ResetPassController extends HttpServlet {
                         + "        <h1>Success</h1>\n"
                         + "        <p>Mail has been sent.</p>\n"
                         + " <button style=\" background-color: blue; border: 0px; border-radius: 5px;padding: 10px;\"> "
-                        + " <a style=\"color: white; padding: 10px;text-decoration: none;\" href=\"http://localhost:9999/ChildrenCare/\">HOME</a> </button>"
+                        + " <a style=\"color: white; padding: 10px;text-decoration: none;\" href=\"http://localhost:9999/ChildrenCare/home\">HOME</a> </button>"
                         + "    </div>\n"
                         + "</body>\n"
                         + "</html>");
@@ -196,7 +196,7 @@ public class ResetPassController extends HttpServlet {
             String phoneNumber = request.getParameter("phoneNumber");
             UserDAO dao = new UserDAO();
 
-            if (newpassword.equals(confirmpassword)) {
+            if (newpassword.equals(confirmpassword) && newpassword.length() >=6 && newpassword.length() <= 100) {
                 // Reset the password by ID and phone number
                 dao.resetPasswordByID(DigestUtils.md5Hex(newpassword), phoneNumber, id);
                 out.println("<!DOCTYPE html>\n"
@@ -239,7 +239,7 @@ public class ResetPassController extends HttpServlet {
                         + "        <h1>Success</h1>\n"
                         + "        <p>Password has been reset.</p>\n"
                         + " <button style=\" background-color: blue; border: 0px; border-radius: 5px;padding: 10px;\"> "
-                        + " <a style=\"color: white; padding: 10px;text-decoration: none;\" href=\"http://localhost:9999/ChildrenCare/\">HOME</a> </button>"
+                        + " <a style=\"color: white; padding: 10px;text-decoration: none;\" href=\"http://localhost:9999/ChildrenCare/home\">HOME</a> </button>"
                         + "    </div>\n"
                         + "</body>\n"
                         + "</html>");
@@ -248,7 +248,7 @@ public class ResetPassController extends HttpServlet {
                 request.setAttribute("phoneNumber", phoneNumber);
                 String notify ;
                 //validate password
-                if(newpassword.length() >=6 && newpassword.length() <= 100){
+                if(newpassword.length() <6 || newpassword.length() > 100){
                     notify = "You must enter password more than 6 and less than 100 character.";
                 } else {
                     notify = "Passwords do not match.";
