@@ -186,12 +186,7 @@
                     <div class="form-group">
                         <label for="feedback"></label>
                         <textarea id="feedback" name="content" rows="4" required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="attachment">Attachment</label>
-                        <input type="file" id="attachment" name="attachment">
-                    </div>
+                    </div>                 
 
                     <button type="submit" class="btn-submit mb-4">Submit Feedback</button>
                     <p>

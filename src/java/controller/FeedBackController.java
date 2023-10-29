@@ -117,7 +117,7 @@ public class FeedBackController extends HttpServlet {
                         System.out.println(email);
                         // Send an email with a feedback request
                         Mail.sendEmail(email, "THANK TO USE SERVICE", "Thank you for using our service");
-                        
+
                     }
                     dao.updateStatus(Fstatus, Integer.parseInt(UID));
 
@@ -653,71 +653,73 @@ public class FeedBackController extends HttpServlet {
                     System.out.println(user.getUserID());
                     FeedBackDAO dao = new FeedBackDAO();
                     String ratestar = request.getParameter("rate");
+                    System.out.println(ratestar);
                     if (ratestar == null) {
+                        System.out.println("asdas");
                         request.setAttribute("notify", "You have to choose the number of stars");
                         request.getRequestDispatcher("/feedback?action=accessfeedback").forward(request, response);
-                    }
-
-                    String content = request.getParameter("content");
-                    String medicalID = request.getParameter("medical");
-
-                    int medicalId = Integer.parseInt(medicalID);
-                    if (content.length() >= 6 && content.length() <= 2000) {
-                        int rate = Integer.parseInt(ratestar);
-                        // Insert the feedback into the database
-                        dao.InsertFeedBack(user.getUserID(), medicalId, content, rate);
-                        out.println("<!DOCTYPE html>\n"
-                                + "<html>\n"
-                                + "<head>\n"
-                                + "    <meta charset=\"UTF-8\">\n"
-                                + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
-                                + "    <style>\n"
-                                + "        body {\n"
-                                + "            background-color: #f2f2f2;\n"
-                                + "            font-family: Arial, sans-serif;\n"
-                                + "            display: flex;\n"
-                                + "            justify-content: center;\n"
-                                + "            align-items: center;\n"
-                                + "            height: 100vh;\n"
-                                + "            margin: 0;\n"
-                                + "        }\n"
-                                + "        \n"
-                                + "        .container {\n"
-                                + "            text-align: center;\n"
-                                + "            background-color: #ffffff;\n"
-                                + "            border-radius: 10px;\n"
-                                + "            padding: 20px;\n"
-                                + "            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n"
-                                + "        }\n"
-                                + "        \n"
-                                + "        h1 {\n"
-                                + "            font-size: 36px;\n"
-                                + "            color: #333;\n"
-                                + "        }\n"
-                                + "        \n"
-                                + "        p {\n"
-                                + "            font-size: 18px;\n"
-                                + "            color: #666;\n"
-                                + "        }\n"
-                                + "    </style>\n"
-                                + "</head>\n"
-                                + "<body>\n"
-                                + "    <div class=\"container\">\n"
-                                + "        <h1>Thank you</h1>\n"
-                                + "        <p>FeedBack have been sent.</p>\n"
-                                + " <button style=\" background-color: blue; border: 0px; border-radius: 5px;padding: 10px;\"> "
-                                + " <a style=\"color: white; padding: 10px;text-decoration: none;\" href=\"http://localhost:9999/ChildrenCare/\">HOME</a> </button>"
-                                + "    </div>\n"
-                                + "</body>\n"
-                                + "</html>");
                     } else {
-                        // notification
-                        String notify = "";
-                        if (content.length() <= 6 || content.length() >= 2000) {
-                            notify = "You must enter content with a length greater than 6 characters and less than 2000 characters";
+                        String content = request.getParameter("content");
+                        String medicalID = request.getParameter("medical");
+
+                        int medicalId = Integer.parseInt(medicalID);
+                        if (content.length() >= 6 && content.length() <= 2000) {
+                            int rate = Integer.parseInt(ratestar);
+                            // Insert the feedback into the database
+                            dao.InsertFeedBack(user.getUserID(), medicalId, content, rate);
+                            out.println("<!DOCTYPE html>\n"
+                                    + "<html>\n"
+                                    + "<head>\n"
+                                    + "    <meta charset=\"UTF-8\">\n"
+                                    + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+                                    + "    <style>\n"
+                                    + "        body {\n"
+                                    + "            background-color: #f2f2f2;\n"
+                                    + "            font-family: Arial, sans-serif;\n"
+                                    + "            display: flex;\n"
+                                    + "            justify-content: center;\n"
+                                    + "            align-items: center;\n"
+                                    + "            height: 100vh;\n"
+                                    + "            margin: 0;\n"
+                                    + "        }\n"
+                                    + "        \n"
+                                    + "        .container {\n"
+                                    + "            text-align: center;\n"
+                                    + "            background-color: #ffffff;\n"
+                                    + "            border-radius: 10px;\n"
+                                    + "            padding: 20px;\n"
+                                    + "            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n"
+                                    + "        }\n"
+                                    + "        \n"
+                                    + "        h1 {\n"
+                                    + "            font-size: 36px;\n"
+                                    + "            color: #333;\n"
+                                    + "        }\n"
+                                    + "        \n"
+                                    + "        p {\n"
+                                    + "            font-size: 18px;\n"
+                                    + "            color: #666;\n"
+                                    + "        }\n"
+                                    + "    </style>\n"
+                                    + "</head>\n"
+                                    + "<body>\n"
+                                    + "    <div class=\"container\">\n"
+                                    + "        <h1>Thank you</h1>\n"
+                                    + "        <p>FeedBack have been sent.</p>\n"
+                                    + " <button style=\" background-color: blue; border: 0px; border-radius: 5px;padding: 10px;\"> "
+                                    + " <a style=\"color: white; padding: 10px;text-decoration: none;\" href=\"http://localhost:9999/ChildrenCare/\">HOME</a> </button>"
+                                    + "    </div>\n"
+                                    + "</body>\n"
+                                    + "</html>");
+                        } else {
+                            // notification
+                            String notify = "";
+                            if (content.length() <= 6 || content.length() >= 2000) {
+                                notify = "You must enter content with a length greater than 6 characters and less than 2000 characters";
+                            }
+                            request.setAttribute("notify", notify);
+                            request.getRequestDispatcher("/feedback?action=accessfeedback").forward(request, response);
                         }
-                        request.setAttribute("notify", notify);
-                        request.getRequestDispatcher("/feedback?action=accessfeedback").forward(request, response);
                     }
 
                 } else {
