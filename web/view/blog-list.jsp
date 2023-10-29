@@ -31,6 +31,7 @@
             <div class="col-md-9" id="blog-list">
                 <div class="container py-5">
                     <div class="row g-5">
+                        <<h1>${notFound}</h1>
                         <c:forEach var="l" items="${list}">
                             <div class="col-xl-4 col-lg-6">
                                 <div class="bg-light rounded overflow-hidden">

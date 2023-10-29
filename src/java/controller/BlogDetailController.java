@@ -60,18 +60,27 @@ public class BlogDetailController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try ( PrintWriter out = response.getWriter()) {
-            int ID = Integer.parseInt(request.getParameter("ID"));
-            PostDAO postDAO = new PostDAO();
-            Post post = postDAO.getPostByID(ID);
-            request.setAttribute("title", post.getTitle());
-            request.setAttribute("author", postDAO.getNameByUserID(post.getAuthorID()));
-            request.setAttribute("avatar", postDAO.getAvatarByUserID(post.getAuthorID()));
-            request.setAttribute("thumbnail", post.getThumbnail());
-            request.setAttribute("update-date", post.getCreatedDate());
-            request.setAttribute("categoryP", post.getCategoryPost());
-            request.setAttribute("postdetail", post.getContent());
-            request.getRequestDispatcher("./view/blog-detail.jsp").forward(request, response);
-            out.print(post.getContent());
+            try {
+                int ID = Integer.parseInt(request.getParameter("ID"));
+                PostDAO postDAO = new PostDAO();
+                Post post = postDAO.getPostByID(ID);
+                if (post == null) {
+                    throw new Exception();
+                } else {
+                    request.setAttribute("title", post.getTitle());
+                    request.setAttribute("author", postDAO.getNameByUserID(post.getAuthorID()));
+                    request.setAttribute("avatar", postDAO.getAvatarByUserID(post.getAuthorID()));
+                    request.setAttribute("thumbnail", post.getThumbnail());
+                    request.setAttribute("update-date", post.getCreatedDate());
+                    request.setAttribute("categoryOfPost", post.getCategoryPost());
+                    request.setAttribute("postdetail", post.getContent());
+                    request.getRequestDispatcher("./view/blog-detail.jsp").forward(request, response);
+                }
+            } catch (Exception e) {
+                request.setAttribute("notFound", "Post not found");
+                request.setAttribute("thumbnail", "resources/img/not_found.jpg");
+                request.getRequestDispatcher("./view/blog-detail.jsp").forward(request, response);
+            }
         }
     }
 
