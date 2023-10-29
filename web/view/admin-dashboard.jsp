@@ -375,7 +375,7 @@
                         for (const category in revenueCategory) {
                             const element = document.getElementById('revenue_' + category);
                             if (element) {
-                                element.textContent = category + " : $" + revenueCategory[category];
+                                element.textContent = category + " : $" + revenueCategory[category] + " ";
                             }
                         }
 
