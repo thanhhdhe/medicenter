@@ -46,6 +46,7 @@
             </div>
             <!--search bar end-->
             <!--startdoctor líst-->
+            <h1>${notFound}</h1>
             <div class="list-doctor">
                 <%List<Staff> staffList = (List<Staff>) request.getAttribute("staffList");
                 for (Staff staff : staffList) {  %>

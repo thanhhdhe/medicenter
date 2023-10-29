@@ -92,7 +92,7 @@ public class BlogController extends HttpServlet {
             categoryList.remove(postCategory);
             categoryList.add(0, postCategory);
         }
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             request.setAttribute("notFound", "There are no matching posts");
             request.getRequestDispatcher("./view/blog-list.jsp").forward(request, response);
         } else {

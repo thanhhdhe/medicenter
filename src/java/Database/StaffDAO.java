@@ -159,7 +159,7 @@ public class StaffDAO extends MyDAO {
                 String depthStudy = rs.getString("DepthStudy");
                 String professionalAchievements = rs.getString("ProfessionalAchievements");
                 String specializedActivities = rs.getString("SpecializedActivities");
-                
+
                 staff = new Staff(staffID, staffName, password, email, fullName, gender, phoneNumber, profileImage, role, rank, specialty, introduction);
             }
             rs.close();
@@ -169,7 +169,8 @@ public class StaffDAO extends MyDAO {
         }
         return staff;
     }
-        public Staff getDocByStaffId(int staffID) {
+
+    public Staff getDocByStaffId(int staffID) {
         Staff staff = null;
         xSql = "SELECT *  FROM [dbo].[Staff] where StaffID = ?";
         try {
@@ -191,7 +192,7 @@ public class StaffDAO extends MyDAO {
                 String depthStudy = rs.getString("DepthStudy");
                 String professionalAchievements = rs.getString("ProfessionalAchievements");
                 String specializedActivities = rs.getString("SpecializedActivities");
-                
+
                 staff = new Staff(staffID, fullName, gender, phoneNumber, profileImage, rank, specialty, introduction, specializedActivities, professionalAchievements, depthStudy);
             }
             rs.close();
@@ -289,7 +290,7 @@ public class StaffDAO extends MyDAO {
         return staffList;
     }
 
-    public int getNumOfPageStaffList(String keyword, String ServiceID) {
+    public int getNumOfStaffList(String keyword, String ServiceID) {
         xSql = " select COUNT(distinct s.StaffID) from staff as s join ServiceStaff as ss on s.StaffID= ss.StaffID"
                 + " where s.StaffRole='doctor' and s.FullName like ? ";
         int numOfPage = 0;
@@ -311,12 +312,6 @@ public class StaffDAO extends MyDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (numOfPage % 5 != 0) {
-            numOfPage = numOfPage / 5 + 1;
-        } else {
-            numOfPage = numOfPage / 5;
-        }
-
         return numOfPage;
     }
 
@@ -391,7 +386,6 @@ public class StaffDAO extends MyDAO {
 //        staff.setRole("doctor");
 //        staffDAO.updateStaff(staff);
 //        System.out.println(staff.getRole());
-
         ServiceDAO serviceDAO = new ServiceDAO();
         System.out.println(serviceDAO.getActiveServiceCount());
 //        Staff staff = staffDAO.getStaffByStaffId(3);

@@ -88,24 +88,27 @@ public class StaffListController extends HttpServlet {
         } catch (Exception e) {
             serviceID = "";
         }
-        out.print(serviceID);
-
         int page;
         try {
             page = Integer.parseInt(request.getParameter("page"));
         } catch (Exception e) {
             page = 1;
         }
-        
-        int numOfPage= staffDao.getNumOfPageStaffList(staffName, serviceID);
+
+        int numOfPage = staffDao.getNumOfStaffList(staffName, serviceID);
+        numOfPage = (numOfPage + 4) / 5;
 
         List<Staff> staffList = staffDao.getStaffListPage((page - 1) * 5, 5, staffName, serviceID);
 
+        if (staffList.isEmpty()) {
+            request.setAttribute("notFound", "There no match Doctor");
+        }
         request.setAttribute("staffName", staffName);
         request.setAttribute("serviceList", serviceList);
         request.setAttribute("staffList", staffList);
         request.setAttribute("numOfPage", numOfPage);
         request.getRequestDispatcher("./view/staff-list.jsp").forward(request, response);
+
     }
 
     /**
