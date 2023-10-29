@@ -185,7 +185,7 @@
                         </div>
                         <div class="col-md-3">
                             <select class="form-select" id="filterSetting">
-                                <option selected value="">Filtered User List</option>
+                                <option selected value="">Filtered</option>
                                 <option value="type">Slider</option>
                                 
                             </select>
