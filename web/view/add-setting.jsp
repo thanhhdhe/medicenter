@@ -204,19 +204,19 @@
                                 <div class="d-flex">
                                     <div class="form-group pe-4">
                                         <label class="detail-info"> Type</label>
-                                        <input type="text" class="form-control"  name="type" value="">
+                                        <input type="text" class="form-control"  name="type" value="" required>
                                         
                                     </div>
                                     <div class="form-group px-4 w-50">
                                         <label  class="detail-info"> Name</label>
-                                        <input type="text" class="form-control w-100" name="name" value="">
+                                        <input type="text" class="form-control w-100" name="name" value="" required>
                                         
                                     </div>
                                 </div>
 
                                 <div class="form-group mt-3 h-50 mb-2">
                                     <label class="detail-info">Description</label>
-                                    <input type="text" class="form-control w-75 h-100" id="description" name="description" value="">
+                                    <input type="text" class="form-control w-75 h-100" id="description" name="description" value="" required>
                                     
                                 </div>
                                 <div class="d-flex">

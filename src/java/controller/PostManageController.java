@@ -78,7 +78,6 @@ public class PostManageController extends HttpServlet {
         }
         if (!isManager) {
             request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
-
         } else {
             String event = request.getParameter("event");
             if (event == null || event.isEmpty()) {
@@ -116,17 +115,6 @@ public class PostManageController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-    }
-
-    protected int numOfPage(String postTitle, String postCategory, String AuthorID, String postStatus) {
-        PostDAO postDAO = new PostDAO();
-        int numOfPage = postDAO.getCountOfPostsManagerChoose(postTitle, postCategory, AuthorID, postStatus) / 6;
-
-        if (postDAO.getCountOfPostsManagerChoose(postTitle, postCategory, AuthorID, postStatus)
-                % 6 != 0) {
-            numOfPage += 1;
-        }
-        return numOfPage;
     }
 
     protected void hidePost(HttpServletRequest request, HttpServletResponse response)
@@ -249,7 +237,7 @@ public class PostManageController extends HttpServlet {
         sortList.add(0, sortBy);
 
         //get number of page
-        int numOfPage = numOfPage(postTitle, postCategory, postAuthorID, postStatus);
+        int numOfPage = (postDao.getCountOfPostsManagerChoose(postTitle, postCategory, postAuthorID, postStatus) + 5) / 6;
         //get list post  
         List<Post> list = postDao.getSortedPagedPostsByManagerChoice((page - 1) * 6, 6, postTitle, postCategory, postAuthorID, postStatus, sortBy);
 

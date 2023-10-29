@@ -95,3 +95,8 @@ button.more {
     width: 100%;
     background-position: 98% 3px;
 }
+img {
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+}

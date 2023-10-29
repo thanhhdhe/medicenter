@@ -29,23 +29,25 @@
             <div class="row g-5" >
                 <div class="col-lg-8">
                     <!-- Blog Detail Start -->
-                    <div class="mb-5">
-                        <img class="img-fluid w-100 rounded mb-5" src="${thumbnail}" alt="thumbnail">
-                        <h1 class="mb-4">${title}</h1>
-                        <p>
-                            ${postdetail}
-                        </p>
-                        <div class="d-flex justify-content-between bg-light rounded p-4 mt-4 mb-4">
-                            <div class="d-flex align-items-center">
-                                <img class="rounded-circle me-2 avatar" src="${avatar}" alt="">
-                                <span>${author}</span>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <!--                            <span class="ms-3"><i class="far fa-eye text-primary me-1"></i>12345</span>
-                                                            <span class="ms-3"><i class="far fa-comment text-primary me-1"></i>123</span>-->
+                    <h1>${notFound}</h1>
+                        <div class="mb-5">
+                            <img class="img-fluid w-100 rounded mb-5" src="${thumbnail}" alt="thumbnail">
+                            <h1 class="mb-4">${title}</h1>
+                            <h2>${categoryOfPost}</h2>
+                            <p>
+                                ${postdetail}
+                            </p>
+                            <div class="d-flex justify-content-between bg-light rounded p-4 mt-4 mb-4">
+                                <div class="d-flex align-items-center">
+                                    <img class="rounded-circle me-2 avatar" src="${avatar}" alt="">
+                                    <span>${author}</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <!--                            <span class="ms-3"><i class="far fa-eye text-primary me-1"></i>12345</span>
+                                                                <span class="ms-3"><i class="far fa-comment text-primary me-1"></i>123</span>-->
+                                </div>
                             </div>
                         </div>
-                    </div>
                 </div>
                 <!-- Sidebar Start -->
                 <div class="col-lg-4">
@@ -62,7 +64,7 @@
                                 <%}%>
                             </select>
                         </form>
-                            <br>
+                        <br>
                         <a href="service?event=to-contact-link" class="mt-3 ms-2">Contact Us</a>
                     </div>
                     <!-- Category End -->

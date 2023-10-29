@@ -85,21 +85,24 @@ public class BlogController extends HttpServlet {
         }
         PostDAO postDao = new PostDAO();
         List<String> categoryList = postDao.allCategoryPost();
-        int numOfPage = numOfPage(postTitle, postCategory);
+        int numOfPage = (postDao.getCountOfPostsUserChoose(postTitle, postCategory) + 5) / 6;
         List<Post> list = postDao.getSortedPagedPostsByUserChoice((page - 1) * 6, 6, postTitle, postCategory);
-
         categoryList.add(0, "Post Category");
         if (!postCategory.isEmpty()) {
             categoryList.remove(postCategory);
             categoryList.add(0, postCategory);
         }
-        
-        request.setAttribute("postTitle", postTitle);
-        request.setAttribute("postCategory", postCategory);
-        request.setAttribute("categoryList", categoryList);
-        request.setAttribute("numOfPage", numOfPage);
-        request.setAttribute("list", list);
-        request.getRequestDispatcher("./view/blog-list.jsp").forward(request, response);
+        if (list.isEmpty()) {
+            request.setAttribute("notFound", "There are no matching posts");
+            request.getRequestDispatcher("./view/blog-list.jsp").forward(request, response);
+        } else {
+            request.setAttribute("postTitle", postTitle);
+            request.setAttribute("postCategory", postCategory);
+            request.setAttribute("categoryList", categoryList);
+            request.setAttribute("numOfPage", numOfPage);
+            request.setAttribute("list", list);
+            request.getRequestDispatcher("./view/blog-list.jsp").forward(request, response);
+        }
     }
 
     /**
@@ -114,25 +117,6 @@ public class BlogController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-    }
-
-//    protected List<Post> getList(HttpServletRequest request, HttpServletResponse response,
-//            String postTitle, String postCategory, int page)
-//            throws ServletException, IOException {
-//        PostDAO postDAO = new PostDAO();
-//        if (postCategory == null || postCategory.isEmpty()) {
-//            return postDAO.getSortedPagedPostsByUserChoice((page - 1) * 6, 6, postTitle, postCategory, "manager");
-//        } else {
-//            return postDAO.getSortedPagedPostsByUserChoice((page - 1) * 6, 6, postTitle, postCategory);
-//        }
-//    }
-    protected int numOfPage(String postTitle, String postCategory) {
-        PostDAO postDAO = new PostDAO();
-        int numOfPage = postDAO.getCountOfPostsUserChoose(postTitle, postCategory) / 6;
-        if (postDAO.getCountOfPostsUserChoose(postTitle, postCategory) % 6 != 0) {
-            numOfPage += 1;
-        }
-        return numOfPage;
     }
 
     /**
