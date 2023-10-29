@@ -81,8 +81,10 @@
             const realMonth = currentDate.getMonth(); // +1 to get the real month
             let currentMonth = currentDate.getMonth();
             let currentYear = currentDate.getFullYear();
-            let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-            let firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
+            // JS Automatically subtract 1 day, setting the date to the last day of the previous month
+            let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); 
+            // Get the first day of the month
+            let firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
             let workSlots = null;
             let bookedSlots = null;
             let selfBooked = null;
@@ -178,9 +180,9 @@
                 let not_work = "not_work";
                 let work = "work";
                 let full = "full";
-                // FirstDayOfWeek = 4 because current month is September 
+                
                 for (let i = 0; i < 42; i++) { // 6 rows of 7 days
-                    if (i < firstDayOfWeek || dayCount > daysInMonth) {
+                    if (i < firstDayOfMonth || dayCount > daysInMonth) {
                         html += '<td><p class=empty></td>';
                     } else {
                         if (staffID !== null) {
@@ -442,7 +444,7 @@
 
 
                 daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-                firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
+                firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
 
                 // Check the condition to enable previous or next button
                 if (month === (currentDate.getMonth() + 1)) {

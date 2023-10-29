@@ -34,14 +34,8 @@
     </style>
 
     <body>       
-        <div id="alert-container" style=" position:fixed;
-             top: 0px;
-             right: 0px;
-             width: 20%;
-             z-index:9999;
-             border-radius:0px"></div>
         <!-- Modal -->
-        <form action="user?action=updateprofile&&userId=<%=curUser.getUserID()%>" method="post" enctype="multipart/form-data">
+        <form action="user?action=updateprofile&userId=<%=curUser.getUserID()%>" method="post" enctype="multipart/form-data">
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
@@ -51,6 +45,23 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
+                            <% 
+String message = (String) request.getSession().getAttribute("message");
+String alertClass = "alert-success";
+
+if (message != null) { 
+   if (message.contains("error")) {
+       alertClass = "alert-danger";
+   }
+                            %>
+                            <div class="alert <%= alertClass %> alert-dismissible fade show" role="alert">
+                                <strong><%= message %></strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                            <%
+                                request.getSession().removeAttribute("message");
+                            }
+                            %>
                             <div class="p-4">
 
 

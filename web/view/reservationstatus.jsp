@@ -4,7 +4,20 @@
     Author     : Admin
 --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page import="java.net.URLEncoder"%>
+<%@page import="java.nio.charset.StandardCharsets"%>
+<%@page import="com.vnpay.common.Config"%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+<%@page import="java.util.Iterator"%>
+<%@page import="java.util.Collections"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.Enumeration"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
+
 <%@ page import="model.Reservation" %>
 <%@ page import="Database.ReservationDAO" %>
 <!DOCTYPE html>
@@ -82,23 +95,34 @@
     </head>
 
     <body>
-        <%  String resCode = request.getParameter("vnp_ResponseCode");
+        <jsp:include page="layout/Header.jsp"/>
 
-            if ("00".equals(resCode)) {
-                Reservation reservation = (Reservation) request.getAttribute("reservation");
-                ReservationDAO reservationDAO = new ReservationDAO();
-                reservation.setStatus("Waitting for examination");
-                reservationDAO.update(reservation);
-            }
-        %>
-        <%--<jsp:include page="layout/Header.jsp"/>--%>
+
         <div class="container">
             <div class="row justify-content-center mt-5">
                 <div class="col-md-4 mb-5">
                     <div class="card border-m mb-5">
+                        <% 
+               String message = (String) request.getSession().getAttribute("message");
+               String alertClass = "alert-success";
+
+               if (message != null) { 
+                   if (message.contains("error")) {
+                       alertClass = "alert-danger";
+                   }
+                        %>
+                        <div class="alert <%= alertClass %> alert-dismissible fade show" role="alert">
+                            <strong><%= message %></strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        <%
+                            request.getSession().removeAttribute("message");
+                        }
+                        %>
                         <div class="card-header bg-primary text-white text-center bold">
                             Medical examination information
                         </div>
+
                         <div class="card-body">
                             <table class="table custom-table">
                                 <tbody>
@@ -212,127 +236,122 @@
                             </div>     
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
 
 
 
-    </div>
-
-
-</div>
-</div>
-
-<jsp:include page="layout/footer.jsp"/>
-<!--<script src="https://pay.vnpay.vn/lib/vnpay/vnpay.min.js"></script>-->
-<script>
-    var reservationStatus = "${reservation.status}";
-    var cancelButton = document.getElementById("cancelButton");
-
-    if (reservationStatus === "cancel") {
-        // Nếu reservation.status là "cancel," tắt nút (disable)
-        cancelButton.disabled = true;
-    }
-    // Lấy giá trị của reservation.status
-    var reservationStatus = "${reservation.status}";
-    console.log("log " + reservationStatus);
-    // Lấy phần tử có id "fail-lg" và "success-lg"
-    var failElement = document.getElementById("fail-lg");
-    var successElement = document.getElementById("success-lg");
-    var pendingElement = document.getElementById("pending-lg");
-
-    // Kiểm tra giá trị của reservation.status và hiển thị tùy thuộc vào kết quả
-    if (reservationStatus === "cancel") {
-        failElement.style.display = "flex";
-        successElement.style.display = "none";
-        pendingElement.style.display = "none";
-    } else if (reservationStatus === "Waitting for examination") {
-        failElement.style.display = "none";
-        successElement.style.display = "flex";
-        pendingElement.style.display = "none";
-    } else {
-        failElement.style.display = "none";
-        successElement.style.display = "none";
-        pendingElement.style.display = "flex";
-    }
-</script>
-<script>
-    function cancelInvoice() {
-        // Retrieve reservationID from the HTML element with id "reservationID"
-        const reservationID = document.getElementById("reservationID").textContent;
-        console.log("Data being sent:", reservationID); // Log the data you're sending
-        $.ajax({
-            type: "POST",
-            url: "./myreservation?action=cancel",
-            data: {invoiceId: reservationID},
-            dataType: 'json',
-            success: function (response) {
-                if (response.success) {
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You won't be able to revert this!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, cancel it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            Swal.fire(
-                                    'Canceled!',
-                                    'Your file has been canceled.',
-                                    'success'
-                                    )
-                            if (failElement) {
-                                failElement.style.display = "flex";
-                                successElement.style.display = "none";
-                                pendingElement.style.display = "none";
-                                cancelButton.disabled = true;
-                            }
-                        }
-                    })
 
 
 
-                } else {
-                    alert("Failed to cancel invoice. Error: " + response.error);
-                }
-            },
-            error: function (xhr, status, error) {
-                // Handle errors if any
-                alert("An error occurred: " + error);
+        <jsp:include page="layout/footer.jsp"/>
+        <!--<script src="https://pay.vnpay.vn/lib/vnpay/vnpay.min.js"></script>-->
+        <script>
+            var reservationStatus = "${reservation.status}";
+            var cancelButton = document.getElementById("cancelButton");
+
+            if (reservationStatus === "cancel") {
+                // Nếu reservation.status là "cancel," tắt nút (disable)
+                cancelButton.disabled = true;
             }
-        });
-    }
+            // Lấy giá trị của reservation.status
+            var reservationStatus = "${reservation.status}";
+            console.log("log " + reservationStatus);
+            // Lấy phần tử có id "fail-lg" và "success-lg"
+            var failElement = document.getElementById("fail-lg");
+            var successElement = document.getElementById("success-lg");
+            var pendingElement = document.getElementById("pending-lg");
 
-    function getReservationTime(id) {
-        switch (id) {
-            case 1:
-                return "7:00 - 8:00";
-            case 2:
-                return "8:00 - 9:00";
-            case 3:
-                return "9:00 - 10:00";
-            case 4:
-                return "10:00 - 11:00";
-            case 5:
-                return "14:00 - 15:00";
-            case 6:
-                return "15:00 - 16:00";
-            default:
-                return "Unknown";
-        }
-    }
-    function goBack() {
-        window.history.back();
-    }
-</script>
-<!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>-->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+            // Kiểm tra giá trị của reservation.status và hiển thị tùy thuộc vào kết quả
+            if (reservationStatus === "cancel") {
+                failElement.style.display = "flex";
+                successElement.style.display = "none";
+                pendingElement.style.display = "none";
+            } else if (reservationStatus === "Waiting for examination") {
+                failElement.style.display = "none";
+                successElement.style.display = "flex";
+                pendingElement.style.display = "none";
+            } else {
+                failElement.style.display = "none";
+                successElement.style.display = "none";
+                pendingElement.style.display = "flex";
+            }
+        </script>
+        <script>
+            function cancelInvoice() {
+                // Retrieve reservationID from the HTML element with id "reservationID"
+                const reservationID = document.getElementById("reservationID").textContent;
+                console.log("Data being sent:", reservationID); // Log the data you're sending
+                $.ajax({
+                    type: "POST",
+                    url: "./myreservation?action=cancel",
+                    data: {invoiceId: reservationID},
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Are you sure?',
+                                text: "You won't be able to revert this!",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Yes, cancel it!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    Swal.fire(
+                                            'Canceled!',
+                                            'Your file has been canceled.',
+                                            'success'
+                                            )
+                                    if (failElement) {
+                                        failElement.style.display = "flex";
+                                        successElement.style.display = "none";
+                                        pendingElement.style.display = "none";
+                                        cancelButton.disabled = true;
+                                    }
+                                }
+                            })
+
+
+
+                        } else {
+                            alert("Failed to cancel invoice. Error: " + response.error);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle errors if any
+                        alert("An error occurred: " + error);
+                    }
+                });
+            }
+
+            function getReservationTime(id) {
+                switch (id) {
+                    case 1:
+                        return "7:00 - 8:00";
+                    case 2:
+                        return "8:00 - 9:00";
+                    case 3:
+                        return "9:00 - 10:00";
+                    case 4:
+                        return "10:00 - 11:00";
+                    case 5:
+                        return "14:00 - 15:00";
+                    case 6:
+                        return "15:00 - 16:00";
+                    default:
+                        return "Unknown";
+                }
+            }
+            function goBack() {
+                window.history.back();
+            }
+        </script>
+        <!--<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>-->
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </body>
 
 </html>

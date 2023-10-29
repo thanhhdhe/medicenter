@@ -94,12 +94,17 @@
 
     <body>
         <%
-       String email = (String) session.getAttribute("email");
-       StaffDAO staffDAO = new StaffDAO();
-       Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+String email = (String) session.getAttribute("email");
+StaffDAO staffDAO = new StaffDAO();
+Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+UserDAO userDAO = new UserDAO();
+boolean isManager = false;
+boolean isStaff = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
-            <%if(curStaff!=null){%>
+            <%if(curStaff!=null){
+            if(curStaff.getRole().equals("manager")) isManager=true;
+            if(curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) isStaff=true;%>
             <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">
                 <nav class="navbar navbar-light">
@@ -125,18 +130,36 @@
                             <span><%=curStaff.getRole()%></span>
                         </div>
                     </div>
+                    <%if(isStaff){%>    
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations List</a
+                        >
+                    </div>  
                     <div class="navbar-nav w-100  text-light">
                         <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
+                    <%}%>
+                    <%if(isManager){%>
                     <div class="navbar-nav w-100 text-light">
                         <a href="user?action=all" class="nav-item nav-link active"
                            ><i class="bi bi-people-fill"></i>User</a
                         >
                     </div>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-medical-examination-manage" class="nav-item nav-link"
+                           ><i class="far fa-check-square"></i>Medical examination</a
+                        >
+                    </div>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="reservationcontactmanager?event=reservation-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations Manager</a
+                        >
+                    </div>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="staff?event=send-to-feedback" class="nav-item nav-link"
+                        <a href="feedback" class="nav-item nav-link"
                            ><i class="far fa-file-alt"></i>Feedback</a
                         >
                     </div>
@@ -145,6 +168,12 @@
                            ><i class="fas fa-stethoscope"></i>Services</a
                         >
                     </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="user?action=all" class="nav-item nav-link"
+                           ><i class="bi bi-image-fill"></i>Slider</a
+                        >
+                    </div>
+                    <%}%>
                 </nav>
             </div>
             <!-- Sidebar End -->
@@ -222,7 +251,6 @@
                     </div>
                 </nav>
                 <!-- Navbar End -->
-
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
                     <h1 class="mb-5">Contact Information</h1>
@@ -285,14 +313,46 @@
                                             <th>Relationship</th>
                                         </tr>
                                         <c:forEach items="${children}" var="c">
-                                            <tr>
+                                            <tr data-toggle="collapse" data-target="#row${c.childID}">
                                                 <td>${c.childID}</td>
                                                 <td>${c.childName}</td>
                                                 <td>${c.birthday}</td>
                                                 <td>${c.gender}</td>
                                                 <td>${c.relationship.relationshipName}</td>
                                             </tr>
+
+                                            <tr>
+                                                <td colspan="5" class="hiddenRow">
+                                                    <div class="accordian-body collapse" id="row${c.childID}" class="accordion-toggle">
+                                                        <!-- New table to display additional information -->
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>ID</th>
+                                                                    <th>Examination Date</th>
+                                                                    <th>Disease</th>
+                                                                    <th>Prescription</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <c:forEach items="${medical}" var="md">
+                                                                    <c:if test="${md.mchildrenID eq c.childID}">
+                                                                        <tr>
+                                                                            <td>${md.medicalExaminationID}</td>
+                                                                            <td>${md.examinationDate}</td>
+                                                                            <td>${md.disease}</td>
+                                                                            <td>${md.medicalPrescription}</td>
+                                                                        </tr>
+                                                                    </c:if>
+                                                                </c:forEach>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
                                         </c:forEach>
+
                                     </table>
                                 </div>
                             </div>
@@ -313,14 +373,26 @@
                                     <th>Address</th>
                                     <th>Updated Date</th>
                                 </tr>
-                                <tr>
-                                    <td>Thang@gmail.com</td>
-                                    <td>Lê Minh Thang</td>
-                                    <td>Male</td>
-                                    <td>0978190212</td>
-                                    <td>Thanh Hoa</td>
-                                    <td>22/11/2000</td>
-                                </tr>
+                                <c:choose>
+                                    <c:when test="${empty requestScope.contact}">
+                                        <tr>
+                                            <td colspan="6" class="text-center">No contact records available.</td>
+                                        </tr>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <c:forEach items="${requestScope.contact}" var="contact"> 
+                                            <tr>
+                                                <td>${contact.user.email}</td>
+                                                <td>${contact.firstName} ${contact.lastName}</td>
+                                                <td>${contact.gender}</td>
+                                                <td>${contact.phoneNumber}</td>
+                                                <td>${contact.address}</td>
+                                                <td>${contact.updatedDate}</td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:otherwise>
+                                </c:choose>
+
                             </table>
                         </div>
                     </div>
@@ -337,19 +409,9 @@
 
         </div>
 
-        <!-- JavaScript Libraries -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-            crossorigin="anonymous"
-        ></script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-            crossorigin="anonymous"
-        ></script>
-
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <!-- Template Javascript -->
         <script>
             document.querySelector('.sidebar-toggler').addEventListener('click', function () {

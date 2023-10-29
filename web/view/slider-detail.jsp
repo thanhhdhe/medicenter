@@ -1,66 +1,60 @@
-<%-- 
-    Document   : HomePage
-    Created on : 12-Sep-2023, 20:29:49
-    Author     : Admin
---%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@page import = "model.*" %>
 <%@page import = "Database.*" %>
 <%@page import = "java.util.*" %>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="utf-8" />
-        <title>Staff dashboard</title>
-        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-        <meta content="" name="keywords" />
-        <meta content="" name="description" />
-
-        <!-- Favicon -->
-        <link href="img/favicon.ico" rel="icon" />
-
-        <!-- Google Web Fonts -->
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap"
-            rel="stylesheet"
-            />
-
-        <!-- Icon Font Stylesheet -->
-        <link
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
-            rel="stylesheet"
-            />
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
-            rel="stylesheet"
-            />
-
-        <!-- Libraries Stylesheet -->
-        <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-            crossorigin="anonymous"
-            />
-
-        <!-- Customized Bootstrap Stylesheet -->
-        <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Slider Details</title>
+        <!-- Include Bootstrap CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+              rel="stylesheet"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Include Bootstrap JavaScript and jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <link rel="stylesheet" href="./resources/css/staff-dashboard.css">
-    </head>
+        <style>
 
+            .carousel-caption {
+
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, .5);
+                z-index: 1;
+            }
+            .carousel-caption h5 {
+                font-size: 45px;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                margin: 200px 15px 0;
+            }
+            .carousel-caption p {
+                margin: 0 10px;
+                width: 70%;
+                margin: auto;
+                font-size: 18px;
+                line-height: 1.9;
+            }
+
+        </style>
+    </head>
     <body>
         <%
-      String email = (String) session.getAttribute("email");
-      StaffDAO staffDAO = new StaffDAO();
-      ChildrenDAO childrenDAO = new ChildrenDAO();
-      ReservationDAO reservationDAO = new ReservationDAO();
-      Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-      UserDAO userDAO = new UserDAO();
-      ServiceDAO serviceDAO = new ServiceDAO();
-      boolean isManager = false;
-      boolean isStaff = false;
+    String email = (String) session.getAttribute("email");
+    StaffDAO staffDAO = new StaffDAO();
+    Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+    UserDAO userDAO = new UserDAO();
+    boolean isManager = false;
+    boolean isStaff = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){
@@ -130,7 +124,7 @@
                         >
                     </div>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="slider?action=all" class="nav-item nav-link"
+                        <a href="user?action=all" class="nav-item nav-link active"
                            ><i class="bi bi-image-fill"></i>Slider</a
                         >
                     </div>
@@ -212,128 +206,101 @@
                     </div>
                 </nav>
                 <!-- Navbar End -->
+                <div class="container mt-4 mb-5">
+                    <h1>Slider Detail</h1>
+                    <% 
+                    String message = (String) request.getSession().getAttribute("message");
+                    String alertClass = "alert-success";
 
-                <!-- Blank Start -->
-                <div class="container-fluid pt-4 px-4">
-                    <div
-                        class="min-vh-100 bg-light rounded justify-content-center align-items-center mx-0"
-                        >
-                        <div class="row px-4 justify-content-between bg-white rounded-3 border-2 border-light">
-                            <div class="col-md-12 col-lg-4">
-                                <div class="d-flex">
-                                    <div class="me-3">
-                                        <img src="./resources/img/icon/icon-01.png" class="img-fluid" alt="patient" width="100px">
-                                    </div>
-                                    <div class="dash-widget-info">
-                                        <h6>Total Patient</h6>
-                                        <h3><%=childrenDAO.countChildren()%></h3>
-                                        <p class="text-muted">Till Today</p>
+                    if (message != null) { 
+                        if (message.contains("error")) {
+                            alertClass = "alert-danger";
+                        }
+                    %>
+                    <div class="alert <%= alertClass %> alert-dismissible fade show" role="alert">
+                        <strong><%= message %></strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <%
+                        request.getSession().removeAttribute("message");
+                    }
+                    %>
+                    <div class="row">
+                        <div id="carouselExampleCaptions" class="carousel slide col-md-8">
+                            <div class="carousel-indicators">
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                            </div>
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img name="currImage" class="bd-placeholder-img bd-placeholder-img-lg d-block w-100" width="860" height="615" id="carouselImage" src="<c:out value="${slider.image}" />" alt="Slider Image" />
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <h5 id="carouselTitle"><c:out value="${slider.title}" /></h5>
+                                        <p id="carouselBrief"><c:out value="${slider.brief}" /></p>
+                                        <p><a id="carouselLink" href="<c:out value="${slider.backlink}" />" class="btn btn-warning mt-3">Learn More</a></p>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="col-md-12 col-lg-4">
-                                <div class="d-flex">
-                                    <div class="me-3">
-                                        <img src="./resources/img/icon/icon-02.png" class="img-fluid" alt="Patient" width="100px">
-                                    </div>
-                                    <div class="dash-widget-info">
-                                        <h6>Today Patient</h6>
-                                        <h3><%=reservationDAO.countPatientToday(curStaff.getStaffID()+"")%></h3>
-                                        <p class="text-muted">Today</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12 col-lg-4">
-                                <div class="d-flex">
-                                    <div class="me-3">
-                                        <img src="./resources/img/icon/icon-03.png" class="img-fluid" alt="Patient" width="100px">
-                                    </div>
-                                    <div class="dash-widget-info">
-                                        <h6>Appoinments</h6>
-                                        <h3><%=reservationDAO.countApoinmentTodayOfStaff(curStaff.getStaffID()+"")%></h3>
-                                        <p class="text-muted">Today</p>
-                                    </div>
-                                </div>
-                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
                         </div>
 
-                        <h3 class="px-4 mt-3">Patient Appoinment Today</h3>
-
-                        <div class="table-responsive p-4 bg-light border-2 border-light">
-                            <%if(curStaff!=null){%>
-                            <table class="table table-striped table-hover">
-                                <thead class="text-light" style="background: #1977cc;">
-                                    <tr>
-                                        <th scope="col">ID</th>
-                                        <th scope="col">Reserved date</th>
-                                        <th scope="col">Customer name</th>
-                                        <th scope="col">Service</th>
-                                        <th scope="col">Cost</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Detail</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="reservations-list">
-                                    <%
-                                    List<Reservation> reservations = reservationDAO.getApoinmentTodayOfStaff(curStaff.getStaffID()+"");
-        
-                                    if(reservations!=null){
-                                    for (Reservation reservation : reservations) {
-                                    %>
-                                    <tr>
-                                        <th scope="row"><a href="staff?event=send-to-reservation-detail&reserdid=<%=reservation.getReservationID()%>" class="text-decoration-none text-dark"><%=reservation.getReservationID()%></a></th>
-                                        <td><%=reservation.getReservationDate()%></td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <img class="rounded-circle object-cover me-3" src="<%=userDAO.getUserByID(reservation.getUserID()).getProfileImage()%>" alt="alt" width="30px" height="30px"/>
-                                                <div><%=userDAO.getUserByID(reservation.getUserID()).getFirstName()%></div>
-                                            </div>
-                                        </td>
-                                        <td><%=serviceDAO.getServiceByID(reservation.getServiceID()+"").getTitle()%></td>
-                                        <td><%=reservation.getCost()%></td>
-                                        <td><%=reservation.getStatus()%></td>
-                                        <td><a href="staff?event=send-to-reservation-detail&reserdid=<%=reservation.getReservationID()%>"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></a></td>
-                                    </tr>
-                                    <%}}%>
-
-                                </tbody>
-                            </table>
-                            <%}%>    
+                        <!-- Slider Details -->
+                        <div class="col-md-4">
+                            <form action="slider?action=update" id="frmUpdateSlide" method="post" enctype="multipart/form-data">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Slider Title: <input type="text" id="titleInput" name="title" value="<c:out value="${slider.title}" />" onkeyup="updateCarousel('titleInput', 'carouselTitle');" class="form-control" /></h5>
+                                        <p class="card-text">Slider ID: <input readonly type="text" id="sliderid" name="sliderID" value="<c:out value="${slider.sliderID}" />" class="form-control" /></p>
+                                        <p class="card-text">Slider Brief: <input type="text" id="briefInput" name="brief" value="<c:out value="${slider.brief}" />" onkeyup="updateCarousel('briefInput', 'carouselBrief');" class="form-control" /></p>
+                                        <p class="card-text">Slider Status:
+                                            <select name="status" class="form-select">
+                                                <option value="Active" <c:if test="${slider.status == 'Active'}">selected</c:if>>Active</option>
+                                                <option value="Inactive" <c:if test="${slider.status == 'Inactive'}">selected</c:if>>Inactive</option>
+                                                </select>
+                                            </p>
+                                            <p class="card-text">Slider Backlink: <input type="text" id="backlinkInput" name="backlink" value="<c:out value="${slider.backlink}" />" class="form-control" /></p>
+                                        <input type="file" id="imageInput" name="image" accept="image/*" onchange="updateCarouselImage('imageInput');" class="form-control" />
+                                        <a href="<c:out value="${slider.backlink}" />" class="btn btn-primary mt-3">Go to Backlink</a>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3">Update</button>
+                                <a href="slider?action=all" class="btn btn-secondary mt-3">Back to List</a>
+                            </form>
                         </div>
 
                     </div>
-                </div>
-                <!-- Blank End -->
 
-                <!-- Footer Start -->
-                <div class="mt-4">
-                    <jsp:include page="layout/footer.jsp" />
                 </div>
-                <!-- Footer End -->
+                <jsp:include page="layout/footer.jsp" />
             </div>
-            <!-- Content End -->
 
         </div>
-    </div>
+        <script>
+            function updateCarousel(inputId, elementId) {
+                const inputValue = document.getElementById(inputId).value;
+                const element = document.getElementById(elementId);
+                element.textContent = inputValue;
+            }
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-        crossorigin="anonymous"
-    ></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-        crossorigin="anonymous"
-    ></script>
+            function updateCarouselImage(inputId) {
+                const selectedImage = document.getElementById(inputId).files[0];
+                const element = document.getElementById("carouselImage");
 
-    <!-- Template Javascript -->
-    <script>
-        document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+                if (selectedImage) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        element.src = e.target.result;
+                    };
+                    reader.readAsDataURL(selectedImage);
+                }
+            }
+            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
             var sidebar = document.querySelector('.sidebar');
             var content = document.querySelector('.content');
 
@@ -342,7 +309,9 @@
 
             return false;
         });
-    </script>
-</body>
+        </script>
+        <!-- Include Bootstrap JavaScript and jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
 </html>
-

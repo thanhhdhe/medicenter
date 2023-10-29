@@ -192,7 +192,7 @@ public class MedicalExaminationController extends HttpServlet {
                     if (i == pagination) {
                         paginationHtml += "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>";
                     } else {
-                        paginationHtml += "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange("+i+")\" data-page=\"" + i + "\" href=\"#\">" + i + "</a></li>";
+                        paginationHtml += "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange(event,"+i+")\" data-page=\"" + i + "\" href=\"#\">" + i + "</a></li>";
                     }
                 }
             }
@@ -288,7 +288,7 @@ public class MedicalExaminationController extends HttpServlet {
                     if (i == pagination) {
                         paginationHtml += "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>";
                     } else {
-                        paginationHtml += "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChange("+i+")\" data-page=\"" + i + "\" href=\"#\">" + i + "</a></li>";
+                        paginationHtml += "<li class=\"pagination-btn inactive\"><button onclick=\"handlePageChangex("+i+")\" data-page=\"" + i + "\" href=\"#\">" + i + "</a></li>";
                     }
                 }
             }

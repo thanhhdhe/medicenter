@@ -391,7 +391,10 @@ public class StaffDAO extends MyDAO {
 //        staff.setRole("doctor");
 //        staffDAO.updateStaff(staff);
 //        System.out.println(staff.getRole());
-        Staff staff = staffDAO.getStaffByStaffId(3);
-        System.out.println(staff.getProfessionalAchievements());
+
+        ServiceDAO serviceDAO = new ServiceDAO();
+        System.out.println(serviceDAO.getActiveServiceCount());
+//        Staff staff = staffDAO.getStaffByStaffId(3);
+//        System.out.println(staff.getFullName());
     }
 }

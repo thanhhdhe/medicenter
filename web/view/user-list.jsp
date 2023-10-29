@@ -14,15 +14,9 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css">
         <!-- DataTable CSS  -->
-        <!--        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
-        <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.4.1/css/responsive.bootstrap5.min.css">
-        <link href="css/bootstrap.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="./resources/css/staff-dashboard.css">
-        <link rel="stylesheet" href="./resources/css/services-style.css">
         <link
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
             rel="stylesheet"
@@ -31,7 +25,10 @@
             href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
             rel="stylesheet"
             />
-
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Include Bootstrap JavaScript and jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <title>User manage</title>
         <style>
             #example_filter {
@@ -41,16 +38,18 @@
         </style>
     </head>
 
-    <body>
-        <%
-             String email = (String) session.getAttribute("email");
-             StaffDAO staffDAO = new StaffDAO();
-             Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-             boolean isManager = false;
+    <body>        <%
+String email = (String) session.getAttribute("email");
+StaffDAO staffDAO = new StaffDAO();
+Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+UserDAO userDAO = new UserDAO();
+boolean isManager = false;
+boolean isStaff = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){
-            if(curStaff.getRole().equals("manager")) isManager=true;%>
+            if(curStaff.getRole().equals("manager")) isManager=true;
+            if(curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) isStaff=true;%>
             <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">
                 <nav class="navbar navbar-light">
@@ -76,25 +75,47 @@
                             <span><%=curStaff.getRole()%></span>
                         </div>
                     </div>
+                    <%if(isStaff){%>    
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations List</a
+                        >
+                    </div>  
                     <div class="navbar-nav w-100  text-light">
                         <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
+                    <%}%>
                     <%if(isManager){%>
                     <div class="navbar-nav w-100 text-light">
                         <a href="user?action=all" class="nav-item nav-link active"
                            ><i class="bi bi-people-fill"></i>User</a
                         >
                     </div>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-medical-examination-manage" class="nav-item nav-link"
+                           ><i class="far fa-check-square"></i>Medical examination</a
+                        >
+                    </div>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="reservationcontactmanager?event=reservation-list" class="nav-item nav-link"
+                           ><i class="fas fa-list-alt"></i>Reservations Manager</a
+                        >
+                    </div>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="staff?event=send-to-feedback" class="nav-item nav-link"
+                        <a href="feedback" class="nav-item nav-link"
                            ><i class="far fa-file-alt"></i>Feedback</a
                         >
                     </div>
                     <div class="navbar-nav w-100 text-light">
                         <a href="service?event=manage" class="nav-item nav-link"
                            ><i class="fas fa-stethoscope"></i>Services</a
+                        >
+                    </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="user?action=all" class="nav-item nav-link"
+                           ><i class="bi bi-image-fill"></i>Slider</a
                         >
                     </div>
                     <%}%>

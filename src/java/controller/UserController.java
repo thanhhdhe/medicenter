@@ -5,6 +5,8 @@
 package controller;
 
 import Database.ChildrenDAO;
+import Database.ContactDAO;
+import Database.MedicalExaminationDAO;
 import Database.RelationshipDAO;
 import Database.ReservationDAO;
 import Database.ServiceDAO;
@@ -27,7 +29,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 import model.Children;
+import model.Contact;
 import model.Mail;
+import model.MedicalExamination;
 import model.Relationship;
 import model.Reservation;
 import model.Service;
@@ -39,11 +43,10 @@ import org.apache.commons.codec.digest.DigestUtils;
  *
  * @author Admin
  */
-@MultipartConfig(
-//        fileSizeThreshold = 1024 * 10, // 10 KB
-//        maxFileSize = 1024 * 300, // 300 KB
-//        maxRequestSize = 1024 * 1024 // 1 MB 
-)
+@MultipartConfig( //        fileSizeThreshold = 1024 * 10, // 10 KB
+        //        maxFileSize = 1024 * 300, // 300 KB
+        //        maxRequestSize = 1024 * 1024 // 1 MB 
+        )
 public class UserController extends HttpServlet {
 
     /**
@@ -65,10 +68,12 @@ public class UserController extends HttpServlet {
         boolean isManager = false;
         boolean isAdmin = false;
         boolean isStaff = false;
-        String adminEmail = (String) session.getAttribute("adminEmail")+"";
-        if(adminEmail.contains("@"))isAdmin=true;
+        String adminEmail = (String) session.getAttribute("adminEmail") + "";
+        if (adminEmail.contains("@")) {
+            isAdmin = true;
+        }
         if (curStaff != null) {
-            if (curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) {
+            if (curStaff.getRole().equals("doctor") || curStaff.getRole().equals("nurse")) {
                 isStaff = true;
             }
             if (curStaff.getRole().equals("manager")) {
@@ -85,7 +90,7 @@ public class UserController extends HttpServlet {
 
             if (action.equals("updateprofile")) {
                 int userId = Integer.parseInt(request.getParameter("userId"));
-                User u = userdao.getUserByID(userId);
+                User user = userdao.getUserByID(userId);
                 String lastname = request.getParameter("lastname_raw");
                 String firstname = request.getParameter("firstname_raw");
                 String phone = request.getParameter("phone_raw");
@@ -93,28 +98,29 @@ public class UserController extends HttpServlet {
                 String address = request.getParameter("address");
                 Part filePart = request.getPart("images");
 
-                String contentType = filePart.getContentType();
-                if (contentType != null && contentType.startsWith("image")) {
-                    String realPath = request.getServletContext().getRealPath("/resources/img");
-                    String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                Contact contact = new Contact(user, user.getAddress(), user.getFirstName(), user.getLastName(), user.getGender(), user.getPhoneNumber());
 
-                    String newImg = null;
+                user.setLastName(lastname);
+                user.setFirstName(firstname);
+                user.setPhoneNumber(phone);
+                user.setGender(gender);
+                user.setAddress(address);
 
-                    if (!filePart.getSubmittedFileName().isEmpty()) {
-                        filePart.write(realPath + "/" + fileName);
-                        newImg = "resources/img/" + fileName;
-                    } else {
-                        newImg = u.getProfileImage();
-                    }
-
-                    System.out.println("Name is" + lastname + " " + firstname);
-                    userdao.UpdateProfile(firstname, lastname, phone, gender, newImg, address, userId);
-                    response.sendRedirect("home?showmodal=1&status=success");
-                } else {
-                    request.setAttribute("updateerror", "Uploaded file is not an image");
-                    response.sendRedirect("home?showmodal=1&status=error");
+                String newImg = uploadImage(request);
+                if (newImg != null) {
+                    user.setProfileImage(newImg);
                 }
 
+                boolean success = userdao.updateProfile(user);
+                if (success) {
+                    ContactDAO contactData = new ContactDAO();
+                    contactData.addContact(contact);
+                    request.getSession().setAttribute("message", "Your profile updated successfully");
+                } else {
+                    request.getSession().setAttribute("message", "Your profile updated error");
+                }
+
+                response.sendRedirect("home?showmodal=1");
             }
             if (action.equals("all")) {
                 if (isManager) {
@@ -154,6 +160,12 @@ public class UserController extends HttpServlet {
                     int userID = Integer.parseInt(userIDstr);
                     User userDetail = userdao.getUserByID(userID);
                     request.setAttribute("user", userDetail);
+                    ContactDAO contactDAO = new ContactDAO();
+                    List<Contact> contactList = contactDAO.getContacts(userID);
+                    request.setAttribute("contact", contactList);
+                    MedicalExaminationDAO mdDAO = new MedicalExaminationDAO();
+                    List<MedicalExamination> medicalExamination = mdDAO.getMedicalExaminationsByUserID(userID);
+                    request.setAttribute("medical", medicalExamination);
                     ChildrenDAO childrenDAO = new ChildrenDAO();
                     List<Children> childrenList = childrenDAO.getListChildrenByUserId(userIDstr);
                     request.setAttribute("children", childrenList);
@@ -256,12 +268,16 @@ public class UserController extends HttpServlet {
                 }
 
                 boolean statusUpdate = childDAO.createChildren(newChild);
+                if (statusUpdate) {
+                    Contact contact = new Contact(users, users.getAddress(), users.getFirstName(), users.getLastName(), users.getGender(), users.getPhoneNumber());
+                    ContactDAO contactData = new ContactDAO();
+                    contactData.addContact(contact);
+                    users.setAddress(address);
+                    users.setPhoneNumber(phoneNumber);
+                    userdao.updateProfile(users);
+                } 
 
-                users.setAddress(address);
-                users.setPhoneNumber(phoneNumber);
-                userdao.updateProfile(users);
-
-                String message = (statusUpdate) ? "Add children profile successfully" : "Add children profile failed";
+                String message = (statusUpdate) ? "Add children profile successfully" : "An error when add children profile";
                 session.setAttribute("message", message);
                 response.sendRedirect("user?action=my-children");
 //                request.getRequestDispatcher().forward(request, response);
@@ -348,7 +364,7 @@ public class UserController extends HttpServlet {
                     request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
                     return;
                 }
-                System.out.println("admin: "+isAdmin);
+                System.out.println("admin: " + isAdmin);
                 onOffStatusUser(request, response);
             }
         } catch (IOException | ServletException e) {
@@ -564,16 +580,16 @@ public class UserController extends HttpServlet {
                 }
             }
         } else {
-            
+
             if (pagination == 1) {
                 paginationHtml += "<li class=\"pagination-btn active\"><span>1</span></li>"
                         + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"2\" onclick=\"pagination(event, 2)\">2</a></li>\n"
                         + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"3\" onclick=\"pagination(event, 3)\">3</a></li>\n"
                         + "<span>...</span>\n"
                         + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"pagination(event, " + numberOfPage + ")\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"pagination(event, " + (pagination+1) + ")\">&gt;</a></li>";
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"pagination(event, " + (pagination + 1) + ")\">&gt;</a></li>";
             } else if (pagination > numberOfPage - 4) {
-                paginationHtml += "<li class=\"pagination-btn inactive\" ><a href=\"#\" onclick=\"pagination(event, " + (pagination-1) + ")\">&lt;</a></li>"
+                paginationHtml += "<li class=\"pagination-btn inactive\" ><a href=\"#\" onclick=\"pagination(event, " + (pagination - 1) + ")\">&lt;</a></li>"
                         + "<span>...</span>\n";
                 for (int i = numberOfPage - 3; i <= numberOfPage; i++) {
                     if (i == pagination) {
@@ -582,16 +598,16 @@ public class UserController extends HttpServlet {
                         paginationHtml += "<li class=\"pagination-btn inactive\"><a onclick=\"pagination(event, " + i + ")\" data-page=\"" + i + "\" href=\"#\">" + i + "</a></li>";
                     }
                 }
-                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"pagination(event, " + (pagination+1) + ")\">&gt;</a></li>";
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"pagination(event, " + (pagination + 1) + ")\">&gt;</a></li>";
             } else {
-                int pagination1 =pagination+1,pagination2=pagination+2;
-                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"pagination(event, " + (pagination-1) + ")\">&lt;</a></li>"
+                int pagination1 = pagination + 1, pagination2 = pagination + 2;
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"pagination(event, " + (pagination - 1) + ")\">&lt;</a></li>"
                         + "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"pagination(event, " + pagination1 + ")\" data-page=\"" + (pagination+1) + "\">" + (int)(pagination+1) + "</a></li>\n"
-                        + "<li class=\"pagination-btn inactive\"><a onclick=\"pagination(event, " + pagination2 + ")\" href=\"#\" data-page=\"" + (pagination+2) + "\">" + (int)(pagination+2) + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"pagination(event, " + pagination1 + ")\" data-page=\"" + (pagination + 1) + "\">" + (int) (pagination + 1) + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a onclick=\"pagination(event, " + pagination2 + ")\" href=\"#\" data-page=\"" + (pagination + 2) + "\">" + (int) (pagination + 2) + "</a></li>\n"
                         + "<span>...</span>\n"
                         + "<li class=\"pagination-btn inactive\"><a onclick=\"pagination(event, " + numberOfPage + ")\" href=\"#\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
-                        + "<li class=\"pagination-btn inactive\"><a onclick=\"pagination(event, " + numberOfPage + ")\" href=\"#\" onclick=\"pagination(event, " + (pagination+1) + ")\">&gt;</a></li>";
+                        + "<li class=\"pagination-btn inactive\"><a onclick=\"pagination(event, " + numberOfPage + ")\" href=\"#\" onclick=\"pagination(event, " + (pagination + 1) + ")\">&gt;</a></li>";
             }
 
         }
@@ -637,10 +653,39 @@ public class UserController extends HttpServlet {
         request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
         User user = userDAO.getUserByID(Integer.parseInt(id.trim()));
         user.setStatus(!user.isStatus());
-        userDAO.updateStatus(user.isStatus(),user.getUserID());
+        userDAO.updateStatus(user.isStatus(), user.getUserID());
         request.setAttribute("user", user);
         request.getRequestDispatcher("./view/user-detail-admin.jsp").forward(request, response);
 
+    }
+
+    private String uploadImage(HttpServletRequest request) throws ServletException, IOException {
+        Part filePart = request.getPart("images");
+        String contentType = filePart.getContentType();
+
+        if (contentType != null && contentType.startsWith("image")) {
+            String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+
+            if (!fileName.isEmpty()) {
+                try {
+                    String realPath = getServletContext().getRealPath("/resources/img");
+                    File uploadDir = new File(realPath);
+
+                    if (!uploadDir.exists()) {
+                        uploadDir.mkdir();
+                    }
+
+                    String filePath = realPath + File.separator + fileName;
+                    filePart.write(filePath);
+
+                    return "resources/img/" + fileName;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return null;
     }
 
     /**

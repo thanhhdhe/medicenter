@@ -506,7 +506,7 @@ public class ServiceDAO extends MyDAO {
     
     public int getActiveServiceCount() {
         Service service = null;
-        xSql = "SELECT COUNT(*) AS TotalRecords FROM Services where and Status = 1 ";
+        xSql = "SELECT COUNT(*) AS TotalRecords FROM Services where Status = '1' ";
         int total = 0;
         try {
             ps = con.prepareStatement(xSql);

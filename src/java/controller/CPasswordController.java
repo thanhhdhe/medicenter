@@ -88,7 +88,7 @@ public class CPasswordController extends HttpServlet {
                 || newPassword.equals("") || conPassword.equals("")) {
             // Handle the error when one or more fields are missing in the form
             response.getWriter().write("Notify: You must enter complete information.");
-        } else if(newPassword.length() >= 6 && newPassword.length() <= 100){
+        } else if(newPassword.length() < 6 || newPassword.length() > 100){
             // Handle the error when one or more fields are missing in the form
             response.getWriter().write("Notify: You must enter password more than 6 and less than 100 character.");
         }else {

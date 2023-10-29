@@ -95,7 +95,7 @@ public class MedicalExaminationDAO extends MyDAO {
 
         return serviceIDs;
     }
-    
+
     public List<Integer> getListServiceIDs() {
         List<Integer> serviceIDs = new ArrayList<>();
         xSql = "SELECT DISTINCT ServiceID FROM MedicalExaminations";
@@ -236,7 +236,7 @@ public class MedicalExaminationDAO extends MyDAO {
         }
         return medicalExaminationList;
     }
-    
+
     public List<MedicalExamination> getPageFilterMedicalExaminations(String childrenName, int page, int pageSize, String serviceID, String fromDate, String toDate) {
         List<MedicalExamination> medicalExaminationList = new ArrayList<>();
         xSql = "SELECT * FROM MedicalExaminations me "
@@ -331,7 +331,7 @@ public class MedicalExaminationDAO extends MyDAO {
         xSql += ") AS SubQuery;";
         try {
             ps = con.prepareStatement(xSql);
-           int paramIndex = 1;
+            int paramIndex = 1;
             ps.setString(paramIndex++, staffID);
             ps.setString(paramIndex++, "%" + childrenName + "%");
             if (serviceID != null && !serviceID.isEmpty()) {
@@ -354,7 +354,7 @@ public class MedicalExaminationDAO extends MyDAO {
         }
         return count;
     }
-    
+
     public int countFilterMedicalExaminations(String childrenName, String serviceID, String fromDate, String toDate) {
         int count = 0;
         xSql = "SELECT COUNT(*) AS RecordCount\n"
@@ -373,7 +373,7 @@ public class MedicalExaminationDAO extends MyDAO {
         xSql += ") AS SubQuery;";
         try {
             ps = con.prepareStatement(xSql);
-           int paramIndex = 1;
+            int paramIndex = 1;
             ps.setString(paramIndex++, "%" + childrenName + "%");
             if (serviceID != null && !serviceID.isEmpty()) {
                 ps.setString(paramIndex++, serviceID);
@@ -462,6 +462,39 @@ public class MedicalExaminationDAO extends MyDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return medicalExaminationList;
+    }
+
+    public List<MedicalExamination> getMedicalExaminationsByUserID(int userID) {
+        List<MedicalExamination> medicalExaminationList = new ArrayList<>();
+        xSql = "SELECT * FROM [dbo].[MedicalExaminations] WHERE UserID = ?";
+
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, userID);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int MedicalExaminationID = rs.getInt("MedicalExaminationID");
+                int MchildrenID = rs.getInt("ChildrenID");
+                int MstaffID = rs.getInt("StaffID");
+                Date examinationDate = rs.getDate("ExaminationDate");
+                int medicalExaminationID = rs.getInt("MedicalExaminationID");
+                String medicalPrescription = rs.getString("MedicalPrescription");
+                String disease = rs.getString("Disease");
+
+                MedicalExamination medicalExamination = new MedicalExamination(MedicalExaminationID, userID, MchildrenID, MstaffID, examinationDate, medicalExaminationID, medicalPrescription, disease);
+                medicalExaminationList.add(medicalExamination);
+
+                medicalExaminationList.add(medicalExamination);
+            }
+
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return medicalExaminationList;
     }
 
@@ -604,7 +637,7 @@ public class MedicalExaminationDAO extends MyDAO {
 
     public static void main(String[] args) {
         MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
-        List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getPageFilterMedicalExaminationsOfStaff("1", "", 1, 10,"1","","");
+        List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getPageFilterMedicalExaminationsOfStaff("1", "", 1, 10, "1", "", "");
         for (MedicalExamination medicalExamination : listMedicalExamination) {
             System.out.println(medicalExamination.getMedicalExaminationID());
         }

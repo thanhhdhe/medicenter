@@ -35,16 +35,16 @@ public class LoginController extends HttpServlet {
         PrintWriter out = response.getWriter();
         String email = (String) request.getParameter("lemail");
         String password = (String) request.getParameter("lpassword");
-        UserDAO u = new UserDAO();
+        UserDAO userDAO = new UserDAO();
         HttpSession session = request.getSession(true);
         String check = (String) session.getAttribute("email");
         if (check != null) {
             response.getWriter().write("reload");
-        } else if (u.loginAccount(email, DigestUtils.md5Hex(password))) {
-            User user = u.getUser(email);
+        } else if (userDAO.loginAccount(email, DigestUtils.md5Hex(password))) {
+            User user = userDAO.getUser(email);
             if (user.isStatus() == true) {
                 session.setAttribute("email", email);
-                User users = u.getUser(email);
+                User users = userDAO.getUser(email);
                 session.setAttribute("user", users);
                 response.getWriter().write("success");
             } else {

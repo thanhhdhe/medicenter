@@ -14,10 +14,10 @@
 
 <body>
     <jsp:include page="view/layout/Header.jsp"/>
-    <div class="container-md px-4">
-        <div class="row first-row">
+    <div class="container px-4">
+        <div class="row mt-5">
             <!-- Start  Slider  -->
-            <div id="carouselExampleIndicators" class="carousel slide col-8 shadow" data-bs-ride="carousel">
+            <div id="carouselExampleIndicators" class="carousel col-8" data-bs-ride="carousel">
                 <div class="carousel-indicators">
                     <c:forEach items="${requestScope.slider}" var="sli" varStatus="loop"> 
                         <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="${loop.index}" 
@@ -29,9 +29,9 @@
                 <div class="carousel-inner">
                     <c:forEach items="${requestScope.slider}" var="sli" varStatus="loop"> 
                         <div class="carousel-item ${loop.first ? 'active' : ''}">
-                            <img src="${sli.image}" class="d-block w-100" alt="...">
+                            <img name="currImage" class="bd-placeholder-img bd-placeholder-img-lg d-block w-100" width="860" height="615" id="carouselImage" src="${sli.image}" alt="Slider Image">
                             <div class="carousel-caption">
-                                <h5>${sli.title}</h5>
+                                <h5 class="fw-bold">${sli.title}</h5>
                                 <p>${sli.brief}</p>
                                 <p><a href="${sli.backlink}" class="btn btn-warning mt-3">Learn More</a></p>
                             </div>
@@ -51,33 +51,29 @@
             </div>
             <!-- End  Slider  -->
             <!--Start sider -->
-            <div class="sider col-4">
-
-                <h3 class="badge bg-success " style="margin-right: 6rem;"> <strong>Lastest Post</strong></h3>
-                <a href="service?event=to-contact-link" class="mt-3 ms-2 badge bg-secondary">Contact Us</a>
-                <c:forEach items="${requestScope.last3post}" var="p" varStatus="loopPost"> 
-                    <a class="card article shadow-lg" href="/ChildrenCare/blogDetail?ID=${p.postID}">
-                        <div >
-                            <div class="row no-gutters">
-                                <div class="col-md-4">
-                                    <img src="${p.thumbnail}" class="card-img" alt="Thumbnail">
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="card-body">
-                                        <h4><strong>${p.title}</strong></h4>
-                                        <p>
-                                            <u class="small">${p.createdDate}</u>
-                                        </p>
-                                        <p class="card-text">${p.briefInfo}</p>
-
-                                    </div>
-                                </div>
-                            </div>
+            <div class="col-md-4">
+                <div class="position-sticky" style="top: 2rem;">
+                    <div>
+                        <div class="d-flex align-items-lg-center justify-content-between">
+                            <h4 class="fst-italic">Recent posts</h4>
+                            <h5 class="fst-italic"><a href="service?event=to-contact-link">Contact Us</a></h5>
                         </div>
-                    </a>
-
-                </c:forEach>
-
+                        <ul class="list-unstyled">
+                            <c:forEach items="${requestScope.last3post}" var="p" varStatus="loopPost"> 
+                                <li>
+                                    <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="blogDetail?ID=${p.postID}">
+                                        <img src="${p.thumbnail}" class="bd-placeholder-img" style="object-fit: cover; min-width: 140px;" height="110">
+                                        <div>
+                                            <h6 class="fw-bold">${p.title}</h6>
+                                            <small class="text-body-secondary fw-light">${p.createdDate}</small>
+                                            <p class="">${p.briefInfo}</p>
+                                        </div>
+                                    </a>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <!--End sider -->
         </div>
@@ -116,7 +112,7 @@
                                                 <c:if test="${s.categoryID == cate.categoryID}">
                                                     <div class="col-lg-4 col-md-6 col-12 mb-4">
                                                         <div class="custom-block bg-white shadow-lg">
-                                                            <a href="service?event=detail&id=${s.serviceID}">
+                                                            
                                                                 <div class="d-flex">
                                                                     <div>
                                                                         <h4><strong>${s.title}</strong></h4>
@@ -128,7 +124,13 @@
                                                                 </div>
 
                                                                 <img src="${s.thumbnail}" class="custom-block-image img-fluid" alt="">
-                                                            </a>
+                                                                <div class="text-center mt-4"> 
+                                                                    <form action="service?event=detail" method="POST">
+                                                                    <input type="hidden" name="serviceID" value="${s.serviceID}">
+                                                                    <input type="submit"  class="btn btn-primary btn-block" value="Details"/>
+                                                                </form>
+                                                                </div>
+                                                            
                                                         </div>
                                                     </div>
                                                 </c:if>
@@ -159,7 +161,7 @@
                     <div class="row gx-5">
                         <div class="col-md-6 mb-4">
                             <div class="bg-image hover-overlay ripple shadow-2-strong rounded-5" data-mdb-ripple-color="light">
-                                <img src="https://mdbcdn.b-cdn.net/img/new/slides/080.webp" class="img-fluid" />
+                                <img src="${requestScope.hotest.thumbnail}" class="img-fluid" />
                                 <a href="#!">
                                     <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
                                 </a>
@@ -169,12 +171,13 @@
                         <div class="col-md-6 mb-4">
                             <span class="badge bg-danger px-2 py-1 shadow-1-strong mb-3">Hottest</span>
                             <h4><strong>${requestScope.hotest.title}</strong></h4>
-                            <p class="text-muted overflow-hidden" style="
-                               max-height: 8.8rem;
-                               ">
-                                ${requestScope.hotest.content}
+                            <p class="text-muted overflow-hidden" style="max-height: 8.8rem;">
+                                ${requestScope.hotest.briefInfo}
                             </p>
-                            <a href="/ChildrenCare/blogDetail?ID=${hotest.postID}" class="btn btn-secondary btn-rounded">Readmore</a>
+
+                            <a href="/ChildrenCare/blogDetail?ID=${hotest.postID}" class="">
+                                Continue reading
+                            </a>
                         </div>
                     </div>
                 </section>
@@ -191,7 +194,7 @@
                                     <!-- Featured image -->
                                     <div class="bg-image hover-overlay shadow-1-strong ripple rounded-5 mb-4"
                                          data-mdb-ripple-color="light">
-                                        <img src="${po.thumbnail}" class="img-fluid" />
+                                        <img src="resources/img/thumbnail_infectious_diseases.jpg" class="bd-placeholder-img" style="object-fit: cover; min-width: 100%;" width="210" height="200">
                                         <a href="/ChildrenCare/blogDetail?ID=${po.postID}">
                                             <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
                                         </a>
@@ -200,9 +203,9 @@
                                     <!-- Article data -->
                                     <div class="row mb-3">
                                         <div class="col-6">
-                                            <a href="" class="text-info">
+                                            <a href="" class="text-info text-nowrap">
                                                 <i class="fas fa-plane"></i>
-                                                Ðây là title ${po.categoryPost}
+                                                ${po.categoryPost}
                                             </a>
                                         </div>
 
@@ -236,6 +239,10 @@
 
         </div>
     </div>
+
+    <jsp:include page="view/layout/footer.jsp"/>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
             var url = window.location.href;
@@ -252,42 +259,8 @@
             }
 
             var showmodal = getParameterByName("showmodal");
-
-            var status = getParameterByName("status");
-
-            if (showmodal === "1") {
-                $("#exampleModal").modal('show');
-
-                if (status === "success") {
-                    showAlert("Success", "Profile updated successfully", "alert-success");
-                }
-                if (status === "error") {
-                    showAlert("Success", "Failed to update profile", "alert-danger");
-                }
-            }
         });
-
-
-        function showAlert(title, message, alertClass) {
-            var alertHtml =
-                    '<div class="alert ' + alertClass + ' alert-dismissible fade show" role="alert">' +
-                    '<strong>' + title + '</strong> ' + message +
-                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
-                    '</div>';
-            $("#alert-container").html(alertHtml);
-
-            setTimeout(function () {
-                $(".alert").fadeOut('slow', function () {
-
-                });
-            }, 2000);
-        }
-
-
     </script>
-    <jsp:include page="view/layout/footer.jsp"/>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
 </body>
 
 
