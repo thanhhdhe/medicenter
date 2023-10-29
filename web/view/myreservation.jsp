@@ -34,6 +34,14 @@
             ServiceDAO serviceDAO = new ServiceDAO();
             StaffDAO staffDAO = new StaffDAO();
             String myReservationPage = (String) request.getAttribute("page");
+            try {
+                int pageNumber = Integer.parseInt(myReservationPage);
+                if (pageNumber > reservationDAO.getTotalPagination(userID,5) || pageNumber <= 0) {
+                    myReservationPage = "1";
+                }
+            } catch (Exception e) {
+                myReservationPage = "1";
+            }
         %>
 
         <main>  
@@ -95,7 +103,6 @@
             // Variable using for search
             let userInput = null;
             let selectedOption = null;
-
             const selectElement = document.getElementById('pageOption');
             selectElement.textContent = "";
             <% for (int i = 1;i<= reservationDAO.getTotalPagination(userID,5);i++) { %>
@@ -159,136 +166,131 @@
                 getReservationsAndDisplayTable();
             }
 
-            async function getSpecificPagination() {
-                const url = "/ChildrenCare/myreservation?action=paginationNumber&condition=" + selectedOption + "&value=" + encodeURIComponent(userInput);
-
-                const response = await fetch(url, {
-                    method: "POST",
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                number = await response.text();
-                if (number == 0) {
-                    alert("There are nothing like that");
-                } else {
-                    totalPagePagination = parseInt(number);
-                    pageNumber = 1;
-                    selectElement.textContent = "";
-                    for (let i = 1; i <= totalPagePagination; i++) {
-                        var option = document.createElement("option");
-                        option.className = "text-lg-start";
-                        option.textContent = "Page " + i;
-                        selectElement.appendChild(option);
+            function getSpecificPagination() {
+                // Create an AJAX request to check login
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        number = xhr.responseText;
+                        if (number == 0) {
+                            alert("There are nothing like that");
+                        } else {
+                            totalPagePagination = parseInt(number);
+                            pageNumber = 1;
+                            selectElement.textContent = "";
+                            for (let i = 1; i <= totalPagePagination; i++) {
+                                var option = document.createElement("option");
+                                option.className = "text-lg-start";
+                                option.textContent = "Page " + i;
+                                selectElement.appendChild(option);
+                            }
+                            getReservationsAndDisplayTable();
+                        }
                     }
-                    getReservationsAndDisplayTable();
-                }
+                };
+                xhr.open("POST", "myreservation", true); // specify whether the request should be asynchronous or not
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // Determines the data type of the content sent in the HTTP request.
+                xhr.send("action=paginationNumber&condition=" + selectedOption + "&value=" + encodeURIComponent(userInput));
             }
 
-            async function getReservationsAndDisplayTable() {
-                let url = null;
-                if (action === "viewAll") {
-                    url = "/ChildrenCare/myreservation?page=" + pageNumber;
+            function getReservationsAndDisplayTable() {
+                // Create an AJAX request to check login
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        const reservationsData = xhr.responseText;
+                        const table = document.getElementById("reservationTable");
+                        
+                        // Get the table element
+                        const temp = document.querySelector(".table");
 
-                } else {
-                    url = "/ChildrenCare/myreservation?page=" + pageNumber + "&condition=" + selectedOption + "&value=" + encodeURIComponent(userInput);
-                }
+                        // Get the tbody element
+                        const tbody = temp.querySelector("#reservationTable");
 
+                        // Remove all child elements of the tbody element
+                        tbody.innerHTML = "";
 
-                const response = await fetch(url, {
-                    method: "POST",
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-
-                const reservationsData = await response.text();
-
-                const table = document.getElementById("reservationTable");
-
-                // Get the table element
-                const temp = document.querySelector(".table");
-
-                // Get the tbody element
-                const tbody = temp.querySelector("#reservationTable");
-
-                // Remove all child elements of the tbody element
-                tbody.innerHTML = "";
-
-                // Enable the next and previous button
-                if (pageNumber === 1 && pageNumber === totalPagePagination) {
-                    document.getElementById("previousPageButton").disabled = true;
-                    document.getElementById("nextPageButton").disabled = true;
-                } else if (pageNumber === 1) {
-                    document.getElementById("previousPageButton").disabled = true;
-                    document.getElementById("nextPageButton").disabled = false;
-                } else if (pageNumber === totalPagePagination) {
-                    document.getElementById("previousPageButton").disabled = false;
-                    document.getElementById("nextPageButton").disabled = true;
-                } else {
-                    document.getElementById("previousPageButton").disabled = false;
-                    document.getElementById("nextPageButton").disabled = false;
-                }
-                selectElement.selectedIndex = pageNumber - 1;
+                        // Enable the next and previous button
+                        if (pageNumber === 1 && pageNumber === totalPagePagination) {
+                            document.getElementById("previousPageButton").disabled = true;
+                            document.getElementById("nextPageButton").disabled = true;
+                        } else if (pageNumber === 1) {
+                            document.getElementById("previousPageButton").disabled = true;
+                            document.getElementById("nextPageButton").disabled = false;
+                        } else if (pageNumber === totalPagePagination) {
+                            document.getElementById("previousPageButton").disabled = false;
+                            document.getElementById("nextPageButton").disabled = true;
+                        } else {
+                            document.getElementById("previousPageButton").disabled = false;
+                            document.getElementById("nextPageButton").disabled = false;
+                        }
+                        selectElement.selectedIndex = pageNumber - 1;
 
 
-                const reservationLines = reservationsData.split("\n");
+                        const reservationLines = reservationsData.split("\n");
 
-                reservationLines.forEach((line) => {
-                    const reservationAttributes = line.split(",");
-                    if (reservationAttributes.length === 8) {
-                        const row = document.createElement("tr");
-                        row.classList.add("text-center");
+                        reservationLines.forEach((line) => {
+                            const reservationAttributes = line.split(",");
+                            if (reservationAttributes.length === 8) {
+                                const row = document.createElement("tr");
+                                row.classList.add("text-center");
 
-                        reservationAttributes.forEach((attribute, index) => {
-                            const cell = document.createElement("td");
+                                reservationAttributes.forEach((attribute, index) => {
+                                    const cell = document.createElement("td");
 
-                            if (index === 0) {
-                                // First attribute: Create an <a> element with href
-                                const link = document.createElement("a");
-                                link.href = `reservation?id=` + attribute;
-                                link.textContent = attribute;
-                                cell.appendChild(link);
-                            } else if (index === 7) {
-                                const paragraph = document.createElement("span");
-                                switch (attribute) {
-                                    case "done" :
-                                        paragraph.classList.add("badge", "bg-success", "rounded-pill");
-                                        break;
-                                    case "cancel" :
-                                        paragraph.classList.add("badge", "bg-warning", "rounded-pill");
-                                        break;
-                                    case "pending" :
-                                        paragraph.classList.add("badge", "bg-secondary", "rounded-pill");
-                                        break;
-                                    case "awaiting confirmation" :
-                                        paragraph.classList.add("badge", "bg-info", "rounded-pill");
-                                        break;
-                                    case "waiting for examination" :
-                                        paragraph.classList.add("badge", "bg-primary", "rounded-pill");
-                                        break;
-                                    default :
-                                        paragraph.classList.add("badge", "bg-primary", "rounded-pill");
-                                        break;
-                                }
-                                paragraph.textContent = attribute;
-                                cell.appendChild(paragraph);
+                                    if (index === 0) {
+                                        // First attribute: Create an <a> element with href
+                                        const link = document.createElement("a");
+                                        link.href = `reservation?id=` + attribute;
+                                        link.textContent = attribute;
+                                        cell.appendChild(link);
+                                    } else if (index === 7) {
+                                        const paragraph = document.createElement("span");
+                                        switch (attribute) {
+                                            case "done" :
+                                                paragraph.classList.add("badge", "bg-success", "rounded-pill");
+                                                break;
+                                            case "cancel" :
+                                                paragraph.classList.add("badge", "bg-warning", "rounded-pill");
+                                                break;
+                                            case "pending" :
+                                                paragraph.classList.add("badge", "bg-secondary", "rounded-pill");
+                                                break;
+                                            case "awaiting confirmation" :
+                                                paragraph.classList.add("badge", "bg-info", "rounded-pill");
+                                                break;
+                                            case "waiting for examination" :
+                                                paragraph.classList.add("badge", "bg-primary", "rounded-pill");
+                                                break;
+                                            default :
+                                                paragraph.classList.add("badge", "bg-primary", "rounded-pill");
+                                                break;
+                                        }
+                                        paragraph.textContent = attribute;
+                                        cell.appendChild(paragraph);
 
-                            } else {
-                                const paragraph = document.createElement("p");
-                                paragraph.classList.add("fw-normal", "mb-1");
-                                paragraph.textContent = attribute;
-                                cell.appendChild(paragraph);
+                                    } else {
+                                        const paragraph = document.createElement("p");
+                                        paragraph.classList.add("fw-normal", "mb-1");
+                                        paragraph.textContent = attribute;
+                                        cell.appendChild(paragraph);
+                                    }
+
+                                    row.appendChild(cell);
+                                });
+                                table.appendChild(row);
                             }
-
-                            row.appendChild(cell);
                         });
-                        table.appendChild(row);
                     }
-                });
+                };
+                xhr.open("POST", "myreservation", true); // specify whether the request should be asynchronous or not
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // Determines the data type of the content sent in the HTTP request.
+
+                if (action === "viewAll") {
+                    xhr.send("page=" + pageNumber);
+                } else {
+                    xhr.send("page=" + pageNumber + "&condition=" + selectedOption + "&value=" + encodeURIComponent(userInput));
+                }
             }
 
             window.onload = getReservationsAndDisplayTable();

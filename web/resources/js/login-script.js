@@ -80,8 +80,8 @@ function attemptLogin() {
             }
         };
 
-        xhr.open("POST", "login", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.open("POST", "login", true); // specify whether the request should be asynchronous or not
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded"); // Determines the data type of the content sent in the HTTP request.
         xhr.send("lemail=" + email + "&lpassword=" + password);
     }
 }
