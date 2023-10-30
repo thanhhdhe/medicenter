@@ -124,6 +124,11 @@
                            ><i class="fas fa-stethoscope"></i>Services</a
                         >
                     </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="postManage" class="nav-item nav-link active"
+                           ><i class="bi bi-file-earmark-post"></i>Post</a
+                        >
+                    </div>
                     <%}%>
                 </nav>
             </div>

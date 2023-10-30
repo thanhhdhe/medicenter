@@ -99,6 +99,11 @@
                         <a href="feedback" class="nav-item nav-link"
                            ><i class="far fa-file-alt me-2"></i>Feedback</a>
                     </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="postManage" class="nav-item nav-link"
+                           ><i class="bi bi-file-earmark-post"></i>Post</a
+                        >
+                    </div>
                 </nav>
             </div>
             <!-- Sidebar End -->
