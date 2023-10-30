@@ -610,7 +610,7 @@ public class MedicalExaminationDAO extends MyDAO {
             ps.setInt(2, medicalExamination.getMchildrenID());
             ps.setInt(3, medicalExamination.getMstaffID());
             ps.setDate(4, medicalExamination.getExaminationDate());
-            ps.setDouble(5, medicalExamination.getMuserID());
+            ps.setInt(5, medicalExamination.getServiceID());
             ps.setString(6, medicalExamination.getMedicalPrescription());
             ps.setString(7, medicalExamination.getDisease());
             ps.executeUpdate();

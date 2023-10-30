@@ -267,7 +267,7 @@
                                                 </div>
                                             </td>
                                             <td><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getBirthday()%></td>
-                                            <td><%=serviceDAO.getServiceByID(medicalExamination.getMuserID()+"").getTitle()%></td>
+                                            <td><%=serviceDAO.getServiceByID(medicalExamination.getServiceID()+"").getTitle()%></td>
                                             <td><%=medicalExamination.getExaminationDate()%></td>
                                             <td><%=medicalExamination.getDisease()%></td>
                                             <td>

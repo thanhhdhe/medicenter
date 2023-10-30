@@ -178,7 +178,7 @@ public class ReservationDetailController extends HttpServlet {
             // Double check if there is no staff for this service
             List<Integer> listStaff = servicestaffDAO.getListStaffIDCanWork(selectedDate, selectedMonth, selectedYear, slot, serviceID);
 
-            if (listStaff == null) {
+            if (listStaff == null || listStaff.size() == 0) {
                 response.setContentType("text/plain");
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write("Choose date again");

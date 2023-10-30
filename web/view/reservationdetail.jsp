@@ -79,8 +79,8 @@
             // Determine the day of week of that day
             const currentDate = new Date();
             const realMonth = currentDate.getMonth(); // +1 to get the real month
-            let currentMonth = currentDate.getMonth();
-            let currentYear = currentDate.getFullYear();
+            let currentMonth = currentDate.getMonth(); // Variable to store the month that user selected ( default : current month )
+            let currentYear = currentDate.getFullYear(); // Variable to store the year that user selectect ( default : current year )
             // JS Automatically subtract 1 day, setting the date to the last day of the previous month
             let daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate(); 
             // Get the first day of the month

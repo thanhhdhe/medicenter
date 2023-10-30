@@ -383,7 +383,7 @@ VALUES
 INSERT INTO Children (UserID, ChildName, Birthday, Status, Gender, Avatar, RelationshipID)
 VALUES	(1, 'viet', '2013-09-01', 'Healthy','Male', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpmA-_2vvDLD4BjOCXyDfV2vXBD9KmqylfODng16S2u1xdsSrmIGFl1aPs5sKeCgB5CFo&usqp=CAU',1),
 		(1, 'thanh', '2011-09-01', 'Healthy','Female', 'https://cdn-img.scalabs.com.au/uzjYWz5uFA99H9ilh_BLtPqAA1Dq0GhZ05-Iow7qAZM/aHR0cHM6Ly9zdy1o/aXQtcHJkLnNjYWRp/Z2l0YWwuaW8vbWVk/aWEvMTYyNjYvc2lk/ZS1leWUtY2hsb2Uu/anBnP3ByZXNldD1N/YWluSW1hZ2U',5),
-		(3, 'thanhthut', '2010-09-01', 'Healthy','Male', 'https://www.meme-arsenal.com/memes/86be0b3ec5e7d4ef82860978308903dc.jpg',2),
+		(3, 'thanhthut', '2010-09-01', 'Healthy','Male', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1FBxbQH9XIButhyBKveuJ0w1XEtIIwhQY8W8MWXJGgnwKh3bNF72GyzTsv_WH0M7Frlc&usqp=CAU',2),
 		(3, 'quan', '2014-09-01', 'Healthy','Female', 'https://hips.hearstapps.com/hmg-prod/images/kailia-posey-dead-grinning-girl-meme-1651648895.jpg?crop=0.667xw:1.00xh;0.0898xw,0&resize=640:*',5),
         (2, 'hiu', '2013-09-01', 'Healthy','Male', 'https://i.redd.it/uuunx09z14b71.jpg',3);
 
@@ -443,8 +443,8 @@ VALUES
 INSERT INTO Reservations(UserID, ServiceID, StaffID, ChildID, CreatedDate, ReservationDate, ReservationSlot, Cost, Status,Payment) 
 VALUES (1, 15, 7, 1, DATEADD(MILLISECOND,-4105241,GETDATE()), DATEADD(DAY, 4, GETDATE()), 1, 100.0, 'waiting for examination','VNPay'),
 (1, 9, 1, 1, DATEADD(MILLISECOND,-8104511,GETDATE()), DATEADD(DAY, 3, GETDATE()), 3, 450, 'waiting for examination','Pay at center'),
-(1, 6, 1, 2, DATEADD(MILLISECOND,-10122452,GETDATE()), DATEADD(DAY, 3, GETDATE()), 2, 70.0, 'waiting for examination','VNPay'), 
-(1, 9, 3, 2, DATEADD(MILLISECOND,-16785745,GETDATE()), DATEADD(DAY, 14, GETDATE()), 2, 450.0, 'waiting for examination','VNPay'), 
+(1, 6, 1, 2, DATEADD(MILLISECOND,-10122452,GETDATE()), DATEADD(DAY, 3, GETDATE()), 2, 70.0, 'awaiting confirmation','VNPay'), 
+(1, 9, 3, 2, DATEADD(MILLISECOND,-16785745,GETDATE()), DATEADD(DAY, 14, GETDATE()), 2, 450.0, 'awaiting confirmation','VNPay'), 
 (1, 6, 4, 1, DATEADD(MILLISECOND,-25642544,GETDATE()), DATEADD(DAY, 8, GETDATE()), 1, 70.0, 'pending','Pay at Center'),
 (1, 6, 4, 2, DATEADD(MILLISECOND,-38454524,GETDATE()), DATEADD(DAY, 8, GETDATE()), 2, 70.0, 'waiting for examination','VNPay');
 
