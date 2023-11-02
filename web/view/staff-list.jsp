@@ -58,7 +58,6 @@
                     </div>
                     <div class="info">
                         <h3>
-
                             <a href="/ChildrenCare/docDetail?ID=<%=staff.getStaffID()%>"><%=staff.getRank()%> <%=staff.getFullName()%></a></h3>
                         <p><img src="https://hongngochospital.vn/wp-content/themes/hongngoc/images/icon-level.png" alt=""><%=staff.getRank()%></p>
                         <p><img src="https://hongngochospital.vn/wp-content/themes/hongngoc/images/icon-park.png" alt=""> 
