@@ -102,6 +102,11 @@
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-schedules" class="nav-item nav-link">
+                          <i class="bi bi-calendar3"></i>Schedules
+                        </a>
+                    </div>
                     <%}%>
                     <%if(isManager){%>
                     <div class="navbar-nav w-100  text-light">

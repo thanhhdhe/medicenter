@@ -1,8 +1,3 @@
-<%-- 
-    Document   : HomePage
-    Created on : 12-Sep-2023, 20:29:49
-    Author     : Admin
---%>
 <%@page import = "model.*" %>
 <%@page import = "Database.*" %>
 <%@page import = "java.util.*" %>
@@ -11,7 +6,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Medical examination</title>
+        <title>Schedules of staff</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <meta content="" name="keywords" />
         <meta content="" name="description" />
@@ -97,9 +92,14 @@
                         >
                     </div>  
                     <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link active"
+                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
+                    </div>
+                    <div class="navbar-nav w-100  text-light">
+                        <a href="staff?event=send-to-schedules" class="nav-item nav-link active">
+                          <i class="bi bi-calendar3"></i>Schedules
+                        </a>
                     </div>
                     <%}%>
                     <%if(isManager){%>
@@ -111,17 +111,7 @@
                     <div class="navbar-nav w-100  text-light">
                         <a href="reservationcontactmanager?event=reservation-list" class="nav-item nav-link"
                            ><i class="fas fa-list-alt"></i>Reservations Manager</a
-                        >
-                    </div>
-                    <div class="navbar-nav w-100 text-light">
-                        <a href="feedback" class="nav-item nav-link"
-                           ><i class="far fa-file-alt"></i>Feedback</a
-                        >
-                    </div>
-                    <div class="navbar-nav w-100 text-light">
-                        <a href="service?event=manage" class="nav-item nav-link"
-                           ><i class="fas fa-stethoscope"></i>Services</a
-                        >
+                        >   </a>
                     </div>
                     <%}%>
                 </nav>
@@ -209,43 +199,18 @@
                         >
                         <div class="col-md-12 p-0">
                             <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
-                                <h4>MEDICAL RECORDS</h4>
-                                <a href="staff?event=send-to-children-list" class="ms-text-primary font-weight-bold">Add Medical Record</a>
+                                <h4>SCHEDULE</h4>
+                                <a href="staff?event=request-schedule" class="ms-text-primary font-weight-bold">Add new schedules</a>
                             </div>
-                            <div class="mb-4 px-4 py-3 d-flex justify-content-between align-items-center">
-                                <div class="col-md-3">
-                                    <input class="form-control" name="patientName" id="patientName" type="search" placeholder="Search Child Name" />
-                                </div>
                             
-                            <div class="col-md-4 px-4 d-flex">
-                                    <div class="input-group text-black-50">
-                                        <input type="date" class="form-control" name="from" id="from">
-                                        <span class="input-group-text">to</span>
-                                        <input type="date" class="form-control"name="to" id="to">
-                                    </div>
-                                </div>
-                                <div class="col-md-3 px-4">
-                                    <select class="form-select" id="service">
-                                        <option selected value="">Service</option>
-                                        <%List<Integer> list = medicalExaminationDAO.getListServiceIDsByStaffID(curStaff.getStaffID());
-                                        for (Integer integer : list) {%>
-                                            <option value="<%=integer%>"><%=serviceDAO.getServiceByID(integer + "").getTitle()%></option>
-                                        <%}%>
-                                    </select>
-                                </div>
-                            </div>        
                             <div class="table-responsive p-4">
                                 <%if(curStaff!=null){%>
                                 <table class="table table-striped table-hover">
                                     <thead class="text-light" style="background: #1977cc;">
                                         <tr>
-                                            <th scope="col">ID</th>
-                                            <th scope="col">Patient Name</th>
-                                            <th scope="col">Date of birth</th>
-                                            <th scope="col">Service</th>
-                                            <th scope="col">Date</th>
-                                            <th scope="col">Disease</th>
-                                            <th scope="col">Action</th>
+                                            <th scope="col">Reservation Date</th>
+                                            <th scope="col">Reservation Slot</th>
+                                            <th scope="col">Status</th>
                                         </tr>
                                     </thead>
                                     <tbody id="medical-list">
@@ -267,8 +232,7 @@
                                             <td><%=medicalExamination.getDisease()%></td>
                                             <td>
                                                 <div class="d-flex">
-                                                    <a class="me-3" href="staff?event=send-to-edit&id=<%=medicalExamination.getMedicalExaminationID()%>"><i class="fas fa-pencil-alt ms-text-primary"></i></a>
-                                                    <a href="medical-examination?event=delete&id=<%=medicalExamination.getMedicalExaminationID()%>" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
+                                                    <a href="staffschedules?event=delete&id=<%=medicalExamination.getMedicalExaminationID()%>" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -338,6 +302,9 @@
 
                     return false;
                 });
+                
+                // Pagination
+                
             </script>
     </body>
 </html>

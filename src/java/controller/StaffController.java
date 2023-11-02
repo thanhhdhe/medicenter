@@ -56,8 +56,10 @@ public class StaffController extends HttpServlet {
         boolean isManager = false;
         boolean isStaff = false;
         boolean isAdmin = false;
-        String adminEmail = (String) session.getAttribute("adminEmail")+"";
-        if(adminEmail.contains("@"))isAdmin=true;
+        String adminEmail = (String) session.getAttribute("adminEmail") + "";
+        if (adminEmail.contains("@")) {
+            isAdmin = true;
+        }
         if (curStaff != null) {
             if (curStaff.getRole().equals("manager")) {
                 isManager = true;
@@ -128,6 +130,14 @@ public class StaffController extends HttpServlet {
                 }
                 request.getRequestDispatcher("./view/reservation-of-staff.jsp").forward(request, response);
                 break;
+            case "send-to-schedules": {
+                if (!isManager && !isStaff) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
+                request.getRequestDispatcher("./view/schedules-of-staff.jsp").forward(request, response);
+                break;
+            }
             case "send-to-reservation-detail":
                 if (!isManager && !isStaff) {
                     request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
@@ -197,7 +207,7 @@ public class StaffController extends HttpServlet {
             request.setAttribute("err", "Incorrect username or password!");
             request.getRequestDispatcher("./view/login-staff.jsp").forward(request, response);
         } else if (staff.getRole().equals("admin")) {
-             HttpSession session = request.getSession(true);
+            HttpSession session = request.getSession(true);
             session.setAttribute("adminEmail", email);
             response.sendRedirect("admin");
         } else {
@@ -207,7 +217,7 @@ public class StaffController extends HttpServlet {
             request.getRequestDispatcher("./view/staff-dashboard.jsp").forward(request, response);
         }
     }
-    
+
     protected void changeRole(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String id = (String) request.getParameter("id");
@@ -265,9 +275,9 @@ public class StaffController extends HttpServlet {
                         + "<li class=\"pagination-btn inactive\"><a href=\"#\" data-page=\"3\" onclick=\"loadReservation(event, 3)\">3</a></li>\n"
                         + "<span>...</span>\n"
                         + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"loadReservation(event, " + numberOfPage + ")\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"loadReservation(event, " + (pagination+1) + ")\">&gt;</a></li>";
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"loadReservation(event, " + (pagination + 1) + ")\">&gt;</a></li>";
             } else if (pagination > numberOfPage - 4) {
-                paginationHtml += "<li class=\"pagination-btn inactive\" ><a href=\"#\" onclick=\"loadReservation(event, " + (pagination-1) + ")\">&lt;</a></li>"
+                paginationHtml += "<li class=\"pagination-btn inactive\" ><a href=\"#\" onclick=\"loadReservation(event, " + (pagination - 1) + ")\">&lt;</a></li>"
                         + "<span>...</span>\n";
                 for (int i = numberOfPage - 3; i <= numberOfPage; i++) {
                     if (i == pagination) {
@@ -276,16 +286,16 @@ public class StaffController extends HttpServlet {
                         paginationHtml += "<li class=\"pagination-btn inactive\"><a onclick=\"loadReservation(event, " + i + ")\" data-page=\"" + i + "\" href=\"#\">" + i + "</a></li>";
                     }
                 }
-                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"loadReservation(event, " + (pagination+1) + ")\">&gt;</a></li>";
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"loadReservation(event, " + (pagination + 1) + ")\">&gt;</a></li>";
             } else {
-                int pagination1 =pagination+1,pagination2=pagination+2;
-                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"loadReservation(event, " + (pagination-1) + ")\">&lt;</a></li>"
+                int pagination1 = pagination + 1, pagination2 = pagination + 2;
+                paginationHtml += "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"loadReservation(event, " + (pagination - 1) + ")\">&lt;</a></li>"
                         + "<li class=\"pagination-btn active\"><span>" + pagination + "</span></li>"
-                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"loadReservation(event, " + pagination1 + ")\" data-page=\"" + (pagination+1) + "\">" + (int)(pagination+1) + "</a></li>\n"
-                        + "<li class=\"pagination-btn inactive\"><a onclick=\"loadReservation(event, " + pagination2 + ")\" href=\"#\" data-page=\"" + (pagination+2) + "\">" + (int)(pagination+2) + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a href=\"#\" onclick=\"loadReservation(event, " + pagination1 + ")\" data-page=\"" + (pagination + 1) + "\">" + (int) (pagination + 1) + "</a></li>\n"
+                        + "<li class=\"pagination-btn inactive\"><a onclick=\"loadReservation(event, " + pagination2 + ")\" href=\"#\" data-page=\"" + (pagination + 2) + "\">" + (int) (pagination + 2) + "</a></li>\n"
                         + "<span>...</span>\n"
                         + "<li class=\"pagination-btn inactive\"><a onclick=\"loadReservation(event, " + numberOfPage + ")\" href=\"#\" data-page=\"" + numberOfPage + "\">" + numberOfPage + "</a></li>\n"
-                        + "<li class=\"pagination-btn inactive\"><a onclick=\"loadReservation(event, " + numberOfPage + ")\" href=\"#\" onclick=\"loadReservation(event, " + (pagination+1) + ")\">&gt;</a></li>";
+                        + "<li class=\"pagination-btn inactive\"><a onclick=\"loadReservation(event, " + numberOfPage + ")\" href=\"#\" onclick=\"loadReservation(event, " + (pagination + 1) + ")\">&gt;</a></li>";
             }
 
         }
@@ -304,7 +314,7 @@ public class StaffController extends HttpServlet {
                     + "        </div>\n"
                     + "    </td>\n"
                     + "    <td>" + serviceDAO.getServiceByID(reservation.getServiceID() + "").getTitle() + "</td>\n"
-                    + "    <td>" + reservation.getCost()+ "</td>\n"        
+                    + "    <td>" + reservation.getCost() + "</td>\n"
                     + "    <td>");
             if (reservation.getStatus().equals("done")) {
                 out.print("<p class=\"bg-success rounded-2 text-white m-0 p-1 px-2\" style=\"width: fit-content;\">" + reservation.getStatus() + "</p>");
@@ -329,7 +339,5 @@ public class StaffController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-    
 
 }

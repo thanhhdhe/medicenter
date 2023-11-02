@@ -256,38 +256,35 @@ public class StaffScheduleDAO extends MyDAO {
         return list;
     }
 
+    public List<StaffSchedule> getPageStaffScheduleByStaff(String staffID, int page, int pageSize) {
+        List<StaffSchedule> StaffScheduleList = new ArrayList<>();
+        xSql = "SELECT *  FROM [dbo].[StaffSchedule] WHERE StaffID = ? "
+                + "ORDER BY ReservationDate DESC "
+                + "OFFSET ? ROWS "
+                + "FETCH NEXT ? ROWS ONLY;";
+        int offset = (page - 1) * pageSize;
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, staffID);
+            ps.setInt(2, offset);
+            ps.setInt(3, pageSize);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Date reservationDate = rs.getDate("ReservationDate");
+                int slot = rs.getInt("Slot");
+                StaffSchedule staffSchedules = new StaffSchedule();
+                
+                StaffScheduleList.add(staffSchedules);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return StaffScheduleList;
+    }
+
     public static void main(String args[]) {
-        StaffScheduleDAO ssd = new StaffScheduleDAO();
-        ReservationDAO rdao = new ReservationDAO();
-//        List<Integer> fullDay = ssd.getWorkDay("3", "10", "2023");
-//        // Loop in workday
-//        for (int day : fullDay) {
-//            System.out.print(day + " ");
-//            for (int slot : ssd.getWorkSlots(Integer.toString(day), "10", "2023", "3")) {
-//                System.out.print(slot);
-//                boolean temp = rdao.checkSlotForAvailable(Integer.toString(slot), "3", Integer.toString(day), "10", "2023");
-//                System.out.println(temp);
-//            }
-//            System.out.println();
-//        }
-//        for (int day : fullDay) {
-//            boolean check = false;
-//            for (int slot : ssd.getWorkSlots(Integer.toString(day), "10", "2023", "3")) {
-//                boolean temp = rdao.checkSlotForAvailable(Integer.toString(slot), "3", Integer.toString(day), "10", "2023");
-//                if (temp == true) {
-//                    check = true;
-//                    break;
-//                }
-//            }
-//            if (check == true) {
-//                fullDay.remove(Integer.valueOf(day));
-//            }
-//        }
-//        for (int i : ssd.getListDayFullSlot("3","9")) {
-//            System.out.println(i);
-//        }
-//        for (int i : ssd.getWorkSlotsByService("3", "27", "10", "2023")) {
-//            System.out.println(i);
-//        }
+
     }
 }
