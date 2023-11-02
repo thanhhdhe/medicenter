@@ -144,7 +144,6 @@ public class ServiceController extends HttpServlet {
                 break;
             case "doc":
                 PrintWriter out = response.getWriter();
-                out.print("dcm");
                 String staffID = request.getParameter("staffID");
                 request.setAttribute("staffID", staffID);
                 out.print(staffID);
