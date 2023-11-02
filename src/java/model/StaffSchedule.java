@@ -16,6 +16,7 @@ public class StaffSchedule {
     private int StaffID;
     private Date Workday;
     private int Slot;
+    private String status;
 
     public StaffSchedule() {
     }
@@ -26,6 +27,23 @@ public class StaffSchedule {
         this.Workday = Workday;
         this.Slot = Slot;
     }
+
+    public StaffSchedule(int ScheduleID, int StaffID, Date Workday, int Slot, String status) {
+        this.ScheduleID = ScheduleID;
+        this.StaffID = StaffID;
+        this.Workday = Workday;
+        this.Slot = Slot;
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    
 
     public int getScheduleID() {
         return ScheduleID;

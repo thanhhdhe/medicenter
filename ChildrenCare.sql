@@ -247,6 +247,7 @@ CREATE TABLE StaffSchedules (
     StaffID INT NOT NULL,
     Workday Date NOT NULL,
     Slot int NOT NULL,
+	Status NVARCHAR(15) NOT NULL,
     FOREIGN KEY (StaffID) REFERENCES Staff(StaffID)
 );
 
@@ -336,28 +337,74 @@ VALUES ('hn','lethangd@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng
 	   ('hn','levandin16@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 1, '10-11-2023');
 
 
-INSERT INTO StaffSchedules(StaffID, Workday, Slot) VALUES
---StaffID 1
-(1, DATEADD(DAY, 3, GETDATE()), 1),(1, DATEADD(DAY, 3, GETDATE()), 2),(1, DATEADD(DAY, 3, GETDATE()), 3),(1, DATEADD(DAY, 3, GETDATE()), 5),
-(1, DATEADD(DAY, 3, GETDATE()), 6),(1, DATEADD(DAY, 4, GETDATE()), 1),(1, DATEADD(DAY, 4, GETDATE()), 2),(1, DATEADD(DAY, 4, GETDATE()), 5),
-(1, DATEADD(DAY, 4, GETDATE()), 6),(1, DATEADD(DAY, 7, GETDATE()), 1),(1, DATEADD(DAY, 7, GETDATE()), 2),(1, DATEADD(DAY, 10, GETDATE()), 4),
-(1, DATEADD(DAY, 10, GETDATE()), 5),(1, DATEADD(DAY, 15, GETDATE()), 1),(1, DATEADD(DAY, 15, GETDATE()), 2),(1, DATEADD(DAY, 19, GETDATE()), 2),
---StaffID 3
-(3, DATEADD(DAY, 1, GETDATE()), 2),(3, DATEADD(DAY, 1, GETDATE()), 3),(3, DATEADD(DAY, 1, GETDATE()), 4),(3, DATEADD(DAY, 1, GETDATE()), 5),
-(3, DATEADD(DAY, 4, GETDATE()), 4),(3, DATEADD(DAY, 4, GETDATE()), 5),(3, DATEADD(DAY, 4, GETDATE()), 6),(3, DATEADD(DAY, 9, GETDATE()), 2),
-(3, DATEADD(DAY, 9, GETDATE()), 3),(3, DATEADD(DAY, 9, GETDATE()), 4),(3, DATEADD(DAY, 11, GETDATE()), 1),(3, DATEADD(DAY, 11, GETDATE()), 2),
-(3, DATEADD(DAY, 11, GETDATE()), 3),(3, DATEADD(DAY, 14, GETDATE()), 1),(3, DATEADD(DAY, 14, GETDATE()), 2),(3, DATEADD(DAY, 14, GETDATE()), 3),
---StaffID 4
-(4, DATEADD(DAY, 2, GETDATE()), 3),(4, DATEADD(DAY, 2, GETDATE()), 4),(4, DATEADD(DAY, 2, GETDATE()), 6),(4, DATEADD(DAY, 3, GETDATE()), 1),
-(4, DATEADD(DAY, 3, GETDATE()), 2),(4, DATEADD(DAY, 3, GETDATE()), 5),(4, DATEADD(DAY, 3, GETDATE()), 6),(4, DATEADD(DAY, 8, GETDATE()), 1),
-(4, DATEADD(DAY, 8, GETDATE()), 2),(4, DATEADD(DAY, 8, GETDATE()), 3),(4, DATEADD(DAY, 14, GETDATE()), 1),(4, DATEADD(DAY, 14, GETDATE()), 2),
-(4, DATEADD(DAY, 14, GETDATE()), 3),(4, DATEADD(DAY, 17, GETDATE()), 1),(4, DATEADD(DAY, 17, GETDATE()), 2),(4, DATEADD(DAY, 17, GETDATE()), 3),
+INSERT INTO StaffSchedules (StaffID, Workday, Slot, Status)
+VALUES
+-- StaffID 1
+(1, DATEADD(DAY, 3, GETDATE()), 1, 'confirm'), (1, DATEADD(DAY, 3, GETDATE()), 2, 'confirm'),
+(1, DATEADD(DAY, 3, GETDATE()), 3, 'confirm'), (1, DATEADD(DAY, 3, GETDATE()), 5, 'confirm'),
+(1, DATEADD(DAY, 3, GETDATE()), 6, 'confirm'), (1, DATEADD(DAY, 4, GETDATE()), 1, 'confirm'),
+(1, DATEADD(DAY, 4, GETDATE()), 2, 'confirm'), (1, DATEADD(DAY, 4, GETDATE()), 5, 'confirm'),
+(1, DATEADD(DAY, 4, GETDATE()), 6, 'confirm'), (1, DATEADD(DAY, 7, GETDATE()), 1, 'confirm'),
+(1, DATEADD(DAY, 7, GETDATE()), 2, 'confirm'), (1, DATEADD(DAY, 10, GETDATE()), 4, 'confirm'),
+(1, DATEADD(DAY, 10, GETDATE()), 5, 'confirm'), (1, DATEADD(DAY, 15, GETDATE()), 1, 'confirm'),
+(1, DATEADD(DAY, 15, GETDATE()), 2, 'confirm'), (1, DATEADD(DAY, 19, GETDATE()), 2, 'confirm'),
+-- StaffID 3
+(3, DATEADD(DAY, 1, GETDATE()), 2, 'confirm'), (3, DATEADD(DAY, 1, GETDATE()), 3, 'confirm'),
+(3, DATEADD(DAY, 1, GETDATE()), 4, 'confirm'), (3, DATEADD(DAY, 1, GETDATE()), 5, 'confirm'),
+(3, DATEADD(DAY, 4, GETDATE()), 4, 'confirm'), (3, DATEADD(DAY, 4, GETDATE()), 5, 'confirm'),
+(3, DATEADD(DAY, 4, GETDATE()), 6, 'confirm'), (3, DATEADD(DAY, 9, GETDATE()), 2, 'confirm'),
+(3, DATEADD(DAY, 9, GETDATE()), 3, 'confirm'), (3, DATEADD(DAY, 9, GETDATE()), 4, 'confirm'),
+(3, DATEADD(DAY, 11, GETDATE()), 1, 'confirm'), (3, DATEADD(DAY, 11, GETDATE()), 2, 'confirm'),
+(3, DATEADD(DAY, 11, GETDATE()), 3, 'confirm'), (3, DATEADD(DAY, 14, GETDATE()), 1, 'confirm'),
+(3, DATEADD(DAY, 14, GETDATE()), 2, 'confirm'), (3, DATEADD(DAY, 14, GETDATE()), 3, 'confirm'),
+-- StaffID 4
+(4, DATEADD(DAY, 2, GETDATE()), 3, 'confirm'), (4, DATEADD(DAY, 2, GETDATE()), 4, 'confirm'),
+(4, DATEADD(DAY, 2, GETDATE()), 6, 'confirm'), (4, DATEADD(DAY, 3, GETDATE()), 1, 'confirm'),
+(4, DATEADD(DAY, 3, GETDATE()), 2, 'confirm'), (4, DATEADD(DAY, 3, GETDATE()), 5, 'confirm'),
+(4, DATEADD(DAY, 3, GETDATE()), 6, 'confirm'), (4, DATEADD(DAY, 8, GETDATE()), 1, 'confirm'),
+(4, DATEADD(DAY, 8, GETDATE()), 2, 'confirm'), (4, DATEADD(DAY, 8, GETDATE()), 3, 'confirm'),
+(4, DATEADD(DAY, 14, GETDATE()), 1, 'confirm'), (4, DATEADD(DAY, 14, GETDATE()), 2, 'confirm'),
+(4, DATEADD(DAY, 14, GETDATE()), 3, 'confirm'),(4, DATEADD(DAY, 17, GETDATE()), 1, 'confirm'),
+(4, DATEADD(DAY, 17, GETDATE()), 2, 'confirm'),(4, DATEADD(DAY, 17, GETDATE()), 3, 'confirm'),
 --StaffID 7
-(7, DATEADD(DAY, 4, GETDATE()), 1),(7, DATEADD(DAY, 4, GETDATE()), 2),(7, DATEADD(DAY, 4, GETDATE()), 5),(7, DATEADD(DAY, 4, GETDATE()), 6),
-(7, DATEADD(DAY, 5, GETDATE()), 1),(7, DATEADD(DAY, 5, GETDATE()), 2),(7, DATEADD(DAY, 5, GETDATE()), 5),(7, DATEADD(DAY, 5, GETDATE()), 6),
-(7, DATEADD(DAY, 8, GETDATE()), 5),(7, DATEADD(DAY, 8, GETDATE()), 6),(7, DATEADD(DAY, 10, GETDATE()), 2),(7, DATEADD(DAY, 12, GETDATE()), 2),
-(7, DATEADD(DAY, 15, GETDATE()), 1),(7, DATEADD(DAY, 15, GETDATE()), 2),(7, DATEADD(DAY, 16, GETDATE()), 1),(7, DATEADD(DAY, 16, GETDATE()), 2)
+(7, DATEADD(DAY, 4, GETDATE()), 1, 'confirm'),(7, DATEADD(DAY, 4, GETDATE()), 2, 'confirm'),
+(7, DATEADD(DAY, 4, GETDATE()), 5, 'confirm'),(7, DATEADD(DAY, 4, GETDATE()), 6, 'confirm'),
+(7, DATEADD(DAY, 5, GETDATE()), 1, 'confirm'),(7, DATEADD(DAY, 5, GETDATE()), 2, 'confirm'),
+(7, DATEADD(DAY, 5, GETDATE()), 5, 'confirm'),(7, DATEADD(DAY, 5, GETDATE()), 6, 'confirm'),
+(7, DATEADD(DAY, 8, GETDATE()), 5, 'confirm'),(7, DATEADD(DAY, 8, GETDATE()), 6, 'confirm'),
+(7, DATEADD(DAY, 10, GETDATE()), 2, 'confirm'),(7, DATEADD(DAY, 12, GETDATE()), 2, 'confirm'),
+(7, DATEADD(DAY, 15, GETDATE()), 1, 'confirm'),(7, DATEADD(DAY, 15, GETDATE()), 2, 'confirm'),
+(7, DATEADD(DAY, 16, GETDATE()), 1, 'confirm'),(7, DATEADD(DAY, 16, GETDATE()), 2, 'confirm')
 
+INSERT INTO StaffSchedules (StaffID, Workday, Slot, Status)
+VALUES
+-- StaffID 5
+(5, DATEADD(DAY, 3, GETDATE()), 1, 'unconfirmed'), (5, DATEADD(DAY, 3, GETDATE()), 2, 'unconfirmed'),
+(5, DATEADD(DAY, 3, GETDATE()), 3, 'unconfirmed'), (5, DATEADD(DAY, 3, GETDATE()), 5, 'unconfirmed'),
+(5, DATEADD(DAY, 3, GETDATE()), 6, 'unconfirmed'), (5, DATEADD(DAY, 4, GETDATE()), 1, 'unconfirmed'),
+(5, DATEADD(DAY, 4, GETDATE()), 2, 'unconfirmed'), (5, DATEADD(DAY, 4, GETDATE()), 5, 'unconfirmed'),
+(5, DATEADD(DAY, 4, GETDATE()), 6, 'unconfirmed'), (5, DATEADD(DAY, 7, GETDATE()), 1, 'unconfirmed'),
+(5, DATEADD(DAY, 7, GETDATE()), 2, 'unconfirmed'), (5, DATEADD(DAY, 10, GETDATE()), 4, 'unconfirmed'),
+(5, DATEADD(DAY, 10, GETDATE()), 5, 'unconfirmed'), (5, DATEADD(DAY, 15, GETDATE()), 1, 'unconfirmed'),
+(5, DATEADD(DAY, 15, GETDATE()), 2, 'unconfirmed'), (5, DATEADD(DAY, 19, GETDATE()), 2, 'unconfirmed'),
+-- StaffID 6
+(6, DATEADD(DAY, 1, GETDATE()), 2, 'unconfirmed'), (6, DATEADD(DAY, 1, GETDATE()), 3, 'unconfirmed'),
+(6, DATEADD(DAY, 1, GETDATE()), 4, 'unconfirmed'), (6, DATEADD(DAY, 1, GETDATE()), 5, 'unconfirmed'),
+(6, DATEADD(DAY, 4, GETDATE()), 4, 'unconfirmed'), (6, DATEADD(DAY, 4, GETDATE()), 5, 'unconfirmed'),
+(6, DATEADD(DAY, 4, GETDATE()), 6, 'unconfirmed'), (6, DATEADD(DAY, 9, GETDATE()), 2, 'unconfirmed'),
+(6, DATEADD(DAY, 9, GETDATE()), 3, 'unconfirmed'), (6, DATEADD(DAY, 9, GETDATE()), 4, 'unconfirmed'),
+(6, DATEADD(DAY, 11, GETDATE()), 1, 'unconfirmed'), (6, DATEADD(DAY, 11, GETDATE()), 2, 'unconfirmed'),
+(6, DATEADD(DAY, 11, GETDATE()), 3, 'unconfirmed'), (6, DATEADD(DAY, 14, GETDATE()), 1, 'unconfirmed'),
+(6, DATEADD(DAY, 14, GETDATE()), 2, 'unconfirmed'), (6, DATEADD(DAY, 14, GETDATE()), 3, 'unconfirmed'),
+-- StaffID 8
+(8, DATEADD(DAY, 2, GETDATE()), 3, 'unconfirmed'), (8, DATEADD(DAY, 2, GETDATE()), 4, 'unconfirmed'),
+(8, DATEADD(DAY, 2, GETDATE()), 6, 'unconfirmed'), (8, DATEADD(DAY, 3, GETDATE()), 1, 'unconfirmed'),
+(8, DATEADD(DAY, 3, GETDATE()), 2, 'unconfirmed'), (8, DATEADD(DAY, 3, GETDATE()), 5, 'unconfirmed'),
+(8, DATEADD(DAY, 3, GETDATE()), 6, 'unconfirmed'), (8, DATEADD(DAY, 8, GETDATE()), 1, 'unconfirmed'),
+(8, DATEADD(DAY, 8, GETDATE()), 2, 'unconfirmed'), (8, DATEADD(DAY, 8, GETDATE()), 3, 'unconfirmed'),
+(8, DATEADD(DAY, 14, GETDATE()), 1, 'unconfirmed'), (8, DATEADD(DAY, 14, GETDATE()), 2, 'unconfirmed'),
+(8, DATEADD(DAY, 14, GETDATE()), 3, 'unconfirmed'),(8, DATEADD(DAY, 17, GETDATE()), 1, 'unconfirmed'),
+(8, DATEADD(DAY, 17, GETDATE()), 2, 'unconfirmed'),(8, DATEADD(DAY, 17, GETDATE()), 3, 'unconfirmed')
 
 INSERT INTO [dbo].[Slider] ([Title], [Images], [Backlink], [status], [Brief])
 VALUES
@@ -447,6 +494,19 @@ VALUES (1, 15, 7, 1, DATEADD(MILLISECOND,-4105241,GETDATE()), DATEADD(DAY, 4, GE
 (1, 9, 3, 2, DATEADD(MILLISECOND,-16785745,GETDATE()), DATEADD(DAY, 14, GETDATE()), 2, 450.0, 'awaiting confirmation','VNPay'), 
 (1, 6, 4, 1, DATEADD(MILLISECOND,-25642544,GETDATE()), DATEADD(DAY, 8, GETDATE()), 1, 70.0, 'pending','Pay at Center'),
 (1, 6, 4, 2, DATEADD(MILLISECOND,-38454524,GETDATE()), DATEADD(DAY, 8, GETDATE()), 2, 70.0, 'waiting for examination','VNPay');
+go
+INSERT INTO Reservations(UserID, ServiceID, StaffID, ChildID, CreatedDate, ReservationDate, ReservationSlot, Cost, Status, Payment) 
+VALUES 
+  (1, 1, 1, 1, DATEADD(MONTH, -14, GETDATE()), DATEADD(MONTH, -15, GETDATE()), 1, 100.0, 'waiting for examination', 'VNPay'),
+  (1, 2, 1, 2, DATEADD(MONTH, -24, GETDATE()), DATEADD(MONTH, -25, GETDATE()), 2, 450, 'pending', 'Pay at center'),
+  (2, 3, 1, 3, DATEADD(MONTH, -34, GETDATE()), DATEADD(MONTH, -35, GETDATE()), 3, 70.0, 'awaiting confirmation', 'VNPay'),
+  (2, 4, 1, 4, DATEADD(MONTH, -44, GETDATE()), DATEADD(MONTH, -45, GETDATE()), 1, 450.0, 'pending', 'VNPay'),
+  (2, 5, 1, 1, DATEADD(MONTH, -52, GETDATE()), DATEADD(MONTH, -55, GETDATE()), 2, 70.0, 'awaiting confirmation', 'Pay at Center'),
+  (1, 6, 1, 1, DATEADD(MONTH, -14, GETDATE()), DATEADD(MONTH, -15, GETDATE()), 1, 100.0, 'waiting for examination', 'VNPay'),
+  (1, 7, 1, 2, DATEADD(MONTH, -24, GETDATE()), DATEADD(MONTH, -25, GETDATE()), 2, 450, 'pending', 'Pay at center'),
+  (1, 8, 1, 3, DATEADD(MONTH, -32, GETDATE()), DATEADD(MONTH, -35, GETDATE()), 3, 70.0, 'awaiting confirmation', 'VNPay'),
+  (1, 9, 1, 4, DATEADD(MONTH, -42, GETDATE()), DATEADD(MONTH, -45, GETDATE()), 1, 450.0, 'pending', 'VNPay'),
+  (1, 10, 1, 1, DATEADD(MONTH, -24, GETDATE()), DATEADD(MONTH, -25, GETDATE()), 2, 70.0, 'awaiting confirmation', 'Pay at Center');
 
 -- Insert data into Reservations 
 INSERT INTO Reservations(UserID, ServiceID, StaffID, ChildID, CreatedDate, ReservationDate, ReservationSlot, Cost, Status,Payment) 

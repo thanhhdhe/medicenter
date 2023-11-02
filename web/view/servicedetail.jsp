@@ -79,6 +79,9 @@
                             <div class="text-center">
                                 <form method="post" action="user?action=my-children">
                                     <input type="hidden" name="serviceID" value="${service.serviceID}">
+                                    <c:if test="${staffID != null}">
+                                        <input type="hidden" name="staffID" value="${staffID}">
+                                    </c:if>
                                     <div class="text-center">
                                         <button type="submit" class="btn btn-primary mb-4">Book Now</button>
                                     </div>

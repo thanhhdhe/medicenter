@@ -215,6 +215,7 @@ public class UserController extends HttpServlet {
                     int staffID = Integer.parseInt(staffIDstr);
                     StaffDAO staffDAO = new StaffDAO();
                     staff = staffDAO.getStaffByStaffId(staffID);
+                    request.setAttribute("staff", staff);
                 }
                 request.setAttribute("service", service);
                 ChildrenDAO cDao = new ChildrenDAO();
@@ -490,7 +491,6 @@ public class UserController extends HttpServlet {
         String adminEmail = (String) session.getAttribute("adminEmail");
         request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
         if (!check) {
-            System.out.println("aa");
             request.setAttribute("validate", check);
             request.setAttribute("firstName", firstName);
             request.setAttribute("lastName", lastName);

@@ -48,24 +48,19 @@
         <!-- Customized Bootstrap Stylesheet -->
         <link href="css/bootstrap.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="./resources/css/staff-dashboard.css">
+        <link rel="stylesheet" href="./resources/css/services-style.css">
     </head>
 
     <body>
         <%
-      String email = (String) session.getAttribute("email");
-      StaffDAO staffDAO = new StaffDAO();
-      ChildrenDAO childrenDAO = new ChildrenDAO();
-      ReservationDAO reservationDAO = new ReservationDAO();
-      Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-      UserDAO userDAO = new UserDAO();
-      ServiceDAO serviceDAO = new ServiceDAO();
-      boolean isManager = false;
-      boolean isStaff = false;
+       String email = (String) session.getAttribute("email");
+       StaffDAO staffDAO = new StaffDAO();
+       Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+       boolean isManager = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){
-            if(curStaff.getRole().equals("manager")) isManager=true;
-            if(curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) isStaff=true;%>
+            if(curStaff.getRole().equals("manager")) isManager=true;%>
             <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">
                 <nav class="navbar navbar-light">
@@ -91,23 +86,6 @@
                             <span><%=curStaff.getRole()%></span>
                         </div>
                     </div>
-                    <%if(isStaff){%>    
-                    <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-reservations-list" class="nav-item nav-link"
-                           ><i class="fas fa-list-alt"></i>Reservations List</a
-                        >
-                    </div>  
-                    <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
-                           ><i class="far fa-check-square"></i>Medical examination</a
-                        >
-                    </div>
-                    <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-schedules" class="nav-item nav-link">
-                          <i class="bi bi-calendar3"></i>Schedules
-                        </a>
-                    </div>
-                    <%}%>
                     <%if(isManager){%>
                     <div class="navbar-nav w-100 text-light">
                         <a href="user?action=all" class="nav-item nav-link"
@@ -115,7 +93,7 @@
                         >
                     </div>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="staffschedule?action=send-to-manage" class="nav-item nav-link"
+                        <a href="staffschedule?action=send-to-manage" class="nav-item nav-link active"
                            ><i class="bi bi-calendar-check"></i>Staff Schedule</a
                         >
                     </div>
@@ -127,6 +105,11 @@
                     <div class="navbar-nav w-100  text-light">
                         <a href="reservationcontactmanager?event=reservation-list" class="nav-item nav-link"
                            ><i class="fas fa-list-alt"></i>Reservations Manager</a
+                        >
+                    </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="user?action=all" class="nav-item nav-link"
+                           ><i class="bi bi-people-fill"></i>User</a
                         >
                     </div>
                     <div class="navbar-nav w-100 text-light">
@@ -142,11 +125,6 @@
                     <div class="navbar-nav w-100 text-light">
                         <a href="postManage" class="nav-item nav-link"
                            ><i class="bi bi-file-earmark-post"></i>Post</a
-                        >
-                    </div>
-                    <div class="navbar-nav w-100 text-light">
-                        <a href="slider?action=all" class="nav-item nav-link"
-                           ><i class="bi bi-image-fill"></i>Slider</a
                         >
                     </div>
                     <%}%>
@@ -231,93 +209,73 @@
                 <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
                     <div
-                        class="min-vh-100 bg-light rounded justify-content-center align-items-center mx-0"
+                        class="row bg-light rounded align-items-center justify-content-center mx-0"
                         >
-                        <div class="row px-4 justify-content-between bg-white rounded-3 border-2 border-light">
-                            <div class="col-md-12 col-lg-4">
-                                <div class="d-flex">
-                                    <div class="me-3">
-                                        <img src="./resources/img/icon/icon-01.png" class="img-fluid" alt="patient" width="100px">
-                                    </div>
-                                    <div class="dash-widget-info">
-                                        <h6>Total Patient</h6>
-                                        <h3><%=childrenDAO.countChildren()%></h3>
-                                        <p class="text-muted">Till Today</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12 col-lg-4">
-                                <div class="d-flex">
-                                    <div class="me-3">
-                                        <img src="./resources/img/icon/icon-02.png" class="img-fluid" alt="Patient" width="100px">
-                                    </div>
-                                    <div class="dash-widget-info">
-                                        <h6>Today Patient</h6>
-                                        <h3><%=reservationDAO.countPatientToday(curStaff.getStaffID()+"")%></h3>
-                                        <p class="text-muted">Today</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12 col-lg-4">
-                                <div class="d-flex">
-                                    <div class="me-3">
-                                        <img src="./resources/img/icon/icon-03.png" class="img-fluid" alt="Patient" width="100px">
-                                    </div>
-                                    <div class="dash-widget-info">
-                                        <h6>Appoinments</h6>
-                                        <h3><%=reservationDAO.countApoinmentTodayOfStaff(curStaff.getStaffID()+"")%></h3>
-                                        <p class="text-muted">Today</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
+                            <h4>STAFF SCHEDULE MANAGEMENT</h4>
                         </div>
+                        <div class="col-md-12">
+                            <%StaffScheduleDAO staffScheduleDAO = new StaffScheduleDAO();
+                            int curPage = Integer.parseInt((request.getAttribute("page")+"").equals("null")?"1":(request.getAttribute("page")+"").trim());
+        List<StaffSchedule> list = (List<StaffSchedule>) request.getAttribute("lists");%>
+                            <div class="d-flex flex-column align-items-center justify-content-center mt-2">
+                                <div class="container row mt-5 mb-4">
 
-                        <h3 class="px-4 mt-3">Patient Appoinment Today</h3>
+                                    <div class="col-md-12">
 
-                        <div class="table-responsive p-4 bg-light border-2 border-light">
-                            <%if(curStaff!=null){%>
-                            <table class="table table-striped table-hover">
-                                <thead class="text-light" style="background: #1977cc;">
-                                    <tr>
-                                        <th scope="col">ID</th>
-                                        <th scope="col">Reserved date</th>
-                                        <th scope="col">Customer name</th>
-                                        <th scope="col">Service</th>
-                                        <th scope="col">Cost</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Detail</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="reservations-list">
-                                    <%
-                                    List<Reservation> reservations = reservationDAO.getApoinmentTodayOfStaff(curStaff.getStaffID()+"");
-        
-                                    if(reservations!=null){
-                                    for (Reservation reservation : reservations) {
-                                    %>
-                                    <tr>
-                                        <th scope="row"><a href="staff?event=send-to-reservation-detail&reserdid=<%=reservation.getReservationID()%>" class="text-decoration-none text-dark"><%=reservation.getReservationID()%></a></th>
-                                        <td><%=reservation.getReservationDate()%></td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <img class="rounded-circle object-cover me-3" src="<%=userDAO.getUserByID(reservation.getUserID()).getProfileImage()%>" alt="alt" width="30px" height="30px"/>
-                                                <div><%=userDAO.getUserByID(reservation.getUserID()).getFirstName()%></div>
-                                            </div>
-                                        </td>
-                                        <td><%=serviceDAO.getServiceByID(reservation.getServiceID()+"").getTitle()%></td>
-                                        <td><%=reservation.getCost()%></td>
-                                        <td><%=reservation.getStatus()%></td>
-                                        <td><a href="staff?event=send-to-reservation-detail&reserdid=<%=reservation.getReservationID()%>"><img src="resources/img/icon/detail.png" alt="alt" width="25px"/></a></td>
-                                    </tr>
-                                    <%}}%>
+                                        <!-- Services List -->
+                                        <table class="table">
+                                            <thead class="text-light" style="background: #1977cc;">
+                                                <tr>
+                                                    <th scope="col">ID</th>
+                                                    <th scope="col">Staff</th>
+                                                    <th scope="col">Workday</th>
+                                                    <th scope="col">Slot</th>
+                                                    <th scope="col"><div class="ms-5">Action</div></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="service-list">
+                                                <%if(!list.isEmpty())   { for (StaffSchedule staffSchedule : list) {%>
+                                                <tr class="p-3">
+                                                    <th scope="row"><%=staffSchedule.getScheduleID()%></th>
+                                                    <td>
+                                                        <div class="d-flex">
+                                                            <img src="<%=staffDAO.getStaffByStaffId(staffSchedule.getStaffID()).getProfileImage()%>" alt="ìmg" width="27px" style="height: 27px; object-position: top; object-fit:  cover;" class="rounded-circle me-2"/>
+                                                            <p class="p-0 m-0"><%=staffDAO.getStaffByStaffId(staffSchedule.getStaffID()).getFullName()%></p>
+                                                        </div>
+                                                        </td>
+                                                    <td><%=staffSchedule.getWorkday()%></td>
+                                                    <td><%=staffSchedule.getSlot()%></td>
+                                                    <td>
+                                                        <div class="d-flex">
+                                                            <a class="nav-link py-0 text-success" href="staffschedule?action=confirm-schedule&page=<%=curPage%>&id=<%=staffSchedule.getScheduleID()%>"><i class="bi bi-check"></i> Confirm</a>
+                                                            <a class="nav-link py-0 text-danger" href="staffschedule?action=reject-schedule&page=<%=curPage%>&id=<%=staffSchedule.getScheduleID()%>"><i class="bi bi-x"></i> Reject</a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <%}}%>
 
-                                </tbody>
-                            </table>
-                            <%}%>    
+                                            </tbody>
+                                        </table>
+                                        <div class="d-flex justify-content-center mb-5" id="pagination-container">
+                                            
+                                            <%for (int i = 1; i <=(staffScheduleDAO.countStaffUnconfirmSchedules()+9)/10; i++) {
+                                                if(i == curPage){%>
+                                                <span class="text-center rounded-circle ms-2 active" style="width: 25px; height: 25px;"><%=i%></span>
+                                                <%}else{%>
+                                                <a href="staffschedule?action=send-to-manage&page=<%=i%>" class="text-center text-black-50 rounded-circle ms-2 inactive" style="width: 25px; height: 25px;"><%=i%></a>
+                                                <%}%>
+                                            <%}%>
+                                        </div>
+
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
-
                     </div>
                 </div>
                 <!-- Blank End -->
@@ -331,33 +289,33 @@
             <!-- Content End -->
 
         </div>
-    </div>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-        crossorigin="anonymous"
-    ></script>
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-        crossorigin="anonymous"
-    ></script>
+        <!-- JavaScript Libraries -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="./resources/js/services-manage-script.js"></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+            crossorigin="anonymous"
+        ></script>
 
-    <!-- Template Javascript -->
-    <script>
-        document.querySelector('.sidebar-toggler').addEventListener('click', function () {
-            var sidebar = document.querySelector('.sidebar');
-            var content = document.querySelector('.content');
+        <!-- Template Javascript -->
+        <script>
+            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+                var sidebar = document.querySelector('.sidebar');
+                var content = document.querySelector('.content');
 
-            sidebar.classList.toggle('open');
-            content.classList.toggle('open');
+                sidebar.classList.toggle('open');
+                content.classList.toggle('open');
 
-            return false;
-        });
-    </script>
-</body>
+                return false;
+            });
+        </script>
+    </body>
 </html>
 

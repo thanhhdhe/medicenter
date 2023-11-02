@@ -36,6 +36,92 @@ public class StaffScheduleDAO extends MyDAO {
         }
         return staffScheduleList;
     }
+    
+    public List<StaffSchedule> getStaffUnconfirmSchedules(int page, int pageSize) {
+        List<StaffSchedule> staffScheduleList = new ArrayList<>();
+        xSql = "SELECT * FROM [dbo].[StaffSchedules] where Status = 'unconfirmed'"
+                + "ORDER BY StaffID DESC "
+                + "OFFSET ? ROWS "
+                + "FETCH NEXT ? ROWS ONLY;";
+        int offset = (page - 1) * pageSize;
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, offset);
+            ps.setInt(2, pageSize);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int ScheduleID = rs.getInt("ScheduleID");
+                Date Workday = rs.getDate("Workday");
+                int Slot = rs.getInt("Slot");
+                String status = rs.getString("Status");
+                StaffSchedule ss = new StaffSchedule(ScheduleID, Slot, Workday, Slot, status);
+                staffScheduleList.add(ss);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return staffScheduleList;
+    }
+    public void updateStaffSchedule(StaffSchedule staffSchedule) {
+        try{
+            String sql = "UPDATE StaffSchedules SET StaffID = ?, Workday = ?, Slot = ?, Status = ? WHERE ScheduleID = ?";
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, staffSchedule.getStaffID());
+            ps.setDate(2, staffSchedule.getWorkday());
+            ps.setInt(3, staffSchedule.getSlot());
+            ps.setString(4, staffSchedule.getStatus());
+            ps.setInt(5, staffSchedule.getScheduleID());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public StaffSchedule getStaffScheduleByID(int scheduleID) {
+        StaffSchedule staffSchedule = null;
+
+        try {
+            String sql = "SELECT * FROM StaffSchedules WHERE ScheduleID = ?";
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, scheduleID);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int staffID = rs.getInt("StaffID");
+                Date workday = rs.getDate("Workday");
+                int slot = rs.getInt("Slot");
+                String status = rs.getString("Status");
+                staffSchedule = new StaffSchedule(scheduleID, staffID, workday, slot, status);
+            }
+
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return staffSchedule;
+    }
+    
+    public int countStaffUnconfirmSchedules() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM [dbo].[StaffSchedules] where Status = 'unconfirmed'";
+        
+        try {
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return count;
+    }
 
     public List<Integer> getWorkDay(String staffID, String month, String year) {
         List<Integer> day = new ArrayList<>();
@@ -285,6 +371,11 @@ public class StaffScheduleDAO extends MyDAO {
     }
 
     public static void main(String args[]) {
-
+        StaffScheduleDAO staffScheduleDAO = new StaffScheduleDAO();
+        List<StaffSchedule> staffSchedules = staffScheduleDAO.getStaffUnconfirmSchedules(1, 10);
+        StaffDAO staffDAO = new StaffDAO();
+        for (StaffSchedule staffSchedule : staffSchedules) {
+            System.out.println(staffDAO.getStaffByStaffId(staffSchedule.getStaffID()).getProfileImage());
+        }
     }
 }
