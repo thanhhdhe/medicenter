@@ -51,15 +51,15 @@
     </head>
 
     <body>
-         <%
-        String email = (String) session.getAttribute("email");
-        StaffDAO staffDAO = new StaffDAO();
-        ReservationDAO reservationDAO = new ReservationDAO();
-        ChildrenDAO childrenDAO = new ChildrenDAO();
-        MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
-        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-        boolean isManager = false;
-        boolean isStaff = false;
+        <%
+       String email = (String) session.getAttribute("email");
+       StaffDAO staffDAO = new StaffDAO();
+       ReservationDAO reservationDAO = new ReservationDAO();
+       ChildrenDAO childrenDAO = new ChildrenDAO();
+       MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
+       Staff curStaff = staffDAO.getStaffByStaffEmail(email);
+       boolean isManager = false;
+       boolean isStaff = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){
@@ -123,6 +123,11 @@
                            ><i class="fas fa-stethoscope"></i>Services</a
                         >
                     </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="postManage" class="nav-item nav-link active"
+                           ><i class="bi bi-file-earmark-post"></i>Post</a
+                        >
+                    </div>
                     <%}%>
                 </nav>
             </div>
@@ -132,7 +137,7 @@
             <div class="content <%if(curStaff==null){%>ms-0 w-100<%}%>">
                 <!-- Navbar Start -->
                 <nav class="navbar navbar-expand navbar-light sticky-top px-4 py-0" style="background-color: #1977cc;">
-                    
+
                     <a href="#" class="sidebar-toggler flex-shrink-0 text-decoration-none text-light">
                         <i class="fa fa-bars"></i>
                     </a>
@@ -195,7 +200,7 @@
                                 <a href="logout" class="dropdown-item">Log Out</a>
                             </div>
                         </div>
-                         <%}else{%>
+                        <%}else{%>
                         <a href="staff?event=sent-to-login" id="login" class="btn btn-outline-primary ms-3 bg-light rounded-pill text-decoration-none"><span class="d-none d-md-inline">Login</a>
                         <%}%>
                     </div>
@@ -254,24 +259,24 @@
                                 <ul id="pagination-container">
                                     <%int numberOfRecord = medicalExaminationDAO.countListChildrenIDByStaff("",curStaff.getStaffID()+"");
                                     if(numberOfRecord<=40){%>
-                                        <%if(numberOfRecord>0){%>
-                                            <li class="pagination-btn active"><span>1</span></li>
-                                            <%for (int i = 2; i <= (numberOfRecord+9)/10; i++) {%>
-                                                <li class="pagination-btn inactive"><a data-page="<%=i%>" href="#"><%=i%></a></li>
-                                            <%}%>
+                                    <%if(numberOfRecord>0){%>
+                                    <li class="pagination-btn active"><span>1</span></li>
+                                        <%for (int i = 2; i <= (numberOfRecord+9)/10; i++) {%>
+                                    <li class="pagination-btn inactive"><a data-page="<%=i%>" href="#"><%=i%></a></li>
                                         <%}%>
-                                    <%}else{%>
-                                        <!--<li class="pagination-btn inactive">><a href="#">&lt;</a></li>-->
-                                        <li class="pagination-btn active"><span>1</span></li>
-                                        <li class="pagination-btn inactive"><a href="#" data-page="2">2</a></li>
-                                        <li class="pagination-btn inactive"><a href="#" data-page="3">3</a></li>
-                                        <span>...</span>
-                                        <li class="pagination-btn inactive"><a href="#" data-page="<%=(numberOfRecord+9)/10%>"><%=(numberOfRecord+9)/10%></a></li>
-                                        <li class="pagination-btn inactive"><a href="#">&gt;</a></li>
-                                    <%}%>
-                                    
+                                        <%}%>
+                                        <%}else{%>
+                                    <!--<li class="pagination-btn inactive">><a href="#">&lt;</a></li>-->
+                                    <li class="pagination-btn active"><span>1</span></li>
+                                    <li class="pagination-btn inactive"><a href="#" data-page="2">2</a></li>
+                                    <li class="pagination-btn inactive"><a href="#" data-page="3">3</a></li>
+                                    <span>...</span>
+                                    <li class="pagination-btn inactive"><a href="#" data-page="<%=(numberOfRecord+9)/10%>"><%=(numberOfRecord+9)/10%></a></li>
+                                    <li class="pagination-btn inactive"><a href="#">&gt;</a></li>
+                                        <%}%>
+
                                 </ul>
-                                    
+
                                 <%}%>
                             </div>
                         </div>
@@ -305,7 +310,7 @@
 
         <!-- Template Javascript -->
         <script>
-            document.querySelector('.sidebar-toggler').addEventListener('click', function() {
+            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
                 var sidebar = document.querySelector('.sidebar');
                 var content = document.querySelector('.content');
 

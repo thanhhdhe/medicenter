@@ -121,6 +121,11 @@
                            ><i class="fas fa-stethoscope"></i>Services</a
                         >
                     </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="postManage" class="nav-item nav-link active"
+                           ><i class="bi bi-file-earmark-post"></i>Post</a
+                        >
+                    </div>
                     <%}%>
                 </nav>
             </div>
@@ -229,7 +234,7 @@
                         class="row vh-100 bg-light rounded align-items-top justify-content-center mx-0"
                         >
                         <div class="col-md-12 text-center justify-content-center">
-                            <div class="table-responsive p-4 w-100"  id="reservation-list">
+                            <div class=" p-4 w-100"  id="reservation-list">
                                 <%if(curStaff!=null){%>
 
                                 <table class="table table-striped table-hover">

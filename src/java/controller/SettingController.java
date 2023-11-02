@@ -155,7 +155,7 @@ public class SettingController extends HttpServlet {
                 request.getRequestDispatcher("./view/add-setting.jsp").forward(request, response);
             } else {
                 //add new setting 
-                settingDAO.InsertSetting(settingName, settingType, settingValue, settingDes, settingStatus);
+                settingDAO.InsertSetting(settingType, settingName, settingValue, settingDes, settingStatus);
                 StaffDAO staffDAO = new StaffDAO();
                 request.setAttribute("admin", staffDAO.getStaffByStaffEmail(adminEmail));
 

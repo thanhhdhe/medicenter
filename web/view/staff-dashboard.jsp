@@ -135,6 +135,11 @@
                         >
                     </div>
                     <div class="navbar-nav w-100 text-light">
+                        <a href="postManage" class="nav-item nav-link"
+                           ><i class="bi bi-file-earmark-post"></i>Post</a
+                        >
+                    </div>
+                    <div class="navbar-nav w-100 text-light">
                         <a href="slider?action=all" class="nav-item nav-link"
                            ><i class="bi bi-image-fill"></i>Slider</a
                         >

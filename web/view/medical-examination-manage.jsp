@@ -123,6 +123,11 @@
                            ><i class="fas fa-stethoscope"></i>Services</a
                         >
                     </div>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="postManage" class="nav-item nav-link active"
+                           ><i class="bi bi-file-earmark-post"></i>Post</a
+                        >
+                    </div>
                     <%}%>
                 </nav>
             </div>
@@ -215,8 +220,8 @@
                                 <div class="col-md-3">
                                     <input class="form-control" name="patientName" id="patientName" type="search" placeholder="Search Child Name" />
                                 </div>
-                            
-                            <div class="col-md-4 px-4 d-flex">
+
+                                <div class="col-md-4 px-4 d-flex">
                                     <div class="input-group text-black-50">
                                         <input type="date" class="form-control" name="from" id="from">
                                         <span class="input-group-text">to</span>
@@ -228,7 +233,7 @@
                                         <option selected value="">Service</option>
                                         <%List<Integer> list = medicalExaminationDAO.getListServiceIDs();
                                         for (Integer integer : list) {%>
-                                            <option value="<%=integer%>"><%=serviceDAO.getServiceByID(integer + "").getTitle()%></option>
+                                        <option value="<%=integer%>"><%=serviceDAO.getServiceByID(integer + "").getTitle()%></option>
                                         <%}%>
                                     </select>
                                 </div>
@@ -275,7 +280,7 @@
 
                                     </tbody>
                                 </table>
-                                        <%int numberRecord = medicalExaminationDAO.countMedicalExaminations("");%>
+                                <%int numberRecord = medicalExaminationDAO.countMedicalExaminations("");%>
                                 <ul id="pagination-container">
                                     <%if(numberRecord<=40){%>
                                     <%if(numberRecord>0){%>

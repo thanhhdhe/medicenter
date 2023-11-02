@@ -441,6 +441,7 @@ public class MedicalExaminationController extends HttpServlet {
             throws ServletException, IOException {
         int childID = Integer.parseInt(request.getParameter("childID") + "");
         int staffID = Integer.parseInt(request.getParameter("staffID") + "");
+        PrintWriter out = response.getWriter();
         int serviceId = Integer.parseInt(request.getParameter("service") + "");
         String reserdId = request.getParameter("reserdId") + "";
         if (!reserdId.equals("null")) {

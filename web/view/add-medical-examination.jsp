@@ -229,6 +229,12 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
+                                            <%if (!reserdId.equals("null")) {
+                                                ReservationDAO reservationDAO = new ReservationDAO();
+                                                Reservation reservation = reservationDAO.getReservationByID(Integer.parseInt(reserdId.trim()));
+                                                Service chooseService = serviceDAO.getServiceByID(reservation.getServiceID()+"");%>
+                                            <input type="hidden" name="service" value="<%=chooseService.getServiceID()%>">    
+                                            <%}else{%>
                                             <select class="form-control mt-2" name="service" required>
                                                 <option value="">Select Service</option>
                                                 <%List<Service> list = serviceDAO.getAllServices();
@@ -237,6 +243,7 @@
                                                 <%}%>
 
                                             </select>
+                                             <%}%>
                                         </div>
                                     </div>
 
