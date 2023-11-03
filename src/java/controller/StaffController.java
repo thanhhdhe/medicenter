@@ -138,6 +138,27 @@ public class StaffController extends HttpServlet {
                 request.getRequestDispatcher("./view/schedules-of-staff.jsp").forward(request, response);
                 break;
             }
+            case "add-schedule": {
+                if (!isManager && !isStaff) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
+                request.setAttribute("staffSchedule", null);
+                request.setAttribute("action", "add");
+                request.getRequestDispatcher("./view/edit-schedule.jsp").forward(request, response);
+                break;
+            }
+            case "edit-schedule": {
+                if (!isManager && !isStaff) {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    break;
+                }
+                String scheduleID = (String) request.getParameter("scheduleID");
+                request.setAttribute("scheduleID", scheduleID);
+                request.setAttribute("action", "edit");
+                request.getRequestDispatcher("./view/edit-schedule.jsp").forward(request, response);
+                break;
+            }
             case "send-to-reservation-detail":
                 if (!isManager && !isStaff) {
                     request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);

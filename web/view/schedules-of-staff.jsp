@@ -1,6 +1,7 @@
 <%@page import = "model.*" %>
 <%@page import = "Database.*" %>
 <%@page import = "java.util.*" %>
+<%@page import = "java.text.SimpleDateFormat"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,20 +44,26 @@
         <!-- Customized Bootstrap Stylesheet -->
         <link href="css/bootstrap.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="./resources/css/staff-dashboard.css">
+        <style>
+            .pagination-btn.inactive a {
+                cursor: context-menu;
+            }
+
+
+        </style>
     </head>
 
     <body>
         <%
        String email = (String) session.getAttribute("email");
        StaffDAO staffDAO = new StaffDAO();
-       ServiceDAO serviceDAO = new ServiceDAO();
-       Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-       ChildrenDAO childrenDAO = new ChildrenDAO();
-       MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
+       StaffScheduleDAO staffScheduleDAO = new StaffScheduleDAO();
        boolean isManager = false;
-        boolean isStaff = false;
+       boolean isStaff = false;
+        SimpleDateFormat workDayFormat = new SimpleDateFormat("dd/MM/yyyy");
+       Staff curStaff = staffDAO.getStaffByStaffEmail(email);
         %>
-        <div class="container-fluid position-relative bg-white d-flex p-0">
+        <div id="myHeader" class="container-fluid position-relative bg-white d-flex p-0">
             <%if(curStaff!=null){
             if(curStaff.getRole().equals("manager")) isManager=true;            
             if(curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) isStaff=true;%>
@@ -84,8 +91,7 @@
                             <h6 class="mb-0"><%=curStaff.getStaffName()%></h6>
                             <span><%=curStaff.getRole()%></span>
                         </div>
-                    </div>
-                    <%if(isStaff){%>    
+                    </div>   
                     <div class="navbar-nav w-100  text-light">
                         <a href="staff?event=send-to-reservations-list" class="nav-item nav-link"
                            ><i class="fas fa-list-alt"></i>Reservations List</a
@@ -98,22 +104,9 @@
                     </div>
                     <div class="navbar-nav w-100  text-light">
                         <a href="staff?event=send-to-schedules" class="nav-item nav-link active">
-                          <i class="bi bi-calendar3"></i>Schedules
+                            <i class="bi bi-calendar3"></i>Schedules
                         </a>
                     </div>
-                    <%}%>
-                    <%if(isManager){%>
-                    <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-medical-examination-manage" class="nav-item nav-link active"
-                           ><i class="far fa-check-square"></i>Medical examination</a
-                        >
-                    </div>
-                    <div class="navbar-nav w-100  text-light">
-                        <a href="reservationcontactmanager?event=reservation-list" class="nav-item nav-link"
-                           ><i class="fas fa-list-alt"></i>Reservations Manager</a
-                        >   </a>
-                    </div>
-                    <%}%>
                 </nav>
             </div>
             <!-- Sidebar End -->
@@ -200,64 +193,50 @@
                         <div class="col-md-12 p-0">
                             <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
                                 <h4>SCHEDULE</h4>
-                                <a href="staff?event=request-schedule" class="ms-text-primary font-weight-bold">Add new schedules</a>
+                                <a href="staff?event=add-schedule" class="ms-text-primary font-weight-bold">Add new schedules</a>
                             </div>
-                            
+
                             <div class="table-responsive p-4">
                                 <%if(curStaff!=null){%>
                                 <table class="table table-striped table-hover">
                                     <thead class="text-light" style="background: #1977cc;">
                                         <tr>
-                                            <th scope="col">Reservation Date</th>
-                                            <th scope="col">Reservation Slot</th>
-                                            <th scope="col">Status</th>
+                                            <th scope="col">Workday</th>
+                                            <th scope="col">Work slot</th>
+                                            <th scope="col">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody id="medical-list">
                                         <%
-                                        List<MedicalExamination> listMedicalExamination = medicalExaminationDAO.getPageMedicalExaminationsByStaff(curStaff.getStaffID()+"",1,10);
-                                        if(listMedicalExamination!=null){
-                                        for (MedicalExamination medicalExamination : listMedicalExamination) {%>
+                                            List<StaffSchedule> listStaffSchedule = staffScheduleDAO.getPageStaffScheduleByStaff(curStaff.getStaffID()+"",1,10);
+                                        if(listStaffSchedule!=null){
+                                        for (StaffSchedule staffSchedule : listStaffSchedule) {%>
                                         <tr>
-                                            <th scope="row"><%=medicalExamination.getMedicalExaminationID()%></th>
+                                            <td><%=workDayFormat.format(staffSchedule.getWorkday())%></td>
+                                            <td><%=staffSchedule.getSlot()%></td>
                                             <td>
                                                 <div class="d-flex">
-                                                    <img class="rounded-circle object-cover me-3" src="<%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getImage()%>" alt="alt" width="30px" height="30px"/>
-                                                    <div><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getChildName()%></div>
-                                                </div>
-                                            </td>
-                                            <td><%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getBirthday()%></td>
-                                            <td><%=serviceDAO.getServiceByID(medicalExamination.getMuserID()+"").getTitle()%></td>
-                                            <td><%=medicalExamination.getExaminationDate()%></td>
-                                            <td><%=medicalExamination.getDisease()%></td>
-                                            <td>
-                                                <div class="d-flex">
-                                                    <a href="staffschedules?event=delete&id=<%=medicalExamination.getMedicalExaminationID()%>" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
+                                                    <a class="me-3" href="staff?event=edit-schedule&scheduleID=<%=staffSchedule.getScheduleID()%>"><i class="fas fa-pencil-alt ms-text-primary"></i></a>
+                                                    <a href="staffschedules?event=delete&id=<%=staffSchedule.getScheduleID()%>" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
                                                 </div>
                                             </td>
                                         </tr>
-                                        <%}}%>
+                                        <%}
+                                    }%>
 
                                     </tbody>
                                 </table>
 
-                                <ul id="pagination-container">
-                                    <%if(medicalExaminationDAO.countMedicalExaminationsByStaff(curStaff.getStaffID()+"")<=40){%>
-                                    <%if(medicalExaminationDAO.countMedicalExaminationsByStaff(curStaff.getStaffID()+"")>0){%>
-                                    <li class="pagination-btn active"><span>1</span></li>
-                                        <%for (int i = 2; i <= (medicalExaminationDAO.countMedicalExaminationsByStaff(curStaff.getStaffID()+"")+9)/10; i++) {%>
-                                    <li class="pagination-btn inactive"><a data-page="<%=i%>" href="#"><%=i%></a></li>
-                                        <%}%>
-                                        <%}%>
-                                        <%}else{%>
-                                    <!--<li class="pagination-btn inactive">><a href="#">&lt;</a></li>-->
-                                    <li class="pagination-btn active"><span>1</span></li>
-                                    <li class="pagination-btn inactive"><a href="#" data-page="2">2</a></li>
-                                    <li class="pagination-btn inactive"><a href="#" data-page="3">3</a></li>
-                                    <span>...</span>
-                                    <li class="pagination-btn inactive"><a href="#" data-page="<%=(medicalExaminationDAO.countMedicalExaminationsByStaff(curStaff.getStaffID()+"")+9)/10%>"><%=(medicalExaminationDAO.countMedicalExaminationsByStaff(curStaff.getStaffID()+"")+9)/10%></a></li>
-                                    <li class="pagination-btn inactive"><a href="#" data-page="2">&gt;</a></li>
-                                        <%}%>
+                                <ul id="pagination-container" style="padding-left: 0px;">
+                                    <li id="previousButton" class="pagination-btn inactive">
+                                        <a href="#" onclick="">&lt;</a>
+                                    </li>
+                                    <li class="pagination-btn active">
+                                        <span id="pageNumber">1</span>
+                                    </li>
+                                    <li id="nextButton" class="pagination-btn <%=(staffScheduleDAO.countStaffSchedule(curStaff.getStaffID()+"") > 10) ? "" : "inactive"%> ">
+                                        <a href="#" onclick="">&gt;</a>
+                                    </li>
 
                                 </ul>
 
@@ -265,21 +244,17 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Blank End -->
-
-                    <!-- Footer Start -->
                     <div class="mt-4">
                         <jsp:include page="layout/footer.jsp" />
                     </div>
-                    <!-- Footer End -->
                 </div>
-                <!-- Content End -->
 
             </div>
 
             <!-- JavaScript Libraries -->
             <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-            <script src="./resources/js/medical-examination-script.js"></script>
+
+
             <script
                 src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
                 integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
@@ -302,9 +277,95 @@
 
                     return false;
                 });
-                
+
                 // Pagination
-                
+                const previousButton = document.getElementById('previousButton');
+                const nextButton = document.getElementById('nextButton');
+                var currentPage = 1;
+                var maximumPagination = <%=(staffScheduleDAO.countStaffSchedule(curStaff.getStaffID()+"")+9)/10%>;
+                var header = document.getElementById('myHeader');
+
+                document.getElementById('nextButton').addEventListener('click', function () {
+                    if (currentPage < parseInt(maximumPagination)) {
+                        currentPage++;
+                        changePage(currentPage);
+                    }
+                });
+                document.getElementById('previousButton').addEventListener('click', function () {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        changePage(currentPage);
+                    }
+                });
+
+                function changePage(page) {
+                    // Make an AJAX request to the specified URL
+                    currentPage = parseInt(page);
+                    var url = "staffschedules?event=getPage&staffId=" + <%=curStaff.getStaffID()%> + "&page=" + page;
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', url, true);
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            header.scrollIntoView({behavior: 'smooth'});
+                            // Clear the data in the table
+                            document.getElementById('medical-list').innerHTML = '';
+                            // Parse the response data
+                            var responseLines = xhr.responseText.split('\n');
+                            responseLines.forEach(function (line) {
+                                var attributes = line.split('&');
+                                if (attributes.length >= 3) {
+                                    var tr = document.createElement('tr');
+                                    // Create the first <td> with a delete link
+                                    var td1 = document.createElement('td');
+                                    var div = document.createElement('div');
+                                    var editLink = document.createElement('a');
+                                    editLink.href = "staff?event=edit-schedule&scheduleID=" + attributes[0];
+                                    editLink.classList.add('me-3');
+                                    var pencilIcon = document.createElement('i');
+                                    pencilIcon.classList.add('fas', 'fa-pencil-alt', 'ms-text-primary');
+                                    editLink.appendChild(pencilIcon);
+                                    div.appendChild(editLink);
+
+                                    var deleteLink = document.createElement('a');
+                                    deleteLink.href = "staffschedules?event=delete&id=" + attributes[0];
+                                    deleteLink.style.color = '#d9534f';
+                                    var trashIcon = document.createElement('i');
+                                    trashIcon.classList.add('far', 'fa-trash-alt', 'ms-text-danger');
+                                    deleteLink.appendChild(trashIcon);
+                                    div.appendChild(deleteLink);
+                                    td1.appendChild(div);
+
+                                    // Create the second <td> with the second attribute
+                                    var td2 = document.createElement('td');
+                                    td2.textContent = attributes[1];
+                                    // Create the third <td> with the third attribute
+                                    var td3 = document.createElement('td');
+                                    td3.textContent = attributes[2];
+                                    tr.appendChild(td2);
+                                    tr.appendChild(td3);
+                                    tr.appendChild(td1);
+                                    document.getElementById('medical-list').appendChild(tr);
+                                }
+                            });
+                            const spanNumber = document.getElementById("pageNumber");
+                            spanNumber.textContent = page;
+
+                            // Change the button to paging
+                            if (page !== 1) {
+                                previousButton.classList.remove('inactive');
+                            } else {
+                                previousButton.classList.add('inactive');
+                            }
+                            if (page != maximumPagination) {
+                                nextButton.classList.remove('inactive');
+                            } else {
+                                nextButton.classList.add('inactive');
+                            }
+
+                        }
+                    };
+                    xhr.send();
+                }
             </script>
     </body>
 </html>

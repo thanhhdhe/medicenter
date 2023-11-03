@@ -4,6 +4,7 @@
  */
 package Database;
 
+import controller.StaffSchedulesController;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -258,8 +259,8 @@ public class StaffScheduleDAO extends MyDAO {
 
     public List<StaffSchedule> getPageStaffScheduleByStaff(String staffID, int page, int pageSize) {
         List<StaffSchedule> StaffScheduleList = new ArrayList<>();
-        xSql = "SELECT *  FROM [dbo].[StaffSchedule] WHERE StaffID = ? "
-                + "ORDER BY ReservationDate DESC "
+        xSql = "SELECT * FROM [dbo].[StaffSchedules] WHERE StaffID = ? "
+                + "ORDER BY Workday DESC "
                 + "OFFSET ? ROWS "
                 + "FETCH NEXT ? ROWS ONLY;";
         int offset = (page - 1) * pageSize;
@@ -270,10 +271,14 @@ public class StaffScheduleDAO extends MyDAO {
             ps.setInt(3, pageSize);
             rs = ps.executeQuery();
             while (rs.next()) {
-                Date reservationDate = rs.getDate("ReservationDate");
+                int scheduleID = rs.getInt("ScheduleID");
+                Date workday = rs.getDate("Workday");
                 int slot = rs.getInt("Slot");
                 StaffSchedule staffSchedules = new StaffSchedule();
-                
+                staffSchedules.setScheduleID(scheduleID);
+                staffSchedules.setWorkday(workday);
+                staffSchedules.setSlot(slot);
+
                 StaffScheduleList.add(staffSchedules);
             }
             rs.close();
@@ -282,6 +287,112 @@ public class StaffScheduleDAO extends MyDAO {
             e.printStackTrace();
         }
         return StaffScheduleList;
+    }
+
+    public int countStaffSchedule(String staffID) {
+        int count = 0;
+        xSql = "SELECT COUNT(*) AS RecordCount FROM [dbo].[StaffSchedules] WHERE StaffID = ? ";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, staffID);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public StaffSchedule getSchedule(String scheduleID) {
+        xSql = "SELECT *FROM [dbo].[StaffSchedules] WHERE ScheduleID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, scheduleID);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                int ScheduleID = rs.getInt("ScheduleID");
+                Date Workday = rs.getDate("Workday");
+                int Slot = rs.getInt("Slot");
+                StaffSchedule staffSchedule = new StaffSchedule(ScheduleID, Slot, Workday, Slot);
+                return staffSchedule;
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void deleteSchedule(String scheduleID) {
+        String xSql = "DELETE [dbo].[StaffSchedules]"
+                + " WHERE ScheduleID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, scheduleID);
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateSchedule(StaffSchedule staffSchedule) {
+        String xSql = "UPDATE [dbo].[StaffSchedules]\n"
+                + "   SET [Workday] = ?, [Slot] = ?\n"
+                + " WHERE ScheduleID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setDate(1, staffSchedule.getWorkday());
+            ps.setInt(2, staffSchedule.getSlot());
+            ps.setInt(3, staffSchedule.getScheduleID());
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public StaffSchedule getScheduleByWorkDate(Date workday, int slot, String staffID) {
+        String xSql = "Select * FROM [dbo].[StaffSchedules] "
+                + " WHERE Workday = ? AND Slot = ? AND StaffID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setDate(1, workday);
+            ps.setInt(2, slot);
+            ps.setString(3, staffID);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                 int ScheduleID = rs.getInt("ScheduleID");
+                Date Workday = rs.getDate("Workday");
+                int Slot = rs.getInt("Slot");
+                StaffSchedule ss = new StaffSchedule(ScheduleID, Slot, Workday, Slot);
+                return ss;
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void insert(StaffSchedule staffSchedules) {
+        xSql = "INSERT INTO [dbo].[StaffSchedules](StaffID, Workday, Slot) VALUES (?,?,?)";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, staffSchedules.getStaffID());
+            ps.setDate(2, staffSchedules.getWorkday());
+            ps.setInt(3, staffSchedules.getSlot());
+            ps.executeUpdate();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String args[]) {

@@ -52,19 +52,19 @@
 
     <body>
         <%
-       String email = (String) session.getAttribute("email");
+       StaffScheduleDAO staffScheduleDAO = new StaffScheduleDAO();
        StaffDAO staffDAO = new StaffDAO();
-       MedicalExaminationDAO medicalExaminationDAO = new MedicalExaminationDAO();
-       ChildrenDAO childrenDAO = new ChildrenDAO();
+       String email = (String) session.getAttribute("email");
+       String action = (String) request.getAttribute("action");
+       String scheduleID = (String) request.getAttribute("scheduleID");
+       String errorMessage = (String) request.getAttribute("errorMessage");
        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
-       String meID = (request.getParameter("id") + "").equals("null") ? "" : (request.getParameter("id") + "");
-       MedicalExamination medicalExamination = medicalExaminationDAO.getMedicalExaminationsByID(meID);
-       boolean isManager = false;
+       StaffSchedule staffSchedule = staffScheduleDAO.getSchedule(scheduleID);
+       
        boolean isStaff = false;
         %>
         <div class="container-fluid position-relative bg-white d-flex p-0">
-            <%if(curStaff!=null){
-            if(curStaff.getRole().equals("manager")) isManager=true;            
+            <%if(curStaff!=null){        
             if(curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) isStaff=true;%>
             <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">
@@ -98,31 +98,14 @@
                         >
                     </div>  
                     <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link active"
-                           ><i class="far fa-check-square"></i>Medical examination</a
-                        >
-                    </div>
-                    <%}%>
-                    <%if(isManager){%>
-                    <div class="navbar-nav w-100  text-light">
-                        <a href="staff?event=send-to-medical-examination-manage" class="nav-item nav-link active"
+                        <a href="staff?event=send-to-medical-examination" class="nav-item nav-link"
                            ><i class="far fa-check-square"></i>Medical examination</a
                         >
                     </div>
                     <div class="navbar-nav w-100  text-light">
-                        <a href="reservationcontactmanager?event=reservation-list" class="nav-item nav-link"
-                           ><i class="fas fa-list-alt"></i>Reservations Manager</a
-                        >
-                    </div>
-                    <div class="navbar-nav w-100 text-light">
-                        <a href="feedback" class="nav-item nav-link"
-                           ><i class="far fa-file-alt"></i>Feedback</a
-                        >
-                    </div>
-                    <div class="navbar-nav w-100 text-light">
-                        <a href="service?event=manage" class="nav-item nav-link"
-                           ><i class="fas fa-stethoscope"></i>Services</a
-                        >
+                        <a href="staff?event=send-to-schedules" class="nav-item nav-link active">
+                            <i class="bi bi-calendar3"></i>Schedules
+                        </a>
                     </div>
                     <%}%>
                 </nav>
@@ -201,98 +184,49 @@
                         <%}%>
                     </div>
                 </nav>
-                <!-- Navbar End -->
-
-                <!-- Blank Start -->
                 <div class="container-fluid pt-4 px-4">
                     <div
                         class="row bg-light rounded align-items-center justify-content-center mx-0"
                         >
                         <div class="mb-4 px-4 py-3 border-bottom d-flex justify-content-between align-items-center">
-                                <h4>MEDICAL EDIT</h4>
+                            <% if (action.equals("add")) { %>
+                            <h4>Add new schedule</h4>
+                            <% } else { %>
+                            <h4>Edit schedule</h4>
+                            <% } %>
+                        </div>
+                        <form class="needs-validation" action="staffschedules?event=<%=action%>" method="POST" onsubmit="return validateDate()">
+                            <% if (action.equals("edit")) { %>
+                            <input type="text" name="scheduleID" value="<%=staffSchedule.getScheduleID()%>" hidden="">
+                            <% } %>
+                            <input type="hidden" name="staffID" value="<%=curStaff.getStaffID()%>">
+                            <div class="form-row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="validationCustom007">Workday</label>
+                                    <div class="input-group">
+                                        <input type="date" class="form-control" name="workDay" value="<%=(action.equals("add")) ? "" : staffSchedule.getWorkday() %>" placeholder="Enter Working Date" required="">
+                                    </div>
+                                    <label style="color:orange;">The entered date cannot be a date in the past and staff must select a date 1 week in advance</label>
+                                </div>
+                                <div class="col-md-6 mb-3 px-3">
+                                    <label for="validationCustom008">Working slot</label>
+                                    <div class="input-group">
+                                        <input type="number" min="1" max="6" class="form-control" name="workSlot" value="<%= (action.equals("add")) ? "" : staffSchedule.getSlot() %>" placeholder="Enter Working Slot" required="">
+                                    </div>
+                                </div>
                             </div>
-                        <form class="needs-validation" action="medical-examination?event=edit" method="POST">
-                            <input type="text" name="id" value="<%=meID%>" hidden="">
-                                <div class="form-row">
-                                    <div class="col-md-6 mb-3 px-3">
-                                        <label for="validationCustom001">Full Name</label>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" value="<%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getChildName()%>" placeholder="Enter Full Name"  readonly="">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3 px-3">
-                                        <label for="validationCustom008">Disease</label>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" value="<%=medicalExamination.getDisease()%>" name="disease" placeholder="Enter Disease" required="">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="col-md-6 mb-3 px-3">
-                                        <label for="validationCustom007">Date of Birth</label>
-                                        <div class="input-group">
-                                            <input type="date" class="form-control" value="<%=childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getBirthday()%>" placeholder="Enter Date of Birth" readonly="">
-
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3 px-3">
-                                        <label for="validationCustom008">Appointment Date</label>
-                                        <div class="input-group">
-                                            <input type="date" class="form-control" name="examinationDate" value="<%=medicalExamination.getExaminationDate()%>" placeholder="Enter Appointment Date" required="">
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    
-                                    <div class="col-md-6 mb-3 px-3">
-                                        <label>Sex</label>
-                                        <ul class="d-flex list-unstyled">
-                                            <%if(childrenDAO.getChildrenByChildrenId(medicalExamination.getMchildrenID()+"").getGender().equals("Male")){%>
-                                            <li class="ms-list-item ps-0">
-                                                <input type="radio" name="gender" value="male" checked="" disabled>
-                                                <span> Male </span>
-                                            </li>
-                                            <li class="ms-list-item">
-                                                    <input type="radio" name="gender" value="female" disabled>
-                                                <span> Female </span>
-                                            </li>
-                                            <%}else{%>
-                                            <li class="ms-list-item ps-0">
-                                                <input type="radio" name="gender" value="male" disabled>
-                                                <span> Male </span>
-                                            </li>
-                                            <li class="ms-list-item">
-                                                    <input type="radio" name="gender" value="female" checked="" disabled>
-                                                <span> Female </span>
-                                            </li>
-                                            <%}%>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="form-row">
-                                    <div class="col-md-12 mb-2 px-3">
-                                        <label>Medical Prescription</label>
-                                        <div class="input-group">
-                                            <textarea class="form-control" name="prescription" rows="3"><%=medicalExamination.getMedicalPrescription()%></textarea>
-                                        </div>
-                                    </div>
-                                </div>
                             <button class="btn btn-warning mt-4 ms-3 me-2 d-inline w-20" type="reset">Reset</button>
-                                <button class="btn btn-primary mt-4 d-inline w-20" type="submit">Save</button>
+                            <button class="btn btn-primary mt-4 d-inline w-20" type="submit">Save</button>
+                            <% if (errorMessage != null) { %>
+                            <h5 style="color: red;"><%=errorMessage%></h5>
+                            <%   } %>
                         </form>
                     </div>
                 </div>
-                <!-- Blank End -->
-
-                <!-- Footer Start -->
                 <div class="mt-4">
                     <jsp:include page="layout/footer.jsp" />
                 </div>
-                <!-- Footer End -->
             </div>
-            <!-- Content End -->
 
         </div>
 
@@ -309,17 +243,27 @@
             crossorigin="anonymous"
         ></script>
 
-        <!-- Template Javascript -->
         <script>
-            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
-                var sidebar = document.querySelector('.sidebar');
-                var content = document.querySelector('.content');
+                            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+                                var sidebar = document.querySelector('.sidebar');
+                                var content = document.querySelector('.content');
 
-                sidebar.classList.toggle('open');
-                content.classList.toggle('open');
+                                sidebar.classList.toggle('open');
+                                content.classList.toggle('open');
 
-                return false;
-            });
+                                return false;
+                            });
+                            function validateDate() {
+                                var inputDate = new Date(document.getElementsByName("workDay")[0].value);
+                                var conditionDate = new Date();
+                                conditionDate.setDate(conditionDate.getDate() + 7);
+                                if (inputDate <= conditionDate) {
+                                    alert("Please select a date that meet the conditions");
+                                    return false; // Prevent form submission
+                                }
+
+                                return true; // Allow form submission
+                            }
         </script>
     </body>
 </html>
