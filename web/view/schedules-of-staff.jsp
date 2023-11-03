@@ -58,14 +58,12 @@
        String email = (String) session.getAttribute("email");
        StaffDAO staffDAO = new StaffDAO();
        StaffScheduleDAO staffScheduleDAO = new StaffScheduleDAO();
-       boolean isManager = false;
        boolean isStaff = false;
         SimpleDateFormat workDayFormat = new SimpleDateFormat("dd/MM/yyyy");
        Staff curStaff = staffDAO.getStaffByStaffEmail(email);
         %>
         <div id="myHeader" class="container-fluid position-relative bg-white d-flex p-0">
-            <%if(curStaff!=null){
-            if(curStaff.getRole().equals("manager")) isManager=true;            
+            <%if(curStaff!=null){         
             if(curStaff.getRole().equals("doctor")||curStaff.getRole().equals("nurse")) isStaff=true;%>
             <!-- Sidebar Start -->
             <div class="sidebar pe-4 pb-3">

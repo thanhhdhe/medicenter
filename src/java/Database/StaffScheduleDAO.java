@@ -373,8 +373,7 @@ public class StaffScheduleDAO extends MyDAO {
     }
 
     public void deleteSchedule(String scheduleID) {
-        String xSql = "DELETE [dbo].[StaffSchedules]"
-                + " WHERE ScheduleID = ?";
+        String xSql = "DELETE [dbo].[StaffSchedules] WHERE ScheduleID = ?";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, scheduleID);
