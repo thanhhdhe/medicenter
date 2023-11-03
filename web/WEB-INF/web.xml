@@ -116,6 +116,10 @@
         <servlet-name>StaffScheduleController</servlet-name>
         <servlet-class>controller.StaffScheduleController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>StaffManageSchedule</servlet-name>
+        <servlet-class>controller.StaffManageSchedule</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServiceController</servlet-name>
         <url-pattern>/service</url-pattern>
@@ -251,6 +255,10 @@
     <servlet-mapping>
         <servlet-name>CheckResultController</servlet-name>
         <url-pattern>/check</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StaffManageSchedule</servlet-name>
+        <url-pattern>/sms</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

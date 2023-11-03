@@ -195,7 +195,7 @@
                             <h4>Edit schedule</h4>
                             <% } %>
                         </div>
-                        <form class="needs-validation" action="staffschedules?event=<%=action%>" method="POST" onsubmit="return validateDate()">
+                        <form class="needs-validation" action="sms?event=<%=action%>" method="POST" onsubmit="return validateDate()">
                             <% if (action.equals("edit")) { %>
                             <input type="text" name="scheduleID" value="<%=staffSchedule.getScheduleID()%>" hidden="">
                             <% } %>

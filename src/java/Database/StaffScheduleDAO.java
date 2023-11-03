@@ -4,7 +4,6 @@
  */
 package Database;
 
-import controller.StaffSchedulesController;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +24,11 @@ public class StaffScheduleDAO extends MyDAO {
             rs = ps.executeQuery();
             while (rs.next()) {
                 int ScheduleID = rs.getInt("ScheduleID");
+                int StaffID = rs.getInt("StaffID");
                 Date Workday = rs.getDate("Workday");
                 int Slot = rs.getInt("Slot");
-                StaffSchedule ss = new StaffSchedule(ScheduleID, Slot, Workday, Slot);
+                String Status = rs.getString("Status");
+                StaffSchedule ss = new StaffSchedule(ScheduleID, StaffID, Workday, Slot, Status);
                 staffScheduleList.add(ss);
             }
             rs.close();
@@ -126,7 +127,8 @@ public class StaffScheduleDAO extends MyDAO {
 
     public List<Integer> getWorkDay(String staffID, String month, String year) {
         List<Integer> day = new ArrayList<>();
-        xSql = "select DAY(Workday) as Work from [dbo].[StaffSchedules] where StaffID = ? and MONTH(Workday) = ? and YEAR(Workday) = ? group by Workday";
+        xSql = "select DAY(Workday) as Work from [dbo].[StaffSchedules] "
+                + "where StaffID = ? and MONTH(Workday) = ? and YEAR(Workday) = ? and Status = 'confirm' group by Workday";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, staffID);
@@ -147,7 +149,8 @@ public class StaffScheduleDAO extends MyDAO {
 
     public List<Integer> getWorkSlots(String selectedDate, String selectedMonth, String selectedYear, String staffID) {
         List<Integer> slot = new ArrayList<>();
-        xSql = "SELECT DISTINCT Slot FROM [dbo].[StaffSchedules] where StaffID = ? and DAY(Workday) = ? and MONTH(Workday) = ? and YEAR(Workday) = ?";
+        xSql = "SELECT DISTINCT Slot FROM [dbo].[StaffSchedules] "
+                + "where StaffID = ? and DAY(Workday) = ? and MONTH(Workday) = ? and YEAR(Workday) = ? and Status = 'confirm'";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, staffID);
@@ -166,50 +169,7 @@ public class StaffScheduleDAO extends MyDAO {
         }
         return slot;
     }
-
-    public List<Integer> getListDayFullSlot(String staffID, String month, String year) {
-        List<Integer> day = new ArrayList<>();
-        xSql = "SELECT DISTINCT DAY(ss.Workday) as fullDay"
-                + " FROM StaffSchedules ss"
-                + " WHERE ss.StaffID = ? AND MONTH(ss.Workday) = ? AND YEAR(ss.Workday) = ?"
-                + " AND NOT EXISTS ("
-                + "    SELECT 1"
-                + "    FROM Reservations r"
-                + "    WHERE r.StaffID = ss.StaffID"
-                + "    AND r.ReservationDate = ss.Workday"
-                + "    AND r.Status = 'Cancel'"
-                + ")"
-                + " AND NOT EXISTS ("
-                + "    SELECT 1"
-                + "    FROM StaffSchedules ss2"
-                + "    WHERE ss2.StaffID = ss.StaffID"
-                + "    AND ss2.Workday = ss.Workday"
-                + "    AND ss2.Slot NOT IN ("
-                + "        SELECT DISTINCT r2.ReservationSlot"
-                + "        FROM Reservations r2"
-                + "        WHERE r2.StaffID = ss.StaffID"
-                + "        AND r2.ReservationDate = ss.Workday"
-                + "        AND r2.Status <> 'Cancel'"
-                + "    )"
-                + ");";
-        try {
-            ps = con.prepareStatement(xSql);
-            ps.setString(1, staffID);
-            ps.setString(2, month);
-            ps.setString(3, year);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                int dayInt = rs.getInt("fullDay");
-                day.add(dayInt);
-            }
-            rs.close();
-            ps.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return day;
-    }
-
+   
     public List<Integer> getWorkdayByServiceID(String serviceID, String month, String year) {
         List<Integer> day = new ArrayList<>();
         xSql = "WITH AvailableSlots AS (\n"
@@ -228,7 +188,7 @@ public class StaffScheduleDAO extends MyDAO {
                 + "        SELECT StaffID\n"
                 + "        FROM ServiceStaff\n"
                 + "        WHERE ServiceID = ?\n"
-                + "    )\n"
+                + "    ) AND SS.Status = 'confirm'\n"
                 + "    GROUP BY SS.Workday, R.ReservedSlots\n"
                 + ")\n"
                 + "SELECT DAY(Workday) as Workday\n"
@@ -271,7 +231,7 @@ public class StaffScheduleDAO extends MyDAO {
                 + "        SELECT StaffID\n"
                 + "        FROM ServiceStaff\n"
                 + "        WHERE ServiceID = ?\n"
-                + "    )\n"
+                + "    ) AND SS.Status = 'confirm'\n"
                 + "    GROUP BY SS.Workday, R.ReservedSlots\n"
                 + ")\n"
                 + "SELECT DAY(Workday) as fullDay\n"
@@ -300,7 +260,7 @@ public class StaffScheduleDAO extends MyDAO {
         List<Integer> slot = new ArrayList<>();
         xSql = "select ss1.Slot from StaffSchedules ss1\n"
                 + "join ServiceStaff ss2 on ss1.StaffID=ss2.StaffID\n"
-                + "where ss2.ServiceID = ? and DAY(Workday) = ? and MONTH(Workday) = ? and YEAR(Workday) = ?";
+                + "where ss2.ServiceID = ? and DAY(Workday) = ? and MONTH(Workday) = ? and YEAR(Workday) = ? and ss1.Status = 'confirm'";
         try {
             ps = con.prepareStatement(xSql);
             ps.setString(1, serviceID);
@@ -358,13 +318,11 @@ public class StaffScheduleDAO extends MyDAO {
             rs = ps.executeQuery();
             while (rs.next()) {
                 int scheduleID = rs.getInt("ScheduleID");
+                int StaffID = rs.getInt("StaffID");
                 Date workday = rs.getDate("Workday");
                 int slot = rs.getInt("Slot");
-                StaffSchedule staffSchedules = new StaffSchedule();
-                staffSchedules.setScheduleID(scheduleID);
-                staffSchedules.setWorkday(workday);
-                staffSchedules.setSlot(slot);
-
+                String status = rs.getString("Status");
+                StaffSchedule staffSchedules = new StaffSchedule(scheduleID, StaffID, workday, slot, status);
                 StaffScheduleList.add(staffSchedules);
             }
             rs.close();
@@ -427,7 +385,7 @@ public class StaffScheduleDAO extends MyDAO {
         }
     }
 
-    public void updateSchedule(StaffSchedule staffSchedule) {
+    public void editScheduleByStaff(StaffSchedule staffSchedule) {
         String xSql = "UPDATE [dbo].[StaffSchedules]\n"
                 + "   SET [Workday] = ?, [Slot] = ?\n"
                 + " WHERE ScheduleID = ?";
@@ -467,8 +425,8 @@ public class StaffScheduleDAO extends MyDAO {
         return null;
     }
 
-    public void insert(StaffSchedule staffSchedules) {
-        xSql = "INSERT INTO [dbo].[StaffSchedules](StaffID, Workday, Slot) VALUES (?,?,?)";
+    public void requestToManager(StaffSchedule staffSchedules) {
+        xSql = "INSERT INTO [dbo].[StaffSchedules](StaffID, Workday, Slot, Status) VALUES (?,?,?, 'unconfirmed')";
         try {
             ps = con.prepareStatement(xSql);
             ps.setInt(1, staffSchedules.getStaffID());

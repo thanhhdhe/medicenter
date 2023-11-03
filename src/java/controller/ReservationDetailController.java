@@ -170,9 +170,9 @@ public class ReservationDetailController extends HttpServlet {
                 return;
             }
         } catch (Exception e) {
-            
+
         }
-        
+
         Reservation reservation = new Reservation();
         if (staffID.equals("all") || staffID == null) {
             // Double check if there is no staff for this service
@@ -235,6 +235,7 @@ public class ReservationDetailController extends HttpServlet {
 
     private void changeMonth(String selectedMonth, String selectedYear, String staffID, String serviceID, HttpServletRequest request, HttpServletResponse response) throws IOException {
         StaffScheduleDAO staffscheduleDAO = new StaffScheduleDAO();
+        ReservationDAO reservationDAO = new ReservationDAO();
         List<Integer> Workday = null;
         List<Integer> fullDay = null;
         if (staffID.equals("all")) {
@@ -242,7 +243,22 @@ public class ReservationDetailController extends HttpServlet {
             fullDay = staffscheduleDAO.getFullDayByServiceID(serviceID, selectedMonth, selectedYear);
         } else {
             Workday = staffscheduleDAO.getWorkDay(staffID, selectedMonth, selectedYear);
-            fullDay = staffscheduleDAO.getListDayFullSlot(staffID, selectedMonth, selectedYear);
+            fullDay = staffscheduleDAO.getWorkDay(staffID, selectedMonth, selectedYear);
+            for (int day : Workday) {
+                // Boolean to check if the slot is available
+                boolean check = false;
+                // Select all the slot have in that day
+                for (int slot : staffscheduleDAO.getWorkSlots(Integer.toString(day), selectedMonth, selectedYear, staffID)) {
+                    if (reservationDAO.checkSlotForAvailable(Integer.toString(slot), staffID, Integer.toString(day), selectedMonth, selectedYear) == true) {
+                        check = true;
+                        break;
+                    }
+                }
+                // If we can search the slot in the reservation with status != cancel => fullDay remove it
+                if (check == true) {
+                    fullDay.remove(Integer.valueOf(day));
+                }
+            }
         }
         // Build the string that contain work day and day that fully booked
         StringBuilder stringBuilder = new StringBuilder();

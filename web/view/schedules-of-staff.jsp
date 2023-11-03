@@ -203,6 +203,7 @@
                                         <tr>
                                             <th scope="col">Workday</th>
                                             <th scope="col">Work slot</th>
+                                            <th scope="col">Status</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -210,19 +211,33 @@
                                         <%
                                             List<StaffSchedule> listStaffSchedule = staffScheduleDAO.getPageStaffScheduleByStaff(curStaff.getStaffID()+"",1,10);
                                         if(listStaffSchedule!=null){
+                                        int count = 0;
                                         for (StaffSchedule staffSchedule : listStaffSchedule) {%>
                                         <tr>
                                             <td><%=workDayFormat.format(staffSchedule.getWorkday())%></td>
                                             <td><%=staffSchedule.getSlot()%></td>
+                                            <td><%=staffSchedule.getStatus()%></td>
                                             <td>
                                                 <div class="d-flex">
                                                     <a class="me-3" href="staff?event=edit-schedule&scheduleID=<%=staffSchedule.getScheduleID()%>"><i class="fas fa-pencil-alt ms-text-primary"></i></a>
-                                                    <a href="staffschedules?event=delete&id=<%=staffSchedule.getScheduleID()%>" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
+                                                    <a href="sms?event=delete&id=<%=staffSchedule.getScheduleID()%>" style="color: #d9534f;"><i class="far fa-trash-alt ms-text-danger"></i></a>
                                                 </div>
                                             </td>
                                         </tr>
+                                        <% count++; %>
                                         <%}
-                                    }%>
+                                        if (count < 10) {
+                                        for (int i = 1;i<=10-count;i++) { %>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                            <td>&nbsp;</td>
+                                        </tr>                                 
+                                        <% }
+                                        }
+                                        
+                                                                            }%>
 
                                     </tbody>
                                 </table>
@@ -301,7 +316,7 @@
                 function changePage(page) {
                     // Make an AJAX request to the specified URL
                     currentPage = parseInt(page);
-                    var url = "staffschedules?event=getPage&staffId=" + <%=curStaff.getStaffID()%> + "&page=" + page;
+                    var url = "sms?event=getPage&staffId=" + <%=curStaff.getStaffID()%> + "&page=" + page;
                     var xhr = new XMLHttpRequest();
                     xhr.open('GET', url, true);
                     xhr.onload = function () {
@@ -311,9 +326,11 @@
                             document.getElementById('medical-list').innerHTML = '';
                             // Parse the response data
                             var responseLines = xhr.responseText.split('\n');
+                            var count = 10;
                             responseLines.forEach(function (line) {
+                                count--;
                                 var attributes = line.split('&');
-                                if (attributes.length >= 3) {
+                                if (attributes.length >= 4) {
                                     var tr = document.createElement('tr');
                                     // Create the first <td> with a delete link
                                     var td1 = document.createElement('td');
@@ -341,12 +358,26 @@
                                     // Create the third <td> with the third attribute
                                     var td3 = document.createElement('td');
                                     td3.textContent = attributes[2];
+                                    var td4 = document.createElement('td');
+                                    td4.textContent = attributes[3];
                                     tr.appendChild(td2);
                                     tr.appendChild(td3);
+                                    tr.appendChild(td4);
                                     tr.appendChild(td1);
                                     document.getElementById('medical-list').appendChild(tr);
                                 }
                             });
+                            for (let i = 0; i <= count; i++) {
+                                var tableRow = document.createElement('tr');
+                                for (let j = 1; j <= 4; j++) {
+                                    const tableCell = document.createElement('td');
+                                    tableCell.textContent = '\u00A0';
+                                    tableRow.appendChild(tableCell);
+                                }
+                                document.getElementById('medical-list').appendChild(tableRow);
+
+                            }
+
                             const spanNumber = document.getElementById("pageNumber");
                             spanNumber.textContent = page;
 
