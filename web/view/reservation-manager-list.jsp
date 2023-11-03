@@ -101,6 +101,11 @@
                     </div>
                     <%}%>
                     <%if(isManager){%>
+                    <div class="navbar-nav w-100 text-light">
+                        <a href="user?action=all" class="nav-item nav-link"
+                           ><i class="bi bi-people-fill"></i>User</a
+                        >
+                    </div>
                     <div class="navbar-nav w-100  text-light">
                         <a href="staff?event=send-to-medical-examination-manage" class="nav-item nav-link"
                            ><i class="far fa-check-square"></i>Medical examination</a
@@ -122,8 +127,8 @@
                         >
                     </div>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="postManage" class="nav-item nav-link active"
-                           ><i class="bi bi-file-earmark-post"></i>Post</a
+                        <a href="slider?action=all" class="nav-item nav-link"
+                           ><i class="bi bi-image-fill"></i>Slider</a
                         >
                     </div>
                     <%}%>
