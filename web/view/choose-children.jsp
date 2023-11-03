@@ -179,249 +179,250 @@
                             request.getSession().removeAttribute("message");
                         }
                         %>
-
-                        <c:forEach items="${requestScope.child}" var="c">
-                            <div class="card mt-4 border-m shadow child-card">
-                                <div class="card-body" onclick="showFullInfo(${c.childID})">
-                                    <div id="basicInfo${c.childID}">
-                                        <div class="row">
-                                            <div class="info-desc col-md-9">
-                                                <div class="row">
-                                                    <div class="col-md-5">
-                                                        <p class="title-info"><strong><i class="fas fa-user"></i> Fullname: </strong></p>
-                                                    </div>
-                                                    <div class="col-md-7 detail-info">
-                                                        <p>${c.childName}</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-5">
-                                                        <p class="title-info"><i class="fas fa-calendar-alt"></i> <strong>Date of birth:</strong>
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-7 detail-info">
-                                                        <p>${c.birthday}</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-5">
-                                                        <p class="title-info"><i class="fas fa-phone"></i> <strong>Parent's phone:</strong></p>
-                                                    </div>
-                                                    <div class="col-md-7 detail-info">
-                                                        <p>${c.user.phoneNumber}</p>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-5">
-                                                        <p class="title-info"><i class="fas fa-calendar-alt"></i> <strong>Relationship:</strong>
-                                                        </p>
-                                                    </div>
-                                                    <div class="col-md-7 detail-info">
-                                                        <p>${c.relationship.relationshipName}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="row justify-content-center">
-                                                    <img src="${c.image}" style="height: 85px;object-fit: cover;width: 85px;"
-                                                         alt="Image profile" style="max-height: 85px;"
-                                                         class="img-thumbnail rounded-circle" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    <div id="fullInfo${c.childID}" style="display: none;">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <p class="title-info"><i class="fas fa-venus-mars"></i> <strong>Gender:</strong>
-                                                </p>
-                                            </div>
-                                            <div class="col-md-8 detail-info">
-                                                <p>${c.gender}</p>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <p class="title-info"><i class="fas fa-globe"></i> <strong>Parent's email:</strong></p>
-                                            </div>
-                                            <div class="col-md-8 detail-info">
-                                                <p>${c.user.email}</p>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <p class="title-info"><i class="fas fa-map-marker-alt"></i> <strong>Address: </strong></p>
-                                            </div>
-                                            <div class="col-md-8 detail-info">
-                                                <p>${c.user.address}</p>
-                                            </div>
-                                        </div>
-                                        <div class="card-footer mt-3">
-                                            <div class="row mt-3" style="flex-wrap: nowrap;">
-                                                <div class="col-md-9">
+                        <c:if test="${not empty requestScope.child}">
+                            <c:forEach items="${requestScope.child}" var="c">
+                                <div class="card mt-4 border-m shadow child-card">
+                                    <div class="card-body" onclick="showFullInfo(${c.childID})">
+                                        <div id="basicInfo${c.childID}">
+                                            <div class="row">
+                                                <div class="info-desc col-md-9">
                                                     <div class="row">
-                                                        <div class="col-md-4">
-                                                            <button class="btn btn-danger btn-block border-m trash" value="${c.childID}">
+                                                        <div class="col-md-5">
+                                                            <p class="title-info"><strong><i class="fas fa-user"></i> Fullname: </strong></p>
+                                                        </div>
+                                                        <div class="col-md-7 detail-info">
+                                                            <p>${c.childName}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-5">
+                                                            <p class="title-info"><i class="fas fa-calendar-alt"></i> <strong>Date of birth:</strong>
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-md-7 detail-info">
+                                                            <p>${c.birthday}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-5">
+                                                            <p class="title-info"><i class="fas fa-phone"></i> <strong>Parent's phone:</strong></p>
+                                                        </div>
+                                                        <div class="col-md-7 detail-info">
+                                                            <p>${c.user.phoneNumber}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-5">
+                                                            <p class="title-info"><i class="fas fa-calendar-alt"></i> <strong>Relationship:</strong>
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-md-7 detail-info">
+                                                            <p>${c.relationship.relationshipName}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="row justify-content-center">
+                                                        <img src="${c.image}" style="height: 85px;object-fit: cover;width: 85px;"
+                                                             alt="Image profile" style="max-height: 85px;"
+                                                             class="img-thumbnail rounded-circle" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div id="fullInfo${c.childID}" style="display: none;">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <p class="title-info"><i class="fas fa-venus-mars"></i> <strong>Gender:</strong>
+                                                    </p>
+                                                </div>
+                                                <div class="col-md-8 detail-info">
+                                                    <p>${c.gender}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <p class="title-info"><i class="fas fa-globe"></i> <strong>Parent's email:</strong></p>
+                                                </div>
+                                                <div class="col-md-8 detail-info">
+                                                    <p>${c.user.email}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <p class="title-info"><i class="fas fa-map-marker-alt"></i> <strong>Address: </strong></p>
+                                                </div>
+                                                <div class="col-md-8 detail-info">
+                                                    <p>${c.user.address}</p>
+                                                </div>
+                                            </div>
+                                            <div class="card-footer mt-3">
+                                                <div class="row mt-3" style="flex-wrap: nowrap;">
+                                                    <div class="col-md-9">
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <button class="btn btn-danger btn-block border-m trash" value="${c.childID}">
+                                                                    <span class="d-flex align-items-center">
+                                                                        <i class="fas fa-arrow-circle-left mr-2"></i> Delete
+                                                                    </span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <button class="btn btn-primary btn-block border-m" data-toggle="modal"
+                                                                        data-target="#updatePatientModal${c.childID}"><span
+                                                                        class="d-flex align-items-center">
+                                                                        <i class="fas fa-edit mr-2"></i> Edit
+                                                                    </span></button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="">
+                                                        <form action="reservationdetail?" method="POST">
+                                                            <input type="hidden" name="serviceID" value="${service.serviceID}">
+                                                            <c:if test="${staff.staffID != null}">
+                                                                <input type="hidden" name="staffID" value="${staff.staffID}">
+                                                            </c:if>
+                                                            <input type="hidden" name="childID" value="${c.childID}">
+                                                            <button type="submit" class="btn-continue btn btn-block text-white">
                                                                 <span class="d-flex align-items-center">
-                                                                    <i class="fas fa-arrow-circle-left mr-2"></i> Delete
+                                                                    <i class="fas fa-arrow-circle-right mr-2"></i> Continue
                                                                 </span>
                                                             </button>
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <button class="btn btn-primary btn-block border-m" data-toggle="modal"
-                                                                    data-target="#updatePatientModal${c.childID}"><span
-                                                                    class="d-flex align-items-center">
-                                                                    <i class="fas fa-edit mr-2"></i> Edit
-                                                                </span></button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="">
-                                                    <form action="reservationdetail?" method="POST">
-                                                        <input type="hidden" name="serviceID" value="${service.serviceID}">
-                                                        <c:if test="${staff.staffID != null}">
-                                                            <input type="hidden" name="staffID" value="${staff.staffID}">
-                                                        </c:if>
-                                                        <input type="hidden" name="childID" value="${c.childID}">
-                                                        <button type="submit" class="btn-continue btn btn-block text-white">
-                                                            <span class="d-flex align-items-center">
-                                                                <i class="fas fa-arrow-circle-right mr-2"></i> Continue
-                                                            </span>
-                                                        </button>
-                                                    </form>
+                                                        </form>
 
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="modal fade" id="updatePatientModal${c.childID}" tabindex="-1" role="dialog" aria-labelledby="patientModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <form action="user?action=update-child" method="POST" enctype="multipart/form-data">
-                                        <div class="modal-content border-m">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="patientModalLabel">Patient Profile</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="container">
-                                                    <!-- Image Upload -->
-                                                    <input type="hidden"  name="childID" value="${c.childID}">
-                                                    <div class="form-group text-center">
-                                                        <input type="file" style="display: none;" name="images" id="file" class="inputfile" onchange="readURL(this)" accept="image/*" />
-                                                        <label for="file">
-                                                            <img id="img-preview" style="height: 100px; width: 100px;" class="rounded-circle mx-auto d-block image-create" name="default-image" src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png" />
-                                                            <i class="bi bi-pencil-square image-create"></i>
-                                                        </label>
-                                                    </div>
-                                                    <!-- Fullname -->
-                                                    <div class="form-group">
-                                                        <label for="patientName">Fullname:</label>
-                                                        <input required type="text" class="form-control" oninvalid="CheckFullName(this);" oninput="CheckFullName(this);" id="patientName" name="fullname" placeholder="Enter fullname of your child" value="${c.childName}">
-                                                    </div>
-                                                    <!-- Date of Birth -->
-                                                    <div class="row">
+                                <div class="modal fade" id="updatePatientModal${c.childID}" tabindex="-1" role="dialog" aria-labelledby="patientModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <form action="user?action=update-child" method="POST" enctype="multipart/form-data">
+                                            <div class="modal-content border-m">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="patientModalLabel">Patient Profile</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="container">
+                                                        <!-- Image Upload -->
+                                                        <input type="hidden"  name="childID" value="${c.childID}">
+                                                        <div class="form-group text-center">
+                                                            <input type="file" style="display: none;" name="images" id="file" class="inputfile" onchange="readURL(this)" accept="image/*" />
+                                                            <label for="file">
+                                                                <img id="img-preview" style="height: 100px; width: 100px;" class="rounded-circle mx-auto d-block image-create" name="default-image" src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png" />
+                                                                <i class="bi bi-pencil-square image-create"></i>
+                                                            </label>
+                                                        </div>
+                                                        <!-- Fullname -->
                                                         <div class="form-group">
-                                                            <label for="patientDOB">Date of birth:</label>
-                                                            <div class="row">
-                                                                <div class="col-md-4">
-                                                                    <select required class="form-control patientDOBYear" id="patientDOBYear${c.childID}" name="year">
-                                                                        <option value="">Year</option>
-                                                                        <!-- Include years here -->
-                                                                    </select>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <select required class="form-control patientDOBMonth" id="patientDOBMonth${c.childID}" name="month">
-                                                                        <option value="">Month</option>
-                                                                        <!-- Include months here -->
-                                                                    </select>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <select required class="form-control patientDOBDay" id="patientDOBDay${c.childID}" name="day">
-                                                                        <option value="">Day</option>
-                                                                        <!-- Include days here -->
-                                                                    </select>
-                                                                </div>
-
-                                                            </div>
+                                                            <label for="patientName">Fullname:</label>
+                                                            <input required type="text" class="form-control" oninvalid="CheckFullName(this);" oninput="CheckFullName(this);" id="patientName" name="fullname" placeholder="Enter fullname of your child" value="${c.childName}">
                                                         </div>
-                                                        <div class="form-group col-md-2">
-                                                            <label>Gender:</label>
-                                                            <div class="form-check">
-                                                                <input required type="radio" class="form-check-input" id="maleGender" name="gender" value="Male" ${c.gender eq 'Male' ? 'checked' : ''}>
-                                                                <label class="form-check-label" for="maleGender">Male</label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input required type="radio" class="form-check-input" id="femaleGender" name="gender" value="Female" ${c.gender eq 'Female' ? 'checked' : ''}>
-                                                                <label class="form-check-label" for="femaleGender">Female</label>
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                    <!-- Relationship -->
-                                                    <div class="form-group">
-                                                        <label for="relaID">Relationship</label>
+                                                        <!-- Date of Birth -->
                                                         <div class="row">
-                                                            <div class="col-md-12">
-                                                                <select required class="form-control" name="relaID">
-                                                                    <option value="">Relationship</option>
-                                                                    <c:forEach var="re" items="${requestScope.relationship}">
-                                                                        <c:choose>
-                                                                            <c:when test="${c.relationship.relationshipID eq re.relationshipID}">
-                                                                                <option value="${re.relationshipID}" selected>${re.relationshipName}</option>
-                                                                            </c:when>
-                                                                            <c:otherwise>
-                                                                                <option value="${re.relationshipID}">${re.relationshipName}</option>
-                                                                            </c:otherwise>
-                                                                        </c:choose>
-                                                                    </c:forEach>
-                                                                </select>
-                                                            </div>
-                                                        </div>
+                                                            <div class="form-group">
+                                                                <label for="patientDOB">Date of birth:</label>
+                                                                <div class="row">
+                                                                    <div class="col-md-4">
+                                                                        <select required class="form-control patientDOBYear" id="patientDOBYear${c.childID}" name="year">
+                                                                            <option value="">Year</option>
+                                                                            <!-- Include years here -->
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <select required class="form-control patientDOBMonth" id="patientDOBMonth${c.childID}" name="month">
+                                                                            <option value="">Month</option>
+                                                                            <!-- Include months here -->
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <select required class="form-control patientDOBDay" id="patientDOBDay${c.childID}" name="day">
+                                                                            <option value="">Day</option>
+                                                                            <!-- Include days here -->
+                                                                        </select>
+                                                                    </div>
 
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group col-md-2">
+                                                                <label>Gender:</label>
+                                                                <div class="form-check">
+                                                                    <input required type="radio" class="form-check-input" id="maleGender" name="gender" value="Male" ${c.gender eq 'Male' ? 'checked' : ''}>
+                                                                    <label class="form-check-label" for="maleGender">Male</label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <input required type="radio" class="form-check-input" id="femaleGender" name="gender" value="Female" ${c.gender eq 'Female' ? 'checked' : ''}>
+                                                                    <label class="form-check-label" for="femaleGender">Female</label>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        <!-- Relationship -->
+                                                        <div class="form-group">
+                                                            <label for="relaID">Relationship</label>
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <select required class="form-control" name="relaID">
+                                                                        <option value="">Relationship</option>
+                                                                        <c:forEach var="re" items="${requestScope.relationship}">
+                                                                            <c:choose>
+                                                                                <c:when test="${c.relationship.relationshipID eq re.relationshipID}">
+                                                                                    <option value="${re.relationshipID}" selected>${re.relationshipName}</option>
+                                                                                </c:when>
+                                                                                <c:otherwise>
+                                                                                    <option value="${re.relationshipID}">${re.relationshipName}</option>
+                                                                                </c:otherwise>
+                                                                            </c:choose>
+                                                                        </c:forEach>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        <!-- Parent's Email -->
+                                                        <!--                                                    <div class="form-group">
+                                                                                                                <label for="patientEmail">Parent's email:</label>
+                                                                                                                <input disabled type="email" class="form-control" id="patientEmail" name="email" placeholder="Enter email address" value="${sessionScope.user.email}">
+                                                                                                            </div>
+                                                                                                             Parent's Phone Number 
+                                                                                                            <div class="form-group">
+                                                                                                                <label for="patientPhoneNumber">Parent's phone:</label>
+                                                                                                                <input type="text" class="form-control" id="patientPhoneNumber" oninvalid="CheckPhone(this);" oninput="CheckPhone(this);" name="phoneNumber" placeholder="Enter phone number" value="${sessionScope.user.phoneNumber}">
+                                                                                                            </div>
+                                                                                                             Address 
+                                                                                                            <div class="form-group">
+                                                                                                                <label for="patientAddress">Address:</label>
+                                                                                                                <input type="text" class="form-control" id="patientAddress" name="address" placeholder="Enter address" value="${sessionScope.user.address}">
+                                                                                                            </div>
+                                                                                                            <div class="alert alert-warning" style="font-size: 12px">
+                                                                                                                When editing the address and phone number, profile information will change.
+                                                                                                            </div>-->
                                                     </div>
-                                                    <!-- Parent's Email -->
-                                                    <!--                                                    <div class="form-group">
-                                                                                                            <label for="patientEmail">Parent's email:</label>
-                                                                                                            <input disabled type="email" class="form-control" id="patientEmail" name="email" placeholder="Enter email address" value="${sessionScope.user.email}">
-                                                                                                        </div>
-                                                                                                         Parent's Phone Number 
-                                                                                                        <div class="form-group">
-                                                                                                            <label for="patientPhoneNumber">Parent's phone:</label>
-                                                                                                            <input type="text" class="form-control" id="patientPhoneNumber" oninvalid="CheckPhone(this);" oninput="CheckPhone(this);" name="phoneNumber" placeholder="Enter phone number" value="${sessionScope.user.phoneNumber}">
-                                                                                                        </div>
-                                                                                                         Address 
-                                                                                                        <div class="form-group">
-                                                                                                            <label for="patientAddress">Address:</label>
-                                                                                                            <input type="text" class="form-control" id="patientAddress" name="address" placeholder="Enter address" value="${sessionScope.user.address}">
-                                                                                                        </div>
-                                                                                                        <div class="alert alert-warning" style="font-size: 12px">
-                                                                                                            When editing the address and phone number, profile information will change.
-                                                                                                        </div>-->
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-danger border-m" data-dismiss="modal">
+                                                        <span class="d-flex align-items-center">
+                                                            <i class="fas fa-times mr-2"></i> Close
+                                                        </span>
+                                                    </button>
+                                                    <button type="submit" class="btn btn-continue text-white">
+                                                        <span class="d-flex align-items-center">
+                                                            <i class="fas fa-save mr-2"></i> Update
+                                                        </span>
+                                                    </button>
                                                 </div>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-danger border-m" data-dismiss="modal">
-                                                    <span class="d-flex align-items-center">
-                                                        <i class="fas fa-times mr-2"></i> Close
-                                                    </span>
-                                                </button>
-                                                <button type="submit" class="btn btn-continue text-white">
-                                                    <span class="d-flex align-items-center">
-                                                        <i class="fas fa-save mr-2"></i> Update
-                                                    </span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>                   
-                        </c:forEach>
+                                        </form>
+                                    </div>
+                                </div>                   
+                            </c:forEach>
+                        </c:if>
                     </div>
                 </div>
             </div>

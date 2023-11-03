@@ -335,6 +335,7 @@ VALUES
 INSERT INTO Users (Address, Email, Password, FirstName, LastName, Gender, PhoneNumber, ProfileImage, Status, CreatedDate)
 VALUES ('hn','lethangd@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 1, '10-11-2023'),
 	   ('hn','levandin16@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 1, '10-11-2023');
+	   ('hn','16thanh2003@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 1, '10-11-2023');
 
 
 INSERT INTO StaffSchedules (StaffID, Workday, Slot, Status)
@@ -428,11 +429,11 @@ VALUES
     ('Brother');
 -- Dữ liệu mẫu cho bảng Children
 INSERT INTO Children (UserID, ChildName, Birthday, Status, Gender, Avatar, RelationshipID)
-VALUES	(1, 'viet', '2013-09-01', 'Healthy','Male', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpmA-_2vvDLD4BjOCXyDfV2vXBD9KmqylfODng16S2u1xdsSrmIGFl1aPs5sKeCgB5CFo&usqp=CAU',1),
-		(1, 'thanh', '2011-09-01', 'Healthy','Female', 'https://cdn-img.scalabs.com.au/uzjYWz5uFA99H9ilh_BLtPqAA1Dq0GhZ05-Iow7qAZM/aHR0cHM6Ly9zdy1o/aXQtcHJkLnNjYWRp/Z2l0YWwuaW8vbWVk/aWEvMTYyNjYvc2lk/ZS1leWUtY2hsb2Uu/anBnP3ByZXNldD1N/YWluSW1hZ2U',5),
-		(3, 'thanhthut', '2010-09-01', 'Healthy','Male', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1FBxbQH9XIButhyBKveuJ0w1XEtIIwhQY8W8MWXJGgnwKh3bNF72GyzTsv_WH0M7Frlc&usqp=CAU',2),
-		(3, 'quan', '2014-09-01', 'Healthy','Female', 'https://hips.hearstapps.com/hmg-prod/images/kailia-posey-dead-grinning-girl-meme-1651648895.jpg?crop=0.667xw:1.00xh;0.0898xw,0&resize=640:*',5),
-        (2, 'hiu', '2013-09-01', 'Healthy','Male', 'https://i.redd.it/uuunx09z14b71.jpg',3);
+VALUES	(1, 'viet', '2013-09-01', 'Active','Male', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpmA-_2vvDLD4BjOCXyDfV2vXBD9KmqylfODng16S2u1xdsSrmIGFl1aPs5sKeCgB5CFo&usqp=CAU',1),
+		(1, 'thanh', '2011-09-01', 'Active','Female', 'https://cdn-img.scalabs.com.au/uzjYWz5uFA99H9ilh_BLtPqAA1Dq0GhZ05-Iow7qAZM/aHR0cHM6Ly9zdy1o/aXQtcHJkLnNjYWRp/Z2l0YWwuaW8vbWVk/aWEvMTYyNjYvc2lk/ZS1leWUtY2hsb2Uu/anBnP3ByZXNldD1N/YWluSW1hZ2U',5),
+		(3, 'thanhthut', '2010-09-01', 'Active','Male', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS1FBxbQH9XIButhyBKveuJ0w1XEtIIwhQY8W8MWXJGgnwKh3bNF72GyzTsv_WH0M7Frlc&usqp=CAU',2),
+		(3, 'quan', '2014-09-01', 'Active','Female', 'https://hips.hearstapps.com/hmg-prod/images/kailia-posey-dead-grinning-girl-meme-1651648895.jpg?crop=0.667xw:1.00xh;0.0898xw,0&resize=640:*',5),
+        (2, 'hiu', '2013-09-01', 'Active','Male', 'https://i.redd.it/uuunx09z14b71.jpg',3);
 
 
 -- Dữ liệu mẫu cho bảng MedicalExaminations
@@ -590,3 +591,5 @@ VALUES ('Preventing the Spread of Infectious Diseases', 'Lorem ipsum dolor sit a
 
 INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
 VALUES ('Healthy Aging: Tips for a Fulfilling and Active Lifestyle', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Explore tips for healthy aging and maintaining an active lifestyle as you grow older.', 'resources/img/thumbnail_aging.jpg', 450, 1, 1, '2023-10-11 09:55:00', 'Wellness', 1);
+
+select * from users
