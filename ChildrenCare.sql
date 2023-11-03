@@ -334,7 +334,7 @@ VALUES
 -- Insert data into Users
 INSERT INTO Users (Address, Email, Password, FirstName, LastName, Gender, PhoneNumber, ProfileImage, Status, CreatedDate)
 VALUES ('hn','lethangd@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 1, '10-11-2023'),
-	   ('hn','levandin16@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 1, '10-11-2023');
+	   ('hn','levandin16@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 1, '10-11-2023'),
 	   ('hn','16thanh2003@gmail.com', '81dc9bdb52d04dc20036dbd8313ed055', N'Thắng', N'Lê Minh', 'Male', '0834398268', 'resources/img/thang.jpeg', 1, '10-11-2023');
 
 
@@ -591,5 +591,3 @@ VALUES ('Preventing the Spread of Infectious Diseases', 'Lorem ipsum dolor sit a
 
 INSERT INTO Posts (Title, Content, BriefInfo, Thumbnail, Counts, AuthorID, ServiceID, CreatedDate, CategoryPost, StatusPost)
 VALUES ('Healthy Aging: Tips for a Fulfilling and Active Lifestyle', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', 'Explore tips for healthy aging and maintaining an active lifestyle as you grow older.', 'resources/img/thumbnail_aging.jpg', 450, 1, 1, '2023-10-11 09:55:00', 'Wellness', 1);
-
-select * from users
