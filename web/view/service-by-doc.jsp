@@ -7,6 +7,7 @@
 <%@page import = "Database.*" %>
 <%@page import = "java.util.*" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -88,6 +89,7 @@
                             <p>
                             <form action="service?event=detail" method="POST">
                                 <input type="hidden" name="serviceID" value="<%=service.getServiceID()%>">
+                                <input type="hidden" name="staffID" value="${requestScope.staffID}">
                                 <input type="submit"  class="btn btn-primary btn-block" value="Details" />
                             </form>
                             </p>

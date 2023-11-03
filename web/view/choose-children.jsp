@@ -123,7 +123,7 @@
                                 <h5 class="card-title">Info of examination</h5>
                                 <table class="table">
                                     <tbody>
-                                        <c:if test="${staff != null}">
+                                        <c:if test="${staff.staffID != null}">
                                             <tr>
                                                 <td><i class="fas fa-user-md"></i></td>
                                                 <td><strong>Dr:</strong></td>
