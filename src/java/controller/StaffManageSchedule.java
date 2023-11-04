@@ -46,7 +46,9 @@ public class StaffManageSchedule extends HttpServlet {
                     staffSchedule.setSlot(workSlot);
                     staffSchedule.setStaffID(Integer.parseInt(staffID));
                     staffSchedule.setWorkday(workDay);
-                    // validate
+                    // validate the schedule 
+                    
+                    
                     if (staffScheduleDAO.getScheduleByWorkDate(workDay, workSlot, staffID) != null) {
                         request.setAttribute("staffSchedule", null);
                         request.setAttribute("action", "add");
@@ -64,7 +66,7 @@ public class StaffManageSchedule extends HttpServlet {
                     Date workDay = Date.valueOf(request.getParameter("workDay"));
                     int workSlot = Integer.parseInt(request.getParameter("workSlot"));
                     StaffSchedule staffSchedule = new StaffSchedule(Integer.parseInt(scheduleID), Integer.parseInt(staffID), workDay, workSlot);
-                    // validate
+                    // validate 
                     if (staffScheduleDAO.getScheduleByWorkDate(workDay, workSlot, staffID) != null
                             && !Integer.toString(staffScheduleDAO.getScheduleByWorkDate(workDay, workSlot, staffID).getScheduleID()).equals(scheduleID)) {
                         request.setAttribute("scheduleID", scheduleID);

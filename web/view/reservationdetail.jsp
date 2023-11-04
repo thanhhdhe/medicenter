@@ -398,6 +398,8 @@
                                     alert("This slot is no longer available. Please choose again.");
                                 } else if (responseText === "Double book at one time") {
                                     alert("This children cannot duplicate slots with other services. Please choose again.");
+                                } else if (responseText === "Exceed the limit") {
+                                    alert("You have exceeded the limit for making more reservations.");
                                 } else {
                                     const url = "reservation?action=confirm&reservationID=" + responseText;
                                     window.location.href = url;

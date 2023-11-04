@@ -258,6 +258,8 @@
                             if (result === "success") {
                                 alert("You have been successfully cancel this reservation");
                                 location.reload();
+                            } else if (result === "fail") {
+                                alert("You cannot cancel the reservation due to our rule");
                             }
                         }
                     };

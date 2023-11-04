@@ -172,6 +172,13 @@ public class ReservationDetailController extends HttpServlet {
         } catch (Exception e) {
 
         }
+        // Check the limit of reservation that child have make
+        if (reservationDAO.countUserTodayReservations(Integer.toString(user.getUserID()), ChildID) >= 6) {
+            response.setContentType("text/plain");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("Exceed the limit");
+            return;
+        }
 
         Reservation reservation = new Reservation();
         if (staffID.equals("all") || staffID == null) {

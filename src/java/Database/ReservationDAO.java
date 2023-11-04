@@ -91,8 +91,8 @@ public class ReservationDAO extends MyDAO {
                 + "WHERE (U.FirstName LIKE ? OR U.LastName LIKE ?);";
         try {
             ps = con.prepareStatement(xSql);
-            ps.setString(1, "%"+Name+"%");
-            ps.setString(2, "%"+Name+"%");
+            ps.setString(1, "%" + Name + "%");
+            ps.setString(2, "%" + Name + "%");
             rs = ps.executeQuery();
             while (rs.next()) {
                 return rs.getInt(1);
@@ -114,8 +114,8 @@ public class ReservationDAO extends MyDAO {
                 + "OFFSET ? Rows fetch next 10 rows ONLY;";
         try {
             ps = con.prepareStatement(xSql);
-            ps.setString(1, "%"+Name+ "%");
-            ps.setString(2, "%"+Name+"%");
+            ps.setString(1, "%" + Name + "%");
+            ps.setString(2, "%" + Name + "%");
             ps.setInt(3, (page - 1) * 10);
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -1313,6 +1313,24 @@ public class ReservationDAO extends MyDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public int countUserTodayReservations(String userID, String childID) {
+        xSql = "select count(*) as TotalRecord from Reservations "
+                + "where UserID = ? and ChildID = ? "
+                + "and datediff(DAY, GETDATE(), CreatedDate) = 0 and status <> 'cancel' ";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setString(1, userID);
+            ps.setString(2, childID);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt("TotalRecord");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public static void main(String args[]) {

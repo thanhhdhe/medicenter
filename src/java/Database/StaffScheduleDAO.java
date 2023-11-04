@@ -386,7 +386,7 @@ public class StaffScheduleDAO extends MyDAO {
 
     public void editScheduleByStaff(StaffSchedule staffSchedule) {
         String xSql = "UPDATE [dbo].[StaffSchedules]\n"
-                + "   SET [Workday] = ?, [Slot] = ?\n"
+                + "   SET [Workday] = ?, [Slot] = ?, [Status] = 'unconfirmed'\n"
                 + " WHERE ScheduleID = ?";
         try {
             ps = con.prepareStatement(xSql);

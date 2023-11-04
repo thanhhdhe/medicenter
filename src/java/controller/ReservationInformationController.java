@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.Date;
 import model.CategoryService;
 import model.Children;
 import model.Reservation;
@@ -79,10 +80,19 @@ public class ReservationInformationController extends HttpServlet {
                 ReservationID = Integer.parseInt(id);
                 Reservation reservation = reservationDAO.getReservationByID(ReservationID);
                 if (!reservation.getStatus().equals("done")) {
-                    // Cancel reservation
-                    reservation.setStatus("cancel");
-                    reservationDAO.update(reservation);
-                    response.getWriter().write("success");
+                    // Get the one day after current date
+                    Date compareDate = new Date(System.currentTimeMillis() + (2 * 24 * 60 * 60 * 1000));
+                    Date reservationDate = reservation.getReservationDate();
+                    // Check two date to satisfy the business rule
+                    if (reservationDate.after(compareDate) || reservationDate.equals(compareDate)) {
+                        // Cancel reservation
+                        reservation.setStatus("cancel");
+                        reservationDAO.update(reservation);
+                        response.getWriter().write("success");
+                    } else {
+                        response.getWriter().write("fail");
+                    }
+
                 }
             } else if (action.equals("confirm")) {
                 int reserID = Integer.parseInt(request.getParameter("reservationID"));
