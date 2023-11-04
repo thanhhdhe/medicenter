@@ -82,7 +82,7 @@ public class CheckResultController extends HttpServlet {
             request.setAttribute("children", children);
             request.setAttribute("cate", cate);
             User users = (User) session.getAttribute("user");
-            reservation.setStatus("Waiting for examination");
+            reservation.setStatus("waiting for examination");
             reservationDAO.update(reservation);
             request.getSession().setAttribute("message", "Payment successfully");
             Thread emailThread = new Thread(() -> {
@@ -146,7 +146,7 @@ public class CheckResultController extends HttpServlet {
                         if (checkOrderStatus) {
                             if ("00".equals(request.getParameter("vnp_ResponseCode"))) {
                                 User users = (User) session.getAttribute("user");
-                                reservation.setStatus("Waiting for examination");
+                                reservation.setStatus("waiting for examination");
                                 reservationDAO.update(reservation);
                                 request.getSession().setAttribute("message", "Payment successfully");
                                 Thread emailThread = new Thread(() -> {

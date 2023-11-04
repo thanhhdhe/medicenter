@@ -43,10 +43,10 @@ import org.apache.commons.codec.digest.DigestUtils;
  *
  * @author Admin
  */
-@MultipartConfig( //        fileSizeThreshold = 1024 * 10, // 10 KB
-        //        maxFileSize = 1024 * 300, // 300 KB
-        //        maxRequestSize = 1024 * 1024 // 1 MB 
-        )
+@MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1 MB
+        maxFileSize = 1024 * 1024 * 2, // 2 MB
+        maxRequestSize = 1024 * 1024 * 2 // 1 MB 
+)
 public class UserController extends HttpServlet {
 
     /**
@@ -80,8 +80,6 @@ public class UserController extends HttpServlet {
                 isManager = true;
             }
         }
-        List<User> userList = null;
-        String url = null;
 
         try {
             if (action.equals("profile")) {
@@ -122,40 +120,64 @@ public class UserController extends HttpServlet {
 
                 response.sendRedirect("home?showmodal=1");
             }
-            if (action.equals("all")) {
-                if (isManager) {
-                    url = "user?action=all";
-                    userList = userdao.getAllUsers();
-                } else {
-                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
-                }
-            }
-            if (action.equals("search")) {
-                if (isManager) {
-                    String text = request.getParameter("txt");
-                    text = text.replaceFirst("^0+(?!$)", "");
-                    url = "user?action=search&txt=" + text;
-                    userList = userdao.search(text);
-                } else {
-                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
-                }
-            }
-            if (action.equals("filter")) {
-                if (isManager) {
+            if (isManager) {
+                if (action.equals("search")) {
+                    // Retrieve search parameters from the request
+                    String searchValue = request.getParameter("searchValue");
                     String status = request.getParameter("status");
-                    request.setAttribute("status", status);
-                    if (status.equals("all")) {
-                        response.sendRedirect("user?action=all");
-                    } else {
-                        url = "user?action=filter&status=" + status;
-                        userList = userdao.getFilterByStatus(status);
+                    String sortBy = request.getParameter("sortBy");
+                    String sortOrder = request.getParameter("sortOrder");
+
+                    // Get the current page from the request
+                    int page = 1;
+                    String pageParam = request.getParameter("page");
+                    if (pageParam != null) {
+                        page = Integer.parseInt(pageParam);
                     }
-                } else {
-                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                    int pageSize = 10; // Giá trị mặc định cho pageSize
+                    String pageSizeParam = request.getParameter("pageSize");
+                    if (pageSizeParam != null) {
+                        pageSize = Integer.parseInt(pageSizeParam);
+                    }
+                    int size = userdao.countSearchUser(searchValue, status);
+                    int numPages = (size % pageSize == 0) ? (size / pageSize) : (size / pageSize) + 1;
+                    String url = "user?action=search";
+
+                    if (searchValue != null) {
+                        url += "&searchValue=" + searchValue;
+                    }
+
+                    if (status != null) {
+                        url += "&status=" + status;
+                    }
+
+                    if (sortBy != null) {
+                        url += "&sortBy=" + sortBy;
+                    }
+
+                    if (sortOrder != null) {
+                        url += "&sortOrder=" + sortOrder;
+                    }
+                    if (pageSizeParam != null) {
+                        url += "&pageSize=" + pageSize;
+                    }
+                    List<User> userListDemo = userdao.search(searchValue, status, sortBy, sortOrder, page, pageSize);
+
+                    request.setAttribute("searchValue", searchValue);
+                    request.setAttribute("status", status);
+                    request.setAttribute("sortBy", sortBy);
+                    request.setAttribute("sortOrder", sortOrder);
+                    request.setAttribute("page", page);
+                    request.setAttribute("pageSize", pageSize);
+                    request.setAttribute("num", numPages);
+                    request.setAttribute("url", url);
+                    request.setAttribute("userList", userListDemo);
+
+                    // Forward the request to the JSP page for displaying search results with pagination
+                    request.getRequestDispatcher("./view/user-list.jsp").forward(request, response);
                 }
-            }
-            if (action.equals("details")) {
-                if (isManager) {
+                if (action.equals("details")) {
+
                     String userIDstr = request.getParameter("userID");
                     int userID = Integer.parseInt(userIDstr);
                     User userDetail = userdao.getUserByID(userID);
@@ -170,39 +192,9 @@ public class UserController extends HttpServlet {
                     List<Children> childrenList = childrenDAO.getListChildrenByUserId(userIDstr);
                     request.setAttribute("children", childrenList);
                     request.getRequestDispatcher("./view/user-details.jsp").forward(request, response);
-                } else {
-                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
                 }
-            }
-
-            if (userList != null) {
-                int numPerPage = 15;
-                if (request.getParameter("itemsPerPage") != null) {
-                    numPerPage = Integer.parseInt(request.getParameter("itemsPerPage"));
-                }
-                int size = userList.size();
-                int numPages = (size % numPerPage == 0) ? (size / numPerPage) : (size / numPerPage) + 1;
-
-                // Get the current page from the request parameter
-                int page = 1; // Default to page 1 if not specified
-                String xpage = request.getParameter("page");
-                if (xpage != null) {
-                    page = Integer.parseInt(xpage);
-                }
-
-                int start = (page - 1) * numPerPage;
-                int end = Math.min(page * numPerPage, size);
-
-                List<User> user = userdao.getListByPage(userList, start, end);
-                session.setAttribute("numPerPage", numPerPage);
-                if (request.getParameter("txt") != null) {
-                    request.setAttribute("text", request.getParameter("txt"));
-                }
-                request.setAttribute("url", url);
-                request.setAttribute("page", page);
-                request.setAttribute("num", numPages);
-                request.setAttribute("user", user);
-                request.getRequestDispatcher("./view/user-list.jsp").forward(request, response);
+            } else {
+                request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
             }
             if (action.equals("my-children")) {
                 int userID = users.getUserID();

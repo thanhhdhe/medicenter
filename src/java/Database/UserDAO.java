@@ -87,6 +87,154 @@ public class UserDAO extends MyDAO {
         return userList;
     }
 
+    public List<User> search(String searchValue, String status, String sortBy, String sortOrder, int page, int pageSize) {
+        List<User> userList = new ArrayList<>();
+        int offset = (page - 1) * pageSize; // Start position of data on the current page
+
+        String sql = "SELECT * FROM [dbo].[Users] WHERE 1 = 1"; // 1 = 1 for easy condition adding
+
+        // Check if search query is provided
+        if (searchValue != null && !searchValue.isEmpty()) {
+            sql += " AND (FirstName LIKE ? OR LastName LIKE ? OR Email LIKE ? OR PhoneNumber LIKE ?)";
+        }
+
+        // Check if status filter is applied
+        if (status != null && !status.isEmpty()) {
+            sql += " AND Status = ?";
+        }
+
+        if (sortBy != null && !sortBy.isEmpty()) {
+            sql += " ORDER BY ";
+            switch (sortBy) {
+                case "UserID":
+                    sql += "UserID";
+                    break;
+                case "FirstName":
+                    sql += "FirstName";
+                    break;
+                case "LastName":
+                    sql += "LastName";
+                    break;
+                case "Email":
+                    sql += "Email";
+                    break;
+                case "PhoneNumber":
+                    sql += "PhoneNumber";
+                    break;
+                case "Status":
+                    sql += "Status";
+                    break;
+                default:
+                    sql += "UserID"; // Default sorting by UserID
+            }
+
+            if ("desc".equalsIgnoreCase(sortOrder)) {
+                sql += " DESC";
+            } else {
+                sql += " ASC"; // Default sorting is ASC
+            }
+        } else {
+            sql += " ORDER BY UserID"; // Default sorting by UserID
+        }
+
+        sql += " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try {
+            ps = con.prepareStatement(sql);
+            int paramIndex = 1;
+
+            // Set search query parameters for FirstName, LastName, Email, and PhoneNumber
+            if (searchValue != null && !searchValue.isEmpty()) {
+                ps.setString(paramIndex++, "%" + searchValue + "%");
+                ps.setString(paramIndex++, "%" + searchValue + "%");
+                ps.setString(paramIndex++, "%" + searchValue + "%");
+                ps.setString(paramIndex++, "%" + searchValue + "%");
+            }
+
+            // Set status filter parameter
+            if (status != null && !status.isEmpty()) {
+                ps.setString(paramIndex++, status);
+            }
+
+            // Set offset and pageSize parameters for pagination
+            ps.setInt(paramIndex++, offset);
+            ps.setInt(paramIndex++, pageSize);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                // Get user information from ResultSet and add it to the list
+                int userID = rs.getInt("UserID");
+                String address = rs.getString("Address");
+                String email = rs.getString("Email");
+                String password = rs.getString("Password");
+                String firstName = rs.getString("FirstName");
+                String lastName = rs.getString("LastName");
+                String gender = rs.getString("Gender");
+                String phoneNumber = rs.getString("PhoneNumber");
+                String profileImage = rs.getString("ProfileImage");
+                boolean userStatus = rs.getBoolean("Status");
+                Date createdDate = rs.getDate("CreatedDate");
+
+                User user = new User(userID, address, email, password, firstName, lastName, gender, phoneNumber, profileImage, userStatus, createdDate);
+                userList.add(user);
+            }
+
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return userList;
+    }
+
+    public int countSearchUser(String searchValue, String status) {
+        int count = 0;
+
+        String sql = "SELECT COUNT(*) FROM [dbo].[Users] WHERE 1 = 1";
+
+        // Check if search query is provided
+        if (searchValue != null && !searchValue.isEmpty()) {
+            sql += " AND (FirstName LIKE ? OR LastName LIKE ? OR Email LIKE ? OR PhoneNumber LIKE ?)";
+        }
+
+        // Check if status filter is applied
+        if (status != null && !status.isEmpty()) {
+            sql += " AND Status = ?";
+        }
+
+        try {
+            ps = con.prepareStatement(sql);
+            int paramIndex = 1;
+
+            // Set search query parameters for FirstName, LastName, Email, and PhoneNumber
+            if (searchValue != null && !searchValue.isEmpty()) {
+                ps.setString(paramIndex++, "%" + searchValue + "%");
+                ps.setString(paramIndex++, "%" + searchValue + "%");
+                ps.setString(paramIndex++, "%" + searchValue + "%");
+                ps.setString(paramIndex++, "%" + searchValue + "%");
+            }
+
+            // Set status filter parameter
+            if (status != null && !status.isEmpty()) {
+                ps.setString(paramIndex++, status);
+            }
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                count = rs.getInt(1); // Get the count from the first column
+            }
+
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+
     public void updateStatus(boolean status, int UserID) {
         String xSql = "UPDATE [dbo].[Users]\n"
                 + "   SET [Status] = ?\n"
@@ -479,13 +627,17 @@ public class UserDAO extends MyDAO {
     public static void main(String[] args) throws ParseException {
         UserDAO userDAO = new UserDAO();
 //        List<User> users = userDAO.getAllUsersByAdmin(1, 10, "Email", "", "", "", "", "", 2);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-        java.util.Date utilDate = dateFormat.parse("10-26-2023");
-        Date startDate = new Date(utilDate.getTime());
-        utilDate = dateFormat.parse("01-01-2023");
-        Date endDate = new Date(utilDate.getTime());
-        System.out.println(userDAO.getUserCountByCreatedDate(startDate, endDate));
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+//        java.util.Date utilDate = dateFormat.parse("10-26-2023");
+//        Date startDate = new Date(utilDate.getTime());
+//        utilDate = dateFormat.parse("01-01-2023");
+//        Date endDate = new Date(utilDate.getTime());
+//        System.out.println(userDAO.getUserCountByCreatedDate(startDate, endDate));
 
+//        List<User> users = userDAO.search("", "", "UserID", "asc", 1);
+//        for (User user : users) {
+//            System.out.println(user.getEmail());
+//        }
 //        System.out.println(userDAO.countTotalUserByAdmin("", "", "", "", "", 3));
 //        
     }

@@ -102,7 +102,7 @@
                     <%}%>
                     <%if(isManager){%>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="user?action=all" class="nav-item nav-link"
+                        <a href="user?action=search" class="nav-item nav-link"
                            ><i class="bi bi-people-fill"></i>User</a
                         >
                     </div>
