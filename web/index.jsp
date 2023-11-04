@@ -210,7 +210,7 @@
                                         <!-- Featured image -->
                                         <div class="bg-image hover-overlay shadow-1-strong ripple rounded-5 mb-4"
                                              data-mdb-ripple-color="light">
-                                            <img src="resources/img/thumbnail_infectious_diseases.jpg" class="bd-placeholder-img" style="object-fit: cover; min-width: 100%;" width="210" height="200">
+                                            <img src="${po.thumbnail}" class="bd-placeholder-img" style="object-fit: cover; min-width: 100%;" width="210" height="200">
                                             <a href="/ChildrenCare/blogDetail?ID=${po.postID}">
                                                 <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
                                             </a>
