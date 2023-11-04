@@ -135,22 +135,6 @@
                                                 <td>${staff.staffName}</td>
                                             </tr>
                                         </c:if>
-
-                                        <!--                                        <tr>
-                                                                                    <td><i class="fas fa-hospital"></i></td>
-                                                                                    <td><strong>Bệnh Viện:</strong></td>
-                                                                                    <td>Bệnh Viện XYZ</td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td><i class="fas fa-calendar-alt"></i></td>
-                                                                                    <td><strong>Ngày Khám:</strong></td>
-                                                                                    <td>10/15/2023</td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td><i class="fas fa-clock"></i></td>
-                                                                                    <td><strong>Giờ Khám:</strong></td>
-                                                                                    <td>09:00 AM</td>
-                                                                                </tr>-->
                                         <tr>
                                             <td><i class="fas fa-stethoscope"></i></td>
                                             <td><strong>Services:</strong></td>
@@ -193,7 +177,7 @@
                                                 <div class="info-desc col-md-9">
                                                     <div class="row">
                                                         <div class="col-md-5">
-                                                            <p class="title-info"><strong><i class="fas fa-user"></i> Fullname: </strong></p>
+                                                            <p class="title-info"><strong><i class="fa-solid fa-baby"></i> Fullname: </strong></p>
                                                         </div>
                                                         <div class="col-md-7 detail-info">
                                                             <p>${c.childName}</p>
@@ -210,15 +194,16 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-5">
-                                                            <p class="title-info"><i class="fas fa-phone"></i> <strong>Parent's phone:</strong></p>
+                                                            <p class="title-info"><i class="fas fa-venus-mars"></i> <strong>Sex:</strong>
+                                                            </p>
                                                         </div>
                                                         <div class="col-md-7 detail-info">
-                                                            <p>${c.user.phoneNumber}</p>
+                                                            <p>${c.gender}</p>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-5">
-                                                            <p class="title-info"><i class="fas fa-calendar-alt"></i> <strong>Relationship:</strong>
+                                                            <p class="title-info"><i class="fa-solid fa-heart"></i><strong> Relationship with Customer:</strong>
                                                             </p>
                                                         </div>
                                                         <div class="col-md-7 detail-info">
@@ -237,29 +222,45 @@
 
                                         </div>
 
-                                        <div id="fullInfo${c.childID}" style="display: none;">
+                                        <div id="fullInfo${c.childID}" class="col-md-9" style="display: none;">
                                             <div class="row">
-                                                <div class="col-md-4">
-                                                    <p class="title-info"><i class="fas fa-venus-mars"></i> <strong>Gender:</strong>
-                                                    </p>
+                                                <div class="col-md-5">
+                                                    <p class="title-info"><strong><i class="fas fa-user"></i> Parent's Name:</strong></p>
                                                 </div>
-                                                <div class="col-md-8 detail-info">
-                                                    <p>${c.gender}</p>
+                                                <div class="col-md-7 detail-info">
+                                                    <p>${c.user.lastName} ${c.user.firstName}</p>
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-4">
-                                                    <p class="title-info"><i class="fas fa-globe"></i> <strong>Parent's email:</strong></p>
+                                                <div class="col-md-5">
+                                                    <p class="title-info"><i class="fas fa-venus-mars"></i> <strong>Gender:</strong>
+                                                    </p>
                                                 </div>
-                                                <div class="col-md-8 detail-info">
+                                                <div class="col-md-7 detail-info">
+                                                    <p>${c.user.gender}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <p class="title-info"><i class="fas fa-phone"></i> <strong>Parent's phone:</strong></p>
+                                                </div>
+                                                <div class="col-md-7 detail-info">
+                                                    <p>${c.user.phoneNumber}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <p class="title-info"><i class="fa-solid fa-envelope"></i> <strong>Parent's email:</strong></p>
+                                                </div>
+                                                <div class="col-md-7 detail-info">
                                                     <p>${c.user.email}</p>
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-4">
+                                                <div class="col-md-5">
                                                     <p class="title-info"><i class="fas fa-map-marker-alt"></i> <strong>Address: </strong></p>
                                                 </div>
-                                                <div class="col-md-8 detail-info">
+                                                <div class="col-md-7 detail-info">
                                                     <p>${c.user.address}</p>
                                                 </div>
                                             </div>
@@ -354,7 +355,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="form-group col-md-2">
-                                                                <label>Gender:</label>
+                                                                <label>Sex:</label>
                                                                 <div class="form-check">
                                                                     <input required type="radio" class="form-check-input"  name="gender" value="Male" ${c.gender eq 'Male' ? 'checked' : ''}>
                                                                     <label class="form-check-label" for="maleGender">Male</label>
@@ -368,7 +369,7 @@
                                                         </div>
                                                         <!-- Relationship -->
                                                         <div class="form-group">
-                                                            <label for="relaID">Relationship</label>
+                                                            <label for="relaID">Relationship with Customer:</label>
                                                             <div class="row">
                                                                 <div class="col-md-12">
                                                                     <select required class="form-control" name="relaID">
@@ -388,24 +389,6 @@
                                                             </div>
 
                                                         </div>
-                                                        <!-- Parent's Email -->
-                                                        <!--                                                    <div class="form-group">
-                                                                                                                <label for="patientEmail">Parent's email:</label>
-                                                                                                                <input disabled type="email" class="form-control" id="patientEmail" name="email" placeholder="Enter email address" value="${sessionScope.user.email}">
-                                                                                                            </div>
-                                                                                                             Parent's Phone Number 
-                                                                                                            <div class="form-group">
-                                                                                                                <label for="patientPhoneNumber">Parent's phone:</label>
-                                                                                                                <input type="text" class="form-control" id="patientPhoneNumber" oninvalid="CheckPhone(this);" oninput="CheckPhone(this);" name="phoneNumber" placeholder="Enter phone number" value="${sessionScope.user.phoneNumber}">
-                                                                                                            </div>
-                                                                                                             Address 
-                                                                                                            <div class="form-group">
-                                                                                                                <label for="patientAddress">Address:</label>
-                                                                                                                <input type="text" class="form-control" id="patientAddress" name="address" placeholder="Enter address" value="${sessionScope.user.address}">
-                                                                                                            </div>
-                                                                                                            <div class="alert alert-warning" style="font-size: 12px">
-                                                                                                                When editing the address and phone number, profile information will change.
-                                                                                                            </div>-->
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -504,7 +487,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group col-md-2">
-                                            <label>Gender:</label>
+                                            <label>Sex:</label>
                                             <div class="form-check">
                                                 <input required type="radio" class="form-check-input"  name="gender" value="Male">
                                                 <label class="form-check-label" for="maleGender">Male</label>
@@ -516,7 +499,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="relationship">Relationship</label>
+                                        <label for="relationship">Relationship with Customer: </label>
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <select required class="form-control" name="relaID">

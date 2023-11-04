@@ -14,10 +14,8 @@
         <title>Confirm Information</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
               integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <link href="/resources/css/jumbotron-narrow.css rel="stylesheet">      
-        <script src="/resources/js/jquery-1.11.3.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>    
         <style>
             body {
                 background-color: #e8f2f7;
@@ -90,19 +88,19 @@
                             <table class="table custom-table">
                                 <thead>
                                     <tr>
-                                        <th class="align-middle">Specialty</th>
+                                        <th class="align-middle">Reservation ID</th>
                                         <th class="align-middle">Service</th>
                                         <th class="align-middle">Doctor</th>
                                         <th class="align-middle">Appointment Time</th>
-                                        <th class="align-middle">Consultation Fee</th>
+                                        <th class="align-middle">Fee</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>RESPIRATORY</td>
+                                        <td>${reservation.reservationID}</td>
                                         <td>${service.title}</td>
                                         <td>${doctor.staffName}</td>
-                                        <td><c:choose>
+                                        <td>Time:<c:choose>
                                                 <c:when test="${reservation.reservationSlot eq 1}">7:00 - 8:00</c:when>
                                                 <c:when test="${reservation.reservationSlot eq 2}">8:00 - 9:00</c:when>
                                                 <c:when test="${reservation.reservationSlot eq 3}">9:00 - 10:00</c:when>
@@ -110,8 +108,8 @@
                                                 <c:when test="${reservation.reservationSlot eq 5}">14:00 - 15:00</c:when>
                                                 <c:when test="${reservation.reservationSlot eq 6}">15:00 - 16:00</c:when>
                                                 <c:otherwise>Unknown</c:otherwise>
-                                            </c:choose><br>${reservation.reservationDate}</td>
-                                        <td>${service.salePrice}</td>
+                                            </c:choose><br>Date: ${reservation.reservationDate}</td>
+                                        <td>${service.salePrice}$</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -127,8 +125,7 @@
                                 <div class="info-desc col-md-9">
                                     <div class="row">
                                         <div class="col-md-5">
-                                            <p class="title-info"><strong><i class="fas fa-user"></i> Fullname:
-                                                </strong></p>
+                                            <p class="title-info"><strong><i class="fa-solid fa-baby"></i> Fullname: </strong></p>
                                         </div>
                                         <div class="col-md-7 detail-info">
                                             <p>${children.childName}</p>
@@ -136,8 +133,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-5">
-                                            <p class="title-info"><i class="fas fa-calendar-alt"></i> <strong>Date of
-                                                    birth:</strong>
+                                            <p class="title-info"><i class="fas fa-calendar-alt"></i> <strong>Date of birth:</strong>
                                             </p>
                                         </div>
                                         <div class="col-md-7 detail-info">
@@ -146,17 +142,26 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-5">
-                                            <p class="title-info"><i class="fas fa-phone"></i> <strong>Parent's
-                                                    phone:</strong></p>
+                                            <p class="title-info"><i class="fas fa-venus-mars"></i> <strong>Sex:</strong>
+                                            </p>
                                         </div>
                                         <div class="col-md-7 detail-info">
-                                            <p>${children.user.phoneNumber}</p>
+                                            <p>${children.gender}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <p class="title-info"><i class="fa-solid fa-heart"></i><strong> Relationship with Customer:</strong>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-7 detail-info">
+                                            <p>${children.relationship.relationshipName}</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="row justify-content-center">
-                                        <img src="${children.image}" style="height: 85px;object-fit: cover;width: 85px;"
+                                        <img src="${children.image}" style="height: 85px;object-fit: cover;width: 85px;padding: 0.2rem;"
                                              alt="Image profile" style="max-height: 85px;"
                                              class="img-thumbnail rounded-circle" />
                                     </div>
@@ -165,31 +170,47 @@
 
 
 
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <p class="title-info"><i class="fas fa-venus-mars"></i> <strong>Gender:</strong>
-                                    </p>
+                            <div class="col-md-9">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <p class="title-info"><strong><i class="fas fa-user"></i> Parent's Name:</strong></p>
+                                    </div>
+                                    <div class="col-md-7 detail-info">
+                                        <p>${children.user.lastName} ${children.user.firstName}</p>
+                                    </div>
                                 </div>
-                                <div class="col-md-8 detail-info">
-                                    <p>${children.gender}</p>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <p class="title-info"><i class="fas fa-venus-mars"></i> <strong>Gender:</strong>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-7 detail-info">
+                                        <p>${children.user.gender}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <p class="title-info"><i class="fas fa-globe"></i> <strong>Parent's email:</strong>
-                                    </p>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <p class="title-info"><i class="fas fa-phone"></i> <strong>Parent's phone:</strong></p>
+                                    </div>
+                                    <div class="col-md-7 detail-info">
+                                        <p>${children.user.phoneNumber}</p>
+                                    </div>
                                 </div>
-                                <div class="col-md-8 detail-info">
-                                    <p>${children.user.email}</p>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <p class="title-info"><i class="fa-solid fa-envelope"></i> <strong>Parent's email:</strong></p>
+                                    </div>
+                                    <div class="col-md-7 detail-info">
+                                        <p>${children.user.email}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <p class="title-info"><i class="fas fa-map-marker-alt"></i> <strong>Address:
-                                        </strong></p>
-                                </div>
-                                <div class="col-md-8 detail-info">
-                                    <p>${children.user.address}</p>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <p class="title-info"><i class="fas fa-map-marker-alt"></i> <strong>Address: </strong></p>
+                                    </div>
+                                    <div class="col-md-7 detail-info">
+                                        <p>${children.user.address}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -269,7 +290,6 @@
 </div>
 
 <jsp:include page="layout/footer.jsp"/>
-<script src="https://pay.vnpay.vn/lib/vnpay/vnpay.min.js"></script>
 <script type="text/javascript">
                                 $("#frmCreateOrder").submit(function () {
                                     var postData = $("#frmCreateOrder").serialize();

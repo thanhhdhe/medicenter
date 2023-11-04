@@ -86,7 +86,7 @@ public class CheckResultController extends HttpServlet {
             reservationDAO.update(reservation);
             request.getSession().setAttribute("message", "Payment successfully");
             Thread emailThread = new Thread(() -> {
-                Mail.sendEmail(users.getEmail(), "Information about your reservations in Medilab", Mail.setInfo());
+                Mail.sendEmail(users.getEmail(), "Information about your reservations in Medilab", Mail.setInfo(reservation,service,doctor,children,cate));
             });
             emailThread.start();
             request.getRequestDispatcher("./view/reservationstatus.jsp").forward(request, response);
@@ -151,7 +151,7 @@ public class CheckResultController extends HttpServlet {
                                 reservationDAO.update(reservation);
                                 request.getSession().setAttribute("message", "Payment successfully");
                                 Thread emailThread = new Thread(() -> {
-                                    Mail.sendEmail(users.getEmail(), "Information about your reservations in Medilab", Mail.setInfo());
+                                    Mail.sendEmail(users.getEmail(), "Information about your reservations in Medilab", Mail.setInfo(reservation,service,doctor,children,cate));
                                 });
                                 emailThread.start();
                             } else {
