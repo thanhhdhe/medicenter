@@ -68,11 +68,11 @@
                 margin-bottom: 5px;
             }
 
-/*            .card:hover {
-                border: 1px solid #3699ff;
-                transform: translateZ(-3px);
-                cursor: pointer;
-            }*/
+            /*            .card:hover {
+                            border: 1px solid #3699ff;
+                            transform: translateZ(-3px);
+                            cursor: pointer;
+                        }*/
 
             .border-m {
                 border: none;
@@ -275,8 +275,8 @@
                                                                 </button>
                                                             </div>
                                                             <div class="col-md-4">
-                                                                <button class="btn btn-primary btn-block border-m" data-toggle="modal"
-                                                                        data-target="#updatePatientModal${c.childID}"><span
+                                                                <button class="btn btn-primary btn-block border-m" data-bs-toggle="modal"
+                                                                        data-bs-target="#updatePatientModal${c.childID}"><span
                                                                         class="d-flex align-items-center">
                                                                         <i class="fas fa-edit mr-2"></i> Edit
                                                                     </span></button>
@@ -309,16 +309,14 @@
                                             <div class="modal-content border-m">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="patientModalLabel">Patient Profile</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="container">
                                                         <!-- Image Upload -->
                                                         <input type="hidden"  name="childID" value="${c.childID}">
                                                         <div class="form-group text-center">
-                                                            <input type="file" style="display: none;" name="images" id="file" class="inputfile" onchange="readURL(this)" accept="image/*" />
+                                                            <input type="file" style="display: none;" name="images"  class="inputfile" onchange="readURL(this)" accept="image/*" />
                                                             <label for="file">
                                                                 <img id="img-preview" style="height: 100px; width: 100px;" class="rounded-circle mx-auto d-block image-create" name="default-image" src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png" />
                                                                 <i class="bi bi-pencil-square image-create"></i>
@@ -327,7 +325,7 @@
                                                         <!-- Fullname -->
                                                         <div class="form-group">
                                                             <label for="patientName">Fullname:</label>
-                                                            <input required type="text" class="form-control" oninvalid="CheckFullName(this);" oninput="CheckFullName(this);" id="patientName" name="fullname" placeholder="Enter fullname of your child" value="${c.childName}">
+                                                            <input required type="text" class="form-control" oninvalid="CheckFullName(this);" oninput="CheckFullName(this);"  name="fullname" placeholder="Enter fullname of your child" value="${c.childName}">
                                                         </div>
                                                         <!-- Date of Birth -->
                                                         <div class="row">
@@ -358,11 +356,11 @@
                                                             <div class="form-group col-md-2">
                                                                 <label>Gender:</label>
                                                                 <div class="form-check">
-                                                                    <input required type="radio" class="form-check-input" id="maleGender" name="gender" value="Male" ${c.gender eq 'Male' ? 'checked' : ''}>
+                                                                    <input required type="radio" class="form-check-input"  name="gender" value="Male" ${c.gender eq 'Male' ? 'checked' : ''}>
                                                                     <label class="form-check-label" for="maleGender">Male</label>
                                                                 </div>
                                                                 <div class="form-check">
-                                                                    <input required type="radio" class="form-check-input" id="femaleGender" name="gender" value="Female" ${c.gender eq 'Female' ? 'checked' : ''}>
+                                                                    <input required type="radio" class="form-check-input"  name="gender" value="Female" ${c.gender eq 'Female' ? 'checked' : ''}>
                                                                     <label class="form-check-label" for="femaleGender">Female</label>
                                                                 </div>
                                                             </div>
@@ -411,7 +409,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-danger border-m" data-dismiss="modal">
+                                                    <button type="button" class="btn btn-danger border-m" data-bs-dismiss="modal">
                                                         <span class="d-flex align-items-center">
                                                             <i class="fas fa-times mr-2"></i> Close
                                                         </span>
@@ -443,8 +441,8 @@
                         </div>
                         <div class="col-md-6"></div>
                         <div class="">
-                            <button type="button" class="btn btn-block border-m btn-continue text-white" data-toggle="modal"
-                                    data-target="#addPatientModal">
+                            <button type="button" class="btn btn-block border-m btn-continue text-white" data-bs-toggle="modal"
+                                    data-bs-target="#addPatientModal">
                                 <span class="d-flex align-items-center">
                                     <i class="fas fa-plus-circle mr-2"></i> Add profile
                                 </span>
@@ -461,15 +459,12 @@
                         <div class="modal-content border-m">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="addPatientModalLabel">Add children profile</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <!-- Form để nhập thông tin của bệnh nhân -->
                                 <div class="container"> 
                                     <div class="form-group text-center">
-                                        <input type="file"  style=" display: none; "name="images" id="file" class="inputfile" onchange="readURL(this)" accept="image/*"/>
+                                        <input type="file"  style=" display: none; "name="images"  class="inputfile" onchange="readURL(this)" accept="image/*"/>
                                         <label for="file">
                                             <img id="img-preview"  style="height: 100px;width: 100px;" 
                                                  class="rounded-circle mx-auto d-block image-create" 
@@ -481,7 +476,7 @@
                                     <div class="form-group">
                                         <label for="patientName">Fullname:</label>
                                         <input required type="text" class="form-control" oninvalid="CheckFullName(this);" oninput="CheckFullName(this);"
-                                               id="patientName" name="fullname" placeholder="Enter fullname of your child">
+                                               name="fullname" placeholder="Enter fullname of your child">
                                     </div>
                                     <div class="row">
                                         <div class="form-group">
@@ -511,11 +506,11 @@
                                         <div class="form-group col-md-2">
                                             <label>Gender:</label>
                                             <div class="form-check">
-                                                <input required type="radio" class="form-check-input" id="maleGender" name="gender" value="Male">
+                                                <input required type="radio" class="form-check-input"  name="gender" value="Male">
                                                 <label class="form-check-label" for="maleGender">Male</label>
                                             </div>
                                             <div class="form-check">
-                                                <input required type="radio" class="form-check-input" id="femaleGender" name="gender" value="Female">
+                                                <input required type="radio" class="form-check-input"  name="gender" value="Female">
                                                 <label class="form-check-label" for="femaleGender">Female</label>
                                             </div>
                                         </div>
@@ -557,7 +552,7 @@
                             </div>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-danger border-m" data-dismiss="modal">
+                                <button type="button" class="btn btn-danger border-m" data-bs-dismiss="modal">
                                     <span class="d-flex align-items-center">
                                         <i class="fas fa-times mr-2"></i> Close
                                     </span> 

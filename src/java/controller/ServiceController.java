@@ -383,6 +383,8 @@ public class ServiceController extends HttpServlet {
         request.setAttribute("service", services);
         List<Staff> staffList = staffDAO.getDoctorByServices(id);
         request.setAttribute("doctor", staffList);
+        String staffID = request.getParameter("staffID");
+        request.setAttribute("staffID", staffID);
         request.getRequestDispatcher("./view/servicedetail.jsp").forward(request, response);
     }
 

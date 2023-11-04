@@ -120,82 +120,7 @@ public class UserController extends HttpServlet {
 
                 response.sendRedirect("home?showmodal=1");
             }
-            if (isManager) {
-                if (action.equals("search")) {
-                    // Retrieve search parameters from the request
-                    String searchValue = request.getParameter("searchValue");
-                    String status = request.getParameter("status");
-                    String sortBy = request.getParameter("sortBy");
-                    String sortOrder = request.getParameter("sortOrder");
 
-                    // Get the current page from the request
-                    int page = 1;
-                    String pageParam = request.getParameter("page");
-                    if (pageParam != null) {
-                        page = Integer.parseInt(pageParam);
-                    }
-                    int pageSize = 10; // Giá trị mặc định cho pageSize
-                    String pageSizeParam = request.getParameter("pageSize");
-                    if (pageSizeParam != null) {
-                        pageSize = Integer.parseInt(pageSizeParam);
-                    }
-                    int size = userdao.countSearchUser(searchValue, status);
-                    int numPages = (size % pageSize == 0) ? (size / pageSize) : (size / pageSize) + 1;
-                    String url = "user?action=search";
-
-                    if (searchValue != null) {
-                        url += "&searchValue=" + searchValue;
-                    }
-
-                    if (status != null) {
-                        url += "&status=" + status;
-                    }
-
-                    if (sortBy != null) {
-                        url += "&sortBy=" + sortBy;
-                    }
-
-                    if (sortOrder != null) {
-                        url += "&sortOrder=" + sortOrder;
-                    }
-                    if (pageSizeParam != null) {
-                        url += "&pageSize=" + pageSize;
-                    }
-                    List<User> userListDemo = userdao.search(searchValue, status, sortBy, sortOrder, page, pageSize);
-
-                    request.setAttribute("searchValue", searchValue);
-                    request.setAttribute("status", status);
-                    request.setAttribute("sortBy", sortBy);
-                    request.setAttribute("sortOrder", sortOrder);
-                    request.setAttribute("page", page);
-                    request.setAttribute("pageSize", pageSize);
-                    request.setAttribute("num", numPages);
-                    request.setAttribute("url", url);
-                    request.setAttribute("userList", userListDemo);
-
-                    // Forward the request to the JSP page for displaying search results with pagination
-                    request.getRequestDispatcher("./view/user-list.jsp").forward(request, response);
-                }
-                if (action.equals("details")) {
-
-                    String userIDstr = request.getParameter("userID");
-                    int userID = Integer.parseInt(userIDstr);
-                    User userDetail = userdao.getUserByID(userID);
-                    request.setAttribute("user", userDetail);
-                    ContactDAO contactDAO = new ContactDAO();
-                    List<Contact> contactList = contactDAO.getContacts(userID);
-                    request.setAttribute("contact", contactList);
-                    MedicalExaminationDAO mdDAO = new MedicalExaminationDAO();
-                    List<MedicalExamination> medicalExamination = mdDAO.getMedicalExaminationsByUserID(userID);
-                    request.setAttribute("medical", medicalExamination);
-                    ChildrenDAO childrenDAO = new ChildrenDAO();
-                    List<Children> childrenList = childrenDAO.getListChildrenByUserId(userIDstr);
-                    request.setAttribute("children", childrenList);
-                    request.getRequestDispatcher("./view/user-details.jsp").forward(request, response);
-                }
-            } else {
-                request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
-            }
             if (action.equals("my-children")) {
                 int userID = users.getUserID();
                 String serviceID = request.getParameter("serviceID");
@@ -327,6 +252,86 @@ public class UserController extends HttpServlet {
                 ChildrenDAO childDAO = new ChildrenDAO();
                 childDAO.deleteChild(childID);
             }
+            if (action.equals("search")) {
+                if (isManager) {
+                    // Retrieve search parameters from the request
+                    String searchValue = request.getParameter("searchValue");
+                    String status = request.getParameter("status");
+                    String sortBy = request.getParameter("sortBy");
+                    String sortOrder = request.getParameter("sortOrder");
+
+                    // Get the current page from the request
+                    int page = 1;
+                    String pageParam = request.getParameter("page");
+                    if (pageParam != null) {
+                        page = Integer.parseInt(pageParam);
+                    }
+                    int pageSize = 10; // Giá trị mặc định cho pageSize
+                    String pageSizeParam = request.getParameter("pageSize");
+                    if (pageSizeParam != null) {
+                        pageSize = Integer.parseInt(pageSizeParam);
+                    }
+                    int size = userdao.countSearchUser(searchValue, status);
+                    int numPages = (size % pageSize == 0) ? (size / pageSize) : (size / pageSize) + 1;
+                    String url = "user?action=search";
+
+                    if (searchValue != null) {
+                        url += "&searchValue=" + searchValue;
+                    }
+
+                    if (status != null) {
+                        url += "&status=" + status;
+                    }
+
+                    if (sortBy != null) {
+                        url += "&sortBy=" + sortBy;
+                    }
+
+                    if (sortOrder != null) {
+                        url += "&sortOrder=" + sortOrder;
+                    }
+                    if (pageSizeParam != null) {
+                        url += "&pageSize=" + pageSize;
+                    }
+                    List<User> userListDemo = userdao.search(searchValue, status, sortBy, sortOrder, page, pageSize);
+
+                    request.setAttribute("searchValue", searchValue);
+                    request.setAttribute("status", status);
+                    request.setAttribute("sortBy", sortBy);
+                    request.setAttribute("sortOrder", sortOrder);
+                    request.setAttribute("page", page);
+                    request.setAttribute("pageSize", pageSize);
+                    request.setAttribute("num", numPages);
+                    request.setAttribute("url", url);
+                    request.setAttribute("userList", userListDemo);
+
+                    // Forward the request to the JSP page for displaying search results with pagination
+                    request.getRequestDispatcher("./view/user-list.jsp").forward(request, response);
+                } else {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                }
+            }
+            if (action.equals("details")) {
+                if (isManager) {
+                    String userIDstr = request.getParameter("userID");
+                    int userID = Integer.parseInt(userIDstr);
+                    User userDetail = userdao.getUserByID(userID);
+                    request.setAttribute("user", userDetail);
+                    ContactDAO contactDAO = new ContactDAO();
+                    List<Contact> contactList = contactDAO.getContacts(userID);
+                    request.setAttribute("contact", contactList);
+                    MedicalExaminationDAO mdDAO = new MedicalExaminationDAO();
+                    List<MedicalExamination> medicalExamination = mdDAO.getMedicalExaminationsByUserID(userID);
+                    request.setAttribute("medical", medicalExamination);
+                    ChildrenDAO childrenDAO = new ChildrenDAO();
+                    List<Children> childrenList = childrenDAO.getListChildrenByUserId(userIDstr);
+                    request.setAttribute("children", childrenList);
+                    request.getRequestDispatcher("./view/user-details.jsp").forward(request, response);
+                } else {
+                    request.getRequestDispatcher("./view/403-forbidden.jsp").forward(request, response);
+                }
+            }
+
             if (action.equals("render-user-by-admin")) {
                 if (!isAdmin) {
                     return;
@@ -364,7 +369,7 @@ public class UserController extends HttpServlet {
 
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

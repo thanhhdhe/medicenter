@@ -89,7 +89,7 @@
                             <p>
                             <form action="service?event=detail" method="POST">
                                 <input type="hidden" name="serviceID" value="<%=service.getServiceID()%>">
-                                <input type="hidden" name="staffID" value="${requestScope.staffID}">
+                                <input type="hidden" name="staffID" value="<%=request.getParameter("staffID")%>">
                                 <input type="submit"  class="btn btn-primary btn-block" value="Details" />
                             </form>
                             </p>
