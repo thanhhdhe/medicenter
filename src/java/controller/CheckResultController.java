@@ -66,6 +66,7 @@ public class CheckResultController extends HttpServlet {
             String reservationIDStr = request.getParameter("reservation");
             int reservationID = Integer.parseInt(reservationIDStr);
             ReservationDAO reservationDAO = new ReservationDAO();
+            reservationDAO.updateDatabase();
             Reservation reservation = reservationDAO.getReservationByID(reservationID);
             ServiceDAO serviceDAO = new ServiceDAO();
             Service service = serviceDAO.getServiceByID(String.valueOf(reservation.getServiceID()));

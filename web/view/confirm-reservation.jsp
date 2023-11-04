@@ -217,14 +217,25 @@
                                 </div>
                                 <div class="form-group">
                                     <p class="title-info"><strong>Payment Method:</strong></p>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" Checked="True" name="payment" value="offline">
-                                        <label  for="" class="form-check-label detail-info">Pay at center</label><br>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="bankCode" name="payment" value="vnpay">
-                                        <label  for="" class="form-check-label detail-info">Payment via VNPpay</label><br>
-                                    </div>
+                                    <c:choose>
+                                        <c:when test="${service.salePrice == 0.0}">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" Checked="True" name="payment" value="offline">
+                                                <label for="" class="form-check-label detail-info">Pay at center</label><br>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" Checked="True" name="payment" value="offline">
+                                                <label  for="" class="form-check-label detail-info">Pay at center</label><br>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" id="bankCode" name="payment" value="vnpay">
+                                                <label  for="" class="form-check-label detail-info">Payment via VNPpay</label><br>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+
                                     <input type="hidden" id="language" name="language" value="en">
                                     <input type="hidden" id="reserv" name="reservation" value="${reservation.reservationID}">
                                 </div>
@@ -318,8 +329,8 @@
         window.history.back();
     }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </body>
 
 </html>
