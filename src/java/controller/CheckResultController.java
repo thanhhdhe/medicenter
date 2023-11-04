@@ -114,6 +114,7 @@ public class CheckResultController extends HttpServlet {
                 String reservationIDStr = vnp_TxnRef.substring(6);
                 int reservationID = Integer.parseInt(reservationIDStr);
                 ReservationDAO reservationDAO = new ReservationDAO();
+                reservationDAO.updateDatabase();
                 Reservation reservation = reservationDAO.getReservationByID(reservationID);
                 if (reservation != null) {
                     checkOrderId = true;
