@@ -6,19 +6,40 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <jsp:include page="./layout/Head.jsp"/> 
-    <link rel="stylesheet" href="./resources/css/services-style.css">
-    <style>
-        img {
-            width: 100%;
-        }
-        #service-list img {
-            height: 100%;
-            object-fit: cover;
-        }
-    </style>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>${service.title}</title>
+
+        <!-- Favicon -->
+        <link rel="apple-touch-icon" sizes="76x76" href="./resources/favicon/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="./resources/favicon/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="./resources/favicon/favicon-16x16.png" />
+        <link rel="manifest" href="./resources/favicon/site.webmanifest" />
+        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="theme-color" content="#ffffff" />
+        <!--Font awesome-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+        <!-- Vendor CSS Files -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link href="../resources/css/style.css" rel="stylesheet">
+        <style>
+            .section {
+                background-color: aliceblue;
+            }
+            img {
+                width: 100%;
+            }
+            #service-list img {
+                height: 100%;
+                object-fit: cover;
+            }
+        </style>
+    </head>
+
     <body>
-        <jsp:include page="./layout/Header.jsp"/>
+        <jsp:include page="layout/Header.jsp"/>
 
         <%ServiceDAO serviceDAO = new ServiceDAO();
    CategoryServiceDAO categoryServiceDAO = new CategoryServiceDAO();
@@ -87,12 +108,8 @@
                                     </div>
                                 </form>
                             </div>
-
                         </div>
-
                     </div>
-
-
                 </div>
             </div>
 
@@ -112,6 +129,7 @@
             integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
             crossorigin="anonymous"
         ></script>
+        
     </body>
 
 </html>

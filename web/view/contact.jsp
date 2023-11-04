@@ -10,7 +10,7 @@
     <body>
         <jsp:include page="./layout/Header.jsp"/>
         <div><img class="object-contain" src="resources/img/contact.jpg" style="
-                  height: 20rem;
+                  height: 20rem; width: 100%;
                   " alt="alt"/></div>
 
         <div class="row mb-5 mt-5 justify-content-center">

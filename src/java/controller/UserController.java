@@ -219,15 +219,13 @@ public class UserController extends HttpServlet {
                 }
                 request.setAttribute("service", service);
                 ChildrenDAO cDao = new ChildrenDAO();
-                List<Children> childList = cDao.getListChildrenByUserId(userID + "");
+                if (cDao.countChildrenByUserID(userID) != 0) {
+                    List<Children> childList = cDao.getListChildrenByUserId(userID + "");
+                    request.setAttribute("child", childList);
+                }
                 RelationshipDAO reDAO = new RelationshipDAO();
                 List<Relationship> reList = reDAO.getRelationshipList();
-                request.setAttribute("child", childList);
                 request.setAttribute("relationship", reList);
-                // Set the "staff" attribute if staff is not null
-                if (staff != null) {
-                    request.setAttribute("staff", staff);
-                }
                 request.getRequestDispatcher("./view/choose-children.jsp").forward(request, response);
             }
 
@@ -276,7 +274,7 @@ public class UserController extends HttpServlet {
                     users.setAddress(address);
                     users.setPhoneNumber(phoneNumber);
                     userdao.updateProfile(users);
-                } 
+                }
 
                 String message = (statusUpdate) ? "Add children profile successfully" : "An error when add children profile";
                 session.setAttribute("message", message);

@@ -194,6 +194,24 @@ public class ChildrenDAO extends MyDAO {
         return count;
     }
 
+    public int countChildrenByUserID(int userID) {
+        int count = 0;
+        xSql = "SELECT COUNT(*) FROM Children WHERE UserID = ?";
+        try {
+            ps = con.prepareStatement(xSql);
+            ps.setInt(1, userID);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1); // Lấy giá trị số lượng trẻ em từ kết quả truy vấn
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
     public boolean deleteChild(String childID) {
         boolean success = false;
         xSql = "DELETE FROM [dbo].[Children] WHERE ChildID = ?";
@@ -213,9 +231,9 @@ public class ChildrenDAO extends MyDAO {
 
     public static void main(String[] args) {
         ChildrenDAO childrenDAO = new ChildrenDAO();
-         Children u = childrenDAO.getChildrenByChildrenId("1");
-         u.setChildName("Can Quoc Viet");
-         System.out.println(childrenDAO.updateChild(u));
+        Children u = childrenDAO.getChildrenByChildrenId("1");
+        u.setChildName("Can Quoc Viet");
+        System.out.println(childrenDAO.updateChild(u));
 
 //        System.out.println("ketquadelete là : " + childrenDAO.deleteChild("5"));
     }

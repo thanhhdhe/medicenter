@@ -260,6 +260,10 @@
         <servlet-name>StaffManageSchedule</servlet-name>
         <url-pattern>/sms</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StaffScheduleController</servlet-name>
+        <url-pattern>/staffschedule</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
