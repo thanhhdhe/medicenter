@@ -10,16 +10,21 @@
 <html lang="en">
 
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Choose children profile</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
-              rel="stylesheet"/>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Include Bootstrap JavaScript and jQuery -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Favicon -->
+        <link rel="apple-touch-icon" sizes="76x76" href="./resources/favicon/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="./resources/favicon/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="./resources/favicon/favicon-16x16.png" />
+        <link rel="manifest" href="./resources/favicon/site.webmanifest" />
+        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="theme-color" content="#ffffff" />
+        <!--Font awesome-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <style>
             body {
                 background-color: #e8f2f7;
@@ -63,11 +68,11 @@
                 margin-bottom: 5px;
             }
 
-            .card:hover {
+/*            .card:hover {
                 border: 1px solid #3699ff;
                 transform: translateZ(-3px);
                 cursor: pointer;
-            }
+            }*/
 
             .border-m {
                 border: none;
@@ -111,7 +116,7 @@
     </head>
 
     <body>
-        <%--<jsp:include page="./layout/Header.jsp" />--%>
+        <jsp:include page="./layout/Header.jsp" />
         <div class="container">
             <div class="justify-content-center mt-5">
                 <!-- Đây là hàng (row) chứa hai cột (columns) -->
@@ -223,8 +228,8 @@
                                                 </div>
                                                 <div class="col-md-3">
                                                     <div class="row justify-content-center">
-                                                        <img src="${c.image}" style="height: 85px;object-fit: cover;width: 85px;"
-                                                             alt="Image profile" style="max-height: 85px;"
+                                                        <img src="${c.image}" style="max-height: 85px; padding: 0.2rem;height: 85px;object-fit: cover;width: 85px;"
+                                                             alt="Image profile"
                                                              class="img-thumbnail rounded-circle" />
                                                     </div>
                                                 </div>
@@ -462,7 +467,7 @@
                             </div>
                             <div class="modal-body">
                                 <!-- Form để nhập thông tin của bệnh nhân -->
-                                <form class="container">
+                                <div class="container"> 
                                     <div class="form-group text-center">
                                         <input type="file"  style=" display: none; "name="images" id="file" class="inputfile" onchange="readURL(this)" accept="image/*"/>
                                         <label for="file">
@@ -548,7 +553,7 @@
                                     <div class="alert alert-warning" style="font-size: 12px">
                                         When editing the address and phone number, profile information will change.
                                     </div>
-                                </form>
+                                </div>
                             </div>
 
                             <div class="modal-footer">
@@ -573,9 +578,9 @@
 
         </div>
         <jsp:include page="layout/footer.jsp" />
-
-        <!-- Thêm script của Bootstrap JS và JavaScript tùy chỉnh -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
                                             $(".trash").click(function () {
@@ -725,5 +730,4 @@
 
         </script>
     </body>
-
 </html>

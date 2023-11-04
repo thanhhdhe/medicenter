@@ -425,5 +425,8 @@ h6 {
     font-weight: 900;
     color: #1977cc;
 }
+img {
+    object-fit: cover;
+}
 
 
