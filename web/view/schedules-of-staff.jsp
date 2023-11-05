@@ -373,7 +373,6 @@
                                     tableRow.appendChild(tableCell);
                                 }
                                 document.getElementById('medical-list').appendChild(tableRow);
-
                             }
 
                             const spanNumber = document.getElementById("pageNumber");

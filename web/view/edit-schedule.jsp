@@ -195,7 +195,7 @@
                             <h4>Edit schedule</h4>
                             <% } %>
                         </div>
-                        <form class="needs-validation" action="sms?event=<%=action%>" method="POST" onsubmit="return validateDate()">
+                        <form class="needs-validation" action="sms?event=<%=action%>" method="POST">
                             <% if (action.equals("edit")) { %>
                             <input type="text" name="scheduleID" value="<%=staffSchedule.getScheduleID()%>" hidden="">
                             <% } %>
@@ -253,17 +253,6 @@
 
                                 return false;
                             });
-                            function validateDate() {
-                                var inputDate = new Date(document.getElementsByName("workDay")[0].value);
-                                var conditionDate = new Date();
-                                conditionDate.setDate(conditionDate.getDate() + 7);
-                                if (inputDate <= conditionDate) {
-                                    alert("Please select a date that meet the conditions");
-                                    return false; // Prevent form submission
-                                }
-
-                                return true; // Allow form submission
-                            }
         </script>
     </body>
 </html>

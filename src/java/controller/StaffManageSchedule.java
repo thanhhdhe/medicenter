@@ -47,12 +47,17 @@ public class StaffManageSchedule extends HttpServlet {
                     staffSchedule.setStaffID(Integer.parseInt(staffID));
                     staffSchedule.setWorkday(workDay);
                     // validate the schedule 
-                    
-                    
+                    Date compareDate = new Date(System.currentTimeMillis() + (7 * 24 * 60 * 60 * 1000));
+
                     if (staffScheduleDAO.getScheduleByWorkDate(workDay, workSlot, staffID) != null) {
                         request.setAttribute("staffSchedule", null);
                         request.setAttribute("action", "add");
                         request.setAttribute("errorMessage", "Cannot add new schedule because of duplicate schedule");
+                        request.getRequestDispatcher("./view/edit-schedule.jsp").forward(request, response);
+                    } else if (workDay.before(compareDate) && workDay.getDate() != compareDate.getDate()) {
+                        request.setAttribute("staffSchedule", null);
+                        request.setAttribute("action", "add");
+                        request.setAttribute("errorMessage", "Please select a date that meet the conditions");
                         request.getRequestDispatcher("./view/edit-schedule.jsp").forward(request, response);
                     } else {
                         staffScheduleDAO.requestToManager(staffSchedule);
@@ -66,12 +71,19 @@ public class StaffManageSchedule extends HttpServlet {
                     Date workDay = Date.valueOf(request.getParameter("workDay"));
                     int workSlot = Integer.parseInt(request.getParameter("workSlot"));
                     StaffSchedule staffSchedule = new StaffSchedule(Integer.parseInt(scheduleID), Integer.parseInt(staffID), workDay, workSlot);
-                    // validate 
+                    // validate the schedule
+                    Date compareDate = new Date(System.currentTimeMillis() + (7 * 24 * 60 * 60 * 1000));
+
                     if (staffScheduleDAO.getScheduleByWorkDate(workDay, workSlot, staffID) != null
                             && !Integer.toString(staffScheduleDAO.getScheduleByWorkDate(workDay, workSlot, staffID).getScheduleID()).equals(scheduleID)) {
                         request.setAttribute("scheduleID", scheduleID);
                         request.setAttribute("action", "edit");
                         request.setAttribute("errorMessage", "Cannot edit the schedule because of duplicate schedule");
+                        request.getRequestDispatcher("./view/edit-schedule.jsp").forward(request, response);
+                    } else if (workDay.before(compareDate) && workDay.getDate() != compareDate.getDate()) {
+                        request.setAttribute("scheduleID", scheduleID);
+                        request.setAttribute("action", "edit");
+                        request.setAttribute("errorMessage", "Please select a date that meet the conditions");
                         request.getRequestDispatcher("./view/edit-schedule.jsp").forward(request, response);
                     } else {
                         staffScheduleDAO.editScheduleByStaff(staffSchedule);
