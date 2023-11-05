@@ -144,7 +144,7 @@ boolean isStaff = false;
                     <%}%>
                     <%if(isManager){%>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="user?action=all" class="nav-item nav-link active"
+                        <a href="user?action=search" class="nav-item nav-link active"
                            ><i class="bi bi-people-fill"></i>User</a
                         >
                     </div>
@@ -169,7 +169,7 @@ boolean isStaff = false;
                         >
                     </div>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="user?action=all" class="nav-item nav-link"
+                        <a href="user?action=search" class="nav-item nav-link"
                            ><i class="bi bi-image-fill"></i>Slider</a
                         >
                     </div>
@@ -409,7 +409,7 @@ boolean isStaff = false;
 
         </div>
 
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <!-- Template Javascript -->

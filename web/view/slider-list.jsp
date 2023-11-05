@@ -81,7 +81,7 @@ boolean isStaff = false;
                     <%}%>
                     <%if(isManager){%>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="user?action=all" class="nav-item nav-link"
+                        <a href="user?action=search" class="nav-item nav-link"
                            ><i class="bi bi-people-fill"></i>User</a
                         >
                     </div>
@@ -106,7 +106,7 @@ boolean isStaff = false;
                         >
                     </div>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="user?action=all" class="nav-item nav-link active"
+                        <a href="user?action=search" class="nav-item nav-link active"
                            ><i class="bi bi-image-fill"></i>Slider</a
                         >
                     </div>

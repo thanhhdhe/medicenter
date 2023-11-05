@@ -63,6 +63,7 @@ public class PaymentController extends HttpServlet {
         String payment = request.getParameter("payment");
         int reservationID = Integer.parseInt(request.getParameter("reservation"));
         ReservationDAO reservationDAO = new ReservationDAO();
+        reservationDAO.updateDatabase();
         Reservation reservation = reservationDAO.getReservationByID(reservationID);
         ServiceDAO serviceDAO = new ServiceDAO();
         Service service = serviceDAO.getServiceByID(String.valueOf(reservation.getServiceID()));

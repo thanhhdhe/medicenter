@@ -12,23 +12,25 @@
 <html lang="en">
 
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <!-- DataTable CSS  -->
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>User manager list</title>
+
+        <!-- Favicon -->
+        <link rel="apple-touch-icon" sizes="76x76" href="./resources/favicon/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="./resources/favicon/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="./resources/favicon/favicon-16x16.png" />
+        <link rel="manifest" href="./resources/favicon/site.webmanifest" />
+        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="theme-color" content="#ffffff" />
         <link rel="stylesheet" href="./resources/css/staff-dashboard.css">
-        <link
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
-            rel="stylesheet"
-            />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
         <link
             href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
             rel="stylesheet"
             />
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-        <!-- Include Bootstrap JavaScript and jQuery -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
         <title>User manage</title>
         <style>
             #example_filter {
@@ -89,7 +91,7 @@ boolean isStaff = false;
                     <%}%>
                     <%if(isManager){%>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="user?action=all" class="nav-item nav-link active"
+                        <a href="user?action=search" class="nav-item nav-link active"
                            ><i class="bi bi-people-fill"></i>User</a
                         >
                     </div>
@@ -114,12 +116,12 @@ boolean isStaff = false;
                         >
                     </div>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="postManage" class="nav-item nav-link active"
+                        <a href="postManage" class="nav-item nav-link"
                            ><i class="bi bi-file-earmark-post"></i>Post</a
                         >
                     </div>
                     <div class="navbar-nav w-100 text-light">
-                        <a href="user?action=all" class="nav-item nav-link"
+                        <a href="user?action=search" class="nav-item nav-link"
                            ><i class="bi bi-image-fill"></i>Slider</a
                         >
                     </div>
@@ -207,68 +209,60 @@ boolean isStaff = false;
                     <div class="row bg-light rounded align-items-center justify-content-center mx-0">
                         <div class="container-fluid">
                             <div class="layout-specing">
+                                <form action="user" method="GET" id="searchform">
+                                    <input type="hidden" name="action" value="search">
+
+                                    <div class="d-flex gap-5">
+                                        <input type="text" value="${searchValue}" class="form-control border rounded-pill" name="searchValue" id="searchValue" placeholder="Search...">
+                                        <select name="status" class="form-select" aria-label="Default select example">
+                                            <option <c:if test="${status == ''}">selected</c:if> value="">All</option>
+                                            <option <c:if test="${status == '1'}">selected</c:if> value="1">Active</option>
+                                            <option <c:if test="${status == '0'}">selected</c:if> value="0">Disable</option>
+                                            </select>
+                                            <select name="sortBy" class="form-select" aria-label="Default select example">
+                                                <option value="UserID" ${sortBy == 'UserID' ? 'selected' : ''}>User ID</option>
+                                            <option value="FirstName" ${sortBy == 'FirstName' ? 'selected' : ''}>First Name</option>
+                                            <option value="LastName" ${sortBy == 'LastName' ? 'selected' : ''}>Last Name</option>
+                                            <option value="Email" ${sortBy == 'Email' ? 'selected' : ''}>Email</option>
+                                            <option value="PhoneNumber" ${sortBy == 'PhoneNumber' ? 'selected' : ''}>Phone Number</option>
+                                            <option value="Status" ${sortBy == 'Status' ? 'selected' : ''}>Status</option>
+                                        </select>
+                                        <select name="sortOrder" class="form-select" aria-label="Default select example">
+                                            <option value="asc" ${sortOrder == 'asc' ? 'selected' : ''}>Ascending</option>
+                                            <option value="desc" ${sortOrder == 'desc' ? 'selected' : ''}>Descending</option>
+                                        </select>
+                                        <select name="pageSize" class="form-select" aria-label="Default select example">
+                                            <option value="10" ${pageSize == 10 ? 'selected' : ''}>10</option>
+                                            <option value="20" ${pageSize == 20 ? 'selected' : ''}>20</option>
+                                            <option value="30" ${pageSize == 30 ? 'selected' : ''}>30</option>
+                                            <!-- Add more options for different page sizes as needed -->
+                                        </select>
+                                        <button class="btn btn-block btn-primary mx-3" type="submit">Search</button>
+                                    </div>
+                                </form>
+
+
+
                                 <div class="row">
-                                    <div class="col-md-5 row mt-4">
-                                        <div class="search-bar p-0 d-lg-block mx-3">                                                        
-                                            <div id="search" class="menu-search mb-0">
-                                                <form action="user?action=search" method="POST" id="searchform" class="searchform">
-                                                    <div class="d-flex">
-                                                        <input type="text" value="${text}" class="form-control border rounded-pill" name="txt" id="search" placeholder="Search...">
-                                                        <button class="btn btn-block btn-primary mx-3" type="submit">Search</button>
-                                                    </div>
-                                                </form>
+                                    <div class="col-12 mt-4">
+                                        <div class="table-responsive bg-white shadow rounded">
+                                            <div class="col-md-4 mx-3 mt-3 d-flex">
+
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-7 mt-4">
-                                        <form action="user?action=filter" method="POST" onSubmit="document.getElementById('submit').disabled = true;">
-                                            <div class="justify-content-md-end row">
-                                                <div class="col-md-5 row align-items-center">
-                                                    <div class="col-md-4">
-                                                        <label class="form-label">Status</label>
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <select name="status" class="form-select" aria-label="Default select example">
-                                                            <option <c:if test="${status == 'all'}">selected</c:if> value="all">All</option>
-                                                            <option <c:if test="${status == '1'}">selected</c:if> value="1">Active</option>
-                                                            <option <c:if test="${status == '0'}">selected</c:if> value="0">Disable</option>
-                                                            </select>
-                                                        </div>  
-                                                    </div>
-                                                    <div class="col-md-1 md-0">
-                                                        <button type="submit" class="btn btn-primary">Filter</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="row">
-                                        <div class="col-12 mt-4">
-                                            <div class="table-responsive bg-white shadow rounded">
-                                                <div class="col-md-4 mx-3 mt-3 d-flex">
-                                                    <label for="itemsPerPage" class="form-label nowrap">No. of row</label>
-                                                    <select name="itemsPerPage" id="itemsPerPage" class="mx-3">
-                                                        <option value="15" <c:if test="${sessionScope.numPerPage == 15}">selected</c:if>>15</option>
-                                                    <option value="25" <c:if test="${sessionScope.numPerPage == 25}">selected</c:if>>25</option>
-                                                    <option value="50" <c:if test="${sessionScope.numPerPage == 50}">selected</c:if>>50</option>
-                                                    </select>
-                                                </div>
-                                                <table id="example" class="table table-striped nowrap" style="width:100%">
-                                                    <thead>
-                                                        <tr>
-                                                            <th class="border-bottom p-3" >ID</th>
-                                                            <th class="border-bottom p-3" >Full name</th>
-                                                            <th class="border-bottom p-3" >Gender</th>
-                                                            <th class="border-bottom p-3" >Email</th>
-                                                            <th class="border-bottom p-3" >Phone number</th>
-                                                            <th class="border-bottom p-3" >Status</th>
-                                                            <th class="border-bottom p-3" ></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    <c:forEach items="${user}" var="a">
+                                            <table id="example" class="table table-striped nowrap" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="border-bottom p-3" >ID</th>
+                                                        <th class="border-bottom p-3" >Full name</th>
+                                                        <th class="border-bottom p-3" >Gender</th>
+                                                        <th class="border-bottom p-3" >Email</th>
+                                                        <th class="border-bottom p-3" >Phone number</th>
+                                                        <th class="border-bottom p-3" >Status</th>
+                                                        <th class="border-bottom p-3" ></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <c:forEach items="${userList}" var="a">
                                                         <tr>
                                                             <td class="p-3">${a.userID}</td>
                                                             <td class="p-3">${a.lastName} ${a.firstName}</td>
@@ -381,45 +375,7 @@ boolean isStaff = false;
                                             </nav>
                                         </div>
                                     </div>
-
                                 </div>
-                                <c:forEach items="${user}" var="a">
-                                    <div class="modal fade" id="edit${a.userID}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header border-bottom p-3">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Update infomation</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body p-3 pt-4">
-                                                    <form action="account?action=update" method="POST" onSubmit="document.getElementById('submit').disabled = true;">
-                                                        <div class="row">
-                                                            <div class="col-lg-12">
-                                                                <div class="mb-3">
-                                                                    <label class="form-label">ID</label>
-                                                                    <input value="${a.userID}" readonly name="userID" id="userID" type="text" class="form-control">
-                                                                </div>
-
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Status <span class="text-danger">*</span></label>
-                                                                <select name="status" class="form-select" aria-label="Default select example">
-                                                                    <option <c:if test="${a.status == true}">selected</c:if> value="true">Active</option>
-                                                                    <option <c:if test="${a.status == false}">selected</c:if> value="false">Disable</option>
-                                                                    </select>
-                                                                </div>
-                                                                <div class="col-lg-12">
-                                                                    <div class="d-grid">
-                                                                        <button type="submit" id="submit" class="btn btn-primary">Chỉnh sửa</button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                </c:forEach>
                             </div>
                         </div>
                     </div>
@@ -436,54 +392,24 @@ boolean isStaff = false;
 
         </div>
 
-        <!-- JavaScript Libraries -->
-        <script
-            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-            crossorigin="anonymous"
-        ></script>
-        <script
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-            integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-            crossorigin="anonymous"
-        ></script>
+        <!-- Include Bootstrap JavaScript and jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
         <!-- Template Javascript -->
         <script>
-                                                        document.querySelector('.sidebar-toggler').addEventListener('click', function () {
-                                                            var sidebar = document.querySelector('.sidebar');
-                                                            var content = document.querySelector('.content');
+            document.querySelector('.sidebar-toggler').addEventListener('click', function () {
+                var sidebar = document.querySelector('.sidebar');
+                var content = document.querySelector('.content');
 
-                                                            sidebar.classList.toggle('open');
-                                                            content.classList.toggle('open');
+                sidebar.classList.toggle('open');
+                content.classList.toggle('open');
 
-                                                            return false;
-                                                        });
+                return false;
+            });
 
         </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-
-        <!-- DataTable JS -->
-        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-        <script src="https://cdn.datatables.net/responsive/2.4.1/js/dataTables.responsive.min.js"></script>
-        <script src="https://cdn.datatables.net/responsive/2.4.1/js/responsive.bootstrap5.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-
-        <!-- Custom JS -->
-        <script>
-                                                        document.getElementById("itemsPerPage").addEventListener("change", function () {
-                                                            var selectedValue = this.value;
-                                                            // Cập nhật URL với số lượng bản ghi mới được chọn
-                                                            window.location.href = "${url}&itemsPerPage=" + selectedValue;
-                                                        });
-                                                        $("#example").DataTable({
-                                                            "search": false,
-                                                            "paging": false,
-                                                            dom: '<"clear">lfrtp'
-                                                        });
-        </script>
 
     </body>
 
