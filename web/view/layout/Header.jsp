@@ -22,26 +22,20 @@
     <header id="header" class="fixed-top">
         <div class="container d-flex align-items-center">
 
-            <h1 class="logo me-auto"><a href="/ChildrenCare/home">Medilab</a></h1>
-            <!--<a href="index.html" class="logo me-auto"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+            <h1 class="logo me-auto"><a href="/ChildrenCare/home">Medilab</a>
+                <a href="home" class="logo me-auto"><img src="./resources/favicon/logo.png" alt="" class="img-fluid"></a></h1>
+
 
             <nav id="navbar" class="navbar order-last order-lg-0">
                 <ul>
                     <li><a class="nav-link scrollto" href="home">Home</a></li>
-                    <li class="dropdown"><a href="/ChildrenCare/service?event=service-list"><span>Services</span> <i class="bi bi-chevron-down"></i></a>
-                        <ul>
-                            <c:forEach items="${requestScope.category}" var="cate">
-                                <li><a href="#">${cate.categoryName}</a>
+                    <li class="dropdown"><a href="/ChildrenCare/service?event=service-list"><span>Services</span></a>
 
-                                </li>
-                            </c:forEach>
-
-                        </ul>
                     </li>
                     <li><a class="nav-link scrollto" href="/ChildrenCare/staffList">Doctors</a></li>
-                    <li class="dropdown"><a href="/ChildrenCare/blogPage"><span>Blog</span> <i class="bi bi-chevron-down"></i></a>
+                    <li class="dropdown"><a href="/ChildrenCare/blogPage"><span>Blog</span></a>
                     </li>
-                    <li class="dropdown"><a href="/ChildrenCare/feedback?action=accessfeedback"><span>Feedback</span> <i class="bi bi-chevron-down"></i></a>
+                    <li class="dropdown"><a href="/ChildrenCare/feedback?action=accessfeedback"><span>Feedback</span></a>
 
                     </li>
                     <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
@@ -64,7 +58,7 @@
                     <li><a onclick="changePassowrd()" class="dropdown-item">Change Password</a></li>
                     <li><a class="dropdown-item" href="myreservation">My reservation</a></li>
                     <li><a class="dropdown-item" href="logout">Logout</a></li>
-                        
+
                 </ul>
             </div>
         </div>

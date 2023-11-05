@@ -215,7 +215,6 @@
                                                 <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
                                             </a>
                                         </div>
-
                                         <!-- Article data -->
                                         <div class="row mb-3">
                                             <div class="col-6">
